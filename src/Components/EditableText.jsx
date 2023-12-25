@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useCallback } from 'react'
 
 import Button from 'react-bootstrap/Button';

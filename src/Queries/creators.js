@@ -1,10 +1,24 @@
 import { authorizedFetch2 } from "./authorizedFetch"
 import { ItemActions } from "../Store/keyedreducers"
 
+/**
+ * Serialize GQL query and variables into single object
+ * @param {string} querystring 
+ * @param {object} query_variables 
+ * @returns 
+ */
 const CreatePayload = (querystring, query_variables) => {
     return {query: querystring, variables: query_variables}
 }
 
+/**
+ * from QGL query string create a function which take variables and starts the fetch
+ * @param {string} query 
+ * @param {object} params can contain header (special token if needed)
+ * @returns 
+ * 
+ * @function
+ */
 const ResponseFromQuery = (query, params={}) => (query_variables) => {
     // console.log("ResponseFromQuery", item)
     // console.log("ResponseFromQuery", Query)
@@ -20,8 +34,24 @@ const ResponseFromQuery = (query, params={}) => (query_variables) => {
     return result
 }
 
+/**
+ * from QGL query string create a function which take variables and starts the fetch
+ * @param {string} query 
+ * @param {object} params can contain header (special token if needed)
+ * @returns 
+ * 
+ * @function
+ */
 export const CreateFetchQuery = ResponseFromQuery
 
+/**
+ * from GQL query string creates dispatchable async action (see react-redux)
+ * @param {string} query 
+ * @param {object} params can contain header (special token if needed)
+ * @returns 
+ * 
+ * @function
+ */
 export const CreateAsyncActionFromQuery = (query, params={}) => {
     // console.log("CreateAsyncActionFromQuery.query", query)
     if (typeof query !== "string") {

@@ -105,6 +105,17 @@ export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatc
     return dispatch(MsgActions.msg_add(msgWithId))
 }
 
+/**
+ * Creates validator (function) which called with dispatch return [onResolve, onReject] function usable in Promise.then(onResolve, onReject)
+ * const validator = CreateAsyncQueryValidator({error: "Error happend", "success": "All went ok"})
+ * const dispatch = useDispatch()
+ * const [onResolve, onReject] = validator(dispatch)
+ * ...
+ * fetch().then(onResolve, onReject)
+ * 
+ * @param {object} reactions {error: "Error happend", "success": "All went ok"}
+ * @returns 
+ */
 export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
     const onResolve = (json) => {
         const errors = json?.errors
@@ -115,7 +126,16 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
         if (data) {
             const result = data?.result
             if (result) {
-                dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
+                if (result?.msg) {
+                    dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
+                    if (result?.msg !== "ok") { 
+                        dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
+                    } else {
+                        dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
+                    }
+                } else {
+                    dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
+                }
             }
         }
         return json

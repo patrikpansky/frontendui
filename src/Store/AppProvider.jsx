@@ -1,9 +1,15 @@
+/* eslint-disable react/prop-types */
 import { Provider } from "react-redux"
 
 import { configureStore } from "@reduxjs/toolkit"
 import { MsgReducer } from "./msgs"
 import { ItemReducer } from "./keyedreducers"
 
+/**
+ * Just store provider for UI
+ * @param {*} param0 
+ * @returns 
+ */
 export const AppProvider = ({children}) => {
     const store = configureStore({ 
         reducer: {

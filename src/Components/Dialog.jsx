@@ -5,6 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
+/**
+ * Dialog simple as possible
+ * @param {*} param0 
+ * @returns 
+ */
 export const Dialog = ({children, title="Dialog", oklabel="Ok", cancellabel="Zrušit", onOk, onCancel}) => {
     const onFinish = () => {
         if (onOk) {
