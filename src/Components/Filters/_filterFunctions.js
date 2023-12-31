@@ -178,7 +178,7 @@ const rowFilterUpdateOp = (rowFilter, op) => {
 
     const result = {}
     if (rowFilter) {
-        const value = rowFilter[op] || ""
+        const [value] = Object.values(rowFilter) || [""]
         result[op] = value
     } else {
         result[op] = ""
@@ -235,7 +235,8 @@ const dialogSetFilter = (filter, attributeName) => {
             }
             const key = keys[0]    
             if (key !== attributeName) {
-                console.error(`Filter must have exactly one key ${JSON.stringify(key)}`)
+                continue
+                // console.error(`Filter must have exactly one key ${JSON.stringify(key)}`)
             }
             //vlozime spravne, bez ohledu na skutecne jmeno
             const renamedItem = {}
@@ -302,5 +303,5 @@ const dialogUpdateFilter = (oldFilter, {index, attributeName, newFilterValue}) =
     return newFilter
 }
 
-export { getWhereFilter, updateFilters, loadFilters, rowFilterUpdateOp, rowFilterUpdateValue, dialogSetFilter, dialogUpdateFilter}
+export { getWhereFilter, updateFilters, loadFilters, rowFilterUpdateOp, rowFilterUpdateValue, dialogSetFilter, dialogUpdateFilter }
 
