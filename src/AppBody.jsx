@@ -3,6 +3,7 @@ import { useFreshItem } from './Hooks'
 import { CreateAsyncActionFromQuery } from './Queries'
 import { CreateAsyncQueryValidator } from './Store';
 import { useDispatch, useSelector } from 'react-redux';
+import { TableHeaderWithFilters, where2filter } from './Components/Filters';
 
 // realizovany dotaz
 const UserPageQuery = `query ($skip: Int, $limit: Int, $where: UserInputWhereFilter, $orderby: String) {
@@ -17,7 +18,7 @@ const UserPageQuery = `query ($skip: Int, $limit: Int, $where: UserInputWhereFil
   }`
 
 //pokud bezime "mimo deployment", musime se autorizovat, token lze vzit z cookies v systsemu a pouzit zde
-const token = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYWNjZXNzX3Rva2VuIjoiQUNDVC0xTTVQTkFiRmpHazIzVUtRcjkzYTZjRDBudnhPcG1ndCIsImV4cGlyZXNfaW4iOjM2MDAsInJlZnJlc2hfdG9rZW4iOiJSRUZULWp3aVJiWVFKajViYjRPOUFLU3ZCSGVNbkxKWWt4QmRhIiwidXNlcl9pZCI6IjJkOWRjNWNhLWE0YTItMTFlZC1iOWRmLTAyNDJhYzEyMDAwMyJ9.sCksLLkUPLDdN-04UVZjMiS7u9Isw44P8lYXhxM6evj9Z2I9QzXE4sSgEqzDO9QFJ9gowxsHnJWaGkicBXYozq-0O12wOaz4q8LWYnBufA6kSB299LnIndrgWse6q26vmMJcXAKaRNTL7aGy344pKc_2AqLzYhRFl4cT4Pg6a32MKTOgwZ188Y4-JKoLOYnDuyrayKbf9QhON_PjWDH9IRqXrI8dGYVCitvjlJ9Un2sUoRnBuqMouAFn_xAAVzudPVT1Ud1fTytSKuls4D3M2ZuINypG3gU4KnvsXUt3lDCYKnviR2Hn2D2NiqSwoyrSMsq28XFo8Wio4PnRoB7jeA`
+const token = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYWNjZXNzX3Rva2VuIjoiQUNDVC1JZnpYYVNTeTlYMEZjWXdQNENjb1dueUdDWG9yY0NLeiIsImV4cGlyZXNfaW4iOjM2MDAsInJlZnJlc2hfdG9rZW4iOiJSRUZULTNBdDJ0NW9zUm5JWTBoUWpUdlJYWGNRUm53Z1VCeUVhIiwidXNlcl9pZCI6IjJkOWRjNWNhLWE0YTItMTFlZC1iOWRmLTAyNDJhYzEyMDAwMyJ9.f0eJP7rAbRDQnTT7Ztb0Su1O-rn0qwcM88WlM2Sww2H1mssa2EpMZr8Bnk48GJR5hroJQPyRgiYP2541pg02tQr-ORw3bifWcel0NnUjMrqlO_JpVfSHAVgYysSunXbswlDUDcz-l16VOAEcIm7rfruoA9Il7N6ZW5sP9I4124AVTZSQfLz3AHm5_JPtkW1VUDopmMVXp2sIWiEhZkeA_fYvx9eo22u3ojHFXbW6mZNI_L6H2Q0RWc7Vm56LKRU74KZLW8mxfWxSKixgkRSwBE05EPKwKOu_9KocikKxG_OY3HuqIkbK948j1jx9GJ4wcVLKkfadKaoaggG4qJ0Tjw`
 const headers = {authorization: `Bearer ${token}`}
 
 // ze stringu specifikujiciho query vytvori asynchronni action (dispatchable action)
@@ -26,26 +27,73 @@ const UserPageQueryAsyncAction = CreateAsyncActionFromQuery(UserPageQuery, {head
 // validator je prostredek pro osetreni chyb, je konstruovan tak, aby se nemusel cely vytvaret pri kazdem renderingu
 const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst uživatele", success: "Načtení uživatelů se povedlo"})
 
-const UsersTableHeader = ({where={}, onChange}) => {
-    const [where_, setWhere] = useState({})
-    const changeWhere = (attributename, value) => {
 
+
+const UsersTableHeader = ({onChangeFilter}) => {
+    // const [where_, setWhere] = useState({})
+    // const changeWhere = (attributename, value) => {
+
+    // }
+    const [filters, setFilters] = useState({})
+    // const _onChangeFilter = (name) => (filter) => {
+    //     const newfilter = {...filters}
+    //     // console.log("filter", filter)
+    //     newfilter[name] = filter
+    //     setFilters(newfilter)
+    //     // console.log("newfilter", newfilter)
+        
+    //     const _and = []
+    //     for(const attname in newfilter) {
+    //         const subfilter = {}
+    //         const subfilterValue = newfilter[attname]
+    //         if (subfilterValue) {
+    //             subfilter[attname] = subfilterValue[attname]
+    //             _and.push(subfilter)
+    //         }
+    //     }
+    //     const whereFilter = {_and}
+    //     // console.log("whereFilter", whereFilter)
+    //     if (onChangeFilter) {
+    //         if (_and.length === 0) {
+    //             onChangeFilter(null)
+    //         } else {
+    //             onChangeFilter(whereFilter)
+    //         }
+            
+    //     }
+    // }
+
+    const onChangeFilter_ = (filter) => {
+        console.log("UsersTableHeader.onFilterChange.filter", filter)
+        // const ff=where2filter(filter)
+        // console.log("UsersTableHeader.onFilterChange.filter", ff)
+        onChangeFilter(filter)
     }
 
     return (
         <thead>
-            <tr>
+            {/* <tr>
                 <th>#</th>
-                <th>Jméno</th>
-                <th>Příjmení</th>
+                <th>Jméno <StringFilterButton onChangeFilter={onChF} /> </th>
+                <th>Příjmení <StringFilterButton onChangeFilter={onChF} /> </th>
                 <th>Email</th>
-            </tr>
-            <tr>
+            </tr> */}
+            {/* <tr>
                 <th>#</th>
-                <th>Jméno</th>
-                <th>Příjmení</th>
-                <th>Email</th>
-            </tr>
+                <th><TextFilter opName={"_ilike"} attributeName={"name"} onChangeFilter={_onChangeFilter("name")} /></th>
+                <th><TextFilter opName={"_ilike"} attributeName={"surname"} onChangeFilter={_onChangeFilter("surname")} /></th>
+                <th><TextFilter opName={"_ilike"} attributeName={"email"} onChangeFilter={_onChangeFilter("email")} /></th>
+            </tr> */}
+            <TableHeaderWithFilters 
+                columns={[
+                    {label: "#", property: null, type: null},
+                    {label: "Jméno", property: "name", type: "str"},
+                    {label: "Příjmení", property: "surname", type: "str"},
+                    {label: "Email", property: "email", type: "str"}
+                ]} 
+                filter={{_and: [{name: {_eq: "John"}}, {surname: {_gt: "A"}}, {surname: {_lt: "Z"}}]}}
+                onFilterChange={onChangeFilter_}
+            />
         </thead>
     )
 }
@@ -61,39 +109,118 @@ const UserTableRow = ({user, index}) => {
     )
 }
 
-const UsersTable = ({users}) => {
+// const where = {
+//     _or: [
+//       {name: {_like: "%o%"}}
+//     ]
+//   }
+// const filterfunc = where2filter(where)
+const validator_ = CreateAsyncQueryValidator({error: "Něco se nepovedlo.", success: "Akce proběhla v pořádku."})
+const GQLPageReader = ({limit=10, asyncPageQuery, children, validator=validator_}) => {
     const [skip, setSkip] = useState(0)
+    const [where, setWhere] = useState(null)
     const [showButton, setShowButton] = useState(true)
-    const limit = 10
+
     const dispatch = useDispatch()
     const [onResolve, onReject] = validator(useDispatch())
-    const onReadmore = () => {
+
+    const onChangeFilter = (newWhere) => {
+        // console.log("onChangeFilter", newWhere)
+        setWhere(() => newWhere)
+        onReadmore(newWhere)       
+        setShowButton(true)
+        setSkip(0)
+    }
+
+    const onReadmore = (_where=where) => {
         setSkip(skip + limit)
-        const result = dispatch(UserPageQueryAsyncAction({skip: skip+limit}))
+        let result = null
+        if (_where) {
+            result = dispatch(UserPageQueryAsyncAction({skip: skip+limit, where: _where}))
+        } else {
+            result = dispatch(UserPageQueryAsyncAction({skip: skip+limit}))
+        }
+        
         result.then(onResolve, onReject)
         .then(json => {
-            console.log(json)
             const response = json?.data?.result || []
             if (response.length == 0) {
                 setShowButton(false)
             }
+        }, error => {
+            console.log("error", error)
         })
         
     }
+
+    const filterfunc = where2filter(where)
+    const filterdata = (dataarray) => dataarray.filter(filterfunc)
+}
+
+const UsersTable = ({users}) => {
+    const [skip, setSkip] = useState(0)
+    const [where, setWhere] = useState(null)
+
+    const [showButton, setShowButton] = useState(true)
+    const limit = 10
+    const dispatch = useDispatch()
+    const [onResolve, onReject] = validator(useDispatch())
+
+    const onChangeFilter = (newWhere) => {
+        console.log("UsersTable.onChangeFilter", newWhere)
+        setWhere(() => newWhere)
+        onReadmore(newWhere)       
+        setShowButton(true)
+        setSkip(0)
+    }
+
+    const onReadmore = (_where=where) => {
+        setSkip(skip + limit)
+        let result = null
+        if (_where) {
+            result = dispatch(UserPageQueryAsyncAction({skip: skip+limit, where: _where}))
+        } else {
+            result = dispatch(UserPageQueryAsyncAction({skip: skip+limit}))
+        }
+        
+        result.then(onResolve, onReject)
+        .then(json => {
+            const response = json?.data?.result || []
+            if (response.length == 0) {
+                setShowButton(false)
+            }
+        }, error => {
+            console.log("error", error)
+        })
+        
+    }
+    const onClickReadmore = () => {
+        onReadmore(where)
+    }
+
     const footer = !showButton?"": (
         <tfoot>
                 <tr>
                     <th colSpan={5}> 
-                        <button className='btn btn-outline-primary' onClick={onReadmore}>Načíst další</button>
+                        <button className='btn btn-outline-primary' onClick={onClickReadmore}>Načíst další</button>
                     </th>
                 </tr>
             </tfoot>
     )
+    // console.log("users", users)
+    let _users = users
+    if (where) {
+        // console.log("users.where", where)
+        _users = users.filter(where2filter(where))
+    }
+    // const _users = users
+    // console.log("_users", _users)
+    // console.log("filterfunc", filterfunc)
     return (
         <table className='table table-striped table-bordered'>
-            <UsersTableHeader />
+            <UsersTableHeader onChangeFilter={onChangeFilter} />
             <tbody>
-                {users.map(
+                {_users.map(
                     (u, i) => <UserTableRow key={u.id} user={u} index={i} />
                 )}
             </tbody>

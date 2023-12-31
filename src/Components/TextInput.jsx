@@ -45,6 +45,6 @@ export const TextInput = ({id, value, onChange, placeholder}) => {
         //, [id, onChange])
 
     return (
-        <input className="form-control" placeholder={placeholder} value={localValue} onChange={localOnChange} onBlur={onBlur}/>
+        <input id={id} className="form-control" placeholder={placeholder} value={localValue} onChange={localOnChange} onBlur={onBlur}/>
     )
 }

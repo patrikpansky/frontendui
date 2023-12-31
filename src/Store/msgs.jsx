@@ -22,29 +22,29 @@ const MsgSlice = createSlice({
 export const MsgReducer = MsgSlice.reducer
 export const MsgActions = MsgSlice.actions
 
-export const Msg_ = ({msg}) => {
-    const dispatch = useDispatch()
-    const onClose = () => {
-        dispatch(MsgActions.msg_delete(msg))
-    }
-    const buttonStyle = msg?.variant ? ("outline-" + msg.variant) : "outline-success"
-    return (
-        <Alert variant={msg.variant} onClose={onClose}>
-            <div className="row">
-                <div className="col">
-                    {msg?.title}
-                </div>   
-                <div className="col d-flex justify-content-end">
-                    <Button onClick={onClose} variant={buttonStyle}>
-                        Close
-                    </Button>
-                </div>
-            </div>
-        </Alert>
-    )
-}
+// export const Msg_ = ({msg}) => {
+//     const dispatch = useDispatch()
+//     const onClose = () => {
+//         dispatch(MsgActions.msg_delete(msg))
+//     }
+//     const buttonStyle = msg?.variant ? ("outline-" + msg.variant) : "outline-success"
+//     return (
+//         <Alert variant={msg.variant} onClose={onClose}>
+//             <div className="row">
+//                 <div className="col">
+//                     {msg?.title}
+//                 </div>   
+//                 <div className="col d-flex justify-content-end">
+//                     <Button onClick={onClose} variant={buttonStyle}>
+//                         Close
+//                     </Button>
+//                 </div>
+//             </div>
+//         </Alert>
+//     )
+// }
 
-export const Msg = ({msg}) => {
+const Msg = ({msg}) => {
     const dispatch = useDispatch()
     const onClose = () => {
         dispatch(MsgActions.msg_delete(msg))
@@ -66,16 +66,16 @@ export const Msg = ({msg}) => {
     )
 }
 
-export const Msgs_ = () => {
-    const msgs = useSelector(state => state.msgs)
-    return (
-        <>
-            {Object.values(msgs).map(
-                msg => <Msg key={msg.id} msg={msg} />
-            )}
-        </>
-    )
-}
+// export const Msgs_ = () => {
+//     const msgs = useSelector(state => state.msgs)
+//     return (
+//         <>
+//             {Object.values(msgs).map(
+//                 msg => <Msg key={msg.id} msg={msg} />
+//             )}
+//         </>
+//     )
+// }
 
 export const Msgs = () => {
     const msgs = useSelector(state => state.msgs)
@@ -106,7 +106,7 @@ export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatc
 }
 
 /**
- * Creates validator (function) which called with dispatch return [onResolve, onReject] function usable in Promise.then(onResolve, onReject)
+ * Creates validator (function) which called with dispatch returns [onResolve, onReject] functions usable in Promise.then(onResolve, onReject)
  * const validator = CreateAsyncQueryValidator({error: "Error happend", "success": "All went ok"})
  * const dispatch = useDispatch()
  * const [onResolve, onReject] = validator(dispatch)
@@ -126,15 +126,15 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
         if (data) {
             const result = data?.result
             if (result) {
+                // console.log("result?.msg", result?.msg)
                 if (result?.msg) {
-                    dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
                     if (result?.msg !== "ok") { 
                         dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
                     } else {
                         dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
                     }
                 } else {
-                    dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
+                    dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
                 }
             }
         }
