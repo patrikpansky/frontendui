@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { Dialog } from '../Dialog'
-import { Col, Row } from 'react-bootstrap'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 
 import { Funnel, FunnelFill } from 'react-bootstrap-icons'
 

@@ -1,14 +1,15 @@
 {
   "name": "@hrbolek/uoisfrontend-shared",
   "private": false,
-  "version": "0.4.1",
+  "version": "0.4.2",
   "type": "module",
   
   "main": "dist/umd/index.js",  
   "module": "dist/es/index.js",  
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "cross-env NODE_ENV=develop vite build",
+    "buildp": "cross-env NODE_ENV=production vite build",
     "test": "vitest",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -35,6 +36,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "vite": "^5.0.8",
-    "vitest": "^1.1.1"
+    "vitest": "^1.1.1",
+    "cross-env": "^7.0.3"
   }
 }

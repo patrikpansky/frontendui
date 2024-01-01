@@ -7,22 +7,48 @@
     <title>Vite + React</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@reduxjs/toolkit@1.9.3/dist/redux-toolkit.umd.js"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/htm@2.2.1" crossorigin></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
-    <script src="./dist/shared.umd.js"></script>
-    <style src="./dist/style.css"></style>
-    <style src="./src/App.css"></style>    
-    
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { configureStore, createSlice } = RTK;
+        console.log("useState", JSON.stringify(useState))
+        console.log("configureStore", JSON.stringify(configureStore))
+    </script>
+
+<script src="./dist/umd/index.js"></script>
+<style src="./dist/style.css"></style>
+<style src="./src/App.css"></style>    
+
     <script>
       console.log("hi")
       console.log(Object.keys(Shared))
       const { App } = Shared
+      console.log(Object.keys(Shared))
       ReactDOM.createRoot(document.getElementById('root')).render(
         React.createElement(App)
       )
 
+
+      console.log("hi")
+      console.log(Object.keys(Shared))
+      console.log("process.env.NODE_ENV", process.env.NODE_ENV)
+      const { App: App2 } = Shared
+      console.log("Shared", JSON.stringify(Object.keys(Shared)))
+      console.log("Shared", JSON.stringify(Shared))
+      console.log("App", JSON.stringify(App2))
+
+      console.log(Object.keys(window))
+      console.log(Object.keys(window.Shared))      
     </script>
   </body>
 </html>

@@ -34,18 +34,25 @@ export default defineConfig({
       name: 'Shared',
       // the proper extensions will be added
       fileName: (format, name) => `${format}/${name}.js`,
+      // formats: ['es', 'umd', 'iife']
       formats: ['es', 'umd']
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['react', 'react-dom'],
+      // external: ['react', 'react-dom', 'react-bootstrap', '@reduxjs/toolkit'],
+
+      // '@reduxjs/toolkit' se nedari da jako externi
+      external: ['react', 'react-dom', 'react-bootstrap', '@reduxjs/toolkit'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           react: 'React',
-          "react-dom": 'ReactDOM'
+          "react-dom": 'ReactDOM',
+          "@reduxjs/toolkit": "RTK",
+          "react-bootstrap": "ReactBootstrap",
+          // "process": 'JSON.parse("{env:{Node_ENV: ""}}")'
         },
       },
     },
