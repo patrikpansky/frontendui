@@ -100,18 +100,18 @@ const FilterDialog = ({filter={_and:[{"name": {"": ""}}, {"name": {"": ""}}]}, a
             <FilterComponent filter={f1} onChange={onFilterChange(0)}/>
             <Row>
                 <Col>
-                <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="_and" checked={key==="_and"} onChange={onAndOrChange}/>
-                    <label className="form-check-label" htmlFor="flexRadioDefault1">
-                        A
-                    </label>
-                </div>
-                <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="_or" checked={key==="_or"} onChange={onAndOrChange}/>
-                    <label className="form-check-label" htmlFor="flexRadioDefault2">
-                        Nebo
-                    </label>
-                </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="flexRadioDefault" id="_and" checked={key==="_and"} onChange={onAndOrChange}/>
+                        <label className="form-check-label" htmlFor="flexRadioDefault1">
+                            A
+                        </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="flexRadioDefault" id="_or" checked={key==="_or"} onChange={onAndOrChange}/>
+                        <label className="form-check-label" htmlFor="flexRadioDefault2">
+                            Nebo
+                        </label>
+                    </div>
                 </Col>
                 <Col>
                 </Col>
@@ -147,10 +147,26 @@ export const DateFilterDialog = ({filter={_and:[{"name": {"": ""}}, {"name": {""
     )
 }
 
+
+const FilterIconSetup = ({filter}) => {
+    const NoFilterResult = {Icon: <Funnel/>, style: "btn btn-sm btn-outline-primary"}
+    const SomeFilterResult = {Icon: <FunnelFill/>, style: "btn btn-sm btn-danger"}
+    if (filter) {
+        if (filter?._and.length == 0) {
+            // console.log('FilterIcon', filter)
+            return NoFilterResult
+        } else {
+            return SomeFilterResult
+        }
+    } else {
+        return NoFilterResult
+    }
+}
+
 const FilterButton = ({filter, attributeName, onChangeFilter, Component}) => {
     const [visible, setVisible] = useState(false)
-    const Icon = filter?<FunnelFill/>:<Funnel/>
-    const style = filter?"btn btn-sm btn-danger":"btn btn-sm btn-outline-primary"
+    // console.log("FilterButton.filter", filter)
+    const {Icon, style} = FilterIconSetup({filter})
     const onOk = (filter) => {
         setVisible(false)
         if (onChangeFilter) {
@@ -160,18 +176,12 @@ const FilterButton = ({filter, attributeName, onChangeFilter, Component}) => {
     const onCancel = () => {
         setVisible(false)
     }
-    if (visible) {
-        return (
-            <>
-                <span className={style}>{Icon}</span>
-                <Component filter={filter} attributeName={attributeName} onOk={onOk} onCancel={onCancel}/>
-            </>
-        )
-    } else {
-        return (
-            <span className={style} onClick={() => setVisible(true)}>{Icon}</span>
-        )
-    }
+    return (
+        <>
+            <span className={style} onClick={() => setVisible(!visible)}>{Icon}</span>
+            {visible?<Component filter={filter} attributeName={attributeName} onOk={onOk} onCancel={onCancel}/>:""}
+        </>
+    )
 }
 
 export const StringFilterButton = ({filter, attributeName, onChangeFilter}) => {
@@ -213,7 +223,7 @@ export const TableHeaderWithFilters = ({columns, filter, onFilterChange}) => {
         setFilters(changedFilters)
         if (onFilterChange) {
             const newOriginalFilter = getWhereFilter(changedFilters)
-            console.log("newOriginalFilter", newOriginalFilter)
+            // console.log("newOriginalFilter", newOriginalFilter)
             onFilterChange(newOriginalFilter)
         }
     }

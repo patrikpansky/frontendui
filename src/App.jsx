@@ -4,13 +4,24 @@ import { AppProvider } from './Store/AppProvider'
 
 import { AppBody } from './AppBody';
 import { Msgs } from './Store';
+import { LogButton } from './Components';
+
+const AppMsgs = ({children}) => {
+    return (
+        <>
+            {children}
+            <Msgs />
+        </>
+    )
+}
 
 export const AppCanvas = ({children}) => {
     return (
         <div className='container-fluid'>
             <AppProvider>
-                {children}
-                <Msgs />
+                <AppMsgs>
+                    {children}
+                </AppMsgs>
             </AppProvider>
         </div>    
     )
@@ -19,6 +30,7 @@ export const AppCanvas = ({children}) => {
 export const App = () => {
     return (
         <AppCanvas>            
+            <LogButton />
             <AppBody />
         </AppCanvas>    
     )

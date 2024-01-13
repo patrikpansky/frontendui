@@ -6,7 +6,7 @@
  * _and can be only on top level, 
  * _or can be only under _and, 
  * elsewhere can be only names with operators and values
- * 
+ * @function
  * @returns 
  */
 const loadFilters = (filters, whereFilter) => {
@@ -201,6 +201,14 @@ const rowFilterUpdateValue = (rowFilter, value) => {
     return result
 }
 
+
+/**
+ * 
+ * @param {*} filter 
+ * @param {*} attributeName 
+ * @function
+ * @returns filter derived from `filter` param for `attrbiutename` it serves as initial value for filter editor
+ */
 const dialogSetFilter = (filter, attributeName) => {
     // console.log("setCorrectFilter converting", filter)
     const notNullFilter = filter || {_and:[{attributeName: {"": ""}}, {attributeName: {"": ""}}]}
@@ -251,6 +259,13 @@ const dialogSetFilter = (filter, attributeName) => {
 
 }
 
+/**
+ * 
+ * @param {*} oldFilter 
+ * @param {*} param1 
+ * @function
+ * @returns updated filter
+ */
 const dialogUpdateFilter = (oldFilter, {index, attributeName, newFilterValue}) => {
     const namedFilterValue = {}
     namedFilterValue[attributeName] = {...newFilterValue}

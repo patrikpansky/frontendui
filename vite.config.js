@@ -23,7 +23,7 @@ export default defineConfig({
   server: {
     proxy: {
       // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
-      '/api/gql': 'http://localhost:33080',
+      '/api/gql': 'http://localhost:33001',
     },  
   },
 
@@ -43,7 +43,8 @@ export default defineConfig({
       // external: ['react', 'react-dom', 'react-bootstrap', '@reduxjs/toolkit'],
 
       // '@reduxjs/toolkit' se nedari da jako externi
-      external: ['react', 'react-dom', 'react-bootstrap', '@reduxjs/toolkit'],
+      // external: ['react', 'react-dom', 'react-bootstrap', '@reduxjs/toolkit'],
+      external: ['react', 'react-dom', '@reduxjs/toolkit'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
@@ -51,7 +52,7 @@ export default defineConfig({
           react: 'React',
           "react-dom": 'ReactDOM',
           "@reduxjs/toolkit": "RTK",
-          "react-bootstrap": "ReactBootstrap",
+          // "react-bootstrap": "ReactBootstrap",
           // "process": 'JSON.parse("{env:{Node_ENV: ""}}")'
         },
       },
