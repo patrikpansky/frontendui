@@ -2,7 +2,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { UserPage } from "./Pages";
+import { GroupPage, UserPage } from "./Pages";
 // import { UserPage, GroupPage } from "./Pages";
 
 
