@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { CardCapsule, TextInput, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
 import { useState } from "react"
 import { FetchSearchAsyncAction } from "../Queries/FetchSearchAsyncAction"
@@ -47,26 +48,31 @@ const ShowResult = ({item}) => {
     )
 }
 
-export const UGSearch = () => {
-    const [phrase, setPhrase] = useState("")
+export const UGSearch = ({phrase}) => {
+    const [phrase_, setPhrase] = useState("")
     const dispatch = useDispatch()
     const onChange = (newValue) => {
-        const lowercase = newValue.toLowerCase()
-        setPhrase(lowercase)
-        if (lowercase.length > 2) {
-            dispatch(FetchSearchAsyncAction({str: lowercase}))
-        }
+        setPhrase(oldvalue => {
+            const lowercase = newValue.toLowerCase()
+            if (lowercase.length > 2) {
+                dispatch(FetchSearchAsyncAction({str: lowercase}))
+            }
+            return lowercase
+        })
+    }
+    if (phrase) {
+        onChange(phrase)
     }
 
     const items = useSelector(state => state["items"])
-    const anys = (phrase.length > 2)?Object.values(items).filter(
-        i => (i?.fullname || i?.name || '').toLowerCase().includes(phrase)
+    const anys = (phrase_.length > 2)?Object.values(items).filter(
+        i => (i?.fullname || i?.name || '').toLowerCase().includes(phrase_)
     ):[]
 
     return (
         <>
             <CardCapsule title="Hledání">
-                <TextInput value={phrase} onChange={onChange} />
+                <TextInput value={phrase_} onChange={onChange} />
             </CardCapsule>
             <CardCapsule title="Výsledky">
                 {anys.map(i => <ShowResult key={i.id} item={i} />)}
