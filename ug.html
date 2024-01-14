@@ -27,32 +27,15 @@
     </script>
 
 <script src="./dist/umd/index.js"></script>
-<style src="./dist/style.css"></style>
-<style src="./src/App.css"></style>    
 
     <script>
       console.log("hi")
-      console.log(Object.keys(Shared))
-      const { App, AppCanvas, LogButton } = Shared
-      console.log(Object.keys(Shared))
+      console.log(Object.keys(UG))
+      const { App } = UG
+      console.log(Object.keys(UG))
       ReactDOM.createRoot(document.getElementById('root')).render(
         React.createElement(App)
-      )
-      // ReactDOM.createRoot(document.getElementById('rootl')).render(
-      //   React.createElement(AppCanvas, {}, "Here", React.createElement(LogButton))
-      // )
-
-
-      console.log("hi")
-      console.log(Object.keys(Shared))
-      console.log("process.env.NODE_ENV", process.env.NODE_ENV)
-      const { App: App2 } = Shared
-      console.log("Shared", JSON.stringify(Object.keys(Shared)))
-      console.log("Shared", JSON.stringify(Shared))
-      // console.log("App", JSON.stringify(App2))
-
-      // console.log(Object.keys(window))
-      console.log(Object.keys(window.Shared))      
+      )      
     </script>
   </body>
 </html>
