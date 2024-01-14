@@ -118,6 +118,7 @@ export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatc
  */
 export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
     const onResolve = (json) => {
+        // console.log("CreateAsyncQueryValidator.onResolve", json)
         const errors = json?.errors
         if (errors) {
             dispatch(MsgAddAction({title: reactions.error, variant: "danger", detail: errors}));
@@ -142,7 +143,7 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
     }
 
     const onReject = (error) => {
-        console.log("onReject")
+        console.log("CreateAsyncQueryValidator.onReject", error)
         dispatch(MsgAddAction({title: reactions.error, variant: "danger", detail: ['' + error]}))
         return error
     }

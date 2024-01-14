@@ -240,6 +240,7 @@ export const AppBody = () => {
     // funkce, ktere se pouziji pro pripad uspesneho nacteni a pro pripad chybz
     const [onResolve, onReject] = validator(useDispatch())
     
+    console.log("AppBody.render", thenable)
     // thenable je Promise, takze lze pouzit jeji metodu then; 
     // teto metode predame funkce pro zpracovani spravneho (uspesneho) a chyboveho cteni
     thenable.then(onResolve, onReject)

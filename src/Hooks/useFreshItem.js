@@ -10,12 +10,12 @@ import { useDispatch } from "react-redux"
  */
 
 
-const fakePromise = {
-    then: (_json) => new Promise((_resolve, _reject) => null),
-    finally: (_json) => new Promise((_resolve, _reject) => null),
-    catch: (_json) => new Promise((_resolve, _reject) => null)
-}
-// const fakePromise_ = Promise.resolve(null)
+// const fakePromise = {
+//     then: (_json) => new Promise((_resolve, _reject) => null),
+//     finally: (_json) => new Promise((_resolve, _reject) => null),
+//     catch: (_json) => new Promise((_resolve, _reject) => null)
+// }
+const fakePromise = new Promise(() => 0)
 
 /**
  * @function
@@ -27,22 +27,21 @@ export const useFreshItem = ({id}, AsyncAction) => {
     //const id = oldItemWithId.id
     // console.log("useFreshItem", id)
     const dispatch = useDispatch()
-    const items = useSelector(state => state.items)
+    const items = useSelector(state => state["items"])
     if (!items) {
         throw Error("bad use of store and useFreshItem hook, checks that store state has items attribute")
     }
     const result = items[id]
     // console.log("useFreshItem", id)
     // console.log("useFreshItem", id, result)
-    const [resultPromise, setPromise] = useState(fakePromise)
+    const [resultPromise, setPromise] = useState(new Promise(() => 0))
 
     useEffect(
         () => {
             const controller = new AbortController();
             const signal = controller.signal;
-        
-            const presult = dispatch(AsyncAction({id}, signal))
-            setPromise(_prev => presult)
+            // console.log("useFreshItem.useEffect", id)
+            setPromise(_prev => dispatch(AsyncAction({id}, signal)))
 
             // return () => {
             //     controller.abort()
