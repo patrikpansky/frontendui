@@ -82,3 +82,37 @@ export const CreateAsyncActionFromQuery = (query, params={}) => {
     }
 }
 
+/**
+ * from GQL query string creates dispatchable async action (see react-redux)
+ * @param {string} mutation 
+ * @param {object} params can contain header (special token if needed)
+ * @returns 
+ * 
+ * @function
+ */
+export const CreateAsyncActionFromMutation = (mutation, params={}) => {
+    // console.log("CreateAsyncActionFromQuery.query", query)
+    if (typeof mutation !== "string") {
+        throw new Error("CreateAsyncActionFromMutation query param have be string!")
+    }
+    const unparametrizedPost = ResponseFromQuery(mutation, params)
+    return (query_variables) => {
+        // console.log("CreateAsyncActionFromQuery.variables", query_variables)
+        // console.log("CreateAsyncActionFromQuery parametrization function parameters", (typeof query_variables))
+        // type checking of query_variables, are they "dict" / "json object?"
+        return async (dispatch /*, getState*/) => {
+            const jsonResult = await unparametrizedPost(query_variables)
+            const data = jsonResult?.data
+            if (data) {
+                const result = data?.result
+                if (result) {
+                    const updatedItem = result?.result
+                    if (updatedItem) {
+                        dispatch(ItemActions.item_update(updatedItem))
+                    }
+                }
+            }
+            return jsonResult
+        }
+    }
+}
