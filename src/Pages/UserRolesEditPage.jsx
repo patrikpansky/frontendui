@@ -1,11 +1,11 @@
 // import { useFreshItem } from "@hrbolek/uoisfrontend-shared/src"
 import { useParams } from "react-router-dom"
-import { UserEditCard, UserLargeCard } from "../Components"
+import { UserLargeCard, UserRolesEditCard } from "../Components"
 import { useFreshItem, CreateAsyncQueryValidator, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
 import { FetchUserByIdAsyncAction } from "../Queries"
 
 const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst uživatele", success: "Načtení uživatele se povedlo"})
-export const UserEditPage = ()  => {
+export const UserRolesEditPage = ()  => {
     const {id} = useParams()
     const [onResolve, onReject] = validator(useDispatch())
     const [user, userPromise] = useFreshItem({id}, FetchUserByIdAsyncAction)
@@ -14,7 +14,7 @@ export const UserEditPage = ()  => {
     if (user) {   
         return (
             <UserLargeCard user={user} >
-                <UserEditCard user={user} />
+                <UserRolesEditCard user={user} />
             </UserLargeCard>
         )
     } else {

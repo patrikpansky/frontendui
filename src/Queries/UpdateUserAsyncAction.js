@@ -16,6 +16,7 @@ const mutation = `mutation($id: UUID!, $lastchange: DateTime!, $name: String!, $
       lastchange
       name
       surname
+      fullname
       email
     }
   }

@@ -3,6 +3,7 @@ import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupLink } from '../Group'
+import { UserLink } from './UserLink'
 
 
 const groupPriorityMap = {
@@ -43,7 +44,7 @@ const Membership = ({membership, valid=true}) => {
 
 export const UserMediumCard = ({user}) => {
     return (
-        <CardCapsule title={"Uživatel " + user?.fullname}>
+        <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
             
             <Row>
                 <Col>Jméno</Col>
