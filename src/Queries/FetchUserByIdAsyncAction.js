@@ -43,6 +43,8 @@ const query = `query ($id: UUID!) {
       roles {
         id
         valid
+        startdate
+        enddate
         group {
           id
           name

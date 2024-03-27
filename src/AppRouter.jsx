@@ -2,9 +2,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { GroupPage, UserPage, UserRolesEditPage } from "./Pages";
+import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
-import { UserEditPage } from "./Pages/UserEditPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 
@@ -32,6 +31,16 @@ export const Routes = [
     {
         path: "/group/view/:id",
         element: <GroupPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: "/group/edit/:id",
+        element: <GroupEditPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: "/grouproles/edit/:id",
+        element: <GroupRolesEditPage />,
         errorElement: <SearchPage />,
     },
     {

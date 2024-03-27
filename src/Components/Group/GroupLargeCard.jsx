@@ -6,10 +6,11 @@ import { GroupRawCard } from './GroupRawCard'
 import { GroupMediumCard } from './GroupMediumCard'
 import { GroupSubgroupsCard } from './GroupSubgroupsCard'
 import { GroupMembersCard } from './GroupMembersCard'
+import { GroupLink } from './GroupLink'
 
 export const GroupLargeCard = ({group, children}) => {
     return (
-        <CardCapsule title={"Skupina " + group?.name}>
+        <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
         <Row>
             <Col md={3}>
                 <GroupMediumCard group={group} />
