@@ -4,6 +4,8 @@ import {
 } from "react-router-dom";
 import { GroupPage, UserPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
+import { EventPage } from "./Pages/EventPage";
+import { EventEditPage } from "./Pages/EventEditPage";
 // import { UserPage, GroupPage } from "./Pages";
 
 export const Routes = [
@@ -15,6 +17,16 @@ export const Routes = [
     {
         path: "/user/:id",
         element: <UserPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: "/event/view/:id",
+        element: <EventPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: "/event/edit/:id",
+        element: <EventEditPage />,
         errorElement: <SearchPage />,
     },
     {

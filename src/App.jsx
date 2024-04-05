@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 
 export const App = () => {
     return (
-        <Container fluid>
+        // <Container fluid>
         <AppCanvas>
             <Navbar className='bg-light'>
                 <Container>
@@ -21,7 +21,7 @@ export const App = () => {
             
             <AppBody />
         </AppCanvas>    
-        </Container>
+        // {/* </Container> */}
     )
 }
 
