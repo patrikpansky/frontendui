@@ -18,7 +18,7 @@ export const EventPage = ()  => {
         )
     } else {
         return (
-            <div>Loading...</div>
+            <div>Nahrávám událost {id}...</div>
         )
     }
     

@@ -2,8 +2,10 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
+import { EventPage } from "./Pages/EventPage";
+import { EventEditPage } from "./Pages/EventEditPage";
+import { EventPresencesPage } from "./Pages/EventPresencesPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 
@@ -14,33 +16,18 @@ export const Routes = [
         element: <SearchPage />
     },
     {
-        path: "/user/view/:id",
-        element: <UserPage />,
+        path: "/event/view/:id",
+        element: <EventPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/user/edit/:id",
-        element: <UserEditPage />,
+        path: "/eventpresences/view/:id",
+        element: <EventPresencesPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/userroles/edit/:id",
-        element: <UserRolesEditPage />,
-        errorElement: <SearchPage />,
-    },
-    {
-        path: "/group/view/:id",
-        element: <GroupPage />,
-        errorElement: <SearchPage />,
-    },
-    {
-        path: "/group/edit/:id",
-        element: <GroupEditPage />,
-        errorElement: <SearchPage />,
-    },
-    {
-        path: "/grouproles/edit/:id",
-        element: <GroupRolesEditPage />,
+        path: "/event/edit/:id",
+        element: <EventEditPage />,
         errorElement: <SearchPage />,
     },
     {
@@ -55,7 +42,7 @@ export const Routes = [
     },    
 ]
 
-const router = createBrowserRouter(Routes, {basename: "/ug"});
+const router = createBrowserRouter(Routes, {basename: "/events"});
 // const router = createBrowserRouter(Routes);
 
 export const AppRouter = () => <RouterProvider router={router} />
