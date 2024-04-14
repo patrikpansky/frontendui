@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { UserLargeCard } from "../Components"
 import { useFreshItem, CreateAsyncQueryValidator, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
 import { FetchUserByIdAsyncAction } from "../Queries"
+import { EventsSVG } from "../Components/User/EventsSVG"
 
 const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst uživatele", success: "Načtení uživatele se povedlo"})
 export const UserPage = ()  => {
@@ -13,7 +14,9 @@ export const UserPage = ()  => {
 
     if (user) {
         return (
-            <UserLargeCard user={user} />
+            <UserLargeCard user={user}>
+                <EventsSVG events={user.events}/>
+            </UserLargeCard>
         )
     } else {
         return (

@@ -9,6 +9,13 @@ const query = `query ($id: UUID!) {
       surname
       fullname
       email
+
+      events {
+        id
+        name
+      }
+
+
       university: memberOf(grouptypeId: "cd49e152-610c-11ed-9f29-001a7dda7110") {
         __typename
         id
