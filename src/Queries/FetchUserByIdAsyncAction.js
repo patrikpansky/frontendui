@@ -4,6 +4,7 @@ const query = `query ($id: UUID!) {
     result: userById(id: $id) {
       __typename
       id
+      lastchange
       name
       surname
       fullname
@@ -42,6 +43,8 @@ const query = `query ($id: UUID!) {
       roles {
         id
         valid
+        startdate
+        enddate
         group {
           id
           name

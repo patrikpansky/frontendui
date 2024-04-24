@@ -2,11 +2,12 @@
 import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { UserLink } from './UserLink'
 
 export const UserCard = ({user}) => {
     return (
         <div>
-        <CardCapsule title="user">
+        <CardCapsule title={<>Uživatel <UserLink user={user } /></>}>
             
             <Row>
                 <Col>Jméno</Col>

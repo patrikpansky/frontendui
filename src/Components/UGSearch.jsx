@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import { CardCapsule, TextInput, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FetchSearchAsyncAction } from "../Queries/FetchSearchAsyncAction"
 import { Col, Row } from "react-bootstrap"
 import { useSelector } from "react-redux"
 import { UserLink } from "./User/UserLink"
 import { GroupLink } from "./Group"
+import { useSearchParams } from "react-router-dom"
 
 const ShowUser = ({user}) => {
     return (
@@ -49,26 +50,53 @@ const ShowResult = ({item}) => {
 }
 
 export const UGSearch = ({phrase}) => {
-    const [phrase_, setPhrase] = useState("")
+    const [searchParams, setSearchParams] = useSearchParams();
+    console.log(searchParams)
+    console.log(searchParams.get("term"))
+    const [phrase_, setPhrase] = useState(phrase || searchParams.get("term") || "")
+    const [results, setResults] = useState([])
     const dispatch = useDispatch()
     const onChange = (newValue) => {
         setPhrase(oldvalue => {
             const lowercase = newValue.toLowerCase()
-            if (lowercase.length > 2) {
-                dispatch(FetchSearchAsyncAction({str: lowercase}))
-            }
+            // if (lowercase.length > 2) {
+            //     dispatch(FetchSearchAsyncAction({str: lowercase}))
+            // }
+            setSearchParams({term : newValue})
             return lowercase
         })
     }
-    if (phrase) {
-        onChange(phrase)
-    }
+
+    useEffect( () => {
+        const lowercase = phrase_.toLowerCase()
+        if (lowercase.length > 2) {
+            console.log("useEffect with " + lowercase)
+            dispatch(FetchSearchAsyncAction({str: lowercase}))
+            .then(
+                (json) => {
+                    console.log("useEffect end", json)
+                    const r = json?.data?.resultall
+                    if (r) {
+                        setResults(r)
+                    }
+                }
+            )
+        }
+    }, [dispatch, phrase_])
+    
+    // if (phrase || searchParams.get("term")) {
+    //     let lowercase = phrase || searchParams.get("term")
+    //     lowercase = lowercase.toLowerCase()
+    //     // onChange(phrase)
+    //     // dispatch(FetchSearchAsyncAction({str: lowercase}))
+    // }
 
     const items = useSelector(state => state["items"])
-    const anys = (phrase_.length > 2)?Object.values(items).filter(
-        i => (i?.fullname || i?.name || '').toLowerCase().includes(phrase_)
-    ):[]
-
+    // const anys = (phrase_.length > 2)?Object.values(items).filter(
+    //     i => (i?.fullname || i?.name || '').toLowerCase().includes(phrase_)
+    // ):[]
+    const anys = results
+    console.log(anys)
     return (
         <>
             <CardCapsule title="Hledání">

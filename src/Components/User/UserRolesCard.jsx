@@ -2,6 +2,7 @@
 import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { UserLink } from './UserLink'
 
 
 const Role = ({role}) => {
@@ -13,6 +14,8 @@ const Role = ({role}) => {
     )
 }
 
+
+
 export const UserRolesCard = ({user, valid=true}) => {
     const roles = user?.roles || []
     const filtered = (valid===null)?roles:roles.filter(
@@ -20,7 +23,7 @@ export const UserRolesCard = ({user, valid=true}) => {
     )
 
     return (
-        <CardCapsule title="Role">
+        <CardCapsule  title={<>Role <UserLink user={user } /></>}>
             {filtered.map(
                 r => <Role key={r.id} role={r} />
             )}
