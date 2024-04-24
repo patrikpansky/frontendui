@@ -57,4 +57,5 @@ const query = `query ($id: UUID!) {
     }
   }`
 
+
 export const FetchUserByIdAsyncAction = CreateAsyncActionFromQuery(query)
