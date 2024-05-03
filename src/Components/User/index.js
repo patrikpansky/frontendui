@@ -5,3 +5,5 @@ export * from './UserRawCard'
 export * from './UserRolesCard'
 export * from './UserEditCard'
 export * from './UserRolesEditCard'
+
+export * from './UserLink'
