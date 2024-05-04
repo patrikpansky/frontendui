@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupLink } from '../Group'
 import { UserLink } from './UserLink'
+import { Link } from 'react-router-dom'
 
 
 const groupPriorityMap = {
@@ -58,6 +59,13 @@ export const UserMediumCard = ({user}) => {
                 <Col>Email</Col>
                 <Col>{user?.email}</Col>
             </Row>
+            <Row>
+                <Col>
+                    <Link to={"/events/event/view/4dccf52f-4117-403c-932a-5691c0d020b1"}>Event</Link>
+                </Col>
+                <Col></Col>
+            </Row>
+
             <Membership membership={user?.membership||[]} />
         </CardCapsule>
     )

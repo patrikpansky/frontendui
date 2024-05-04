@@ -3,6 +3,7 @@ import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { UserLink } from './UserLink'
+import { Link } from 'react-router-dom'
 
 export const UserCard = ({user}) => {
     return (
@@ -20,6 +21,12 @@ export const UserCard = ({user}) => {
             <Row>
                 <Col>
                     <button className='btn btn-success'>click</button>
+                </Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Link to={"/events/event/view/4dccf52f-4117-403c-932a-5691c0d020b1"}>Event</Link>
                 </Col>
                 <Col></Col>
             </Row>
