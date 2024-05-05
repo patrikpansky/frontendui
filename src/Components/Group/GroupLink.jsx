@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { Dropdown } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
-// import { ProxyLink } from "@hrbolek/uoisfrontend-shared";
-import { Link as ProxyLink } from "react-router-dom";
+import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
+// import { Link as ProxyLink } from "react-router-dom";
 
 export const GroupLink_ = ({group}) => {
     return (
@@ -15,12 +15,12 @@ export const GroupLink_ = ({group}) => {
 
 export const GroupLink = ({group, children, menu=true}) => {
     let [searchParams, setSearchParams] = useSearchParams()
-    const asDict = {}
-    for (const [key, value] of searchParams) {
-        asDict[key] = value
+    // const asDict = {}
+    // for (const [key, value] of searchParams) {
+    //     asDict[key] = value
         
-    }
-    console.log(asDict)
+    // }
+    // console.log(asDict)
     if (menu) {
         return (
             <Dropdown  className="d-inline mx-2" autoClose="outside" size="sm">
