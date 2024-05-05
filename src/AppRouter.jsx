@@ -10,7 +10,7 @@ import { EventEditPage } from "./Pages/EventEditPage";
 import { createProxyBrowseRouter } from "@hrbolek/uoisfrontend-shared/src";
 
 // import { UserPage, GroupPage } from "./Pages";
-
+const prefix = "/ug"
 export const Routes = [
     // {
     //     path: "*",
@@ -18,52 +18,52 @@ export const Routes = [
     //     errorElement: <SearchPage />
     // },
     {
-        path: "/user/view/:id",
+        path: prefix + "/user/view/:id",
         element: <UserPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/event/view/:id",
+        path: prefix + "/event/view/:id",
         element: <EventPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/event/edit/:id",
+        path: prefix + "/event/edit/:id",
         element: <EventEditPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/user/edit/:id",
+        path: prefix + "/user/edit/:id",
         element: <UserEditPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/userroles/edit/:id",
+        path: prefix + "/userroles/edit/:id",
         element: <UserRolesEditPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/group/view/:id",
+        path: prefix + "/group/view/:id",
         element: <GroupPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/group/edit/:id",
+        path: prefix + "/group/edit/:id",
         element: <GroupEditPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/grouproles/edit/:id",
+        path: prefix + "/grouproles/edit/:id",
         element: <GroupRolesEditPage />,
         errorElement: <SearchPage />,
     },
     {
-        path: "/search",
+        path: prefix + "/search",
         element: <SearchPage />,
         errorElement: <SearchPage />,
     },
     {
-      path: "/search/:phrase",
+      path: prefix + "/search/:phrase",
       element: <SearchPage />,
       errorElement: <SearchPage />,
     },    
@@ -71,6 +71,7 @@ export const Routes = [
 
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});
-const router = createProxyBrowseRouter(Routes, {basename: "/ug"});
+const router = createBrowserRouter(Routes);
+// const router = createProxyBrowseRouter(Routes, {basename: "/ug"});
 
 export const AppRouter = () => <RouterProvider router={router} />
