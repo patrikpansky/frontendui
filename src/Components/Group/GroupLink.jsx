@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
 import { Dropdown } from "react-bootstrap";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+// import { ProxyLink } from "@hrbolek/uoisfrontend-shared";
+import { Link as ProxyLink } from "react-router-dom";
 
 export const GroupLink_ = ({group}) => {
     return (
-        <Link to={"/group/view/" + group?.id}>{group?.name}</Link>
+        <ProxyLink to={"/ug/group/view/" + group?.id}>{group?.name}</ProxyLink>
     )
 }
 
@@ -30,12 +32,12 @@ export const GroupLink = ({group, children, menu=true}) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item ><Link to={"/group/view/" + group?.id} >Zobrazit</Link></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/group/view/" + group?.id} >Zobrazit</ProxyLink></Dropdown.Item>
                     {/* <Dropdown.Item href={"/group/view/" + group?.id} >Zobrazit</Dropdown.Item> */}
-                    <Dropdown.Item href={"/events/groupevents/view/" + group?.id}>Rozvrh</Dropdown.Item>
+                    <Dropdown.Item href={"/ug/events/groupevents/view/" + group?.id}>Rozvrh</Dropdown.Item>
 
-                    <Dropdown.Item ><Link to={"/group/edit/" + group?.id} >Editovat</Link></Dropdown.Item>
-                    <Dropdown.Item ><Link to={"/grouproles/edit/" + group?.id} >Editovat role</Link></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/group/edit/" + group?.id} >Editovat</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/grouproles/edit/" + group?.id} >Editovat role</ProxyLink></Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>                
             

@@ -7,7 +7,6 @@ import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, Gr
 import { SearchPage } from "./Pages/SearchPage";
 import { EventPage } from "./Pages/EventPage";
 import { EventEditPage } from "./Pages/EventEditPage";
-import { createProxyBrowseRouter } from "@hrbolek/uoisfrontend-shared/src";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"

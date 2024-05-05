@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
+import { CardCapsule} from '@hrbolek/uoisfrontend-shared/src'
+import { Link as ProxyLink } from "react-router-dom";
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupLink } from '../Group'
-import { ProxyLink, UserLink } from './UserLink'
-import { Link } from 'react-router-dom'
-
+import { UserLink } from './UserLink'
 
 const groupPriorityMap = {
     "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"

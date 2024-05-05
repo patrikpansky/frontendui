@@ -1,23 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Dropdown } from "react-bootstrap";
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
-
-
-export const ProxyLink = ({to, children, ...others}) => {
-    const {pathname} = useResolvedPath(to)
-    const item = useMatch(pathname)
-    // const item2 = useMatch(to)
-    // console.log(to, item2)
-    // console.log(pathname, item, item2)
-    if (item) {
-        return <Link to={to} {...others}>{children}</Link>
-    } else {
-        return <Link to={to} {...others} reloadDocument={true}>{children}</Link>
-    }
-    
-}
-
-
+// import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
+import { Link as ProxyLink } from "react-router-dom";
 export const UserLink_ = ({user, children}) => {
     return (
         <ProxyLink to={"/ug/user/view/" + user?.id}>{children?children:user?.fullname}</ProxyLink>
@@ -42,9 +26,9 @@ export const UserLink = ({user, children, menu=true}) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item ><Link to={"/user/view/" + user?.id} >Zobrazit</Link></Dropdown.Item>
-                    <Dropdown.Item ><Link to={"/user/edit/" + user?.id} >Editovat</Link></Dropdown.Item>
-                    <Dropdown.Item ><Link to={"/userroles/edit/" + user?.id} >Editovat role</Link></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/user/view/" + user?.id} >Zobrazit</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/user/edit/" + user?.id} >Editovat</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item ><ProxyLink to={"/ug/userroles/edit/" + user?.id} >Editovat role</ProxyLink></Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>                
             
