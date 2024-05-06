@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupLink } from '../Group'
 import { UserLink } from './UserLink'
-import { ProxyLink } from '../ProxyLinnk'
+import { ProxyLink } from '../ProxyLink'
 
 const groupPriorityMap = {
     "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"
