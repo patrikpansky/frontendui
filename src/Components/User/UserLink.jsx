@@ -27,9 +27,9 @@ export const UserLink = ({user, children, menu=true}) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item ><ProxyLink to={"/ug/user/view/" + user?.id} >Zobrazit</ProxyLink></Dropdown.Item>
-                    <Dropdown.Item ><ProxyLink to={"/ug/user/edit/" + user?.id} >Editovat</ProxyLink></Dropdown.Item>
-                    <Dropdown.Item ><ProxyLink to={"/ug/userroles/edit/" + user?.id} >Editovat role</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/user/view/" + user?.id} >Zobrazit</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/user/edit/" + user?.id} >Editovat</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/userroles/edit/" + user?.id} >Editovat role</ProxyLink></Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>                
             
