@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Dropdown } from "react-bootstrap";
-import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
+import { ProxyLink } from "../ProxyLinnk";
+// import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 // import { Link as ProxyLink } from "react-router-dom";
 export const UserLink_ = ({user, children}) => {
     return (
