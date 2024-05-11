@@ -1,6 +1,21 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 
+/**
+ * shared module.
+ * @module shared/components
+ */
+
+/**
+ * select checking GQL API endpoint for related items (with fullname || name attribute)
+ * @function
+ * @param {int} props.skip parametr of the query
+ * @param {int} props.limit parametr of the query
+ * @param {dict} props.where parametr of the query
+ * @param {function} props.FetchAsyncAction dispatchable action - query function
+ * @param {function} props.onChange delayed callback notifying about the change
+ * @returns JSX.Element
+ */
 export const SelectInput = ({FetchAsyncAction, skip=0, limit=100, where=null, onChange, ...selectProps}) => {
     const [resuls, setResults] = useState([])
     const dispatch = useDispatch()
