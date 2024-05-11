@@ -43,7 +43,7 @@ const UserGQLModel = ({user, onClick}) => {
      
 }
 
-const ShowResult = ({user, onClick}) => {
+const ShowResult_ = ({user, onClick}) => {
     return (
         <>  
             <UserGQLModel user={user} onClick={onClick}/>
@@ -52,7 +52,7 @@ const ShowResult = ({user, onClick}) => {
     )
 }
 
-const ShowResult2 = ({item, onClick}) => {
+const ShowResult = ({item, onClick}) => {
     const onClick_ = (event) => {
         event.preventDefault()
         onClick(item)
@@ -63,7 +63,7 @@ const ShowResult2 = ({item, onClick}) => {
 }
 
 
-export const Search = ({limit=100, FetchByPhraseAsyncAction, onSelect}) => {
+export const Search = ({limit=100, FetchByPhraseAsyncAction, ShowResultComponent=ShowResult, onSelect}) => {
     const dispatch = useDispatch()
     const [Delayer] = useState(() => CreateDelayer()) // useState checks for a function ;)
     const [phrase, setPhrase] = useState("")
@@ -76,7 +76,7 @@ export const Search = ({limit=100, FetchByPhraseAsyncAction, onSelect}) => {
         Delayer(() => setPhrase(newPhrase))
     }
     const onClick = (item) => {
-        console.log('clicked', item)
+        // console.log('clicked', item)
         if (onSelect) {
             onSelect(item.id)
         }
@@ -87,27 +87,22 @@ export const Search = ({limit=100, FetchByPhraseAsyncAction, onSelect}) => {
     useEffect( () => {
         const lowercase = phrase.toLowerCase()
         if (lowercase.length > 2) {
-            // console.log("useEffect with " + lowercase)
             dispatch(FetchByPhraseAsyncAction({pattern: `%${lowercase}%`, limit: limit}))
             .then(
                 (json) => {
-                    // console.log("useEffect end", json)
                     const data = json?.data || {}
-                    // console.log("allResults", data)
                     let allResults = []
                     for(const key in data) {
                         const result = data[key]
-                        // console.log("allResults", result)
                         if (Array.isArray(result)) {
                             allResults.push(...result)
                         }
                     }
-                    console.log("allResults", allResults)
                     setResults(allResults)
                 }
             )
         }
-    }, [FetchByPhraseAsyncAction, dispatch, phrase])
+    }, [FetchByPhraseAsyncAction, dispatch, phrase, limit])
 
     if (visible) {
         return (
@@ -117,9 +112,8 @@ export const Search = ({limit=100, FetchByPhraseAsyncAction, onSelect}) => {
                     <label htmlFor={"searchbox"}>{"search"}</label>
                 </div>
                 {results.map(
-                    result => <ShowResult2 key={result.id} item={result} onClick={onClick}/>
+                    result => <ShowResultComponent key={result.id} item={result} onClick={onClick}/>
                 )}
-                {/* <ShowResult2 onClick={onClick} item={{ __typename: "UserGQLModel", id: "8df87f6c-7b00-45d5-9512-80691bc027b4", name: "Petra", surname: "Ondráčková", fullname: "Petra Ondráčková", email: "" }} /> */}
             </>
         )
     } else {
@@ -130,7 +124,6 @@ export const Search = ({limit=100, FetchByPhraseAsyncAction, onSelect}) => {
             </div>            
         )        
     }
-    
 }
 
 export const UserSearch = ({phrase, title, onClick}) => {
@@ -225,7 +218,7 @@ export const UserSearch = ({phrase, title, onClick}) => {
             <>
                 <TextInput id={"30aa1832-2708-4c53-b891-dd09199bae82"} value={phrase_} onChange={onChange} />
                 <hr />
-                {(phrase_.length>2)?(anys.map(user => <ShowResult key={user.id} user={user} onClick={onClick_}/>)):""}
+                {(phrase_.length>2)?(anys.map(user => <ShowResult_ key={user.id} user={user} onClick={onClick_}/>)):""}
     
                 {/* <TextInput id={"30aa1832-2708-4c53-b891-dd09199bae82"} value={phrase_} onChange={onChange} />
                 {user?<hr />:""}
