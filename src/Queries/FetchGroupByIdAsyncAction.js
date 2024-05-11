@@ -39,6 +39,8 @@ const query = `query ($id: UUID!) {
       roles {
         id
         valid
+        startdate
+        enddate
         roletype {
           id
           name

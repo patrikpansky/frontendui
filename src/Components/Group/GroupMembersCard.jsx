@@ -5,11 +5,16 @@ import { GroupLink } from './GroupLink'
 
 
 const UserShort = ({user}) => {
-    return (
-        <>
-            <UserLink user={user} /> <br/>
-        </>
-    )
+    if (user) {
+        return (
+            <>
+                <UserLink user={user} /> <br/>
+            </>
+        )
+    } else {
+        return null
+    }
+
 }
 
 export const GroupMembersCard = ({group, valid=true}) => {
@@ -19,8 +24,10 @@ export const GroupMembersCard = ({group, valid=true}) => {
     return (
         <CardCapsule title={<>Členové <GroupLink group={group} /></>}>
             {mapped.map(
-                u => <UserShort key={u.id} user={u} />
+                u => <UserShort key={u?.id} user={u} />
             )}
+            <br />
+            {}
         </CardCapsule>
 
     )
