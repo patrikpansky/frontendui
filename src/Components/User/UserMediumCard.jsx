@@ -56,14 +56,20 @@ export const UserMediumCard = ({user}) => {
                 <Col>{user?.surname}</Col>
             </Row>
             <Row>
-                <Col>Email</Col>
-                <Col>{user?.email}</Col>
+                <Col>
+                    Email
+                </Col>
+                <Col>
+                    <a href={"mailto:" + user?.email}>{user?.email}</a>
+                </Col>
             </Row>
             <Row>
                 <Col>
-                    <ProxyLink to={"/events/event/view/4dccf52f-4117-403c-932a-5691c0d020b1"}>Event</ProxyLink>
+                    Telefon
                 </Col>
-                <Col></Col>
+                <Col>
+                    <a href="tel:973211111">973 211 111</a>
+                </Col>
             </Row>
 
             <Membership membership={user?.membership||[]} />

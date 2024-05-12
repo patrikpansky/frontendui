@@ -1,51 +1,51 @@
 import { CreateAsyncActionFromQuery } from "@hrbolek/uoisfrontend-shared/src"
 
 const query = `
-query Search($pattern: String!) {
-    users: userPage(where: {fullname: {_ilike: $pattern}}) {
+query Search($pattern: String!, $skip: Int, $limit: Int) {
+    users: userPage(skip: $skip, limit: $limit, where: {fullname: {_ilike: $pattern}}) {
       __typename
       id
       fullname
       email
     }
     
-    groups: groupPage(where: {name: {_ilike: $pattern}}) {
+    groups: groupPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    events: eventPage(where: {name: {_ilike: $pattern}}) {
+    events: eventPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    facilities: facilityPage(where: {name: {_ilike: $pattern}}) {
+    facilities: facilityPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    projects: projectPage(where: {name: {_ilike: $pattern}}) {
+    projects: projectPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    programs: acProgramPage(where: {name: {_ilike: $pattern}}) {
+    programs: acProgramPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    subjects: acSubjectPage(where: {name: {_ilike: $pattern}}) {
+    subjects: acSubjectPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name
     }
     
-    publications: publicationPage(where: {name: {_ilike: $pattern}}) {
+    publications: publicationPage(skip: $skip, limit: $limit, where: {name: {_ilike: $pattern}}) {
       __typename
       id
       name

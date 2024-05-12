@@ -10,6 +10,7 @@ import { EventEditPage } from "./Pages/EventEditPage";
 import { GroupSubgroupsPage } from "./Pages/GroupSubgroupsPage";
 import { GroupSubgroupsEditPage } from "./Pages/GroupSubgroupsEditPage";
 import { GlobalSearchPage } from "./Pages/GlobalSearchPage";
+import { GroupMembersEditPage } from "./Pages/GroupMembersEditPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -37,6 +38,11 @@ export const Routes = [
     {
         path: prefix + "/group/view/:id",
         element: <GroupPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/groupmembers/edit/:id",
+        element: <GroupMembersEditPage />,
         errorElement: <SearchPage />,
     },
     {

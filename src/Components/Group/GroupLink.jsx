@@ -33,12 +33,15 @@ export const GroupLink = ({group, children, menu=true}) => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item ><ProxyLink to={"/ug/group/view/" + group?.id} >Zobrazit</ProxyLink></Dropdown.Item>
-                    {/* <Dropdown.Item href={"/group/view/" + group?.id} >Zobrazit</Dropdown.Item> */}
-                    <Dropdown.Item href={"/ug/events/groupevents/view/" + group?.id}>Rozvrh</Dropdown.Item>
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/group/view/" + group?.id} >Zobrazit</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/group/edit/" + group?.id} >Editovat</ProxyLink></Dropdown.Item>
+                    {/* <Dropdown.Item href={"/group/view/" + group?.id} >Zobrazit</Dropdown.Item> */}                   
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/subgroups/view/" + group?.id} >Zobrazit podřízené</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/subgroups/edit/" + group?.id} >Editovat podřízené</ProxyLink></Dropdown.Item>
 
-                    <Dropdown.Item ><ProxyLink to={"/ug/group/edit/" + group?.id} >Editovat</ProxyLink></Dropdown.Item>
-                    <Dropdown.Item ><ProxyLink to={"/ug/grouproles/edit/" + group?.id} >Editovat role</ProxyLink></Dropdown.Item>
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/groupmembers/edit/" + group?.id} >Editovat členy</ProxyLink></Dropdown.Item>
+
+                    <Dropdown.Item as="div"><ProxyLink to={"/ug/grouproles/edit/" + group?.id} >Editovat role</ProxyLink></Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>                
             

@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom"
 import { useFreshItem, CreateAsyncQueryValidator, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
 import { GroupLargeCard } from "../Components/Group/GroupLargeCard"
 import { FetchGroupByIdAsyncAction } from "../Queries"
-import { GroupSubgroupsEditCard } from "../Components/Group/GroupSubgroupsEditCard"
+import { GroupMembersEditCard } from "../Components/Group/GroupMembersEditCard"
 
 const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst skupinu", success: "Načtení skupiny se povedlo"})
-export const GroupSubgroupsEditPage = ()  => {
+export const GroupMembersEditPage = ()  => {
     const {id} = useParams()
     const [onResolve, onReject] = validator(useDispatch())
     const [group, groupPromise] = useFreshItem({id}, FetchGroupByIdAsyncAction)
@@ -18,7 +18,7 @@ export const GroupSubgroupsEditPage = ()  => {
     if (group) {
         return (
             <GroupLargeCard group={group}>
-                <GroupSubgroupsEditCard group={group} />
+                <GroupMembersEditCard group={group} />
             </GroupLargeCard>
         )
     } else {

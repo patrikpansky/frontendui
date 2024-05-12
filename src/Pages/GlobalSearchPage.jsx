@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom"
 
 import { CardCapsule, SearchInput, ProxyLink } from '@hrbolek/uoisfrontend-shared/src'
 import { FetchSearchAnyAsyncAction } from "../Queries/FetchSearchAnyAsyncAction"
-const BreakElement = () => ";"
+const BreakElement = () => "; "
 const UserLink = ({item}) => {
     return (
         <><ProxyLink to={"/ug/user/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >U</span> {item?.fullname}</ProxyLink><BreakElement /> </>
@@ -31,13 +31,18 @@ const ComponentMap = {
     GroupGQLModel: GroupLink
 }
 
+let prev = " "
 const ShowResultComponent = ({item}) => {
     const { __typename } = item
     const Component = ComponentMap[__typename]
-    if (Component) {
-        return (
-            <Component item={item} />
-        )
+    if (Component) {       
+            // const result = (<>
+            //     <Component item={item} />{(prev === __typename)?"!":"?"}</>)
+            // prev = __typename
+            return (
+                // result
+                <Component item={item} />
+            )       
     } else {
         return (
             <><span>{item?.__typename} {item?.fullname || item?.name}</span>; </>
@@ -47,8 +52,8 @@ const ShowResultComponent = ({item}) => {
 }
 
 export const GlobalSearchPage = ({term: propTerm}) => {
-    const {term: paramTerm  } = useSearchParams()
-    const [term, SetTerm] = useState((propTerm || paramTerm || ""))
+    const [params, setParams] = useSearchParams()
+    const [term, SetTerm] = useState((propTerm || params.get("term") || ""))
 
     const onSelect = (id) => {
         console.log("selected", id)
@@ -56,7 +61,7 @@ export const GlobalSearchPage = ({term: propTerm}) => {
 
     return (
         <CardCapsule title="Globální vyhledávání uživatelů, skupin, událostí, místností, programů, předmětů, projektů, výsledků">
-            <SearchInput label="Vyhledávání" skip={0} limit={10} onSelect={onSelect} FetchByPatternAsyncAction={FetchSearchAnyAsyncAction} ShowResultComponent={ShowResultComponent}/>
+            <SearchInput label="Vyhledávání" phrase={term} skip={0} limit={10} onSelect={onSelect} FetchByPatternAsyncAction={FetchSearchAnyAsyncAction} ShowResultComponent={ShowResultComponent}/>
         </CardCapsule>
     )
 

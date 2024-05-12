@@ -26,9 +26,19 @@ export const UserCard = ({user}) => {
             </Row>
             <Row>
                 <Col>
-                    <Link to={"/events/event/view/4dccf52f-4117-403c-932a-5691c0d020b1"}>Event</Link>
+                    Email
                 </Col>
-                <Col></Col>
+                <Col>
+                    <a href={"mailto:" + user?.email}>{user?.email}</a>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    Telefon
+                </Col>
+                <Col>
+                    <a href="tel:973211111">973 211 111</a>
+                </Col>
             </Row>
         </CardCapsule>
         </div>
