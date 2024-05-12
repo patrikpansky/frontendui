@@ -3,24 +3,32 @@ import { useSearchParams } from "react-router-dom"
 
 import { CardCapsule, SearchInput, ProxyLink } from '@hrbolek/uoisfrontend-shared/src'
 import { FetchSearchAnyAsyncAction } from "../Queries/FetchSearchAnyAsyncAction"
-
+const BreakElement = () => ";"
 const UserLink = ({item}) => {
     return (
-        <><ProxyLink to={"/ug/user/view/" + item?.id}>{item?.fullname}</ProxyLink><br /> </>
+        <><ProxyLink to={"/ug/user/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >U</span> {item?.fullname}</ProxyLink><BreakElement /> </>
+    )
+}
+
+const GroupLink = ({item}) => {
+    return (
+        // <><span><span className="btn btn-success">E</span>{item?.name}</span><br /> </>
+        <><ProxyLink to={"/ug/group/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >S</span> {item?.name}</ProxyLink><BreakElement /> </>
     )
 }
 
 const EventLink = ({item}) => {
     return (
         // <><span><span className="btn btn-success">E</span>{item?.name}</span><br /> </>
-        <><ProxyLink to={"/events/event/view/" + item?.id}>{item?.name}</ProxyLink><br /> </>
+        <><ProxyLink to={"/events/event/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >E</span> {item?.name}</ProxyLink><BreakElement /> </>
     )
 }
 
 
 const ComponentMap = {
     EventGQLModel: EventLink,
-    UserGQLModel: UserLink
+    UserGQLModel: UserLink,
+    GroupGQLModel: GroupLink
 }
 
 const ShowResultComponent = ({item}) => {
@@ -47,8 +55,8 @@ export const GlobalSearchPage = ({term: propTerm}) => {
     }
 
     return (
-        <CardCapsule title="Globální vyhledávání">
-            <SearchInput title="Vyhledávání" limit={10} onSelect={onSelect} FetchByPatternAsyncAction={FetchSearchAnyAsyncAction} ShowResultComponent={ShowResultComponent}/>
+        <CardCapsule title="Globální vyhledávání uživatelů, skupin, událostí, místností, programů, předmětů, projektů, výsledků">
+            <SearchInput label="Vyhledávání" skip={0} limit={10} onSelect={onSelect} FetchByPatternAsyncAction={FetchSearchAnyAsyncAction} ShowResultComponent={ShowResultComponent}/>
         </CardCapsule>
     )
 
