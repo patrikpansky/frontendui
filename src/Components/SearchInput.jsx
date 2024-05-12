@@ -27,10 +27,10 @@ const ShowResult = ({item, onClick}) => {
  * @param {function} props.onSelect delayed callback notifying about the change
  * @returns JSX.Element
  */
-export const SearchInput = ({limit=100, FetchByPatternAsyncAction, ShowResultComponent=ShowResult, onSelect}) => {
+export const SearchInput = ({label="search", phrase: phrase_="", skip=0, limit=100, FetchByPatternAsyncAction, ShowResultComponent=ShowResult, onSelect}) => {
     const dispatch = useDispatch()
     const [Delayer] = useState(() => CreateDelayer()) // useState checks for a function ;)
-    const [phrase, setPhrase] = useState("")
+    const [phrase, setPhrase] = useState(phrase_)
     const [results, setResults] = useState([])
     const [visible, setVisible] = useState(true)
 
@@ -51,7 +51,7 @@ export const SearchInput = ({limit=100, FetchByPatternAsyncAction, ShowResultCom
     useEffect( () => {
         const lowercase = phrase.toLowerCase()
         if (lowercase.length > 2) {
-            dispatch(FetchByPatternAsyncAction({pattern: `%${lowercase}%`, limit: limit}))
+            dispatch(FetchByPatternAsyncAction({pattern: `%${lowercase}%`, skip:skip, limit: limit}))
             .then(
                 (json) => {
                     const data = json?.data || {}
@@ -66,14 +66,14 @@ export const SearchInput = ({limit=100, FetchByPatternAsyncAction, ShowResultCom
                 }
             )
         }
-    }, [FetchByPatternAsyncAction, dispatch, phrase, limit])
+    }, [FetchByPatternAsyncAction, dispatch, phrase, skip, limit])
 
     if (visible) {
         return (
             <>
                 <div className="form-floating">
                     <input className="form-control" id={"searchbox"} defaultValue={phrase} onChange={onChange} />
-                    <label htmlFor={"searchbox"}>{"search"}</label>
+                    <label htmlFor={"searchbox"}>{label}</label>
                 </div>
                 {results.map(
                     result => <ShowResultComponent key={result.id} item={result} onClick={onClick}/>
@@ -84,7 +84,7 @@ export const SearchInput = ({limit=100, FetchByPatternAsyncAction, ShowResultCom
         return (
             <div className="form-floating">
                 <span id={"searchbox"} className="input-group-text form-control" onClick={() => setVisible(true)}>{phrase}</span>
-                <label htmlFor={"searchbox"}>{"search"}</label>
+                <label htmlFor={"searchbox"}>{label}</label>
             </div>            
         )        
     }
