@@ -7,6 +7,9 @@ import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, Gr
 import { SearchPage } from "./Pages/SearchPage";
 import { EventPage } from "./Pages/EventPage";
 import { EventEditPage } from "./Pages/EventEditPage";
+import { GroupSubgroupsPage } from "./Pages/GroupSubgroupsPage";
+import { GroupSubgroupsEditPage } from "./Pages/GroupSubgroupsEditPage";
+import { GlobalSearchPage } from "./Pages/GlobalSearchPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -22,16 +25,6 @@ export const Routes = [
         errorElement: <SearchPage />,
     },
     {
-        path: prefix + "/event/view/:id",
-        element: <EventPage />,
-        errorElement: <SearchPage />,
-    },
-    {
-        path: prefix + "/event/edit/:id",
-        element: <EventEditPage />,
-        errorElement: <SearchPage />,
-    },
-    {
         path: prefix + "/user/edit/:id",
         element: <UserEditPage />,
         errorElement: <SearchPage />,
@@ -44,6 +37,16 @@ export const Routes = [
     {
         path: prefix + "/group/view/:id",
         element: <GroupPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/subgroups/view/:id",
+        element: <GroupSubgroupsPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/subgroups/edit/:id",
+        element: <GroupSubgroupsEditPage />,
         errorElement: <SearchPage />,
     },
     {
@@ -65,7 +68,15 @@ export const Routes = [
       path: prefix + "/search/:phrase",
       element: <SearchPage />,
       errorElement: <SearchPage />,
-    },    
+    },
+    {
+        path: prefix,
+        element: <GlobalSearchPage />
+    },
+    {
+        path: "*",
+        element: <GlobalSearchPage />
+    }
 ]
 
 

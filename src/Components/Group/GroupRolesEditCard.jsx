@@ -1,79 +1,26 @@
 /* eslint-disable react/prop-types */
-import { CardCapsule, DeleteButton, Dialog, useDispatch, useFreshItem, CreateAsyncQueryValidator } from '@hrbolek/uoisfrontend-shared/src'
+import { 
+    CardCapsule, 
+    DeleteButton, 
+    Dialog, 
+    useDispatch, 
+    CreateAsyncQueryValidator,
+    SelectInput,
+    SearchInput
+ } from '@hrbolek/uoisfrontend-shared/src'
+
 // import { TextInput } from '@hrbolek/uoisfrontend-shared/src'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 import { GroupLink } from './GroupLink'
 import { UserLink } from '../User'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { FetchRoleTypesAsyncAction } from '../../Queries/FetchRoleTypesAsyncAction'
-import { Search, TextInput, UserSearch } from '../User/UserSearch'
+import { TextInput } from '../User/UserSearch'
 import { InsertRoleAsyncAction } from '../../Queries/InsertRoleAsyncAction'
-import { SearchBox } from '../RoleTypeSearch'
 import { FetchSearchUserAsyncAction } from '../../Queries/FetchSearchUserAsyncAction'
 import { FetchGroupByIdAsyncAction } from '../../Queries'
-
-const RoleTypeSelect = ({id, value, onSelect}) => {
-    const [_, promise] = useFreshItem({}, FetchRoleTypesAsyncAction)
-    const [roleTypes, setRoleTypes] = useState([])
-    promise.then(json => {
-        const r = json?.data?.result
-        if (r) {
-            setRoleTypes(r)
-        }
-        return json
-    })
-    const onChange = (e) => {
-        if (onSelect) {
-            onSelect(e.target.value)
-        }
-    }
-    return (
-        <select className="form-select" id={id} value={value} onChange={onChange} aria-label="">
-            {roleTypes.map(
-                rt => <option key={rt.id} value={rt.id}>{rt?.name}</option>
-            )}
-        </select>
-    )
-}
-
-
-const SelectInput = ({FetchAsyncAction, skip=0, limit=100, where=null, onChange, ...selectProps}) => {
-    const [resuls, setResults] = useState([])
-    const dispatch = useDispatch()
-    const onChange_ = (event) => {
-        event.preventDefault()
-        const value = event.target.value
-        if (onChange) {
-            onChange(value)
-        } else {
-            console.error("missing onChange (SelectInput)")
-        }
-    }
-
-    useEffect(
-        ()=> {
-            const func = async () => {
-                const json = await dispatch(FetchAsyncAction({skip, limit, where}))
-                const result = json?.data?.result
-                if (result) {
-                    setResults(result)
-                }
-                // console.log("json", json)
-            }
-            func()
-        }, [FetchAsyncAction, dispatch, skip, limit, where]
-    )
-    return (
-        <select className="form-select" onChange={onChange_} {...selectProps}>
-            {resuls.map(
-                item => <option key={item.id} value={item.id}>{item?.fullname || item?.name || "???Chyba???"}</option>
-            )}
-        </select>
-    )
-
-}
 
 const AddRoleDialog = ({onCreate}) => {
     const [visible, setVisible] = useState(false)
@@ -117,7 +64,7 @@ const AddRoleDialog = ({onCreate}) => {
                     <TextInput type={"date"} id={"enddate"} value={data.enddate} onChange={onChange("enddate")} />
                     <label htmlFor={"enddate"}>enddate</label>
                 </div>
-                <Search title="Výběr uživatele" onSelect={onChange("user_id")} FetchByPhraseAsyncAction={FetchSearchUserAsyncAction} />
+                <SearchInput title="Výběr uživatele" onSelect={onChange("user_id")} FetchByPatternAsyncAction={FetchSearchUserAsyncAction} />
             </Dialog>
         )
     } else {
@@ -143,6 +90,8 @@ export const GroupRolesEditCard = ({group}) => {
             dispatch(FetchGroupByIdAsyncAction({id: group.id}))
         })
     }
+
+    // const startdate = role?.startdate?new Date(role?.startdate).toLocaleDateString(): ""
     return (
         <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
 
@@ -151,8 +100,8 @@ export const GroupRolesEditCard = ({group}) => {
                     <tr>
                         <td>Uživatel</td>
                         <td>Typ</td>
-                        <td></td>
-                        <td></td>
+                        <td>Od</td>
+                        <td>Do</td>
                         <td></td>
                     </tr>
                 </thead>
@@ -161,8 +110,8 @@ export const GroupRolesEditCard = ({group}) => {
                         role => <tr key={role.id}>
                                 <td><UserLink user={role?.user} /></td>
                                 <td>{role?.roletype?.name}</td>
-                                <td>{role?.startdate}</td>
-                                <td>{role?.enddate}</td>
+                                <td>{role?.startdate?new Date(role?.startdate).toLocaleDateString(): ""}</td>
+                                <td>{role?.enddate?new Date(role?.enddate).toLocaleDateString(): ""}</td>
                                 <td><DeleteButton>D</DeleteButton></td>
                             </tr>
                     )

@@ -1,15 +1,16 @@
 import { CreateAsyncActionFromQuery } from "@hrbolek/uoisfrontend-shared/src"
 
+
 const query = `query($pattern: String!, $limit: Int) {
-    result: userPage(limit: $limit, where: {fullname: {_ilike: $pattern}}) {
-      __typename
-      id
-      name
-      surname
-      fullname
-      email
-    }
-  }`
+  result: userPage(limit: $limit, where: {fullname: {_ilike: $pattern}}) {
+    __typename
+    id
+    name
+    surname
+    fullname
+    email
+  }
+}`
 
 export const FetchSearchUserAsyncAction_ = ({str}) => {
     return async (dispatch) => {
