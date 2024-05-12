@@ -9,7 +9,7 @@ export const App = () => {
     return (
         // <Container fluid>
         <AppCanvas>
-            <Navbar className='bg-light'>
+            {/* <Navbar className='bg-light'>
                 <Container>
                     <Navbar.Brand href="" className="justify-content-start"><a href='/' className='btn'>UOIS</a></Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -17,7 +17,7 @@ export const App = () => {
                         <LogButton />
                     </Navbar.Collapse>
                 </Container>
-            </Navbar>
+            </Navbar> */}
             
             <AppBody />
         </AppCanvas>    
