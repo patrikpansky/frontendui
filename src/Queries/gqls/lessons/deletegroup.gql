@@ -1,14 +1,6 @@
-import { CreateAsyncActionFromMutation } from "@hrbolek/uoisfrontend-shared/src"
-
-import query from './gqls/lessons/delete.gql?raw'
-console.log("q", query)
-// const qUrl = new URL('./DeleteLesson.gql', import.meta.url).href
-// console.log("q", qUrl)
-
-const query_ = `
-mutation ($id: UUID!, $lastchange: DateTime!) {
-  result: plannedLessonRemove(
-    lesson: {id: $id, lastchange: $lastchange}
+mutation ($group_id: UUID!, $lesson_id: UUID!) {
+  result: plannedLessonGroupDelete(
+    grouplesson: {groupId: $group_id, planlessonId: $lesson_id}
   ) {
     id
     msg
@@ -22,7 +14,7 @@ mutation ($id: UUID!, $lastchange: DateTime!) {
         name
         lastchange
         order
-        length  
+        length
         type {
           id
           name
@@ -32,8 +24,8 @@ mutation ($id: UUID!, $lastchange: DateTime!) {
           id
           name
           surname
-          email
           fullname
+          email
         }
         groups {
           __typename
@@ -50,7 +42,3 @@ mutation ($id: UUID!, $lastchange: DateTime!) {
     }
   }
 }
-`
-
-
-export const DeleteLessonAsyncAction = CreateAsyncActionFromMutation(query)

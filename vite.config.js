@@ -3,6 +3,25 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 
+// const importgql = ({options}) => {
+//   return {
+//     name: 'importgql',
+//     transform (code, id) {
+//       if (options.fileRegex.test(id)) {
+//         const json = JSON.stringify(code)
+//           .replace(/\u2028/g, '\\u2028')
+//           .replace(/\u2029/g, '\\u2029')
+//           console.log("code+id", code, id, json)
+
+//         return {
+//           code: `export default ${json}`
+//         }
+//       }
+//     }
+//   }
+// }
+
+
 // https://vitejs.dev/config/
 // export default defineConfig({
 //   plugins: [react()],
@@ -18,7 +37,9 @@ import react from '@vitejs/plugin-react'
 
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react()
+  ],
 
   server: {
     proxy: {

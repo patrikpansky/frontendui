@@ -1,0 +1,6 @@
+result: eventTypePage(limit: 100) {
+    __typename
+    id
+    name
+  }
+}

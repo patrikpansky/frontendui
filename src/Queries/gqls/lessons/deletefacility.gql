@@ -1,8 +1,3 @@
-import { CreateAsyncActionFromMutation } from "@hrbolek/uoisfrontend-shared/src"
-import query_ from './gqls/lessons/deletefacility.gql?raw'
-console.log("q", query_)
-
-const query = `
 mutation ($facility_id: UUID!, $lesson_id: UUID!) {
     result: plannedLessonFacilityDelete(
       facilitylesson: {facilityId: $facility_id, planlessonId: $lesson_id}
@@ -47,7 +42,3 @@ mutation ($facility_id: UUID!, $lesson_id: UUID!) {
       }
     }
   }
-`
-
-
-export const DeleteLessonFacilityAsyncAction = CreateAsyncActionFromMutation(query)
