@@ -10,8 +10,8 @@ import {
  } from '@hrbolek/uoisfrontend-shared/src'
 
 // import { TextInput } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+// import Row from 'react-bootstrap/Row'
+// import Col from 'react-bootstrap/Col'
 
 import { GroupLink } from './GroupLink'
 import { UserLink } from '../User'

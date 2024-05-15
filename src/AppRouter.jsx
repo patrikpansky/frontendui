@@ -5,12 +5,12 @@ import {
 } from "react-router-dom";
 import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
-import { EventPage } from "./Pages/EventPage";
-import { EventEditPage } from "./Pages/EventEditPage";
+
 import { GroupSubgroupsPage } from "./Pages/GroupSubgroupsPage";
 import { GroupSubgroupsEditPage } from "./Pages/GroupSubgroupsEditPage";
 import { GlobalSearchPage } from "./Pages/GlobalSearchPage";
 import { GroupMembersEditPage } from "./Pages/GroupMembersEditPage";
+import { PlanEditPage } from "./Pages/PlanEditPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -20,6 +20,10 @@ export const Routes = [
     //     element: <SearchPage />,
     //     errorElement: <SearchPage />
     // },
+    {
+        path: "/plans/plan/edit/:id",
+        element: <PlanEditPage />,
+    },
     {
         path: prefix + "/user/view/:id",
         element: <UserPage />,
