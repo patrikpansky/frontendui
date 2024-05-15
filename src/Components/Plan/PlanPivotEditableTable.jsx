@@ -187,7 +187,12 @@ export const PlanPivotEditableTableRow = ({plan, lesson, users, groups, faciliti
     const dispatch = useDispatch()
     const onChange_ = (attributename) => (value) => {
         const newLesson = {...lesson}
-        newLesson[attributename] = value
+        if (attributename === "length") {
+            newLesson[attributename] = Number(value)
+        } else {
+            newLesson[attributename] = value
+        }
+        
 
         const [onResolve, onReject] = validatorPlanPivotEditableTableRow(dispatch)
         dispatch(UpdateLessonAsyncAction(newLesson))

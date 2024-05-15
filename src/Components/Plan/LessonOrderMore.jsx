@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { UpdateLessonAsyncAction } from '../../Queries/UpdateLessonAsyncAction';
 
 const validatorLessonOrderMore = CreateAsyncQueryValidator({ error: "Nepodařilo se změnit pořadí", success: "Pořadí změněno úspěšně" });
-export const LessonOrderMore = ({ lesson, plan }) => {
+export const LessonOrderMore = ({ lesson }) => {
     const dispatch = useDispatch();
 
     const onClick = () => {

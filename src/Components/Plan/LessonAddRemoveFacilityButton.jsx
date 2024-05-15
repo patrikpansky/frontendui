@@ -6,18 +6,18 @@ import { DeleteLessonFacilityAsyncAction } from '../../Queries/DeleteLessonFacil
 
 const validatorLessonAddRemoveFacilityButtonA = CreateAsyncQueryValidator({ error: "Přiřazení učebny se nepovedlo", success: "Přiřazení učebny proběhlo úspěšně" });
 const validatorLessonAddRemoveFacilityButtonB = CreateAsyncQueryValidator({ error: "Odebrání učebny se nepovedlo", success: "Odebrání učebny proběhlo úspěšně" });
-export const LessonAddRemoveFacilityButton = ({ plan, lesson, facility }) => {
+export const LessonAddRemoveFacilityButton = ({ lesson, facility }) => {
     const present = lesson.facilities.find(f => f.id === facility.id) ? true : false;
     const dispatch = useDispatch();
     const onChangeValue = (value) => {
         if (value) {
             const [onResolve, onReject] = validatorLessonAddRemoveFacilityButtonA(dispatch);
-            dispatch(InsertLessonFacilityAsyncAction({ plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id }))
+            dispatch(InsertLessonFacilityAsyncAction({ lesson_id: lesson.id, facility_id: facility.id }))
                 .then(onResolve, onReject);
         }
         else {
             const [onResolve, onReject] = validatorLessonAddRemoveFacilityButtonB(dispatch);
-            dispatch(DeleteLessonFacilityAsyncAction({ plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id }))
+            dispatch(DeleteLessonFacilityAsyncAction({ lesson_id: lesson.id, facility_id: facility.id }))
                 .then(onResolve, onReject);
         }
     };
