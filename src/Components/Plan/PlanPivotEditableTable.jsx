@@ -1,5 +1,4 @@
 import { 
-    DeleteButton, 
     ProxyLink, 
     SearchInput, 
     CreateAsyncQueryValidator,
@@ -7,22 +6,22 @@ import {
 } from '@hrbolek/uoisfrontend-shared/src'
 
 import { useState } from "react"
-import { ArrowDown, ArrowUp, PlusLg, TrashFill, ArrowsExpand } from "react-bootstrap-icons"
+import { ArrowsExpand } from "react-bootstrap-icons"
 import Table from "react-bootstrap/Table"
 import { useDispatch, useSelector } from "react-redux"
 import { PlanAddLessonButton } from "./PlanAddLessonButton"
-import { AddRemoveButton } from "./AddRemoveButton"
 import { LessonAddRemoveTeacherButton } from "./LessonAddRemoveTeacherButton"
 import { FetchSearchUserAsyncAction } from '../../Queries/FetchSearchUserAsyncAction'
 import { FetchSearchGroupAsyncAction } from '../../Queries/FetchSearchGroupAsyncAction'
 import { FetchSearchFacilityAsyncAction } from '../../Queries/FetchSearchFacilityAsyncAction'
-import { InsertLessonGroupAsyncAction } from '../../Queries/InsertLessonGroupAsyncAction'
-import { DeleteLessonGroupAsyncAction } from '../../Queries/DeleteLessonGroupAsyncAction'
-import { InsertLessonFacilityAsyncAction } from '../../Queries/InsertLessonFacilityAsyncAction'
-import { DeleteLessonFacilityAsyncAction } from '../../Queries/DeleteLessonFacilityAsyncAction'
 import { UpdateLessonAsyncAction } from '../../Queries/UpdateLessonAsyncAction'
-import { DeleteLessonAsyncAction } from '../../Queries/DeleteLessonAsyncAction'
 import { LessonTypeSelect } from './LessonTypeSelect'
+import { LessonAddRemoveGroupButton } from './LessonAddRemoveGroupButton'
+import { LessonAddRemoveFacilityButton } from './LessonAddRemoveFacilityButton'
+import { LessonOrderLess } from './LessonOrderLess'
+import { LessonOrderMore } from './LessonOrderMore'
+import { LessonDeleteButton } from './LessonDeleteButton'
+import { PlanAddLessonsFromAccreditationButton } from './PlanAddLessonsFromAccreditationButton'
 
 export const UserButton = ({user}) => <ProxyLink to={"/ug/user/view/" + user.id}>{user?.fullname}</ProxyLink>
 export const GroupButton = ({group}) => <ProxyLink to={"/ug/group/view/" + group.id}>{group?.name}</ProxyLink>
@@ -158,26 +157,6 @@ export const UsersSegment = ({plan, lesson, users}) => {
     )
 }
 
-const validatorLessonAddRemoveGroupButtonA = CreateAsyncQueryValidator({error: "Přiřazení skupiny se nepovedlo", success: "Přiřazení skupiny proběhlo úspěšně"})
-const validatorLessonAddRemoveGroupButtonB = CreateAsyncQueryValidator({error: "Odebrání skupiny se nepovedlo", success: "Odebrání skupiny proběhlo úspěšně"})
-export const LessonAddRemoveGroupButton = ({plan, lesson, group}) => {
-    const present = lesson.groups.find(g => g.id === group.id)? true: false
-    const dispatch = useDispatch()
-    const onChangeValue = (value) => {
-        if (value) {
-            const [onResolve, onReject] = validatorLessonAddRemoveGroupButtonA(dispatch)
-            dispatch(InsertLessonGroupAsyncAction({plan_id: plan.id, lesson_id: lesson.id, group_id: group.id}))
-            .then(onResolve, onReject)
-        } 
-        else {
-            const [onResolve, onReject] = validatorLessonAddRemoveGroupButtonB(dispatch)
-            dispatch(DeleteLessonGroupAsyncAction({plan_id: plan.id, lesson_id: lesson.id, group_id: group.id}))
-            .then(onResolve, onReject)
-        }
-    }
-    return <AddRemoveButton state={present} onChangeValue={onChangeValue}/>
-}
-
 export const GroupsSegment = ({plan, lesson, groups}) => {
     return (
         <>
@@ -191,26 +170,6 @@ export const GroupsSegment = ({plan, lesson, groups}) => {
     )
 }
 
-const validatorLessonAddRemoveFacilityButtonA = CreateAsyncQueryValidator({error: "Přiřazení učebny se nepovedlo", success: "Přiřazení učebny proběhlo úspěšně"})
-const validatorLessonAddRemoveFacilityButtonB = CreateAsyncQueryValidator({error: "Odebrání učebny se nepovedlo", success: "Odebrání učebny proběhlo úspěšně"})
-export const LessonAddRemoveFacilityButton = ({plan, lesson, facility}) => {
-    const present = lesson.facilities.find(f => f.id === facility.id)? true: false
-    const dispatch = useDispatch()
-    const onChangeValue = (value) => {
-        if (value) {
-            const [onResolve, onReject] = validatorLessonAddRemoveFacilityButtonA(dispatch)
-            dispatch(InsertLessonFacilityAsyncAction({plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id}))
-            .then(onResolve, onReject)
-        } 
-        else {
-            const [onResolve, onReject] = validatorLessonAddRemoveFacilityButtonB(dispatch)
-            dispatch(DeleteLessonFacilityAsyncAction({plan_id: plan.id, lesson_id: lesson.id, facility_id: facility.id}))
-            .then(onResolve, onReject)
-        }
-    }    
-    return <AddRemoveButton state={present} onChangeValue={onChangeValue}/>
-}
-
 export const FacilitiesSegment = ({plan, lesson, facilitites}) => {
     return (
         <>
@@ -220,46 +179,6 @@ export const FacilitiesSegment = ({plan, lesson, facilitites}) => {
                     </td>
                 )}
         </>
-    )
-}
-
-const validatorLessonOrderLess = CreateAsyncQueryValidator({error: "Nepodařilo se změnit pořadí", success: "Pořadí změněno úspěšně"})
-export const LessonOrderLess = ({plan, lesson}) => {
-    const dispatch = useDispatch()
-
-    const onClick = () => {
-        let newValue = (lesson?.order || 0) - 1
-        if (newValue < 1) {
-            newValue = 1
-        }
-        if (newValue !== lesson?.order) {
-            const updatedLesson = {...lesson, order: newValue}
-            console.log("LessonOrderLess", updatedLesson)
-            const [onResolve, onReject] = validatorLessonOrderLess(dispatch)
-            dispatch(UpdateLessonAsyncAction(updatedLesson))
-            .then(onResolve, onReject)
-        }
-    }
-    return (
-        <span className="btn btn-sm btn-outline-success" onClick={onClick}><ArrowUp /></span>
-    )
-}
-
-export const LessonOrderMore = ({lesson, plan}) => {
-    const dispatch = useDispatch()
-
-    const onClick = () => {
-        let newValue = (lesson?.order || 0) + 1
-        if (newValue !== lesson?.order) {
-            const updatedLesson = {...lesson, order: newValue}
-            console.log("LessonOrderLess", updatedLesson)
-            const [onResolve, onReject] = validatorLessonOrderLess(dispatch)
-            dispatch(UpdateLessonAsyncAction(updatedLesson))
-            .then(onResolve, onReject)
-        }
-    }
-    return (
-        <span className="btn btn-sm btn-outline-success" onClick={onClick}><ArrowDown /></span>
     )
 }
 
@@ -297,7 +216,11 @@ export const PlanPivotEditableTableRow = ({plan, lesson, users, groups, faciliti
                 
 
             </td>
-            <td>{lesson?.length}</td>
+            <td>
+                {/* {lesson?.length} */}
+                <TextInput size={2} type="number" id={""} value={lesson?.length || 0} onChange={onChange_("length")} />
+
+            </td>
             <td></td>
             <td className="table-warning"></td>
             <UsersSegment plan={plan} lesson={lesson} users={users} />
@@ -307,42 +230,6 @@ export const PlanPivotEditableTableRow = ({plan, lesson, users, groups, faciliti
             <FacilitiesSegment plan={plan} lesson={lesson} facilitites={facilities} />
             <td></td>
         </tr>
-    )
-}
-
-export const PlanAddLessonsFromAccreditationButton = ({plan}) => {
-    const dispatch = useDispatch()
-    const onClick = () => {
-    //     dispatch(PlanLessonInsertAsyncAction({name, lessontype_id, plan_id: plan.id}))
-    //     .then(
-    //         CheckGQLError({
-    //             "ok": () => dispatch(MsgFlashAsyncAction({title: "Přidání lekce úspěšné"})),
-    //             "fail": (json) => dispatch(MsgAddAsyncAction({title: "Přidání lekce se nepovedlo\n" + JSON.stringify(json)})),
-    //         })
-    //     )
-    }
-    if (plan?.semester) {
-        return (
-            <button className="btn form-control btn-outline-success" onClick={onClick}><PlusLg /> Přidat lekce z akreditace</button>
-        )
-    
-    } else {
-        return <></>
-    }
-}
-
-const validatorLessonDeleteButton = CreateAsyncQueryValidator({error: "Smazání lekce se nepovedlo", success: "Smazání lekce úspěšné"})
-export const LessonDeleteButton = ({lesson, plan}) => {
-    const dispatch = useDispatch()
-    const onClick = () => {
-        // console.log("LessonDeleteButton.onClick", plan)
-        // console.log("LessonDeleteButton.onClick", lesson)
-        const [onResolve, onReject] = validatorLessonDeleteButton(dispatch)
-        dispatch(DeleteLessonAsyncAction({plan_id: plan.id, lesson_id: lesson.id, lastchange: lesson.lastchange}))
-        .then(onResolve, onReject)
-    }
-    return (
-        <DeleteButton onClick={onClick}><TrashFill /></DeleteButton>
     )
 }
 
