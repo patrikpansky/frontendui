@@ -1,0 +1,14 @@
+query Read($id: UUID!) {
+  result: requestById(id: $id) {
+    id
+    name
+    createdby {id fullname}
+    histories {
+      id
+      name
+      lastchange
+      changedby { id fullname }
+      form { id name }
+    }
+  }
+}

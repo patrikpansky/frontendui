@@ -9,4 +9,6 @@ fragment Membership on MembershipGQLModel {
   id
   lastchange
   rbacobject { id }
+  user { id fullname }
+  group { id name }  
 }

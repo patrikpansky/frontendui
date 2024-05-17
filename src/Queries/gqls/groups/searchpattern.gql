@@ -1,0 +1,7 @@
+query SearchGroup($pattern: String!, $limit: Int) {
+  result: groupPage(limit: $limit, where: {name: {_ilike: $pattern}}) {
+    __typename
+    id
+    name
+  }
+}

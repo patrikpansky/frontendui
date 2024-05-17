@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { CardCapsule, useDispatch, CreateDelayer } from "@hrbolek/uoisfrontend-shared/src"
+import { CardCapsule, useDispatch, CreateDelayer, SearchInput } from "@hrbolek/uoisfrontend-shared/src"
 // import { TextInput } from "@hrbolek/uoisfrontend-shared/src"
 import { useEffect, useMemo, useState } from "react"
 import { useSelector } from "react-redux"
@@ -226,4 +226,10 @@ export const UserSearch = ({phrase, title, onClick}) => {
             </>        
             )
     }
+}
+
+export const UserSearch2 = ({}) => {
+    return (
+        <SearchInput label="Vyhledávání učitele" skip={0} limit={10} onSelect={onSelectUser_} FetchByPatternAsyncAction={FetchSearchUserAsyncAction} />
+    )
 }

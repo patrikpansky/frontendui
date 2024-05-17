@@ -19,6 +19,15 @@ fragment Group on GroupGQLModel {
   email
   valid
   grouptype { id name }
-  subgroups { id name }
+  subgroups { id name valid grouptype { id name } }
   mastergroup { id name }
+
+  memberships {
+    id
+    lastchange
+    startdate
+    enddate
+    valid
+    user { id fullname }
+  }
 }

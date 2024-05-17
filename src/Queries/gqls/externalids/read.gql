@@ -1,0 +1,10 @@
+query ($id: UUID!) {
+  resultList: externalIdsPage(limit: 1000, where: {inner_id: {_eq: $id}}) {
+    id
+    outerId 
+    link
+    type {
+      name
+    }
+  }
+}

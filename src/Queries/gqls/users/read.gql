@@ -12,6 +12,30 @@ fragment User on UserGQLModel {
   surname
   fullname
   email
+
+  roles {
+    __typename
+    id
+    roletype { id name }
+    group { id name }
+    valid
+    startdate
+    enddate
+    lastchange
+    changedby { id fullname }
+  }
+  
+  membership {
+    id
+    group { 
+      id name 
+      grouptype { id name }
+    }
+    valid
+    startdate
+    enddate
+  }
+
   created
   createdby {
     id

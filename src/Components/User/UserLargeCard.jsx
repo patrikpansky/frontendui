@@ -5,6 +5,7 @@ import { UserRolesCard } from './UserRolesCard'
 import { UserRawCard } from './UserRawCard'
 import { UserMediumCard } from './UserMediumCard'
 import { UserLink } from './UserLink'
+import { ExternalIds } from '../EIDs/ExternalIds'
 
 export const UserLargeCard = ({user, children}) => {
     return (
@@ -12,6 +13,7 @@ export const UserLargeCard = ({user, children}) => {
         <Row>
             <Col md={3}>
                 <UserMediumCard user={user}/>
+                <ExternalIds />
             </Col>
             <Col md={6}>
                 {children}

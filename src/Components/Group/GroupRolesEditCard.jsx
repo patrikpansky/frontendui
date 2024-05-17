@@ -20,7 +20,8 @@ import { FetchRoleTypesAsyncAction } from '../../Queries/FetchRoleTypesAsyncActi
 import { TextInput } from '../User/UserSearch'
 import { InsertRoleAsyncAction } from '../../Queries/InsertRoleAsyncAction'
 import { FetchSearchUserAsyncAction } from '../../Queries/FetchSearchUserAsyncAction'
-import { FetchGroupByIdAsyncAction } from '../../Queries'
+// import { FetchGroupByIdAsyncAction } from '../../Queries'
+import { GroupAsyncActions } from '../../Queries/_groups'
 
 const AddRoleDialog = ({onCreate}) => {
     const [visible, setVisible] = useState(false)
@@ -87,7 +88,7 @@ export const GroupRolesEditCard = ({group}) => {
             InsertRoleAsyncAction(fullRecord)
         ).then(onResolve, onReject)
         .then(() => {
-            dispatch(FetchGroupByIdAsyncAction({id: group.id}))
+            dispatch(GroupAsyncActions.read({id: group.id}))
         })
     }
 

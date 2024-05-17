@@ -10,6 +10,7 @@ const GroupRow = ({index, group}) => {
         <tr>
             <td>{index}</td>
             <td><GroupLink group={group} /></td>
+            <td>{group?.valid}</td>
             <td><DeleteButton>D</DeleteButton></td>
         </tr>
     )
@@ -25,6 +26,7 @@ export const GroupSubgroupsEditCard = ({group, filterFunc=(g)=>g?.valid===true})
                     <tr>
                         <th>#</th>
                         <th>Skupina</th>
+                        <th>Platné</th>
                         <th>Nástroje</th>
                     </tr>
                 </thead>
@@ -33,7 +35,7 @@ export const GroupSubgroupsEditCard = ({group, filterFunc=(g)=>g?.valid===true})
                         (g, i) => <GroupRow index={i+1} key={g.id} group={g} />
                     )}
                     <tr>
-                        <td colSpan={3}><button className='btn btn-success form-control'>+</button></td>
+                        <td colSpan={4}><button className='btn btn-success form-control'>+</button></td>
                     </tr>
                 </tbody>
             </table>

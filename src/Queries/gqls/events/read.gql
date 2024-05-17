@@ -1,14 +1,28 @@
 query ($id: UUID!) {
     result: eventById(id: $id) {
-          __typename
-          id
-          lastchange
-          name
-          startdate
-          enddate
-          eventType {
-            id
-            name
-          }
-      }
-     }
+        ...Event
+    }
+}
+
+
+fragment Event on EventGQLModel {
+	__typename
+  id
+  lastchange
+  name
+  nameEn
+  startdate
+  enddate
+  duration
+  description
+  
+  eventType { id name }
+  
+  created
+  createdby { id email }
+  changedby { id email }
+  
+  
+  subEvents { id name }
+  masterEvent { id name }
+}

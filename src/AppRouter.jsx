@@ -6,11 +6,23 @@ import {
 import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
 
-import { GroupSubgroupsPage } from "./Pages/GroupSubgroupsPage";
-import { GroupSubgroupsEditPage } from "./Pages/GroupSubgroupsEditPage";
+import { GroupSubgroupsPage } from "./Pages/ug/GroupSubgroupsPage";
+import { GroupSubgroupsEditPage } from "./Pages/ug/GroupSubgroupsEditPage";
 import { GlobalSearchPage } from "./Pages/GlobalSearchPage";
-import { GroupMembersEditPage } from "./Pages/GroupMembersEditPage";
+import { GroupMembersEditPage } from "./Pages/ug/GroupMembersEditPage";
 import { PlanEditPage } from "./Pages/PlanEditPage";
+import { EventPage } from "./Pages/events/EventPage";
+import { PublicationPage } from "./Pages/publications/PublicationPage";
+import { SurveyPage } from "./Pages/surveys/SurveyPage";
+import { FormPage } from "./Pages/forms/FormPage";
+import { ProjectPage } from "./Pages/projects/ProjectPage";
+import { FacilityPage } from "./Pages/facilities/FacilityPage";
+import { ProgramPage } from "./Pages/programs/ProgramPage";
+import { ProgramSubjectsPage } from "./Pages/programs/ProgramSubjectsPage";
+import { SubjectPage } from "./Pages/programs/SubjectPage";
+import { SubjectSemesterPage } from "./Pages/programs/SubjectSemesterPage";
+import { SemesterPage } from "./Pages/programs/SemesterPage";
+import { RequestPage } from "./Pages/requests/RequestPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -20,6 +32,54 @@ export const Routes = [
     //     element: <SearchPage />,
     //     errorElement: <SearchPage />
     // },
+    {
+        path: "/events/event/view/:id",
+        element: <EventPage />,
+    },
+    {
+        path: "/publications/publication/view/:id",
+        element: <PublicationPage />,
+    },
+    {
+        path: "/surveys/survey/view/:id",
+        element: <SurveyPage />,
+    },
+    {
+        path: "/forms/form/view/:id",
+        element: <FormPage />,
+    },
+    {
+        path: "/forms/request/view/:id",
+        element: <RequestPage />,
+    },
+    {
+        path: "/projects/project/view/:id",
+        element: <ProjectPage />,
+    },
+    {
+        path: "/programs/program/view/:id",
+        element: <ProgramPage />,
+    },
+    {
+        path: "/programs/subjects/view/:id",
+        element: <ProgramSubjectsPage />,
+    },
+    {
+        path: "/programs/subject/view/:id",
+        element: <SubjectPage />,
+    },
+    {
+        path: "/programs/semesters/view/:id",
+        element: <SubjectSemesterPage />,
+    },
+    {
+        path: "/programs/semester/view/:id",
+        element: <SemesterPage />,
+    },
+    {
+        path: "/facilities/facility/view/:id",
+        element: <FacilityPage />,
+    },
     {
         path: "/plans/plan/edit/:id",
         element: <PlanEditPage />,

@@ -1,6 +1,7 @@
-result: eventTypePage(limit: 100) {
-    __typename
-    id
-    name
-  }
+query {
+    result: eventTypePage(limit: 100) {
+        __typename
+        id
+        name
+    }
 }

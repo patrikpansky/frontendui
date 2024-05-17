@@ -1,0 +1,10 @@
+query($pattern: String!, $limit: Int) {
+  result: userPage(limit: $limit, where: {fullname: {_ilike: $pattern}}) {
+    __typename
+    id
+    name
+    surname
+    fullname
+    email
+  }
+}

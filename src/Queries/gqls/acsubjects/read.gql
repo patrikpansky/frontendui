@@ -1,0 +1,21 @@
+query Read($id: UUID!) {
+  result: acSubjectById(id: $id) {
+    ...Subject
+  }
+}
+
+fragment Subject on AcSubjectGQLModel {
+   	__typename
+    id
+    name
+    
+    lastchange
+    created
+    changedby { id name }
+    createdby { id name }
+   
+	  program { id name }
+  	grants { id name }
+  	semesters { id order }
+  	
+}

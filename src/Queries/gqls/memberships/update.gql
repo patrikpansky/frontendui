@@ -15,4 +15,6 @@ fragment Membership on MembershipGQLModel {
   id
   lastchange
   valid
+  user { id fullname }
+  group { id name }
 }
