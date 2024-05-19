@@ -7,6 +7,7 @@ import { GroupMediumCard } from './GroupMediumCard'
 import { GroupSubgroupsCard } from './GroupSubgroupsCard'
 import { GroupMembersCard } from './GroupMembersCard'
 import { GroupLink } from './GroupLink'
+import { ExternalIds } from '../EIDs/ExternalIds'
 
 export const GroupLargeCard = ({group, children}) => {
     return (
@@ -15,6 +16,7 @@ export const GroupLargeCard = ({group, children}) => {
             <Col md={3}>
                 <GroupMediumCard group={group} />
                 <GroupSubgroupsCard group={group} />
+                <ExternalIds />
             </Col>
             <Col md={6}>
                 {children}
