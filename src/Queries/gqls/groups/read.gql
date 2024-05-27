@@ -30,4 +30,10 @@ fragment Group on GroupGQLModel {
     valid
     user { id fullname }
   }
+
+  roles {
+    valid
+    user { id fullname }
+    roletype { id name }
+  }
 }

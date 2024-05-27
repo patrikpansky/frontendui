@@ -18,7 +18,7 @@ const UserMenuItems = {
 export const UserLink = ({user, children, menu=true}) => {
     if (menu) {
         return (
-            <Dropdown  className="d-inline mx-2" autoClose="outside" size="sm">
+            <Dropdown  className="d-inline" autoClose="outside" size="sm">
                 <UserLink_ user={user}>
                     {children}
                 </UserLink_>

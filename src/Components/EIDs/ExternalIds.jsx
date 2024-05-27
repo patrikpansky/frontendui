@@ -30,11 +30,11 @@ export const ExternalIds = ({}) => {
                 <CardCapsule title={"Externí ID"}>
                     {/* {JSON.stringify(ids)} */}
                     {ids.map(
-                        id => <Row key={id?.id} >
+                        id => (id?.link)?<Row key={id?.id} >
                                 <Col>
                                     <a href={id?.link}>{id?.type?.name}</a>
                                 </Col>
-                            </Row>
+                            </Row>:""
                     )}
                 </CardCapsule>
             )

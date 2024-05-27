@@ -15,7 +15,7 @@ const Roles = ({roles, valid=true}) => {
         <>
             {filtered.map(
                 r => <Row key={r.id}>
-                    <Col>{r?.roletype?.name}</Col>
+                    <Col><b>{r?.roletype?.name}</b></Col>
                     <Col><UserLink user={r?.user} /></Col>
                 </Row>
             )}
@@ -28,14 +28,14 @@ export const GroupMediumCard = ({group}) => {
         <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
             {group?.mastergroup?
                 <Row>
-                    <Col>Nadřízený</Col>
+                    <Col><b>Nadřízený</b></Col>
                     <Col><GroupLink group={group?.mastergroup} /></Col>
                 </Row>
             :""}            
 
             <Row>
+                <Col><b>Typ</b></Col>
                 <Col>{group?.grouptype?.name}</Col>
-                <Col><GroupLink group={group} /></Col>
             </Row>
 
             <Roles roles={group?.roles||[]} />
