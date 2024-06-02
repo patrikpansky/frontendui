@@ -4,6 +4,14 @@ import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
 import { GroupMediumCard } from './GroupMediumCard'
 import { GroupLink } from './GroupLink'
 
+export const FetchAnalysis = ({url}) => {}
+
+export const GroupAnalysisCard = ({}) => {
+    
+    return (
+""
+    )
+}
 
 export const GroupSubgroupsCard = ({group, filterFunc=(g)=>g?.valid===true}) => {
     const subgroups = group?.subgroups || []
