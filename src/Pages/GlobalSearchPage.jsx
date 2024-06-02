@@ -4,31 +4,17 @@ import { useSearchParams } from "react-router-dom"
 import { CardCapsule, SearchInput, ProxyLink } from '@hrbolek/uoisfrontend-shared/src'
 import { FetchSearchAnyAsyncAction } from "../Queries/FetchSearchAnyAsyncAction"
 const BreakElement = () => "; "
-const UserLink = ({item}) => {
-    return (
-        <><ProxyLink to={"/ug/user/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >U</span> {item?.fullname}</ProxyLink><BreakElement /> </>
-    )
-}
 
-const GroupLink = ({item}) => {
-    return (
-        // <><span><span className="btn btn-success">E</span>{item?.name}</span><br /> </>
-        <><ProxyLink to={"/ug/group/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >S</span> {item?.name}</ProxyLink><BreakElement /> </>
-    )
-}
-
-const EventLink = ({item}) => {
-    return (
-        // <><span><span className="btn btn-success">E</span>{item?.name}</span><br /> </>
-        <><ProxyLink to={"/events/event/view/" + item?.id}><span className="btn btn-sm btn-outline-success" >E</span> {item?.name}</ProxyLink><BreakElement /> </>
-    )
-}
-
-
+const CommonLink = ({children, linkto}) => ({item}) => (<><ProxyLink to={linkto + item?.id}>{children}{item?.fullname || item?.name}</ProxyLink><BreakElement /> </>)
 const ComponentMap = {
-    EventGQLModel: EventLink,
-    UserGQLModel: UserLink,
-    GroupGQLModel: GroupLink
+    EventGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" ><i className="bi bi-calendar-event" /> E</span>, linkto: "/events/event/view/"}),
+    UserGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success"><i className="bi bi-person-fill" /> U</span>, linkto: "/ug/user/view/"}),
+    FacilityGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" ><i className="bi bi-house-fill" /> F</span>, linkto: "/facilities/facility/view/"}),
+    GroupGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" ><i className="bi bi-people-fill" /> G</span>, linkto: "/ug/group/view/"}),
+    ProjectGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" >P</span>, linkto: "/projects/project/view/"}),
+    AcSubjectGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" >P</span>, linkto: "/granting/subject/view/"}),
+    PublicationGQLModel: CommonLink({children: <span className="btn btn-sm btn-outline-success" >J</span>, linkto: "/publications/publication/view/"})
+    // AcSubjectGQLModel: CommonLink({children: 'P'})
 }
 
 let prev = " "
