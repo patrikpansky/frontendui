@@ -23,9 +23,9 @@ const Roles = ({roles, valid=true}) => {
     )
 }
 
-export const GroupMediumCard = ({group}) => {
+export const GroupMediumCard = ({group, children, label="Skupina"}) => {
     return (
-        <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
+        <CardCapsule title={<>{label} <GroupLink group={group} /> {children}</>}>
             {group?.mastergroup?
                 <Row>
                     <Col><b>Nadřízený</b></Col>

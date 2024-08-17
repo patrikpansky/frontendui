@@ -4,10 +4,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupRawCard } from './GroupRawCard'
 import { GroupMediumCard } from './GroupMediumCard'
-import { GroupSubgroupsCard } from './GroupSubgroupsCard'
+import { GroupSubFaculty, GroupSubStudentsGroups, GroupSubUniversity, GroupSubgroupsCard } from './GroupSubgroupsCard'
 import { GroupMembersCard } from './GroupMembersCard'
 import { GroupLink } from './GroupLink'
 import { ExternalIds } from '../EIDs/ExternalIds'
+import { GroupProjects } from './GroupProjects'
+import { GroupAnalysisLinksCard } from './GroupAnalysisCard'
 
 export const GroupLargeCard = ({group, children}) => {
     return (
@@ -15,8 +17,14 @@ export const GroupLargeCard = ({group, children}) => {
         <Row>
             <Col md={3}>
                 <GroupMediumCard group={group} />
-                <GroupSubgroupsCard group={group} />
+                {/* <GroupSubgroupsCard group={group} /> */}
                 <ExternalIds />
+                <GroupSubUniversity group={group} />
+                <GroupSubFaculty group={group} />
+                <GroupSubStudentsGroups group={group} />
+                
+                <GroupProjects group={group} />
+                <GroupAnalysisLinksCard group={group} />
             </Col>
             <Col md={6}>
                 {children}

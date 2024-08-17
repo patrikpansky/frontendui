@@ -19,7 +19,7 @@ fragment Group on GroupGQLModel {
   email
   valid
   grouptype { id name }
-  subgroups { id name valid grouptype { id name } }
+  subgroups { ...Subgroup }
   mastergroup { id name }
 
   memberships(limit: 50) {
@@ -30,6 +30,31 @@ fragment Group on GroupGQLModel {
     valid
     user { id fullname }
   }
+
+  roles {
+    id
+    valid
+    user { id fullname }
+    roletype { id name }
+  }
+}
+
+fragment Subgroup on GroupGQLModel {
+	__typename
+  id
+  lastchange
+  name
+  nameEn
+  abbreviation
+  
+  created
+  createdby { id email }
+  changedby { id email }
+  
+  email
+  valid
+  grouptype { id name }
+  mastergroup { id name }
 
   roles {
     id

@@ -1,0 +1,8 @@
+query projectPage($ids: [UUID!]!){
+  result: projectPage(where: {group_id: {_in: $ids}}) {
+    id
+    name
+    startdate
+    enddate   
+  }
+}

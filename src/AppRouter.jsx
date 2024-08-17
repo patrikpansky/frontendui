@@ -23,6 +23,9 @@ import { SubjectPage } from "./Pages/programs/SubjectPage";
 import { SubjectSemesterPage } from "./Pages/programs/SubjectSemesterPage";
 import { SemesterPage } from "./Pages/programs/SemesterPage";
 import { RequestPage } from "./Pages/requests/RequestPage";
+import { GroupSubDepartmentsPage } from "./Pages/ug/GroupSubDepartmentsPage";
+import { GroupSubFacultiesPage } from "./Pages/ug/GroupSubFacultiesPage";
+import { GroupAnalysisPage } from "./Pages/ug/GroupAnalysisPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -120,6 +123,21 @@ export const Routes = [
         errorElement: <SearchPage />,
     },
     {
+        path: prefix + "/group/departments/:id",
+        element: <GroupSubDepartmentsPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/group/faculties/:id",
+        element: <GroupSubFacultiesPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/groupanalysis/:code/:id",
+        element: <GroupAnalysisPage />,
+        errorElement: <SearchPage />,
+    },
+    {
         path: prefix + "/group/edit/:id",
         element: <GroupEditPage />,
         errorElement: <SearchPage />,
@@ -135,9 +153,9 @@ export const Routes = [
         errorElement: <SearchPage />,
     },
     {
-      path: prefix + "/search/:phrase",
-      element: <SearchPage />,
-      errorElement: <SearchPage />,
+        path: prefix + "/search/:phrase",
+        element: <SearchPage />,
+        errorElement: <SearchPage />,
     },
     {
         path: prefix,
