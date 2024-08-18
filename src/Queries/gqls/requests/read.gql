@@ -3,6 +3,8 @@ query Read($id: UUID!) {
     id
     name
     createdby {id fullname}
+    created
+    lastchange
     histories {
       id
       name
@@ -10,5 +12,16 @@ query Read($id: UUID!) {
       changedby { id fullname }
       form { id name }
     }
+
+    state {
+      id name
+      targets { id name target { id name }}
+      writers: roletypes(access: WRITE) {
+        name
+      }
+      readers: roletypes(access: READ) {
+        name
+      }
+    }    
   }
 }

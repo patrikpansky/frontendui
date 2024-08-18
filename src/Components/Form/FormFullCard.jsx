@@ -5,6 +5,7 @@ import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
 import { Section } from './Section';
 import { FormLink } from './FormLink';
+import { RequestButtons } from '../Request/RequestButtons';
 
 const RawCard = ({form}) => {
     return (
@@ -14,13 +15,13 @@ const RawCard = ({form}) => {
     )
 }
 
-export const FormFullCard = ({form, children}) => {
+export const FormFullCard = ({form, children, mode="view"}) => {
     const sections = form?.sections || []
     const ordered = sections.toSorted((a, b) => (a?.order || 0) - (b?.order || 0))
     return (
         <CardCapsule  title={<>Formulář <FormLink form={form} /></>}>
             {ordered.map(
-                (section, index) => <Section key={section?.id} section={section} />
+                (section, index) => <Section key={section?.id} section={section} mode={mode}/>
             )}
         </CardCapsule>
     )

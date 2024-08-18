@@ -26,6 +26,7 @@ import { RequestPage } from "./Pages/requests/RequestPage";
 import { GroupSubDepartmentsPage } from "./Pages/ug/GroupSubDepartmentsPage";
 import { GroupSubFacultiesPage } from "./Pages/ug/GroupSubFacultiesPage";
 import { GroupAnalysisPage } from "./Pages/ug/GroupAnalysisPage";
+import { RequestEditPage } from "./Pages/requests/RequestEditPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -54,6 +55,10 @@ export const Routes = [
     {
         path: "/forms/request/view/:id",
         element: <RequestPage />,
+    },
+    {
+        path: "/forms/request/edit/:id",
+        element: <RequestEditPage />,
     },
     {
         path: "/projects/project/view/:id",

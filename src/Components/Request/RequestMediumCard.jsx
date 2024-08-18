@@ -3,6 +3,8 @@ import { Col, Row } from 'react-bootstrap'
 
 
 export const RequestMediumCard = ({request, children}) => {
+    const datelastchange = new Date(request?.lastchange)
+    const datecreated = new Date(request?.created)
     return (
         <CardCapsule  title={<>Požadavek {request?.name }</>}>
             <Row>
@@ -10,7 +12,8 @@ export const RequestMediumCard = ({request, children}) => {
                     Vytvořeno
                 </Col>
                 <Col>
-                    {request?.created}
+                    {/* {request?.created} */}
+                    {datecreated?.toLocaleDateString()}, {datecreated?.toLocaleTimeString()}
                 </Col>
             </Row>
             <Row>
@@ -26,7 +29,7 @@ export const RequestMediumCard = ({request, children}) => {
                     Změněno
                 </Col>
                 <Col>
-                    {request?.lastchange}
+                    {datelastchange?.toLocaleDateString()}, {datelastchange?.toLocaleTimeString()}
                 </Col>
             </Row>
             <Row>

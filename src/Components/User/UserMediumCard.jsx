@@ -43,9 +43,9 @@ const Membership = ({membership, valid=true}) => {
     )
 }
 
-export const UserMediumCard = ({user}) => {
+export const UserMediumBody = ({user}) => {
     return (
-        <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
+        <>
             
             <Row>
                 <Col>Jméno</Col>
@@ -71,6 +71,16 @@ export const UserMediumCard = ({user}) => {
                     <a href="tel:973211111">973 211 111</a>
                 </Col>
             </Row>
+
+            <Membership membership={user?.membership||[]} />
+        </>
+    )
+}
+
+export const UserMediumCard = ({user}) => {
+    return (
+        <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
+            <UserMediumBody user={user} />
 
             <Membership membership={user?.membership||[]} />
         </CardCapsule>

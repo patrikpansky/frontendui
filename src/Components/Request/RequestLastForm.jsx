@@ -12,7 +12,7 @@ const HistoryRow = ({index, history}) => {
     )
 }
 
-export const RequestLastForm = ({request, children}) => {
+export const RequestLastForm = ({request, children, mode="view"}) => {
     const histories = request?.histories || []
     const mapped = histories.map(
         h => {
@@ -25,7 +25,7 @@ export const RequestLastForm = ({request, children}) => {
     const [form, promise] = useFreshItem(lastItem?.form, FormsAsyncActions.read)
     if (form) {
         return (
-            <FormFullCard form={form} />
+            <FormFullCard form={form} mode={mode}/>
         )
     } else {
         return (
