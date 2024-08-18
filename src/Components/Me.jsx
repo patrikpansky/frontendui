@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 const MeQuery = `{
     result: me {
       __typename
+      isThisMe
       id
       name
       surname
