@@ -12,7 +12,7 @@ fragment User on UserGQLModel {
   surname
   fullname
   email
-
+  
   roles {
     __typename
     id

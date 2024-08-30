@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { CardCapsule} from '@hrbolek/uoisfrontend-shared/src'
+import { CardCapsule, useDispatch} from '@hrbolek/uoisfrontend-shared/src'
 // import { Link as ProxyLink } from "react-router-dom";
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { GroupLink } from '../Group'
 import { UserLink } from './UserLink'
 import { ProxyLink } from '../ProxyLink'
+import { UserAsyncActions } from '../../Queries/_users'
 
 const groupPriorityMap = {
     "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"
@@ -43,6 +44,21 @@ const Membership = ({membership, valid=true}) => {
     )
 }
 
+const UserGDPR = ({user}) => {
+    const dispatch = useDispatch()
+    const loadgdpr = () => {
+        dispatch(UserAsyncActions.readgdpr(user))
+    }
+    return (
+        <Row>
+            <Col>grpd</Col>
+            <Col>
+                {user?.gdpr?user?.gdpr:<button className='btn btn-sm btn-outline-success' onClick={loadgdpr}>Ukázat</button>}
+            </Col>
+        </Row>
+    )
+}
+
 export const UserMediumBody = ({user}) => {
     return (
         <>
@@ -71,6 +87,7 @@ export const UserMediumBody = ({user}) => {
                     <a href="tel:973211111">973 211 111</a>
                 </Col>
             </Row>
+            <UserGDPR user={user}/>
 
             <Membership membership={user?.membership||[]} />
         </>
@@ -82,7 +99,7 @@ export const UserMediumCard = ({user}) => {
         <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
             <UserMediumBody user={user} />
 
-            <Membership membership={user?.membership||[]} />
+            {/* <Membership membership={user?.membership||[]} /> */}
         </CardCapsule>
     )
 }

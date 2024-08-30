@@ -1,0 +1,17 @@
+query UserById($id: UUID!) {
+  result: userById(id: $id) {
+    ...User
+    gdpr(force: true)
+  }
+}
+
+fragment User on UserGQLModel {
+  __typename
+  id
+  lastchange
+  name
+  surname
+  fullname
+  email
+
+}
