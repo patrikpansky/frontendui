@@ -7,7 +7,7 @@ export const GroupEventsCard = ({group}) => {
     return (
         <CardCapsule title="Rozvrh">
             {/* <GroupEventsCalendarLazy where={where} /> */}
-            <EventsCalendarLazy_ where={where} />
+            {/* <EventsCalendarLazy_ where={where} /> */}
         </CardCapsule>
     )
 }

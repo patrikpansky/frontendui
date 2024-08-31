@@ -1,6 +1,7 @@
 import { 
     CreateAsyncActionFromMutation,
-    CreateAsyncActionFromQuery
+    CreateAsyncActionFromQuery,
+    GQLQueryLazyVectorAfterFetch
  } from "@hrbolek/uoisfrontend-shared/src"
 
 import create from './gqls/groups/create.gql?raw'
@@ -13,7 +14,7 @@ import readevents from './gqls/groups/readevents.gql?raw'
 export const GroupAsyncActions = {
     read: CreateAsyncActionFromQuery(read),
     readsubs: CreateAsyncActionFromQuery(readsubs),
-    readevents: CreateAsyncActionFromQuery(readevents),
+    readevents: CreateAsyncActionFromQuery(readevents, {}, GQLQueryLazyVectorAfterFetch("events")),
     readpage: CreateAsyncActionFromQuery(readpage),
     create: CreateAsyncActionFromMutation(create),
     update: CreateAsyncActionFromMutation(update),
