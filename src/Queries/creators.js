@@ -1,4 +1,5 @@
-import {authorizedFetch2, ItemActions} from "@hrbolek/uoisfrontend-shared/src"
+import { authorizedFetch2 } from "./authorizedFetch"
+import { ItemActions } from "../Store/keyedreducers"
 
 /**
  * Serialize GQL query and variables into single object
