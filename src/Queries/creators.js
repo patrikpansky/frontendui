@@ -44,6 +44,51 @@ const ResponseFromQuery = (query, params={}) => (query_variables) => {
  */
 export const CreateFetchQuery = ResponseFromQuery
 
+export const GQLQueryAfterFetch = (jsonResult) => (dispatch) => {
+    const data = jsonResult?.data
+    if (data) {
+        const result = data?.result
+        if (result) {
+            if (Array.isArray(result)) {
+                result.forEach(item => {
+                    dispatch(ItemActions.item_update(item))
+                });
+            } else {
+                dispatch(ItemActions.item_update(result))
+            }
+        }
+    }
+    return jsonResult
+}
+
+export const GQLMutationAfterFetch = (jsonResult) => (dispatch) => {
+    const data = jsonResult?.data
+    if (data) {
+        const result = data?.result
+        if (result) {
+            const updatedItem = result?.result
+            if (updatedItem) {
+                dispatch(ItemActions.item_update(updatedItem))
+            }
+        }
+    }
+    return jsonResult
+}
+
+export const GQLQueryLazyVectorAfterFetch = (vectorname) => (jsonResult) => (dispatch) => {
+    const data = jsonResult?.data
+    if (data) {
+        const result = data?.result
+        if (result) {
+            const updatedItem = result?.result
+            if (updatedItem) {
+                dispatch(ItemActions.item_updateAttributeVector({item: updatedItem, vectorname}))
+            }
+        }
+    }
+    return jsonResult
+}
+
 /**
  * from GQL query string creates dispatchable async action (see react-redux)
  * @param {string} query 
@@ -52,32 +97,34 @@ export const CreateFetchQuery = ResponseFromQuery
  * 
  * @function
  */
-export const CreateAsyncActionFromQuery = (query, params={}) => {
+export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQueryAfterFetch) => {
+    const afterFetch_ = afterFetch
     // console.log("CreateAsyncActionFromQuery.query", query)
     if (typeof query !== "string") {
         throw new Error("CreateAsyncActionFromQuery query param have be string!")
     }
     const unparametrizedFetch = ResponseFromQuery(query, params)
-    return (query_variables) => {
+    return (query_variables, afterFetch=afterFetch_) => {
         // console.log("CreateAsyncActionFromQuery.variables", query_variables)
         // console.log("CreateAsyncActionFromQuery parametrization function parameters", (typeof query_variables))
         // type checking of query_variables, are they "dict" / "json object?"
         return async (dispatch /*, getState*/) => {
             const jsonResult = await unparametrizedFetch(query_variables)
-            const data = jsonResult?.data
-            if (data) {
-                const result = data?.result
-                if (result) {
-                    if (Array.isArray(result)) {
-                        result.forEach(item => {
-                            dispatch(ItemActions.item_update(item))
-                        });
-                    } else {
-                        dispatch(ItemActions.item_update(result))
-                    }
-                }
-            }
-            return jsonResult
+            return dispatch(afterFetch(jsonResult))
+            // const data = jsonResult?.data
+            // if (data) {
+            //     const result = data?.result
+            //     if (result) {
+            //         if (Array.isArray(result)) {
+            //             result.forEach(item => {
+            //                 dispatch(ItemActions.item_update(item))
+            //             });
+            //         } else {
+            //             dispatch(ItemActions.item_update(result))
+            //         }
+            //     }
+            // }
+            // return jsonResult
         }
     }
 }
@@ -90,29 +137,31 @@ export const CreateAsyncActionFromQuery = (query, params={}) => {
  * 
  * @function
  */
-export const CreateAsyncActionFromMutation = (mutation, params={}) => {
+export const CreateAsyncActionFromMutation = (mutation, params={}, afterFetch=GQLMutationAfterFetch) => {
+    const afterFetch_ = afterFetch
     // console.log("CreateAsyncActionFromQuery.query", query)
     if (typeof mutation !== "string") {
         throw new Error("CreateAsyncActionFromMutation query param have be string!")
     }
     const unparametrizedPost = ResponseFromQuery(mutation, params)
-    return (query_variables) => {
+    return (query_variables, afterFetch=afterFetch_) => {
         // console.log("CreateAsyncActionFromQuery.variables", query_variables)
         // console.log("CreateAsyncActionFromQuery parametrization function parameters", (typeof query_variables))
         // type checking of query_variables, are they "dict" / "json object?"
         return async (dispatch /*, getState*/) => {
             const jsonResult = await unparametrizedPost(query_variables)
-            const data = jsonResult?.data
-            if (data) {
-                const result = data?.result
-                if (result) {
-                    const updatedItem = result?.result
-                    if (updatedItem) {
-                        dispatch(ItemActions.item_update(updatedItem))
-                    }
-                }
-            }
-            return jsonResult
+            return dispatch(afterFetch(jsonResult))
+            // const data = jsonResult?.data
+            // if (data) {
+            //     const result = data?.result
+            //     if (result) {
+            //         const updatedItem = result?.result
+            //         if (updatedItem) {
+            //             dispatch(ItemActions.item_update(updatedItem))
+            //         }
+            //     }
+            // }
+            // return jsonResult
         }
     }
 }
