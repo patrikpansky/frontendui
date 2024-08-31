@@ -6,7 +6,7 @@ export const GroupEventsCard = ({group}) => {
     const where = {"groups": {"group_id": {"_eq": group?.id}}}
     return (
         <CardCapsule title="Rozvrh">
-            {/* <GroupEventsCalendarLazy where={where} /> */}
+            <GroupEventsCalendarLazy group={group} where={where} />
             {/* <EventsCalendarLazy_ where={where} /> */}
         </CardCapsule>
     )

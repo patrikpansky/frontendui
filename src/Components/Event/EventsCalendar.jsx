@@ -2,6 +2,8 @@ import { useDispatch } from "react-redux"
 import { EventAsyncActions } from "../../Queries/_events"
 import { useEffect, useState } from "react"
 import { GroupAsyncActions } from "../../Queries/_groups"
+import { UserLink } from "../User/UserLink"
+import { GroupLink } from "../Group/GroupLink"
 
 const EventsOverlap = (eventA, eventB) => {
     if ((eventA._startdate <= eventB._startdate) & (eventB._startdate <= eventA._enddate)) {
@@ -41,9 +43,13 @@ const RowCalendar = ({events}) => {
             <div key={event.id} style={{width: `${eventwidth}%`, backgroundColor: "rgb(0,100,0, 0.3)", border:"solid 1px rgb(0,100,0, 0.5)"}}>
                 {event.name}<br />
                 {event?.starttime} - {event?.endtime}<br />
-                M {event.id}<br />
-                O {event?.startdate}<br />
-                G
+                {event?.placeId}<br />
+                {event?.users.map(
+                    (user, index) => index === 0?<UserLink key={user.id} user={user} menu={false} />:""
+                )}<br />
+                {event?.groups.map(
+                    (group, index) => <GroupLink key={group.id} group={group} menu={false} />
+                )}
             </div>        
         )
         currentleft = event._left + event._duration
@@ -76,11 +82,19 @@ const DayCalendar = ({day, events}) => {
     const nonemptyrows = rows.filter(
         row => row.length > 0
     )
+    const daydate = new Date(day)
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      };
+      
     // return (<>{JSON.stringify(nonemptyrows)}</>)
     return (
         <div className="row">
             <div className="col col-2" style={{border: "solid 1px grey"}}>
-                    {day}                                    
+                {daydate.toLocaleDateString(undefined, options)}
             </div>           
             <div className="col col-10" style={{border: "solid 1px grey"}}>
                 <div className="d-flex">
@@ -102,7 +116,7 @@ export const EventsCalendar = ({events}) => {
             day: event["startdate"].substring(0, 10)
         })
     )
-    console.log(events_)
+    // console.log(events_)
     const eventindex = {}
     for(const event of events_) {
         const day = event.day

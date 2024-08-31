@@ -8,30 +8,44 @@ export const GroupEventsCalendarLazy = ({group}) => {
     // const [events, setEvents] = useState([])
     const events = group?.events || []
     const [skip, setSkip] = useState(0)
+    const [more, setMore] = useState(true)
+    const [loading, setLoading] = useState(false)
     const onMore = () => {
-        setSkip((old) => old + 12)
+        setLoading(true)
         dispatch(GroupAsyncActions.readevents({id: group?.id, order: "startdate", limit: 12, skip}))
+        .then(
+            (jsonResult) => {
+                const result = jsonResult?.data?.result?.events
+                if (result) {
+                    if (result.length === 0) {
+                        setMore(false)
+                    }
+                }
+                return jsonResult
+            }
+        )
+        .then(() => {
+            setLoading(false)
+            // setSkip((old) => old + 12)
+            setSkip(skip + 12)
+        })
     }
-    // useEffect(
-    //     () => {
-    //         // dispatch(EventAsyncActions.readpage({where, order: "startdate", limit: 12, skip})).
-    //         dispatch(GroupAsyncActions.readevents({id: group?.id, order: "startdate", limit: 12, skip})).
-    //         then(json => {
-    //             const readedevents = json?.data?.result || []
-    //             if (skip === 0) {
-    //                 setEvents(readedevents)
-    //             } else {
-    //                 setEvents([...events, ...readedevents])
-    //             }
-                    
-    //         })
-    //     }, [skip] // dispatch, where, setEvents
-    // )
+    
+    useEffect(onMore, [])
+    let Component = <span className="form-control btn btn-danger">Více toho není</span>
+    if (!loading & more) {
+        Component = <button className="form-control btn btn-outline-success" onClick={onMore}>Načíst další</button>
+    } else {
+        if (loading) {
+            Component = <span className="form-control btn btn-danger">Nahrávám</span>
+        }
+    }
     return (
         <>
             <EventsCalendar events={events} />
             <br />
-            <button className="form-control btn btn-outline-success" onClick={onMore}>Načíst další</button>
+            {/* {(!loading)?<button className="form-control btn btn-outline-success" onClick={onMore}>Načíst další</button>:<span className="form-control btn btn-danger">Nahrávám</span>} */}
+            {Component}
         </>
     )
 }
