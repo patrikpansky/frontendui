@@ -19,7 +19,7 @@ const replaceID = true
  * @returns Promise
  */
 export const authorizedFetch2 = (path, params) => {
-    console.log("fetch from shared")
+    // console.log("fetch from shared")
 
     const headers = {...globalFetchParams.headers, ...params.headers}
     const newParams = {...globalFetchParams, ...params, headers} // allow owerwrite default parameters (globalFetchParams)
