@@ -11,10 +11,11 @@ import { ExternalIds } from '../EIDs/ExternalIds'
 import { GroupProjects } from './GroupProjects'
 import { GroupAnalysisLinksCard } from './GroupAnalysisCard'
 import { GroupEventsCard } from './GroupEventsCard'
+import { PeopleFill } from 'react-bootstrap-icons'
 
 export const GroupLargeCard = ({group, children}) => {
     return (
-        <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
+        <CardCapsule title={<><PeopleFill /> <GroupLink group={group} /></>}>
         <Row>
             <Col md={3}>
                 <GroupMediumCard group={group} />
@@ -28,7 +29,7 @@ export const GroupLargeCard = ({group, children}) => {
                 <GroupAnalysisLinksCard group={group} />
             </Col>
             <Col md={6}>
-                <GroupEventsCard group={group} />
+                {/* <GroupEventsCard group={group} /> */}
                 {children}
             </Col>
             <Col md={3}>

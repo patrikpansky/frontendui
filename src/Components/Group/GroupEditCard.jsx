@@ -6,13 +6,14 @@ import Col from 'react-bootstrap/Col'
 import { GroupLink } from './GroupLink'
 import { UpdateGroupAsyncAction } from '../../Queries'
 import { RoleTypeSearch } from '../RoleTypeSearch'
+import { PeopleFill } from 'react-bootstrap-icons'
 
 export const GroupEditCard = ({group}) => {
     const mastergroup_id = group?.mastergroup?.id
     const grouptype_id = group?.grouptype?.id
     const groupEx = {...group, mastergroup_id, grouptype_id}
     return (
-        <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
+        <CardCapsule title={<><PeopleFill /> <GroupLink group={group} /></>}>
             {group?.mastergroup?
                 <Row>
                     <Col>Nadřízený</Col>

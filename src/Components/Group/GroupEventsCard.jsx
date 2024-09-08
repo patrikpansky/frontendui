@@ -3,6 +3,8 @@ import { GroupEventsCalendarLazy } from './GroupEventsCalendarLazy'
 import { EventsCalendarLazy_ } from '../Event/EventsCalendar'
 
 export const GroupEventsCard = ({group}) => {
+    const memberships = group?.memberships || []
+    const user_ids = memberships.map(m => m?.user?.id)
     const where = {"groups": {"group_id": {"_eq": group?.id}}}
     return (
         <CardCapsule title="Rozvrh">

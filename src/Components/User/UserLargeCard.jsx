@@ -6,10 +6,11 @@ import { UserRawCard } from './UserRawCard'
 import { UserMediumCard } from './UserMediumCard'
 import { UserLink } from './UserLink'
 import { ExternalIds } from '../EIDs/ExternalIds'
+import { PersonFill } from 'react-bootstrap-icons'
 
 export const UserLargeCard = ({user, children}) => {
     return (
-        <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
+        <CardCapsule  title={<><PersonFill /> <UserLink user={user } /></>}>
         <Row>
             <Col md={3}>
                 <UserMediumCard user={user}/>

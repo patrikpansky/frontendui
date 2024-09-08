@@ -1,7 +1,7 @@
 {
   "name": "@hrbolek/uoisfrontend-users",
   "private": false,
-  "version": "0.4.15",
+  "version": "0.4.16",
   "type": "module",
   "main": "dist/umd/index.js",
   "module": "dist/es/index.js",
@@ -20,7 +20,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@hrbolek/uoisfrontend-shared": "0.4.17",
+    "@hrbolek/uoisfrontend-shared": "0.4.18",
     "@reduxjs/toolkit": "^2.0.1",
     "bootstrap": "^5.3.2",
     "@popperjs/core": "^2.11.8",

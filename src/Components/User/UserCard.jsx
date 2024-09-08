@@ -4,11 +4,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { UserLink } from './UserLink'
 import { Link } from 'react-router-dom'
+import { PersonFill } from 'react-bootstrap-icons'
 
 export const UserCard = ({user}) => {
     return (
         <div>
-        <CardCapsule title={<>Uživatel <UserLink user={user } /></>}>
+        <CardCapsule title={<><PersonFill /> <UserLink user={user } /></>}>
             
             <Row>
                 <Col>Jméno</Col>

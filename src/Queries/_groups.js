@@ -1,15 +1,15 @@
-// import { 
-//     CreateAsyncActionFromMutation,
-//     CreateAsyncActionFromQuery,
-//     GQLQueryLazyVectorAfterFetch
-//  } from "@hrbolek/uoisfrontend-shared/src"
-
-
 import { 
     CreateAsyncActionFromMutation,
     CreateAsyncActionFromQuery,
     GQLQueryLazyVectorAfterFetch
- } from "./creators"
+ } from "@hrbolek/uoisfrontend-shared/src"
+
+
+// import { 
+//     CreateAsyncActionFromMutation,
+//     CreateAsyncActionFromQuery,
+//     GQLQueryLazyVectorAfterFetch
+//  } from "./creators"
 
 
 import create from './gqls/groups/create.gql?raw'

@@ -7,6 +7,7 @@ import { GroupLink } from '../Group'
 import { UserLink } from './UserLink'
 import { ProxyLink } from '../ProxyLink'
 import { UserAsyncActions } from '../../Queries/_users'
+import { PersonFill } from 'react-bootstrap-icons'
 
 const groupPriorityMap = {
     "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"
@@ -96,7 +97,7 @@ export const UserMediumBody = ({user}) => {
 
 export const UserMediumCard = ({user}) => {
     return (
-        <CardCapsule  title={<>Uživatel <UserLink user={user } /></>}>
+        <CardCapsule  title={<><PersonFill /> <UserLink user={user } /></>}>
             <UserMediumBody user={user} />
 
             {/* <Membership membership={user?.membership||[]} /> */}

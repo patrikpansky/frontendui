@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col'
 
 import { GroupLink } from './GroupLink'
 import { UserLink } from '../User/UserLink'
+import { PeopleFill } from 'react-bootstrap-icons'
 
 
 const Roles = ({roles, valid=true}) => {
@@ -23,7 +24,7 @@ const Roles = ({roles, valid=true}) => {
     )
 }
 
-export const GroupMediumCard = ({group, children, label="Skupina"}) => {
+export const GroupMediumCard = ({group, children, label=<PeopleFill />}) => {
     return (
         <CardCapsule title={<>{label} <GroupLink group={group} /> {children}</>}>
             {group?.mastergroup?

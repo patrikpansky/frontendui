@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { UserLargeCard } from "../../Components"
 import { useFreshItem, CreateAsyncQueryValidator, useDispatch } from "@hrbolek/uoisfrontend-shared/src"
 import { UserAsyncActions } from "../../Queries/_users"
+import { UserEventsCard } from "../../Components/User/UserEventsCard"
 
 // export const CreateAsyncQueryValidator2 = (reactions) => {
 //     const [onResolve, onReject] = CreateAsyncQueryValidator(reactions)
@@ -33,7 +34,9 @@ export const UserPage = ()  => {
 
     if (user) {
         return (
-            <UserLargeCard user={user} />
+            <UserLargeCard user={user}>
+                <UserEventsCard user={user} />
+            </UserLargeCard>
         )
     } else {
         return (

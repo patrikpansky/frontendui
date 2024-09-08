@@ -4,10 +4,11 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { UserLink } from './UserLink'
 import { UpdateUserAsyncAction } from '../../Queries'
+import { PersonFill } from 'react-bootstrap-icons'
 
 export const UserEditCard = ({user}) => {
     return (       
-        <CardCapsule title={<>Uživatel <UserLink user={user } /></>} >
+        <CardCapsule title={<><PersonFill /> <UserLink user={user } /></>} >
             <Row>
                 <Col>
                     <EditableAttributeText item={user} attributeName="name" label="Jméno" asyncUpdater={UpdateUserAsyncAction} />

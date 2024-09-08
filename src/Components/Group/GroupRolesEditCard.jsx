@@ -22,6 +22,7 @@ import { InsertRoleAsyncAction } from '../../Queries/InsertRoleAsyncAction'
 import { FetchSearchUserAsyncAction } from '../../Queries/FetchSearchUserAsyncAction'
 // import { FetchGroupByIdAsyncAction } from '../../Queries'
 import { GroupAsyncActions } from '../../Queries/_groups'
+import { PeopleFill } from 'react-bootstrap-icons'
 
 const AddRoleDialog = ({onCreate}) => {
     const [visible, setVisible] = useState(false)
@@ -94,7 +95,7 @@ export const GroupRolesEditCard = ({group}) => {
 
     // const startdate = role?.startdate?new Date(role?.startdate).toLocaleDateString(): ""
     return (
-        <CardCapsule title={<>Skupina <GroupLink group={group} /></>}>
+        <CardCapsule title={<><PeopleFill /> <GroupLink group={group} /></>}>
 
             <table className='table table-striped'>
                 <thead>
