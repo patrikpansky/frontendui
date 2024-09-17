@@ -4,17 +4,18 @@ import { useFreshItem, CreateAsyncQueryValidator, useDispatch } from "@hrbolek/u
 import { GroupLargeCard } from "../../Components/Group/GroupLargeCard"
 import { GroupAsyncActions } from "../../Queries/_groups"
 import { GroupEventsCalendarLazy } from "../../Components/Group/GroupEventsCalendarLazy"
+import { useState } from "react"
 
 const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst skupinu", success: "Načtení skupiny se povedlo"})
 export const GroupPage = ()  => {
     const {id} = useParams()
     const [onResolve, onReject] = validator(useDispatch())
     const [group, groupPromise] = useFreshItem({id}, GroupAsyncActions.read)
-    groupPromise.then(onResolve, onReject)
+    const [loaded, setLoaded] = useState(null)
+    groupPromise.then(onResolve, onReject).then(setLoaded)
     
     // thenable je Promise, takze lze pouzit jeji metodu then; 
     // teto metode predame funkce pro zpracovani spravneho (uspesneho) a chyboveho cteni
-
     if (group) {
         return (
             <GroupLargeCard group={group}>
@@ -22,9 +23,12 @@ export const GroupPage = ()  => {
             </GroupLargeCard>
         )
     } else {
-        return (
-            <div>Loading...</div>
-        )
+        if (loaded) {
+            return (<div>Not found...</div>)
+        } else {
+            return (<div>Loading...</div>)
+        }
+        
     }
     
 }
