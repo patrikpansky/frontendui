@@ -26,7 +26,7 @@ const MeQuery = `{
 
 const MeAsyncAction = CreateAsyncActionFromQuery(MeQuery)
 
-export const LogButton = ({loginURL='/oauth/login2?redirect_uri=/', logoutURL='/oauth/logout'}) => {
+export const LogButton = ({loginURL='/oauth/login2?redirect_uri=/', logoutURL='/oauth/logout', showmeURL='/ug/user/view/'}) => {
     const dispatch = useDispatch()
     const [me, setMe] = useState(null)
     useEffect(() => {
@@ -46,6 +46,7 @@ export const LogButton = ({loginURL='/oauth/login2?redirect_uri=/', logoutURL='/
         return (   
             <div className="navbar-nav text-end m-0 p-0">
                 <a className="nav-link" href={logoutURL}>{me?.fullname}</a>
+                {showmeURL?<a className="nav-link" href={showmeURL+me?.id}><i className="bi bi-arrow-down-left-square" />Show Me</a>:null}
             </div>
         )
     } else {
