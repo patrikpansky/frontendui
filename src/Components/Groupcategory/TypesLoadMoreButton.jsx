@@ -29,6 +29,7 @@ query GroupcategoryTypes($id: UUID!, $skip: Int, $limit: Int, $where: GroupTypeI
     result: groupcategoryById(id: $id) {
         id
         types(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

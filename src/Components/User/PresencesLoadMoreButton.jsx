@@ -28,6 +28,7 @@ query UserPresences($id: UUID!, $skip: Int, $limit: Int, $where: PresenceInputFi
     result: userById(id: $id) {
         id
         presences(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

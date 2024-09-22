@@ -25,6 +25,7 @@ query UserExternalids($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         externalIds(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

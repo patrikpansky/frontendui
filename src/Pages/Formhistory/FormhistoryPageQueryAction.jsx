@@ -6,6 +6,7 @@ import {
 let FormhistoryQuery = `
     query FormhistoryPageQuery($id: UUID!) { 
         result: formHistoryById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -20,6 +21,7 @@ const FormhistoryScalarsFragment = `
     fragment FormhistoryScalarsFragment on RequestHistoryGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const FormhistoryScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -46,9 +49,11 @@ const FormhistoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         request { 
+            __typename
             id
             name
             lastchange
@@ -57,6 +62,7 @@ const FormhistoryScalarsFragment = `
             gdpr
         }
         form { 
+            __typename
             id
             name
             lastchange
@@ -66,6 +72,7 @@ const FormhistoryScalarsFragment = `
             status
         }
         state { 
+            __typename
             id
             created
             lastchange

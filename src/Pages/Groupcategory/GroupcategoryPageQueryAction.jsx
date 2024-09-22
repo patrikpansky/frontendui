@@ -6,6 +6,7 @@ import {
 let GroupcategoryQuery = `
     query GroupcategoryPageQuery($id: UUID!) { 
         result: groupCategoryById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const GroupcategoryScalarsFragment = `
     fragment GroupcategoryScalarsFragment on GroupCategoryGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const GroupcategoryScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const GroupcategoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -55,6 +59,7 @@ const GroupcategoryVectorsFragment = `
     fragment GroupcategoryVectorsFragment on GroupCategoryGQLModel { 
         id
         types { 
+            __typename
             id
             created
             lastchange

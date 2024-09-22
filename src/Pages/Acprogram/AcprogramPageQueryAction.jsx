@@ -6,6 +6,7 @@ import {
 let AcprogramQuery = `
     query AcprogramPageQuery($id: UUID!) { 
         result: acProgramById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcprogramScalarsFragment = `
     fragment AcprogramScalarsFragment on AcProgramGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcprogramScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,9 +49,11 @@ const AcprogramScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         type { 
+            __typename
             id
             name
             nameEn
@@ -56,6 +61,7 @@ const AcprogramScalarsFragment = `
             lastchange
         }
         grantsGroup { 
+            __typename
             id
             created
             lastchange
@@ -67,6 +73,7 @@ const AcprogramScalarsFragment = `
             typeId
         }
         licencedGroup { 
+            __typename
             id
             created
             lastchange
@@ -84,6 +91,7 @@ const AcprogramVectorsFragment = `
     fragment AcprogramVectorsFragment on AcProgramGQLModel { 
         id
         subjects { 
+            __typename
             id
             name
             nameEn
@@ -91,6 +99,7 @@ const AcprogramVectorsFragment = `
             lastchange
         }
         students { 
+            __typename
             id
             created
             lastchange

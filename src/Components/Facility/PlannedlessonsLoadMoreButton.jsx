@@ -25,6 +25,7 @@ query FacilityPlannedlessons($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: facilityById(id: $id) {
         id
         plannedLessons(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

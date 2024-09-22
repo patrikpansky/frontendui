@@ -25,6 +25,7 @@ query PublicationSubjects($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: publicationById(id: $id) {
         id
         subjects(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

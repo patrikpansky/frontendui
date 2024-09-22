@@ -6,6 +6,7 @@ import {
 let EventQuery = `
     query EventPageQuery($id: UUID!) { 
         result: eventById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -26,6 +27,7 @@ const EventScalarsFragment = `
     fragment EventScalarsFragment on EventGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -39,6 +41,7 @@ const EventScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -52,9 +55,11 @@ const EventScalarsFragment = `
             gdpr
         }
         rbac { 
+            __typename
             id
         }
         eventType { 
+            __typename
             id
             name
             nameEn
@@ -62,6 +67,7 @@ const EventScalarsFragment = `
             created
         }
         masterEvent { 
+            __typename
             id
             name
             nameEn
@@ -81,6 +87,7 @@ const EventVectorsFragment = `
     fragment EventVectorsFragment on EventGQLModel { 
         id
         groups { 
+            __typename
             id
             created
             lastchange
@@ -92,6 +99,7 @@ const EventVectorsFragment = `
             typeId
         }
         users { 
+            __typename
             id
             created
             lastchange
@@ -105,11 +113,13 @@ const EventVectorsFragment = `
             gdpr
         }
         presences { 
+            __typename
             id
             lastchange
             created
         }
         subEvents { 
+            __typename
             id
             name
             nameEn
@@ -123,6 +133,7 @@ const EventVectorsFragment = `
             enddate
         }
         externalIds { 
+            __typename
             id
             lastchange
             created

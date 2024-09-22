@@ -25,6 +25,7 @@ query SurveyQuestions($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: surveyById(id: $id) {
         id
         questions(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

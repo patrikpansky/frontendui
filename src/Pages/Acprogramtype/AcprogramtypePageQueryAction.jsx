@@ -6,6 +6,7 @@ import {
 let AcprogramtypeQuery = `
     query AcprogramtypePageQuery($id: UUID!) { 
         result: acProgramTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcprogramtypeScalarsFragment = `
     fragment AcprogramtypeScalarsFragment on AcProgramTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcprogramtypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const AcprogramtypeScalarsFragment = `
             gdpr
         }
         level { 
+            __typename
             id
             name
             nameEn
@@ -53,6 +57,7 @@ const AcprogramtypeScalarsFragment = `
             lastchange
         }
         form { 
+            __typename
             id
             name
             nameEn
@@ -60,6 +65,7 @@ const AcprogramtypeScalarsFragment = `
             lastchange
         }
         language { 
+            __typename
             id
             name
             nameEn
@@ -67,6 +73,7 @@ const AcprogramtypeScalarsFragment = `
             lastchange
         }
         title { 
+            __typename
             id
             name
             nameEn

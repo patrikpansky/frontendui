@@ -6,6 +6,7 @@ import {
 let GroupQuery = `
     query GroupPageQuery($id: UUID!) { 
         result: groupById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -24,6 +25,7 @@ const GroupScalarsFragment = `
     fragment GroupScalarsFragment on GroupGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -37,6 +39,7 @@ const GroupScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -50,6 +53,7 @@ const GroupScalarsFragment = `
             gdpr
         }
         grouptype { 
+            __typename
             id
             created
             lastchange
@@ -57,6 +61,7 @@ const GroupScalarsFragment = `
             nameEn
         }
         type { 
+            __typename
             id
             created
             lastchange
@@ -64,6 +69,7 @@ const GroupScalarsFragment = `
             nameEn
         }
         mastergroup { 
+            __typename
             id
             created
             lastchange
@@ -75,6 +81,7 @@ const GroupScalarsFragment = `
             typeId
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -84,6 +91,7 @@ const GroupVectorsFragment = `
     fragment GroupVectorsFragment on GroupGQLModel { 
         id
         events { 
+            __typename
             id
             name
             nameEn
@@ -97,6 +105,7 @@ const GroupVectorsFragment = `
             enddate
         }
         externalIds { 
+            __typename
             id
             lastchange
             created
@@ -106,6 +115,7 @@ const GroupVectorsFragment = `
             link
         }
         plannedLessons { 
+            __typename
             id
             name
             lastchange
@@ -114,6 +124,7 @@ const GroupVectorsFragment = `
             length
         }
         subgroups { 
+            __typename
             id
             created
             lastchange
@@ -125,6 +136,7 @@ const GroupVectorsFragment = `
             typeId
         }
         memberships { 
+            __typename
             id
             created
             lastchange
@@ -133,6 +145,7 @@ const GroupVectorsFragment = `
             enddate
         }
         roles { 
+            __typename
             id
             created
             lastchange

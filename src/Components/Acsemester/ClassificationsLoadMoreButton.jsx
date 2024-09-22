@@ -30,6 +30,7 @@ query AcsemesterClassifications($id: UUID!, $skip: Int, $limit: Int, $where: Cla
     result: acsemesterById(id: $id) {
         id
         classifications(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

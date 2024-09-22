@@ -6,6 +6,7 @@ import {
 let FacilityQuery = `
     query FacilityPageQuery($id: UUID!) { 
         result: facilityById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -26,6 +27,7 @@ const FacilityScalarsFragment = `
     fragment FacilityScalarsFragment on FacilityGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -39,6 +41,7 @@ const FacilityScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -52,6 +55,7 @@ const FacilityScalarsFragment = `
             gdpr
         }
         type { 
+            __typename
             id
             name
             nameEn
@@ -59,6 +63,7 @@ const FacilityScalarsFragment = `
             created
         }
         eventState { 
+            __typename
             id
             name
             nameEn
@@ -66,6 +71,7 @@ const FacilityScalarsFragment = `
             created
         }
         masterFacility { 
+            __typename
             id
             name
             nameEn
@@ -79,6 +85,7 @@ const FacilityScalarsFragment = `
             geolocation
         }
         group { 
+            __typename
             id
             created
             lastchange
@@ -96,6 +103,7 @@ const FacilityVectorsFragment = `
     fragment FacilityVectorsFragment on FacilityGQLModel { 
         id
         externalIds { 
+            __typename
             id
             lastchange
             created
@@ -105,6 +113,7 @@ const FacilityVectorsFragment = `
             link
         }
         subFacilities { 
+            __typename
             id
             name
             nameEn
@@ -118,6 +127,7 @@ const FacilityVectorsFragment = `
             geolocation
         }
         plannedLessons { 
+            __typename
             id
             name
             lastchange

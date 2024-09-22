@@ -30,6 +30,7 @@ query EventPresences($id: UUID!, $skip: Int, $limit: Int, $where: PresenceInputF
     result: eventById(id: $id) {
         id
         presences(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

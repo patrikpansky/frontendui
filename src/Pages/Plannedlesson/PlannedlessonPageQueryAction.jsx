@@ -6,6 +6,7 @@ import {
 let PlannedlessonQuery = `
     query PlannedlessonPageQuery($id: UUID!) { 
         result: plannedLessonById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -21,6 +22,7 @@ const PlannedlessonScalarsFragment = `
     fragment PlannedlessonScalarsFragment on PlannedLessonGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const PlannedlessonScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const PlannedlessonScalarsFragment = `
             gdpr
         }
         rbacObject { 
+            __typename
             id
         }
         type { 
+            __typename
             id
             name
             nameEn
@@ -57,6 +62,7 @@ const PlannedlessonScalarsFragment = `
             lastchange
         }
         linkedTo { 
+            __typename
             id
             name
             lastchange
@@ -65,6 +71,7 @@ const PlannedlessonScalarsFragment = `
             length
         }
         event { 
+            __typename
             id
             name
             nameEn
@@ -78,6 +85,7 @@ const PlannedlessonScalarsFragment = `
             enddate
         }
         topic { 
+            __typename
             id
             name
             nameEn
@@ -86,12 +94,14 @@ const PlannedlessonScalarsFragment = `
             order
         }
         semester { 
+            __typename
             id
             created
             lastchange
             order
         }
         plan { 
+            __typename
             id
             name
             lastchange
@@ -104,6 +114,7 @@ const PlannedlessonVectorsFragment = `
     fragment PlannedlessonVectorsFragment on PlannedLessonGQLModel { 
         id
         linkedWith { 
+            __typename
             id
             name
             lastchange
@@ -112,6 +123,7 @@ const PlannedlessonVectorsFragment = `
             length
         }
         users { 
+            __typename
             id
             created
             lastchange
@@ -125,6 +137,7 @@ const PlannedlessonVectorsFragment = `
             gdpr
         }
         groups { 
+            __typename
             id
             created
             lastchange
@@ -136,6 +149,7 @@ const PlannedlessonVectorsFragment = `
             typeId
         }
         facilities { 
+            __typename
             id
             name
             nameEn

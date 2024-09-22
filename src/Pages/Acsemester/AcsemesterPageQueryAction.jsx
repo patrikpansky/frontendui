@@ -6,6 +6,7 @@ import {
 let AcsemesterQuery = `
     query AcsemesterPageQuery($id: UUID!) { 
         result: acSemesterById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -19,6 +20,7 @@ const AcsemesterScalarsFragment = `
     fragment AcsemesterScalarsFragment on AcSemesterGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const AcsemesterScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -45,6 +48,7 @@ const AcsemesterScalarsFragment = `
             gdpr
         }
         subject { 
+            __typename
             id
             name
             nameEn
@@ -52,6 +56,7 @@ const AcsemesterScalarsFragment = `
             lastchange
         }
         classificationType { 
+            __typename
             id
             name
             nameEn
@@ -65,6 +70,7 @@ const AcsemesterVectorsFragment = `
     fragment AcsemesterVectorsFragment on AcSemesterGQLModel { 
         id
         classifications { 
+            __typename
             id
             created
             lastchange
@@ -72,6 +78,7 @@ const AcsemesterVectorsFragment = `
             order
         }
         topics { 
+            __typename
             id
             name
             nameEn
@@ -80,6 +87,7 @@ const AcsemesterVectorsFragment = `
             order
         }
         plans { 
+            __typename
             id
             name
             lastchange

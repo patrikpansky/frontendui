@@ -6,6 +6,7 @@ import {
 let RolecategoryQuery = `
     query RolecategoryPageQuery($id: UUID!) { 
         result: roleCategoryById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const RolecategoryScalarsFragment = `
     fragment RolecategoryScalarsFragment on RoleCategoryGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const RolecategoryScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const RolecategoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -55,6 +59,7 @@ const RolecategoryVectorsFragment = `
     fragment RolecategoryVectorsFragment on RoleCategoryGQLModel { 
         id
         roleTypes { 
+            __typename
             id
             created
             lastchange

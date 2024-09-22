@@ -25,6 +25,7 @@ query UserStudies($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         studies(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

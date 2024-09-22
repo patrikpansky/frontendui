@@ -6,6 +6,7 @@ import {
 let StatemachineQuery = `
     query StatemachinePageQuery($id: UUID!) { 
         result: statemachineById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const StatemachineScalarsFragment = `
     fragment StatemachineScalarsFragment on StateMachineGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const StatemachineScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const StatemachineScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -55,6 +59,7 @@ const StatemachineVectorsFragment = `
     fragment StatemachineVectorsFragment on StateMachineGQLModel { 
         id
         states { 
+            __typename
             id
             created
             lastchange
@@ -63,6 +68,7 @@ const StatemachineVectorsFragment = `
             order
         }
         transitions { 
+            __typename
             id
             created
             lastchange

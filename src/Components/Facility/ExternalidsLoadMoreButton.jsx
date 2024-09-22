@@ -25,6 +25,7 @@ query FacilityExternalids($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: facilityById(id: $id) {
         id
         externalIds(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

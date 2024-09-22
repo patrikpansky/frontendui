@@ -25,6 +25,7 @@ query UserconnectionEdges($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userconnectionById(id: $id) {
         id
         edges(skip: $skip, limit: $limit, where: $where) {
+            __typename
             cursor
         }   
     }

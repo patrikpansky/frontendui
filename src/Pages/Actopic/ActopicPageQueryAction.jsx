@@ -6,6 +6,7 @@ import {
 let ActopicQuery = `
     query ActopicPageQuery($id: UUID!) { 
         result: acTopicById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -21,6 +22,7 @@ const ActopicScalarsFragment = `
     fragment ActopicScalarsFragment on AcTopicGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const ActopicScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,6 +50,7 @@ const ActopicScalarsFragment = `
             gdpr
         }
         semester { 
+            __typename
             id
             created
             lastchange
@@ -59,6 +63,7 @@ const ActopicVectorsFragment = `
     fragment ActopicVectorsFragment on AcTopicGQLModel { 
         id
         lessons { 
+            __typename
             id
             name
             nameEn

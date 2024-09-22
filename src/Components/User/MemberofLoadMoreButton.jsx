@@ -26,6 +26,7 @@ query UserMemberof($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         memberOf(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

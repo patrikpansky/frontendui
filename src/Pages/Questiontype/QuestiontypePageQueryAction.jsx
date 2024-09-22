@@ -6,6 +6,7 @@ import {
 let QuestiontypeQuery = `
     query QuestiontypePageQuery($id: UUID!) { 
         result: questionTypeById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -19,6 +20,7 @@ const QuestiontypeScalarsFragment = `
     fragment QuestiontypeScalarsFragment on QuestionTypeGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const QuestiontypeScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange

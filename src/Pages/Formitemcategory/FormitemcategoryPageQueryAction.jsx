@@ -6,6 +6,7 @@ import {
 let FormitemcategoryQuery = `
     query FormitemcategoryPageQuery($id: UUID!) { 
         result: formItemCategoryById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -20,6 +21,7 @@ const FormitemcategoryScalarsFragment = `
     fragment FormitemcategoryScalarsFragment on FormItemCategoryGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const FormitemcategoryScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const FormitemcategoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -55,6 +59,7 @@ const FormitemcategoryVectorsFragment = `
     fragment FormitemcategoryVectorsFragment on FormItemCategoryGQLModel { 
         id
         types { 
+            __typename
             id
             name
             lastchange

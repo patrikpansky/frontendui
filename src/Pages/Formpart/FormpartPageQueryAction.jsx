@@ -6,6 +6,7 @@ import {
 let FormpartQuery = `
     query FormpartPageQuery($id: UUID!) { 
         result: formPartById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -21,6 +22,7 @@ const FormpartScalarsFragment = `
     fragment FormpartScalarsFragment on FormPartGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const FormpartScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const FormpartScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         section { 
+            __typename
             id
             name
             lastchange
@@ -64,6 +69,7 @@ const FormpartVectorsFragment = `
     fragment FormpartVectorsFragment on FormPartGQLModel { 
         id
         items { 
+            __typename
             id
             name
             lastchange

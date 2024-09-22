@@ -25,6 +25,7 @@ query AcsemesterTopics($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: acsemesterById(id: $id) {
         id
         topics(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

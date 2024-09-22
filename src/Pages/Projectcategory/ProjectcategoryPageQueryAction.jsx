@@ -6,6 +6,7 @@ import {
 let ProjectcategoryQuery = `
     query ProjectcategoryPageQuery($id: UUID!) { 
         result: projectCategoryById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const ProjectcategoryScalarsFragment = `
     fragment ProjectcategoryScalarsFragment on ProjectCategoryGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const ProjectcategoryScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const ProjectcategoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }

@@ -25,6 +25,7 @@ query UserRequests($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         requests(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

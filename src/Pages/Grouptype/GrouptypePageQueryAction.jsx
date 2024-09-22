@@ -6,6 +6,7 @@ import {
 let GrouptypeQuery = `
     query GrouptypePageQuery($id: UUID!) { 
         result: groupTypeById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const GrouptypeScalarsFragment = `
     fragment GrouptypeScalarsFragment on GroupTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const GrouptypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const GrouptypeScalarsFragment = `
             gdpr
         }
         category { 
+            __typename
             id
             created
             lastchange
@@ -53,6 +57,7 @@ const GrouptypeScalarsFragment = `
             nameEn
         }
         rbacobject { 
+            __typename
             id
         }
     }

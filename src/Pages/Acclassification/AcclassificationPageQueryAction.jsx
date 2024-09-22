@@ -6,6 +6,7 @@ import {
 let AcclassificationQuery = `
     query AcclassificationPageQuery($id: UUID!) { 
         result: acClassificationById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const AcclassificationScalarsFragment = `
     fragment AcclassificationScalarsFragment on AcClassificationGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcclassificationScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const AcclassificationScalarsFragment = `
             gdpr
         }
         student { 
+            __typename
             id
             created
             lastchange
@@ -59,12 +63,14 @@ const AcclassificationScalarsFragment = `
             gdpr
         }
         semester { 
+            __typename
             id
             created
             lastchange
             order
         }
         level { 
+            __typename
             id
             name
             nameEn

@@ -6,6 +6,7 @@ import {
 let SurveytypeQuery = `
     query SurveytypePageQuery($id: UUID!) { 
         result: surveyTypeById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -19,6 +20,7 @@ const SurveytypeScalarsFragment = `
     fragment SurveytypeScalarsFragment on SurveyTypeGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const SurveytypeScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange

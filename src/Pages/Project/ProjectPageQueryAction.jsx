@@ -6,6 +6,7 @@ import {
 let ProjectQuery = `
     query ProjectPageQuery($id: UUID!) { 
         result: projectById(id: $id) { 
+            __typename
             id
             name
             startdate
@@ -22,6 +23,7 @@ const ProjectScalarsFragment = `
     fragment ProjectScalarsFragment on ProjectGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -35,6 +37,7 @@ const ProjectScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -48,9 +51,11 @@ const ProjectScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         projectType { 
+            __typename
             id
             name
             nameEn
@@ -59,6 +64,7 @@ const ProjectScalarsFragment = `
             valid
         }
         group { 
+            __typename
             id
             created
             lastchange
@@ -70,6 +76,7 @@ const ProjectScalarsFragment = `
             typeId
         }
         team { 
+            __typename
             id
             created
             lastchange
@@ -87,6 +94,7 @@ const ProjectVectorsFragment = `
     fragment ProjectVectorsFragment on ProjectGQLModel { 
         id
         finances { 
+            __typename
             id
             name
             amount
@@ -95,6 +103,7 @@ const ProjectVectorsFragment = `
             valid
         }
         milestones { 
+            __typename
             id
             name
             startdate

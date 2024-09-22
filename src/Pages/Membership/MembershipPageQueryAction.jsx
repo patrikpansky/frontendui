@@ -6,6 +6,7 @@ import {
 let MembershipQuery = `
     query MembershipPageQuery($id: UUID!) { 
         result: membershipById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -21,6 +22,7 @@ const MembershipScalarsFragment = `
     fragment MembershipScalarsFragment on MembershipGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const MembershipScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,6 +50,7 @@ const MembershipScalarsFragment = `
             gdpr
         }
         user { 
+            __typename
             id
             created
             lastchange
@@ -60,6 +64,7 @@ const MembershipScalarsFragment = `
             gdpr
         }
         group { 
+            __typename
             id
             created
             lastchange
@@ -71,6 +76,7 @@ const MembershipScalarsFragment = `
             typeId
         }
         rbacobject { 
+            __typename
             id
         }
     }

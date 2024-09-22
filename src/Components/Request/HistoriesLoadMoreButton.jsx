@@ -25,6 +25,7 @@ query RequestHistories($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: requestById(id: $id) {
         id
         histories(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

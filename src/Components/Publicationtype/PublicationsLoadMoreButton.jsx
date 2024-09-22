@@ -25,6 +25,7 @@ query PublicationtypePublications($id: UUID!, $skip: Int, $limit: Int, $where: )
     result: publicationtypeById(id: $id) {
         id
         publications(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             created

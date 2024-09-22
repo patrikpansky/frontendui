@@ -29,6 +29,7 @@ query StatemachineStates($id: UUID!, $skip: Int, $limit: Int, $where: StateWhere
     result: statemachineById(id: $id) {
         id
         states(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

@@ -25,6 +25,7 @@ query PlannedlessonFacilities($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: plannedlessonById(id: $id) {
         id
         facilities(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

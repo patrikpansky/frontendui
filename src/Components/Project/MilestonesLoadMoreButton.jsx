@@ -25,6 +25,7 @@ query ProjectMilestones($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: projectById(id: $id) {
         id
         milestones(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             startdate

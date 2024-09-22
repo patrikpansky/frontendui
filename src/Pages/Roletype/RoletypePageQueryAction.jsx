@@ -6,6 +6,7 @@ import {
 let RoletypeQuery = `
     query RoletypePageQuery($id: UUID!) { 
         result: roleTypeById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const RoletypeScalarsFragment = `
     fragment RoletypeScalarsFragment on RoleTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const RoletypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const RoletypeScalarsFragment = `
             gdpr
         }
         category { 
+            __typename
             id
             created
             lastchange
@@ -53,6 +57,7 @@ const RoletypeScalarsFragment = `
             nameEn
         }
         rbacobject { 
+            __typename
             id
         }
     }

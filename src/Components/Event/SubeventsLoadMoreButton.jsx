@@ -30,6 +30,7 @@ query EventSubevents($id: UUID!, $skip: Int, $limit: Int, $where: EventInputFilt
     result: eventById(id: $id) {
         id
         subEvents(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

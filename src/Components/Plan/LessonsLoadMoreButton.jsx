@@ -25,6 +25,7 @@ query PlanLessons($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: planById(id: $id) {
         id
         lessons(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

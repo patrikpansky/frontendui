@@ -6,6 +6,7 @@ import {
 let FacilitytypeQuery = `
     query FacilitytypePageQuery($id: UUID!) { 
         result: facilityTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const FacilitytypeScalarsFragment = `
     fragment FacilitytypeScalarsFragment on FacilityTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const FacilitytypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

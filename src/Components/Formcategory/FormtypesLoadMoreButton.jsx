@@ -25,6 +25,7 @@ query FormcategoryFormtypes($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: formcategoryById(id: $id) {
         id
         formTypes(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

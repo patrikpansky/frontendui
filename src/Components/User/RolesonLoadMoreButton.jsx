@@ -25,6 +25,7 @@ query UserRoleson($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         rolesOn(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

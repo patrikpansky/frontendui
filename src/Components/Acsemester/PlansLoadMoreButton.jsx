@@ -25,6 +25,7 @@ query AcsemesterPlans($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: acsemesterById(id: $id) {
         id
         plans(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

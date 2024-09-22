@@ -25,6 +25,7 @@ query MilestonePrevious($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: milestoneById(id: $id) {
         id
         previous(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             startdate

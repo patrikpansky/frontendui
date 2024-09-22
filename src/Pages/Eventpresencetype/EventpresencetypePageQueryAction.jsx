@@ -6,6 +6,7 @@ import {
 let EventpresencetypeQuery = `
     query EventpresencetypePageQuery($id: UUID!) { 
         result: eventPresenceTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const EventpresencetypeScalarsFragment = `
     fragment EventpresencetypeScalarsFragment on PresenceTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const EventpresencetypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

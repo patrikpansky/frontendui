@@ -29,6 +29,7 @@ query GroupMemberships($id: UUID!, $skip: Int, $limit: Int, $where: MembershipIn
     result: groupById(id: $id) {
         id
         memberships(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

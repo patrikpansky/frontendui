@@ -6,6 +6,7 @@ import {
 let AcprogramtitletypeQuery = `
     query AcprogramtitletypePageQuery($id: UUID!) { 
         result: acProgramTitleTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcprogramtitletypeScalarsFragment = `
     fragment AcprogramtitletypeScalarsFragment on AcProgramTitleTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcprogramtitletypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

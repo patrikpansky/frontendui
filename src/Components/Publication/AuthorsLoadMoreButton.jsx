@@ -25,6 +25,7 @@ query PublicationAuthors($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: publicationById(id: $id) {
         id
         authors(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

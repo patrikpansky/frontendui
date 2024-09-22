@@ -25,6 +25,7 @@ query RoletypelistRoletypes($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: roletypelistById(id: $id) {
         id
         roletypes(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

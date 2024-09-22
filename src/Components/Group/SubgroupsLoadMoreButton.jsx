@@ -29,6 +29,7 @@ query GroupSubgroups($id: UUID!, $skip: Int, $limit: Int, $where: GroupInputWher
     result: groupById(id: $id) {
         id
         subgroups(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

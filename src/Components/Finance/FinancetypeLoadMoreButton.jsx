@@ -25,6 +25,7 @@ query FinanceFinancetype($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: financeById(id: $id) {
         id
         financeType(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

@@ -6,6 +6,7 @@ import {
 let QuestionQuery = `
     query QuestionPageQuery($id: UUID!) { 
         result: questionById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -20,6 +21,7 @@ const QuestionScalarsFragment = `
     fragment QuestionScalarsFragment on QuestionGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const QuestionScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -46,12 +49,14 @@ const QuestionScalarsFragment = `
             gdpr
         }
         survey { 
+            __typename
             id
             name
             lastchange
             created
         }
         type { 
+            __typename
             id
             name
             lastchange
@@ -64,6 +69,7 @@ const QuestionVectorsFragment = `
     fragment QuestionVectorsFragment on QuestionGQLModel { 
         id
         answers { 
+            __typename
             id
             lastchange
             created
@@ -72,6 +78,7 @@ const QuestionVectorsFragment = `
             expired
         }
         values { 
+            __typename
             id
             name
             lastchange

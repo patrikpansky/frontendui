@@ -6,6 +6,7 @@ import {
 let FinancetypeQuery = `
     query FinancetypePageQuery($id: UUID!) { 
         result: financeTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -21,6 +22,7 @@ const FinancetypeScalarsFragment = `
     fragment FinancetypeScalarsFragment on FinanceTypeGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const FinancetypeScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const FinancetypeScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         category { 
+            __typename
             id
             name
             nameEn
@@ -63,6 +68,7 @@ const FinancetypeVectorsFragment = `
     fragment FinancetypeVectorsFragment on FinanceTypeGQLModel { 
         id
         finances { 
+            __typename
             id
             name
             amount

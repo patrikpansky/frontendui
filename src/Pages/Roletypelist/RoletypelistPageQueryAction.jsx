@@ -6,6 +6,7 @@ import {
 let RoletypelistQuery = `
     query RoletypelistPageQuery($id: UUID!) { 
         result: roleTypeListById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -18,6 +19,7 @@ const RoletypelistScalarsFragment = `
     fragment RoletypelistScalarsFragment on RoleTypeListGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -31,6 +33,7 @@ const RoletypelistScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -50,6 +53,7 @@ const RoletypelistVectorsFragment = `
     fragment RoletypelistVectorsFragment on RoleTypeListGQLModel { 
         id
         roletypes { 
+            __typename
             id
             created
             lastchange

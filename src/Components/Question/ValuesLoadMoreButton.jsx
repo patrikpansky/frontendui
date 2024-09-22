@@ -25,6 +25,7 @@ query QuestionValues($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: questionById(id: $id) {
         id
         values(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

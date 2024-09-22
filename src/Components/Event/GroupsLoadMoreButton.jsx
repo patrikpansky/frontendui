@@ -25,6 +25,7 @@ query EventGroups($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: eventById(id: $id) {
         id
         groups(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

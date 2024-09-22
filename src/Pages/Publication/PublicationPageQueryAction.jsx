@@ -6,6 +6,7 @@ import {
 let PublicationQuery = `
     query PublicationPageQuery($id: UUID!) { 
         result: publicationById(id: $id) { 
+            __typename
             id
             name
             created
@@ -23,6 +24,7 @@ const PublicationScalarsFragment = `
     fragment PublicationScalarsFragment on PublicationGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -36,6 +38,7 @@ const PublicationScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -49,6 +52,7 @@ const PublicationScalarsFragment = `
             gdpr
         }
         publicationtype { 
+            __typename
             id
             name
             created
@@ -61,6 +65,7 @@ const PublicationVectorsFragment = `
     fragment PublicationVectorsFragment on PublicationGQLModel { 
         id
         authors { 
+            __typename
             id
             name
             lastchange
@@ -69,6 +74,7 @@ const PublicationVectorsFragment = `
             valid
         }
         subjects { 
+            __typename
             id
             name
             nameEn

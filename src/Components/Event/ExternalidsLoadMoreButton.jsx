@@ -25,6 +25,7 @@ query EventExternalids($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: eventById(id: $id) {
         id
         externalIds(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

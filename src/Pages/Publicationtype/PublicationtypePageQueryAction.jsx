@@ -6,6 +6,7 @@ import {
 let PublicationtypeQuery = `
     query PublicationtypePageQuery($id: UUID!) { 
         result: publicationTypeById(id: $id) { 
+            __typename
             id
             name
             created
@@ -19,6 +20,7 @@ const PublicationtypeScalarsFragment = `
     fragment PublicationtypeScalarsFragment on PublicationTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const PublicationtypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -51,6 +54,7 @@ const PublicationtypeVectorsFragment = `
     fragment PublicationtypeVectorsFragment on PublicationTypeGQLModel { 
         id
         publications { 
+            __typename
             id
             name
             created

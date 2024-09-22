@@ -25,6 +25,7 @@ query ProjectFinances($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: projectById(id: $id) {
         id
         finances(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             amount

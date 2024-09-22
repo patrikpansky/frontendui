@@ -6,6 +6,7 @@ import {
 let UserQuery = `
     query UserPageQuery($id: UUID!) { 
         result: userById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -26,6 +27,7 @@ const UserScalarsFragment = `
     fragment UserScalarsFragment on UserGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -39,6 +41,7 @@ const UserScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -52,6 +55,7 @@ const UserScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
     }
@@ -61,6 +65,7 @@ const UserVectorsFragment = `
     fragment UserVectorsFragment on UserGQLModel { 
         id
         events { 
+            __typename
             id
             name
             nameEn
@@ -74,11 +79,13 @@ const UserVectorsFragment = `
             enddate
         }
         presences { 
+            __typename
             id
             lastchange
             created
         }
         externalIds { 
+            __typename
             id
             lastchange
             created
@@ -88,6 +95,7 @@ const UserVectorsFragment = `
             link
         }
         requests { 
+            __typename
             id
             name
             lastchange
@@ -96,12 +104,14 @@ const UserVectorsFragment = `
             gdpr
         }
         studies { 
+            __typename
             id
             created
             lastchange
             semester
         }
         classifications { 
+            __typename
             id
             created
             lastchange
@@ -109,6 +119,7 @@ const UserVectorsFragment = `
             order
         }
         plannedLessons { 
+            __typename
             id
             name
             lastchange
@@ -117,6 +128,7 @@ const UserVectorsFragment = `
             length
         }
         authorPublications { 
+            __typename
             id
             name
             lastchange
@@ -125,6 +137,7 @@ const UserVectorsFragment = `
             valid
         }
         answers { 
+            __typename
             id
             lastchange
             created
@@ -133,6 +146,7 @@ const UserVectorsFragment = `
             expired
         }
         rolesOn { 
+            __typename
             id
             created
             lastchange
@@ -141,6 +155,7 @@ const UserVectorsFragment = `
             enddate
         }
         memberships { 
+            __typename
             id
             created
             lastchange
@@ -149,6 +164,7 @@ const UserVectorsFragment = `
             enddate
         }
         membership { 
+            __typename
             id
             created
             lastchange
@@ -157,6 +173,7 @@ const UserVectorsFragment = `
             enddate
         }
         roles { 
+            __typename
             id
             created
             lastchange
@@ -165,6 +182,7 @@ const UserVectorsFragment = `
             enddate
         }
         memberOf { 
+            __typename
             id
             created
             lastchange

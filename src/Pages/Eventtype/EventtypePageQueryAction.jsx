@@ -6,6 +6,7 @@ import {
 let EventtypeQuery = `
     query EventtypePageQuery($id: UUID!) { 
         result: eventTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const EventtypeScalarsFragment = `
     fragment EventtypeScalarsFragment on EventTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const EventtypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

@@ -28,6 +28,7 @@ query GroupEvents($id: UUID!, $skip: Int, $limit: Int, $where: UGEventInputFilte
     result: groupById(id: $id) {
         id
         events(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

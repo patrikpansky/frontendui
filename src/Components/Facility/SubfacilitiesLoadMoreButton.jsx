@@ -25,6 +25,7 @@ query FacilitySubfacilities($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: facilityById(id: $id) {
         id
         subFacilities(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

@@ -6,6 +6,7 @@ import {
 let AcprogramstudentstateQuery = `
     query AcprogramstudentstatePageQuery($id: UUID!) { 
         result: acProgramStudentStateById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcprogramstudentstateScalarsFragment = `
     fragment AcprogramstudentstateScalarsFragment on AcProgramStudentStateGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcprogramstudentstateScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

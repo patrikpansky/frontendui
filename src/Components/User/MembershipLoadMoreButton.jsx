@@ -29,6 +29,7 @@ query UserMembership($id: UUID!, $skip: Int, $limit: Int, $where: MembershipInpu
     result: userById(id: $id) {
         id
         membership(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

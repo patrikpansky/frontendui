@@ -26,6 +26,7 @@ query EventUsers($id: UUID!, $skip: Int, $limit: Int, $where: PresenceInputFilte
     result: eventById(id: $id) {
         id
         users(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

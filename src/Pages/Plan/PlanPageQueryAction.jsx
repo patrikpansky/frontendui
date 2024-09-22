@@ -6,6 +6,7 @@ import {
 let PlanQuery = `
     query PlanPageQuery($id: UUID!) { 
         result: planById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -19,6 +20,7 @@ const PlanScalarsFragment = `
     fragment PlanScalarsFragment on PlanGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const PlanScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -45,9 +48,11 @@ const PlanScalarsFragment = `
             gdpr
         }
         rbacObject { 
+            __typename
             id
         }
         semester { 
+            __typename
             id
             created
             lastchange
@@ -60,6 +65,7 @@ const PlanVectorsFragment = `
     fragment PlanVectorsFragment on PlanGQLModel { 
         id
         lessons { 
+            __typename
             id
             name
             lastchange

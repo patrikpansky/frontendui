@@ -6,6 +6,7 @@ import {
 let ExternalidtypeQuery = `
     query ExternalidtypePageQuery($id: UUID!) { 
         result: externalidtypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const ExternalidtypeScalarsFragment = `
     fragment ExternalidtypeScalarsFragment on ExternalIdTypeGQLModel { 
         id
         changedBy { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const ExternalidtypeScalarsFragment = `
             gdpr
         }
         createdBy { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const ExternalidtypeScalarsFragment = `
             gdpr
         }
         category { 
+            __typename
             id
             name
             nameEn

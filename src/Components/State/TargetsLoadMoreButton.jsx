@@ -29,6 +29,7 @@ query StateTargets($id: UUID!, $skip: Int, $limit: Int, $where: StateTransitionW
     result: stateById(id: $id) {
         id
         targets(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

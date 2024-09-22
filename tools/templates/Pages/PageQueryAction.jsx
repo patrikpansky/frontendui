@@ -6,6 +6,7 @@ import {
 let {{Name name}}Query = `
     query {{Name name}}PageQuery($id: UUID!) { 
         result: {{./name}}(id: $id) { 
+            __typename
     {{#each targetType.fields }}
         {{#if isScalar}}
             {{./name}}
@@ -22,6 +23,7 @@ const {{Name name}}ScalarsFragment = `
 {{#each targetType.fields }}
     {{#if isObject}} 
         {{./name}} { 
+            __typename
         {{#each targetType.fields }}
             {{#if isScalar}}
             {{./name}}
@@ -39,6 +41,7 @@ const {{Name name}}VectorsFragment = `
 {{#each targetType.fields }}
     {{#if isVector}} 
         {{./name}} { 
+            __typename
         {{#each targetType.fields }}
             {{#if isScalar}}
             {{./name}}

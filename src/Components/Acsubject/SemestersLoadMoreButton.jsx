@@ -25,6 +25,7 @@ query AcsubjectSemesters($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: acsubjectById(id: $id) {
         id
         semesters(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

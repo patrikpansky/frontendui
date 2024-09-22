@@ -6,6 +6,7 @@ import {
 let AcprogrammessageQuery = `
     query AcprogrammessagePageQuery($id: UUID!) { 
         result: acProgramMessageById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -21,6 +22,7 @@ const AcprogrammessageScalarsFragment = `
     fragment AcprogrammessageScalarsFragment on AcProgramMessageGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const AcprogrammessageScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,6 +50,7 @@ const AcprogrammessageScalarsFragment = `
             gdpr
         }
         student { 
+            __typename
             id
             created
             lastchange
@@ -60,6 +64,7 @@ const AcprogrammessageScalarsFragment = `
             gdpr
         }
         program { 
+            __typename
             id
             name
             nameEn

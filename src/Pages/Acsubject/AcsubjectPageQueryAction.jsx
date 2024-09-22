@@ -6,6 +6,7 @@ import {
 let AcsubjectQuery = `
     query AcsubjectPageQuery($id: UUID!) { 
         result: acSubjectById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcsubjectScalarsFragment = `
     fragment AcsubjectScalarsFragment on AcSubjectGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcsubjectScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,6 +49,7 @@ const AcsubjectScalarsFragment = `
             gdpr
         }
         program { 
+            __typename
             id
             name
             nameEn
@@ -53,6 +57,7 @@ const AcsubjectScalarsFragment = `
             lastchange
         }
         grants { 
+            __typename
             id
             created
             lastchange
@@ -70,12 +75,14 @@ const AcsubjectVectorsFragment = `
     fragment AcsubjectVectorsFragment on AcSubjectGQLModel { 
         id
         semesters { 
+            __typename
             id
             created
             lastchange
             order
         }
         publication { 
+            __typename
             id
             name
             created

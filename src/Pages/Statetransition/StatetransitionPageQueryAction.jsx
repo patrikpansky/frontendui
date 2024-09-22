@@ -6,6 +6,7 @@ import {
 let StatetransitionQuery = `
     query StatetransitionPageQuery($id: UUID!) { 
         result: statetransitionById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -20,6 +21,7 @@ const StatetransitionScalarsFragment = `
     fragment StatetransitionScalarsFragment on StateTransitionGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const StatetransitionScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -46,9 +49,11 @@ const StatetransitionScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         source { 
+            __typename
             id
             created
             lastchange
@@ -57,6 +62,7 @@ const StatetransitionScalarsFragment = `
             order
         }
         target { 
+            __typename
             id
             created
             lastchange
@@ -65,6 +71,7 @@ const StatetransitionScalarsFragment = `
             order
         }
         statemachine { 
+            __typename
             id
             created
             lastchange

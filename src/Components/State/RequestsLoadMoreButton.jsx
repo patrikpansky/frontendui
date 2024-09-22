@@ -25,6 +25,7 @@ query StateRequests($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: stateById(id: $id) {
         id
         requests(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

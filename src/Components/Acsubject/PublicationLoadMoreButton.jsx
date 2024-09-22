@@ -25,6 +25,7 @@ query AcsubjectPublication($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: acsubjectById(id: $id) {
         id
         publication(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             created

@@ -28,6 +28,7 @@ query UserEvents($id: UUID!, $skip: Int, $limit: Int, $where: UGEventInputFilter
     result: userById(id: $id) {
         id
         events(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

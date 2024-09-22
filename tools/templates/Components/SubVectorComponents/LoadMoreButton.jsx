@@ -28,6 +28,7 @@ query {{ Name masterType.name }}{{Name name}}($id: UUID!, $skip: Int, $limit: In
     result: {{ name masterType.name }}ById(id: $id) {
         id
         {{./name}}(skip: $skip, limit: $limit, where: $where) {
+            __typename
     {{#each targetType.fields}}            
         {{#if isScalar}}
             {{./name}}

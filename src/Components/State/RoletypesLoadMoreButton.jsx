@@ -26,6 +26,7 @@ query StateRoletypes($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: stateById(id: $id) {
         id
         roletypes(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

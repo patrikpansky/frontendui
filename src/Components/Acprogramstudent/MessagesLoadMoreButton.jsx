@@ -30,6 +30,7 @@ query AcprogramstudentMessages($id: UUID!, $skip: Int, $limit: Int, $where: Prog
     result: acprogramstudentById(id: $id) {
         id
         messages(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

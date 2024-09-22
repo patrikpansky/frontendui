@@ -6,6 +6,7 @@ import {
 let AnswerQuery = `
     query AnswerPageQuery($id: UUID!) { 
         result: answerById(id: $id) { 
+            __typename
             id
             lastchange
             created
@@ -21,6 +22,7 @@ const AnswerScalarsFragment = `
     fragment AnswerScalarsFragment on AnswerGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const AnswerScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,6 +50,7 @@ const AnswerScalarsFragment = `
             gdpr
         }
         user { 
+            __typename
             id
             created
             lastchange
@@ -60,6 +64,7 @@ const AnswerScalarsFragment = `
             gdpr
         }
         question { 
+            __typename
             id
             name
             lastchange

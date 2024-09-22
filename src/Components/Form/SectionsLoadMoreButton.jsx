@@ -25,6 +25,7 @@ query FormSections($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: formById(id: $id) {
         id
         sections(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

@@ -29,6 +29,7 @@ query RolecategoryRoletypes($id: UUID!, $skip: Int, $limit: Int, $where: RoleTyp
     result: rolecategoryById(id: $id) {
         id
         roleTypes(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

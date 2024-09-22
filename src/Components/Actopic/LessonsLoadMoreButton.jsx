@@ -25,6 +25,7 @@ query ActopicLessons($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: actopicById(id: $id) {
         id
         lessons(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             nameEn

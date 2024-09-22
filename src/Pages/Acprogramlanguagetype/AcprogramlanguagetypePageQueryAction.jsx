@@ -6,6 +6,7 @@ import {
 let AcprogramlanguagetypeQuery = `
     query AcprogramlanguagetypePageQuery($id: UUID!) { 
         result: acProgramLanguageTypeById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const AcprogramlanguagetypeScalarsFragment = `
     fragment AcprogramlanguagetypeScalarsFragment on AcProgramLanguageTypeGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const AcprogramlanguagetypeScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange

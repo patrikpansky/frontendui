@@ -6,6 +6,7 @@ import {
 let RequestQuery = `
     query RequestPageQuery($id: UUID!) { 
         result: requestById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -21,6 +22,7 @@ const RequestScalarsFragment = `
     fragment RequestScalarsFragment on RequestGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const RequestScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const RequestScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         creator { 
+            __typename
             id
             created
             lastchange
@@ -63,6 +68,7 @@ const RequestScalarsFragment = `
             gdpr
         }
         state { 
+            __typename
             id
             created
             lastchange
@@ -71,6 +77,7 @@ const RequestScalarsFragment = `
             order
         }
         form { 
+            __typename
             id
             name
             lastchange
@@ -86,6 +93,7 @@ const RequestVectorsFragment = `
     fragment RequestVectorsFragment on RequestGQLModel { 
         id
         histories { 
+            __typename
             id
             name
             lastchange

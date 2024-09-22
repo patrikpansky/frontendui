@@ -6,6 +6,7 @@ import {
 let MilestoneQuery = `
     query MilestonePageQuery($id: UUID!) { 
         result: milestoneById(id: $id) { 
+            __typename
             id
             name
             startdate
@@ -22,6 +23,7 @@ const MilestoneScalarsFragment = `
     fragment MilestoneScalarsFragment on MilestoneGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -35,6 +37,7 @@ const MilestoneScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -48,9 +51,11 @@ const MilestoneScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         project { 
+            __typename
             id
             name
             startdate
@@ -66,6 +71,7 @@ const MilestoneVectorsFragment = `
     fragment MilestoneVectorsFragment on MilestoneGQLModel { 
         id
         previous { 
+            __typename
             id
             name
             startdate
@@ -75,6 +81,7 @@ const MilestoneVectorsFragment = `
             valid
         }
         nexts { 
+            __typename
             id
             name
             startdate

@@ -25,6 +25,7 @@ query ProjecttypeProjects($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: projecttypeById(id: $id) {
         id
         projects(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             startdate

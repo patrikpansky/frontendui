@@ -29,6 +29,7 @@ query UserRoles($id: UUID!, $skip: Int, $limit: Int, $where: RoleInputWhereFilte
     result: userById(id: $id) {
         id
         roles(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

@@ -25,6 +25,7 @@ query GroupconnectionEdges($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: groupconnectionById(id: $id) {
         id
         edges(skip: $skip, limit: $limit, where: $where) {
+            __typename
             cursor
         }   
     }

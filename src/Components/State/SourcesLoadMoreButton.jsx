@@ -29,6 +29,7 @@ query StateSources($id: UUID!, $skip: Int, $limit: Int, $where: StateTransitionW
     result: stateById(id: $id) {
         id
         sources(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

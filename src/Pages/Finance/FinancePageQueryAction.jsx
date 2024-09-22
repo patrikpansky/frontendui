@@ -6,6 +6,7 @@ import {
 let FinanceQuery = `
     query FinancePageQuery($id: UUID!) { 
         result: financeById(id: $id) { 
+            __typename
             id
             name
             amount
@@ -21,6 +22,7 @@ const FinanceScalarsFragment = `
     fragment FinanceScalarsFragment on FinanceGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const FinanceScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const FinanceScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         project { 
+            __typename
             id
             name
             startdate
@@ -65,6 +70,7 @@ const FinanceVectorsFragment = `
     fragment FinanceVectorsFragment on FinanceGQLModel { 
         id
         financeType { 
+            __typename
             id
             name
             nameEn

@@ -25,6 +25,7 @@ query FormpartItems($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: formpartById(id: $id) {
         id
         items(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

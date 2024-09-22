@@ -6,6 +6,7 @@ import {
 let FinancecategoryQuery = `
     query FinancecategoryPageQuery($id: UUID!) { 
         result: financeCategoryById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -20,6 +21,7 @@ const FinancecategoryScalarsFragment = `
     fragment FinancecategoryScalarsFragment on FinanceCategoryGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -33,6 +35,7 @@ const FinancecategoryScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -46,9 +49,11 @@ const FinancecategoryScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         userId { 
+            __typename
             id
             created
             lastchange

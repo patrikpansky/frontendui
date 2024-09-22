@@ -6,6 +6,7 @@ import {
 let SurveyQuery = `
     query SurveyPageQuery($id: UUID!) { 
         result: surveyById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -19,6 +20,7 @@ const SurveyScalarsFragment = `
     fragment SurveyScalarsFragment on SurveyGQLModel { 
         id
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -32,6 +34,7 @@ const SurveyScalarsFragment = `
             gdpr
         }
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -51,6 +54,7 @@ const SurveyVectorsFragment = `
     fragment SurveyVectorsFragment on SurveyGQLModel { 
         id
         questions { 
+            __typename
             id
             name
             lastchange

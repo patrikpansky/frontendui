@@ -6,6 +6,7 @@ import {
 let StatementofworkQuery = `
     query StatementofworkPageQuery($id: UUID!) { 
         result: statementOfWorkById(id: $id) { 
+            __typename
             id
             lastchange
             startdate
@@ -21,6 +22,7 @@ const StatementofworkScalarsFragment = `
     fragment StatementofworkScalarsFragment on StatementOfWorkGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const StatementofworkScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const StatementofworkScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         project { 
+            __typename
             id
             name
             startdate
@@ -59,6 +64,7 @@ const StatementofworkScalarsFragment = `
             valid
         }
         event { 
+            __typename
             id
             name
             nameEn

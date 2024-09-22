@@ -29,6 +29,7 @@ query GroupRoles($id: UUID!, $skip: Int, $limit: Int, $where: RoleInputWhereFilt
     result: groupById(id: $id) {
         id
         roles(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

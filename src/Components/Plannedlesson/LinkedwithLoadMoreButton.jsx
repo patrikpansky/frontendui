@@ -26,6 +26,7 @@ query PlannedlessonLinkedwith($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: plannedlessonById(id: $id) {
         id
         linkedWith(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             name
             lastchange

@@ -6,6 +6,7 @@ import {
 let StateQuery = `
     query StatePageQuery($id: UUID!) { 
         result: stateById(id: $id) { 
+            __typename
             id
             created
             lastchange
@@ -21,6 +22,7 @@ const StateScalarsFragment = `
     fragment StateScalarsFragment on StateGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const StateScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,9 +50,11 @@ const StateScalarsFragment = `
             gdpr
         }
         rbacobject { 
+            __typename
             id
         }
         statemachine { 
+            __typename
             id
             created
             lastchange
@@ -63,6 +68,7 @@ const StateVectorsFragment = `
     fragment StateVectorsFragment on StateGQLModel { 
         id
         requests { 
+            __typename
             id
             name
             lastchange
@@ -71,6 +77,7 @@ const StateVectorsFragment = `
             gdpr
         }
         sources { 
+            __typename
             id
             created
             lastchange
@@ -78,6 +85,7 @@ const StateVectorsFragment = `
             nameEn
         }
         targets { 
+            __typename
             id
             created
             lastchange
@@ -85,6 +93,7 @@ const StateVectorsFragment = `
             nameEn
         }
         roletypes { 
+            __typename
             id
             created
             lastchange

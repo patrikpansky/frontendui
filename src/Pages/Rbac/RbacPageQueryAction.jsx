@@ -6,6 +6,7 @@ import {
 let RbacQuery = `
     query RbacPageQuery($id: UUID!) { 
         result: rbacById(id: $id) { 
+            __typename
             id
          ...RbacScalarsFragment
          ...RbacVectorsFragment    
@@ -22,6 +23,7 @@ const RbacVectorsFragment = `
     fragment RbacVectorsFragment on RBACObjectGQLModel { 
         id
         roles { 
+            __typename
             id
             created
             lastchange

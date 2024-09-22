@@ -25,6 +25,7 @@ query UserAnswers($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: userById(id: $id) {
         id
         answers(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             lastchange
             created

@@ -6,6 +6,7 @@ import {
 let AclessonQuery = `
     query AclessonPageQuery($id: UUID!) { 
         result: acLessonById(id: $id) { 
+            __typename
             id
             name
             nameEn
@@ -21,6 +22,7 @@ const AclessonScalarsFragment = `
     fragment AclessonScalarsFragment on AcLessonGQLModel { 
         id
         createdby { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const AclessonScalarsFragment = `
             gdpr
         }
         changedby { 
+            __typename
             id
             created
             lastchange
@@ -47,6 +50,7 @@ const AclessonScalarsFragment = `
             gdpr
         }
         type { 
+            __typename
             id
             name
             nameEn
@@ -54,6 +58,7 @@ const AclessonScalarsFragment = `
             lastchange
         }
         topic { 
+            __typename
             id
             name
             nameEn

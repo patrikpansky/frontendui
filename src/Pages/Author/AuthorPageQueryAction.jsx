@@ -6,6 +6,7 @@ import {
 let AuthorQuery = `
     query AuthorPageQuery($id: UUID!) { 
         result: authorById(id: $id) { 
+            __typename
             id
             name
             lastchange
@@ -21,6 +22,7 @@ const AuthorScalarsFragment = `
     fragment AuthorScalarsFragment on PublicationAuthorGQLModel { 
         id
         user { 
+            __typename
             id
             created
             lastchange
@@ -34,6 +36,7 @@ const AuthorScalarsFragment = `
             gdpr
         }
         publication { 
+            __typename
             id
             name
             created

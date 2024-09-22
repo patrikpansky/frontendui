@@ -26,6 +26,7 @@ query RbacobjectRoles($id: UUID!, $skip: Int, $limit: Int, $where: ) {
     result: rbacobjectById(id: $id) {
         id
         roles(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange

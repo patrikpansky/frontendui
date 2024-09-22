@@ -30,6 +30,7 @@ query AcprogramStudents($id: UUID!, $skip: Int, $limit: Int, $where: ProgramStud
     result: acprogramById(id: $id) {
         id
         students(skip: $skip, limit: $limit, where: $where) {
+            __typename
             id
             created
             lastchange
