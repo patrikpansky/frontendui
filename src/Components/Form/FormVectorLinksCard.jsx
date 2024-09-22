@@ -6,7 +6,7 @@ import { FormCardBody } from './FormCardBody';
 export const FormVectorLinksCard = ({ form, children, label="" }) => {
     return (
         <FormCardCapsule form={ form } label={label} >
-            <ProxyLink to={"/auto/form/sections/" + form.id } >sections</ProxyLink><br />
+            <ProxyLink to={"/all/form/sections/" + form.id } >sections</ProxyLink><br />
         </FormCardCapsule>        
     )
 }

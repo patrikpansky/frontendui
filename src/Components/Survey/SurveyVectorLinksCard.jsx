@@ -6,7 +6,7 @@ import { SurveyCardBody } from './SurveyCardBody';
 export const SurveyVectorLinksCard = ({ survey, children, label="" }) => {
     return (
         <SurveyCardCapsule survey={ survey } label={label} >
-            <ProxyLink to={"/auto/survey/questions/" + survey.id } >questions</ProxyLink><br />
+            <ProxyLink to={"/all/survey/questions/" + survey.id } >questions</ProxyLink><br />
         </SurveyCardCapsule>        
     )
 }

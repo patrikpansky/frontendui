@@ -6,7 +6,7 @@ import { RoletypelistCardBody } from './RoletypelistCardBody';
 export const RoletypelistVectorLinksCard = ({ roletypelist, children, label="" }) => {
     return (
         <RoletypelistCardCapsule roletypelist={ roletypelist } label={label} >
-            <ProxyLink to={"/auto/roletypelist/roletypes/" + roletypelist.id } >roletypes</ProxyLink><br />
+            <ProxyLink to={"/all/roletypelist/roletypes/" + roletypelist.id } >roletypes</ProxyLink><br />
         </RoletypelistCardCapsule>        
     )
 }

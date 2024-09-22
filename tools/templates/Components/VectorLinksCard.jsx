@@ -8,7 +8,7 @@ export const {{Name name}}VectorLinksCard = ({ {{name name}}, children, label=""
         <{{Name name}}CardCapsule {{name name}}={ {{name name}} } label={label} >
 {{#each targetType.fields}}                    
 {{#if isVector}}
-            <ProxyLink to={"/auto/{{name ../name}}/{{name name}}/" + {{name ../name}}.id } >{{name name}}</ProxyLink><br />
+            <ProxyLink to={"/all/{{name ../name}}/{{name name}}/" + {{name ../name}}.id } >{{name name}}</ProxyLink><br />
 {{/if}}
 {{/each}}
         </{{Name name}}CardCapsule>        

@@ -6,7 +6,7 @@ import { ActopicCardBody } from './ActopicCardBody';
 export const ActopicVectorLinksCard = ({ actopic, children, label="" }) => {
     return (
         <ActopicCardCapsule actopic={ actopic } label={label} >
-            <ProxyLink to={"/auto/actopic/lessons/" + actopic.id } >lessons</ProxyLink><br />
+            <ProxyLink to={"/all/actopic/lessons/" + actopic.id } >lessons</ProxyLink><br />
         </ActopicCardCapsule>        
     )
 }

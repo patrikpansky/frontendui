@@ -6,7 +6,7 @@ import { FormtypeCardBody } from './FormtypeCardBody';
 export const FormtypeVectorLinksCard = ({ formtype, children, label="" }) => {
     return (
         <FormtypeCardCapsule formtype={ formtype } label={label} >
-            <ProxyLink to={"/auto/formtype/forms/" + formtype.id } >forms</ProxyLink><br />
+            <ProxyLink to={"/all/formtype/forms/" + formtype.id } >forms</ProxyLink><br />
         </FormtypeCardCapsule>        
     )
 }

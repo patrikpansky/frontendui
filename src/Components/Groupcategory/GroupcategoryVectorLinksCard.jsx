@@ -6,7 +6,7 @@ import { GroupcategoryCardBody } from './GroupcategoryCardBody';
 export const GroupcategoryVectorLinksCard = ({ groupcategory, children, label="" }) => {
     return (
         <GroupcategoryCardCapsule groupcategory={ groupcategory } label={label} >
-            <ProxyLink to={"/auto/groupcategory/types/" + groupcategory.id } >types</ProxyLink><br />
+            <ProxyLink to={"/all/groupcategory/types/" + groupcategory.id } >types</ProxyLink><br />
         </GroupcategoryCardCapsule>        
     )
 }

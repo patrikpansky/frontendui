@@ -6,8 +6,8 @@ import { AcsubjectCardBody } from './AcsubjectCardBody';
 export const AcsubjectVectorLinksCard = ({ acsubject, children, label="" }) => {
     return (
         <AcsubjectCardCapsule acsubject={ acsubject } label={label} >
-            <ProxyLink to={"/auto/acsubject/semesters/" + acsubject.id } >semesters</ProxyLink><br />
-            <ProxyLink to={"/auto/acsubject/publication/" + acsubject.id } >publication</ProxyLink><br />
+            <ProxyLink to={"/all/acsubject/semesters/" + acsubject.id } >semesters</ProxyLink><br />
+            <ProxyLink to={"/all/acsubject/publication/" + acsubject.id } >publication</ProxyLink><br />
         </AcsubjectCardCapsule>        
     )
 }

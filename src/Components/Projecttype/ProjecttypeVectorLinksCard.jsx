@@ -6,7 +6,7 @@ import { ProjecttypeCardBody } from './ProjecttypeCardBody';
 export const ProjecttypeVectorLinksCard = ({ projecttype, children, label="" }) => {
     return (
         <ProjecttypeCardCapsule projecttype={ projecttype } label={label} >
-            <ProxyLink to={"/auto/projecttype/projects/" + projecttype.id } >projects</ProxyLink><br />
+            <ProxyLink to={"/all/projecttype/projects/" + projecttype.id } >projects</ProxyLink><br />
         </ProjecttypeCardCapsule>        
     )
 }

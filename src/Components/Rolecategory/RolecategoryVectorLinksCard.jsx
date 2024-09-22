@@ -6,7 +6,7 @@ import { RolecategoryCardBody } from './RolecategoryCardBody';
 export const RolecategoryVectorLinksCard = ({ rolecategory, children, label="" }) => {
     return (
         <RolecategoryCardCapsule rolecategory={ rolecategory } label={label} >
-            <ProxyLink to={"/auto/rolecategory/roletypes/" + rolecategory.id } >roletypes</ProxyLink><br />
+            <ProxyLink to={"/all/rolecategory/roletypes/" + rolecategory.id } >roletypes</ProxyLink><br />
         </RolecategoryCardCapsule>        
     )
 }

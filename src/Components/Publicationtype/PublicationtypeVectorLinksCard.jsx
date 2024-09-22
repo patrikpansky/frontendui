@@ -6,7 +6,7 @@ import { PublicationtypeCardBody } from './PublicationtypeCardBody';
 export const PublicationtypeVectorLinksCard = ({ publicationtype, children, label="" }) => {
     return (
         <PublicationtypeCardCapsule publicationtype={ publicationtype } label={label} >
-            <ProxyLink to={"/auto/publicationtype/publications/" + publicationtype.id } >publications</ProxyLink><br />
+            <ProxyLink to={"/all/publicationtype/publications/" + publicationtype.id } >publications</ProxyLink><br />
         </PublicationtypeCardCapsule>        
     )
 }

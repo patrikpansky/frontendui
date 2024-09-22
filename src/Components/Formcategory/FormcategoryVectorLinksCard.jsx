@@ -6,7 +6,7 @@ import { FormcategoryCardBody } from './FormcategoryCardBody';
 export const FormcategoryVectorLinksCard = ({ formcategory, children, label="" }) => {
     return (
         <FormcategoryCardCapsule formcategory={ formcategory } label={label} >
-            <ProxyLink to={"/auto/formcategory/formtypes/" + formcategory.id } >formtypes</ProxyLink><br />
+            <ProxyLink to={"/all/formcategory/formtypes/" + formcategory.id } >formtypes</ProxyLink><br />
         </FormcategoryCardCapsule>        
     )
 }

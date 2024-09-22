@@ -6,7 +6,7 @@ import { FinancetypeCardBody } from './FinancetypeCardBody';
 export const FinancetypeVectorLinksCard = ({ financetype, children, label="" }) => {
     return (
         <FinancetypeCardCapsule financetype={ financetype } label={label} >
-            <ProxyLink to={"/auto/financetype/finances/" + financetype.id } >finances</ProxyLink><br />
+            <ProxyLink to={"/all/financetype/finances/" + financetype.id } >finances</ProxyLink><br />
         </FinancetypeCardCapsule>        
     )
 }
