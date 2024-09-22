@@ -5,7 +5,7 @@ export const {{Name name}}MediumCardFragment = `
 fragment {{Name name}}MediumCardFragment on {{Name name}}GQLModel {
     {{#each returnType.fields }}
     {{#if isScalar}}
-        {{name name}}
+        {{./name}}
     {{/if}}
     {{/each}}
     }`

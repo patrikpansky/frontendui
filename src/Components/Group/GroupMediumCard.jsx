@@ -7,11 +7,11 @@ fragment GroupMediumCardFragment on GroupGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
         email
         abbreviation
         valid
-        typeid
+        typeId
     }`
 
 export const GroupMediumCardConstant = ({ group, children, label="" }) => {

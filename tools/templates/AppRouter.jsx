@@ -11,6 +11,7 @@ import {
 
 {{#each fields }}
 import { {{Name name}}Page } from "./Pages/{{Name name}}/{{Name name}}Page";
+import { {{Name name}}EditPage } from "./Pages/{{Name name}}/{{Name name}}EditPage";
 {{/each}}   
 
 {{#each fields }}
@@ -28,6 +29,7 @@ export const Routes = [
   {{#each fields }}
 
   { "path": "/auto/{{name name}}/view/:id", "element": <{{Name name}}Page /> },
+  { "path": "/auto/{{name name}}/edit/:id", "element": <{{Name name}}EditPage /> },
   {{#each returnType.fields}}
   {{#if isVector}}
   { "path": "/auto/{{name ../name}}/{{name name}}/:id", "element": <{{Name ../name}}{{Name name}}CardPage /> },

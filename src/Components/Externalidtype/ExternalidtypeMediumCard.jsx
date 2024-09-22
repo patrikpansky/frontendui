@@ -5,7 +5,7 @@ export const ExternalidtypeMediumCardFragment = `
 fragment ExternalidtypeMediumCardFragment on ExternalidtypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

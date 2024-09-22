@@ -5,7 +5,7 @@ export const FinancetypeMediumCardFragment = `
 fragment FinancetypeMediumCardFragment on FinancetypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
         valid

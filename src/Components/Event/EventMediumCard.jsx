@@ -5,13 +5,13 @@ export const EventMediumCardFragment = `
 fragment EventMediumCardFragment on EventGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
         duration
         description
         place
-        placeid
+        placeId
         startdate
         enddate
     }`

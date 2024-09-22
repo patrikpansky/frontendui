@@ -5,7 +5,7 @@ export const AclessonMediumCardFragment = `
 fragment AclessonMediumCardFragment on AclessonGQLModel {
         id
         name
-        nameen
+        nameEn
         created
         lastchange
         count

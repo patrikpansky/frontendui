@@ -7,7 +7,7 @@ fragment FormMediumCardFragment on FormGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
         valid
         status
     }`

@@ -7,7 +7,7 @@ fragment FormitemtypeMediumCardFragment on FormitemtypeGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
     }`
 
 export const FormitemtypeMediumCardConstant = ({ formitemtype, children, label="" }) => {

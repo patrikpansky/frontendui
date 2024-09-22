@@ -7,7 +7,7 @@ fragment RequestMediumCardFragment on RequestGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
         gdpr
     }`
 

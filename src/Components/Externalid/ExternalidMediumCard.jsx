@@ -6,9 +6,9 @@ fragment ExternalidMediumCardFragment on ExternalidGQLModel {
         id
         lastchange
         created
-        innerid
-        outerid
-        typename
+        innerId
+        outerId
+        typeName
         link
     }`
 

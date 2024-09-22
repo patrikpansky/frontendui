@@ -7,7 +7,7 @@ fragment RequesthistoryMediumCardFragment on RequesthistoryGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
     }`
 
 export const RequesthistoryMediumCardConstant = ({ requesthistory, children, label="" }) => {

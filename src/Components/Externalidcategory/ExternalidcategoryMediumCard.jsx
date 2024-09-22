@@ -5,7 +5,7 @@ export const ExternalidcategoryMediumCardFragment = `
 fragment ExternalidcategoryMediumCardFragment on ExternalidcategoryGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

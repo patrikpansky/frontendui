@@ -7,7 +7,7 @@ fragment StatetransitionMediumCardFragment on StatetransitionGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
     }`
 
 export const StatetransitionMediumCardConstant = ({ statetransition, children, label="" }) => {

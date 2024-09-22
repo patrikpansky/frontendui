@@ -7,7 +7,7 @@ fragment FormitemMediumCardFragment on FormitemGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
         order
         value
     }`

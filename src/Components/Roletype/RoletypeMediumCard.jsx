@@ -7,7 +7,7 @@ fragment RoletypeMediumCardFragment on RoletypeGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
     }`
 
 export const RoletypeMediumCardConstant = ({ roletype, children, label="" }) => {

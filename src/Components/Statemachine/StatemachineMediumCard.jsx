@@ -7,7 +7,7 @@ fragment StatemachineMediumCardFragment on StatemachineGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
     }`
 
 export const StatemachineMediumCardConstant = ({ statemachine, children, label="" }) => {

@@ -12,7 +12,7 @@ fragment UserMediumCardFragment on UserGQLModel {
         fullname
         email
         valid
-        isthisme
+        isThisMe
         gdpr
     }`
 

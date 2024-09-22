@@ -5,7 +5,7 @@ export const ProjectcategoryMediumCardFragment = `
 fragment ProjectcategoryMediumCardFragment on ProjectcategoryGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

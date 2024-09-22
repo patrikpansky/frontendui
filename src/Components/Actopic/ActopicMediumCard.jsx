@@ -5,7 +5,7 @@ export const ActopicMediumCardFragment = `
 fragment ActopicMediumCardFragment on ActopicGQLModel {
         id
         name
-        nameen
+        nameEn
         created
         lastchange
         order

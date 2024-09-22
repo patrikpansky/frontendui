@@ -7,7 +7,7 @@ fragment FormsectionMediumCardFragment on FormsectionGQLModel {
         name
         lastchange
         created
-        nameen
+        nameEn
         order
     }`
 

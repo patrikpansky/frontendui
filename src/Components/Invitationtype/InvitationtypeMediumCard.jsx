@@ -5,7 +5,7 @@ export const InvitationtypeMediumCardFragment = `
 fragment InvitationtypeMediumCardFragment on InvitationtypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

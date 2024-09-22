@@ -7,7 +7,7 @@ fragment GroupcategoryMediumCardFragment on GroupcategoryGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
     }`
 
 export const GroupcategoryMediumCardConstant = ({ groupcategory, children, label="" }) => {

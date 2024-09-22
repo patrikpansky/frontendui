@@ -5,7 +5,7 @@ export const EventtypeMediumCardFragment = `
 fragment EventtypeMediumCardFragment on EventtypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

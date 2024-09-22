@@ -7,7 +7,7 @@ fragment StateMediumCardFragment on StateGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
         order
     }`
 

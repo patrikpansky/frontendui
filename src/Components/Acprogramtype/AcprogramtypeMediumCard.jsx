@@ -5,7 +5,7 @@ export const AcprogramtypeMediumCardFragment = `
 fragment AcprogramtypeMediumCardFragment on AcprogramtypeGQLModel {
         id
         name
-        nameen
+        nameEn
         created
         lastchange
     }`

@@ -5,7 +5,7 @@ export const ProjecttypeMediumCardFragment = `
 fragment ProjecttypeMediumCardFragment on ProjecttypeGQLModel {
         id
         name
-        nameen
+        nameEn
         created
         lastchange
         valid

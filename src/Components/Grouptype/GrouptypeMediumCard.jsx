@@ -7,7 +7,7 @@ fragment GrouptypeMediumCardFragment on GrouptypeGQLModel {
         created
         lastchange
         name
-        nameen
+        nameEn
     }`
 
 export const GrouptypeMediumCardConstant = ({ grouptype, children, label="" }) => {

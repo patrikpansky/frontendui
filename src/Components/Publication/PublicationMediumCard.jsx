@@ -7,7 +7,7 @@ fragment PublicationMediumCardFragment on PublicationGQLModel {
         name
         created
         lastchange
-        publisheddate
+        publishedDate
         place
         reference
         valid

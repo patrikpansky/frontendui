@@ -5,7 +5,7 @@ export const FacilitytypeMediumCardFragment = `
 fragment FacilitytypeMediumCardFragment on FacilitytypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

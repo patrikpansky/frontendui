@@ -5,7 +5,7 @@ export const AclessontypeMediumCardFragment = `
 fragment AclessontypeMediumCardFragment on AclessontypeGQLModel {
         id
         name
-        nameen
+        nameEn
         created
         lastchange
     }`

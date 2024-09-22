@@ -5,7 +5,7 @@ export const PresencetypeMediumCardFragment = `
 fragment PresencetypeMediumCardFragment on PresencetypeGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
     }`

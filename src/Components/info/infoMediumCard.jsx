@@ -7,7 +7,7 @@ fragment infoMediumCardFragment on infoGQLModel {
         before
         first
         last
-        hasnextpage
+        hasNextPage
     }`
 
 export const infoMediumCardConstant = ({ pageinfo, children, label="" }) => {

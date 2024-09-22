@@ -5,7 +5,7 @@ export const FacilityMediumCardFragment = `
 fragment FacilityMediumCardFragment on FacilityGQLModel {
         id
         name
-        nameen
+        nameEn
         lastchange
         created
         label
