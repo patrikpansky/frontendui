@@ -34,6 +34,7 @@ This is loaded, parsed somehow and used as source to generate source codes.
 This does not works for all graphql cases. There are some limitations:
 - It is expected that Query type has ById fields with one argument (id: UUID!) which returns optional single object, this set of fields is used to generated pages.
 - It is expected that graphql types are named like UserGQLModel, GroupGQLModel etc.
+- ...
 
 ## What generated source code offers
 
