@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/groupcategory/view/";
+let linkBase = "/all/groupcategory/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const GroupcategoryLink = ({ groupcategory, children}) => {
     // console.log("GroupcategoryLargeCard", groupcategory)

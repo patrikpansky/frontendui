@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/event/view/";
+let linkBase = "/all/event/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const EventLink = ({ event, children}) => {
     // console.log("EventLargeCard", event)

@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/acprogramleveltype/view/";
+let linkBase = "/all/acprogramleveltype/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const AcprogramleveltypeLink = ({ acprogramleveltype, children}) => {
     // console.log("AcprogramleveltypeLargeCard", acprogramleveltype)

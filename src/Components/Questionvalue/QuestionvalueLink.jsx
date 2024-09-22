@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/questionvalue/view/";
+let linkBase = "/all/questionvalue/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const QuestionvalueLink = ({ questionvalue, children}) => {
     // console.log("QuestionvalueLargeCard", questionvalue)

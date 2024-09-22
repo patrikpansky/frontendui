@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/formpart/view/";
+let linkBase = "/all/formpart/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FormpartLink = ({ formpart, children}) => {
     // console.log("FormpartLargeCard", formpart)

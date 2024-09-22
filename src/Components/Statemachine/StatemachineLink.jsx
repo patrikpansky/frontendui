@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/statemachine/view/";
+let linkBase = "/all/statemachine/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const StatemachineLink = ({ statemachine, children}) => {
     // console.log("StatemachineLargeCard", statemachine)

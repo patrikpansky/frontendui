@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/facilitytype/view/";
+let linkBase = "/all/facilitytype/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FacilitytypeLink = ({ facilitytype, children}) => {
     // console.log("FacilitytypeLargeCard", facilitytype)

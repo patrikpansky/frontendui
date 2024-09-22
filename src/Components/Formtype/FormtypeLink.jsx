@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/formtype/view/";
+let linkBase = "/all/formtype/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FormtypeLink = ({ formtype, children}) => {
     // console.log("FormtypeLargeCard", formtype)

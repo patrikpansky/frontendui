@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/groupconnection/view/";
+let linkBase = "/all/groupconnection/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const GroupconnectionLink = ({ groupconnection, children}) => {
     // console.log("GroupconnectionLargeCard", groupconnection)

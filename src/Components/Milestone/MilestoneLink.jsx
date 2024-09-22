@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/milestone/view/";
+let linkBase = "/all/milestone/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const MilestoneLink = ({ milestone, children}) => {
     // console.log("MilestoneLargeCard", milestone)

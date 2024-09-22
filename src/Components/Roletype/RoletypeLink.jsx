@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/roletype/view/";
+let linkBase = "/all/roletype/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const RoletypeLink = ({ roletype, children}) => {
     // console.log("RoletypeLargeCard", roletype)

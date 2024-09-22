@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/formitem/view/";
+let linkBase = "/all/formitem/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FormitemLink = ({ formitem, children}) => {
     // console.log("FormitemLargeCard", formitem)

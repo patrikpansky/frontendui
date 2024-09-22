@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/survey/view/";
+let linkBase = "/all/survey/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const SurveyLink = ({ survey, children}) => {
     // console.log("SurveyLargeCard", survey)

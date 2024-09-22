@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/finance/view/";
+let linkBase = "/all/finance/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FinanceLink = ({ finance, children}) => {
     // console.log("FinanceLargeCard", finance)

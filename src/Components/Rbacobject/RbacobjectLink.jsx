@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/rbacobject/view/";
+let linkBase = "/all/rbacobject/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const RbacobjectLink = ({ rbacobject, children}) => {
     // console.log("RbacobjectLargeCard", rbacobject)

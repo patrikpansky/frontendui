@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/pageinfo/view/";
+let linkBase = "/all/pageinfo/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const infoLink = ({ pageinfo, children}) => {
     // console.log("infoLargeCard", pageinfo)

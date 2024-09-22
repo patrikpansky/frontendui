@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/state/view/";
+let linkBase = "/all/state/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const StateLink = ({ state, children}) => {
     // console.log("StateLargeCard", state)

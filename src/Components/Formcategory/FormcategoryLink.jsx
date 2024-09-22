@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/formcategory/view/";
+let linkBase = "/all/formcategory/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const FormcategoryLink = ({ formcategory, children}) => {
     // console.log("FormcategoryLargeCard", formcategory)

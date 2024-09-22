@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/userconnection/view/";
+let linkBase = "/all/userconnection/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const UserconnectionLink = ({ userconnection, children}) => {
     // console.log("UserconnectionLargeCard", userconnection)

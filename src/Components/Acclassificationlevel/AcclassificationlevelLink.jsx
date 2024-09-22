@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/acclassificationlevel/view/";
+let linkBase = "/all/acclassificationlevel/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const AcclassificationlevelLink = ({ acclassificationlevel, children}) => {
     // console.log("AcclassificationlevelLargeCard", acclassificationlevel)

@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/userconnectionedge/view/";
+let linkBase = "/all/userconnectionedge/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const UserconnectionedgeLink = ({ userconnectionedge, children}) => {
     // console.log("UserconnectionedgeLargeCard", userconnectionedge)

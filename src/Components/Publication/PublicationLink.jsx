@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/publication/view/";
+let linkBase = "/all/publication/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const PublicationLink = ({ publication, children}) => {
     // console.log("PublicationLargeCard", publication)

@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/externalid/view/";
+let linkBase = "/all/externalid/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const ExternalidLink = ({ externalid, children}) => {
     // console.log("ExternalidLargeCard", externalid)

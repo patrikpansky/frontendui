@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/invitationtype/view/";
+let linkBase = "/all/invitationtype/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const InvitationtypeLink = ({ invitationtype, children}) => {
     // console.log("InvitationtypeLargeCard", invitationtype)

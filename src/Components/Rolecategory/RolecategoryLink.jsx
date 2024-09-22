@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/rolecategory/view/";
+let linkBase = "/all/rolecategory/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const RolecategoryLink = ({ rolecategory, children}) => {
     // console.log("RolecategoryLargeCard", rolecategory)

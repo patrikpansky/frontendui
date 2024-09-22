@@ -1,6 +1,6 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-let linkBase = "/auto/plannedlesson/view/";
+let linkBase = "/all/plannedlesson/view/";
 export const setLinkBase = (value) => linkBase = value;
 export const PlannedlessonLink = ({ plannedlesson, children}) => {
     // console.log("PlannedlessonLargeCard", plannedlesson)
