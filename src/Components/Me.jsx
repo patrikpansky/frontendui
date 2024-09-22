@@ -46,7 +46,7 @@ export const LogButton = ({loginURL='/oauth/login2?redirect_uri=/', logoutURL='/
         return (   
             <div className="navbar-nav text-end m-0 p-0">
                 <a className="nav-link" href={logoutURL}>{me?.fullname}</a>
-                {showmeURL?<a className="nav-link" href={showmeURL+me?.id}><i className="bi bi-arrow-down-left-square" />Show Me</a>:null}
+                {showmeURL?<a className="nav-link" href={showmeURL+me?.id}><i className="bi bi-arrow-down-left-square" />Já</a>:null}
             </div>
         )
     } else {
