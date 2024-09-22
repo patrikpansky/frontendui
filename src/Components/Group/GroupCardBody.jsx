@@ -1,36 +1,53 @@
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
+import { GroupLink } from './GroupLink'
+import { UserLink } from '../User/UserLink'
+
+
+const Roles = ({roles, valid=true}) => {
+    const filtered = (valid===null)?roles:roles.filter(
+        r => r?.valid === valid
+    )
+    return (
+        <>
+            {filtered.map(
+                r => <Row key={r.id}>
+                    <Col><b>{r?.roletype?.name}</b></Col>
+                    <Col><UserLink user={r?.user} /></Col>
+                </Row>
+            )}
+        </>
+    )
+}
+
 export const GroupCardBody = ({ group, children }) => {
     return (
         <>
+            {group?.mastergroup?
+                <Row>
+                    <Col><b>Nadřízený</b></Col>
+                    <Col><GroupLink group={group?.mastergroup} /></Col>
+                </Row>
+            :""}            
+
+
+            <Roles roles={group?.roles||[]} />
+
             <Row>
-                <Col><b>id</b></Col><Col>{ group?.id }</Col>
+                <Col><b>Email</b></Col><Col>{ group?.email }</Col>
             </Row>
             <Row>
-                <Col><b>created</b></Col><Col>{ group?.created }</Col>
+                <Col><b>Zkratka</b></Col><Col>{ group?.abbreviation }</Col>
             </Row>
             <Row>
-                <Col><b>lastchange</b></Col><Col>{ group?.lastchange }</Col>
+                <Col><b>Platná</b></Col><Col>{ group?.valid }</Col>
             </Row>
             <Row>
-                <Col><b>name</b></Col><Col>{ group?.name }</Col>
+                <Col><b>Typ</b></Col>
+                <Col>{group?.grouptype?.name}</Col>
             </Row>
-            <Row>
-                <Col><b>nameen</b></Col><Col>{ group?.nameen }</Col>
-            </Row>
-            <Row>
-                <Col><b>email</b></Col><Col>{ group?.email }</Col>
-            </Row>
-            <Row>
-                <Col><b>abbreviation</b></Col><Col>{ group?.abbreviation }</Col>
-            </Row>
-            <Row>
-                <Col><b>valid</b></Col><Col>{ group?.valid }</Col>
-            </Row>
-            <Row>
-                <Col><b>typeid</b></Col><Col>{ group?.typeid }</Col>
-            </Row>
+
             {children}
         </>
     )

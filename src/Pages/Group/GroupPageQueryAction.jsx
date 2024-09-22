@@ -134,6 +134,17 @@ const GroupVectorsFragment = `
             abbreviation
             valid
             typeId
+            roles { 
+                __typename
+                id
+                created
+                lastchange
+                valid
+                startdate
+                enddate
+                roletype { id name }
+                user { id fullname }
+            }
         }
         memberships { 
             __typename
@@ -152,6 +163,8 @@ const GroupVectorsFragment = `
             valid
             startdate
             enddate
+            roletype { id name }
+            user { id fullname }
         }
     }
 `
