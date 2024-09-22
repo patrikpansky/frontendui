@@ -1,44 +1,91 @@
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { useDispatch } from 'react-redux'
+import { GroupLink } from '../Group/GroupLink'
+
+const groupPriorityMap = {
+    "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"
+    "cd49e153-610c-11ed-bf19-001a7dda7110": 2, //"name": "fakulta"
+    "cd49e154-610c-11ed-bdbf-001a7dda7110": 3, //"name": "ústav"
+    "cd49e155-610c-11ed-bdbf-001a7dda7110": 4, //"name": "centrum"
+    "cd49e155-610c-11ed-844e-001a7dda7110": 5, //"name": "katedra"
+}
+const getPriority = (typeid) => {
+    const priority = groupPriorityMap[typeid]
+    return priority?priority: 20
+}
+
+const Membership = ({membership, valid=true}) => {
+    const filtered = (valid===null)?membership:membership.filter(
+        g => g?.valid === valid
+    )
+    const mapped = filtered.map(
+        m => m.group
+    )
+    const ordered = mapped.map(
+        g => ({...g, order: getPriority(g?.grouptype?.id)})
+    ).toSorted(
+        (a,b) => a.order - b.order
+    )
+    return (
+        <>
+            {ordered.map(
+                g => <Row key={g.id}>
+                    <Col>{g?.grouptype?.name}</Col>
+                    <Col><GroupLink group={g} /></Col>
+                </Row>
+            )}
+        </>
+    )
+}
+
+const UserGDPR = ({user}) => {
+    const dispatch = useDispatch()
+    const loadgdpr = () => {
+        dispatch(UserAsyncActions.readgdpr(user))
+    }
+    return (
+        <Row>
+            <Col>grpd</Col>
+            <Col>
+                {user?.gdpr?user?.gdpr:<button className='btn btn-sm btn-outline-success' onClick={loadgdpr}>Ukázat</button>}
+            </Col>
+        </Row>
+    )
+}
+
 
 export const UserCardBody = ({ user, children }) => {
     return (
         <>
             <Row>
-                <Col><b>id</b></Col><Col>{ user?.id }</Col>
+                <Col>Jméno</Col>
+                <Col>{user?.name}</Col>
             </Row>
             <Row>
-                <Col><b>created</b></Col><Col>{ user?.created }</Col>
+                <Col>Příjmení</Col>
+                <Col>{user?.surname}</Col>
             </Row>
             <Row>
-                <Col><b>lastchange</b></Col><Col>{ user?.lastchange }</Col>
+                <Col>
+                    Email
+                </Col>
+                <Col>
+                    <a href={"mailto:" + user?.email}>{user?.email}</a>
+                </Col>
             </Row>
             <Row>
-                <Col><b>name</b></Col><Col>{ user?.name }</Col>
+                <Col>
+                    Telefon
+                </Col>
+                <Col>
+                    <a href="tel:973211111">973 211 111</a>
+                </Col>
             </Row>
-            <Row>
-                <Col><b>firstname</b></Col><Col>{ user?.firstname }</Col>
-            </Row>
-            <Row>
-                <Col><b>surname</b></Col><Col>{ user?.surname }</Col>
-            </Row>
-            <Row>
-                <Col><b>fullname</b></Col><Col>{ user?.fullname }</Col>
-            </Row>
-            <Row>
-                <Col><b>email</b></Col><Col>{ user?.email }</Col>
-            </Row>
-            <Row>
-                <Col><b>valid</b></Col><Col>{ user?.valid }</Col>
-            </Row>
-            <Row>
-                <Col><b>isthisme</b></Col><Col>{ user?.isthisme }</Col>
-            </Row>
-            <Row>
-                <Col><b>gdpr</b></Col><Col>{ user?.gdpr }</Col>
-            </Row>
+            <UserGDPR user={user}/>
+
+            <Membership membership={user?.membership||[]} />
             {children}
         </>
     )
 }
-

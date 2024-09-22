@@ -171,6 +171,7 @@ const UserVectorsFragment = `
             valid
             startdate
             enddate
+            group { id name grouptype { name }}
         }
         roles { 
             __typename

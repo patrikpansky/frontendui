@@ -34,37 +34,12 @@ export const UserEditCard = ({ user, children, label=""}) => {
         <UserCardCapsule user={ user } label={label} >
             <Row>
                 <Col>
-                    <EditableAttributeText item={ user } attributeName="id" label="Id" asyncUpdater={ UserUpdateAsyncAction } />
+                    <EditableAttributeText item={ user } attributeName="name" label="Jméno" asyncUpdater={ UserUpdateAsyncAction } />
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <EditableAttributeText item={ user } attributeName="created" label="Created" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="lastchange" label="Lastchange" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="name" label="Name" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="firstname" label="Firstname" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="surname" label="Surname" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="fullname" label="Fullname" asyncUpdater={ UserUpdateAsyncAction } />
+                    <EditableAttributeText item={ user } attributeName="surname" label="Příjmení" asyncUpdater={ UserUpdateAsyncAction } />
                 </Col>
             </Row>
             <Row>
@@ -75,16 +50,6 @@ export const UserEditCard = ({ user, children, label=""}) => {
             <Row>
                 <Col>
                     <EditableAttributeText item={ user } attributeName="valid" label="Valid" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="isthisme" label="Isthisme" asyncUpdater={ UserUpdateAsyncAction } />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <EditableAttributeText item={ user } attributeName="gdpr" label="Gdpr" asyncUpdater={ UserUpdateAsyncAction } />
                 </Col>
             </Row>
             {children}

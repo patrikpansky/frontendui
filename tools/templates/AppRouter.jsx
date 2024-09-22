@@ -28,11 +28,11 @@ import {
 export const Routes = [
   {{#each fields }}
 
-  { "path": "/auto/{{name name}}/view/:id", "element": <{{Name name}}Page /> },
-  { "path": "/auto/{{name name}}/edit/:id", "element": <{{Name name}}EditPage /> },
+  { "path": "/all/{{name name}}/view/:id", "element": <{{Name name}}Page /> },
+  { "path": "/all/{{name name}}/edit/:id", "element": <{{Name name}}EditPage /> },
   {{#each returnType.fields}}
   {{#if isVector}}
-  { "path": "/auto/{{name ../name}}/{{name name}}/:id", "element": <{{Name ../name}}{{Name name}}CardPage /> },
+  { "path": "/all/{{name ../name}}/{{name name}}/:id", "element": <{{Name ../name}}{{Name name}}CardPage /> },
   {{/if}}    
   {{/each}}   
   {{/each}}   
