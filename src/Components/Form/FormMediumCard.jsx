@@ -1,55 +1,25 @@
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import { Col, Row } from 'react-bootstrap'
-import { FormLink } from './FormLink'
-import { RequestLink } from '../Request/RequestLink'
+import { FormCardCapsule } from './FormCardCapsule';
+import { FormCardBody } from './FormCardBody';
 
+export const FormMediumCardFragment = `
+fragment FormMediumCardFragment on FormGQLModel {
+        id
+        name
+        lastchange
+        created
+        nameen
+        valid
+        status
+    }`
 
-export const FormMediumCard = ({form, children}) => {
+export const FormMediumCardConstant = ({ form, children, label="" }) => {
     return (
-        <CardCapsule  title={<>Formulář <FormLink form={form} /></>}>
-            {(form?.request)?
-                <Row>
-                <Col>
-                    Patří k požadavku
-                </Col>
-                <Col>
-                    <RequestLink request={form?.request} />
-                </Col>
-                </Row>: ""
-            }
-            
-            <Row>
-                <Col>
-                    Vytvořeno
-                </Col>
-                <Col>
-                    {form?.created}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Vytvořil
-                </Col>
-                <Col>
-                    {form?.createby?.fullname}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Změněno
-                </Col>
-                <Col>
-                    {form?.lastchange}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Změnil
-                </Col>
-                <Col>
-                    {form?.changedby?.fullname}
-                </Col>
-            </Row>
-        </CardCapsule>
+        <FormCardCapsule form={ form } label={label} >
+            <FormCardBody form={ form }>
+                {children}
+            </FormCardBody>
+        </FormCardCapsule>        
     )
 }
+export let FormMediumCard = FormMediumCardConstant
+export const setMediumCard = (newMediumCard) => FormMediumCard = newMediumCard

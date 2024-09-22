@@ -1,37 +1,68 @@
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import { EventMediumCard } from './EventMediumCard'
-// import { EventMediumCard } from './EventMediumCard'
-// import { UserRolesCard } from './UserRolesCard'
-// import { UserRawCard } from './UserRawCard'
-// import { UserMediumCard } from './UserMediumCard'
+import { EventMediumCard } from './EventMediumCard';
+import { EventLargeCardLayout } from './EventLargeCardLayout';
+import { EventVectorLinksCard } from './EventVectorLinksCard';
 
-export const EventLargeCard = ({event, children}) => {
+/**/
+//  Event: Event
+/**/
+
+//  Createdby: User
+// import { User } from '../User/UserMediumCard';
+// createdby event
+
+//  Changedby: User
+// import { User } from '../User/UserMediumCard';
+// changedby event
+
+//  Rbac: Rbacobject
+// import { Rbacobject } from '../Rbacobject/RbacobjectMediumCard';
+// rbac event
+
+//  Eventtype: Eventtype
+// import { Eventtype } from '../Eventtype/EventtypeMediumCard';
+// eventtype event
+
+//  Masterevent: Event
+// import { Event } from '../Event/EventMediumCard';
+// masterevent event
+
+
+import { UserMediumCard as MediumCard5 } from '../User/UserMediumCard';
+// <MediumCard5 user={ event?.createdby }/>
+import { UserMediumCard as MediumCard6 } from '../User/UserMediumCard';
+// <MediumCard6 user={ event?.changedby }/>
+import { RbacobjectMediumCard as MediumCard8 } from '../Rbacobject/RbacobjectMediumCard';
+// <MediumCard8 rbacobject={ event?.rbac }/>
+import { EventtypeMediumCard as MediumCard17 } from '../Eventtype/EventtypeMediumCard';
+// <MediumCard17 eventtype={ event?.eventtype }/>
+import { EventMediumCard as MediumCard18 } from '../Event/EventMediumCard';
+// <MediumCard18 event={ event?.masterevent }/>
+
+/**
+ * Entity representing an event (calendar item)
+ */
+export const EventLargeCard = ({ event, children}) => {
+    // console.log("EventLargeCard", event)
     return (
-        <CardCapsule title={"Událost " + event?.name}>
-            <Row>
-                <Col md={3}>
-                    <EventMediumCard event={event} />
-                    {/* <UserMediumCard user={user}/> */}
-                </Col>
-                <Col md={6}>
-                    {children}
-                </Col>
-                <Col md={3}>
-                    {/* <UserRolesCard user={user}/> */}
-                    <EventMediumCard event={event} />
-                </Col>
-                
-            </Row>
-            <br />
-            <Row>
-                <Col>
-                    {/* <UserRawCard user={user}/> */}
-                    {JSON.stringify(event)}
-                </Col>
-            </Row>
-        </CardCapsule>
-
+        <EventLargeCardLayout event={ event } grandchildren={children}>
+            <EventMediumCard event={ event }/>
+            <EventVectorLinksCard  event={ event } />
+            { 
+                event?.createdby?<MediumCard5 user={ event?.createdby } label={"Createdby"} />:null
+            }
+            { 
+                event?.changedby?<MediumCard6 user={ event?.changedby } label={"Changedby"} />:null
+            }
+            { 
+                event?.rbac?<MediumCard8 rbacobject={ event?.rbac } label={"Rbac"} />:null
+            }
+            { 
+                event?.eventtype?<MediumCard17 eventtype={ event?.eventtype } label={"Eventtype"} />:null
+            }
+            { 
+                event?.masterevent?<MediumCard18 event={ event?.masterevent } label={"Masterevent"} />:null
+            }
+        </EventLargeCardLayout>
     )
 }
+

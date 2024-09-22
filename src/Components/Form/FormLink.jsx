@@ -1,3 +1,11 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
 
-export const FormLink = ({form, children}) => <ProxyLink to={"/forms/form/view/" + form?.id} >{children || form?.name}</ProxyLink>
+let linkBase = "/auto/form/view/";
+export const setLinkBase = (value) => linkBase = value;
+export const FormLink = ({ form, children}) => {
+    // console.log("FormLargeCard", form)
+    return (
+        <ProxyLink to={linkBase + form?.id}>{ form?.fullname || form?.name || form?.id}</ProxyLink>
+    )
+}
+

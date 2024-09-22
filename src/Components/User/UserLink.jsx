@@ -1,43 +1,11 @@
-/* eslint-disable react/prop-types */
-import { Dropdown } from "react-bootstrap";
-// import { ProxyLink } from "../ProxyLink";
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared/src";
-// import { Link as ProxyLink } from "react-router-dom";
-export const UserLink_ = ({user, children}) => {
+
+let linkBase = "/auto/user/view/";
+export const setLinkBase = (value) => linkBase = value;
+export const UserLink = ({ user, children}) => {
+    // console.log("UserLargeCard", user)
     return (
-        <ProxyLink to={"/ug/user/view/" + user?.id}>{children?children:user?.fullname}</ProxyLink>
+        <ProxyLink to={linkBase + user?.id}>{ user?.fullname || user?.name || user?.id}</ProxyLink>
     )
 }
 
-const UserMenuItems = {
-    "Editovat": "local:/user/view",
-    "Zobrazit": "local:/user/edit",
-
-}
-
-export const UserLink = ({user, children, menu=true}) => {
-    if (menu) {
-        return (
-            <Dropdown  className="d-inline" autoClose="outside" size="sm">
-                <UserLink_ user={user}>
-                    {children}
-                </UserLink_>
-                <Dropdown.Toggle split variant='secondary-outline' id="dropdown-basic" size="sm">
-                {/* ⋮ */}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/user/view/" + user?.id} >Zobrazit</ProxyLink></Dropdown.Item>
-                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/user/edit/" + user?.id} >Editovat</ProxyLink></Dropdown.Item>
-                    <Dropdown.Item as={"div"}><ProxyLink to={"/ug/userroles/edit/" + user?.id} >Editovat role</ProxyLink></Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>                
-            
-
-            )
-    } else {
-        return (
-            <UserLink_ user={user}>{children}</UserLink_>
-        )
-    }
-}

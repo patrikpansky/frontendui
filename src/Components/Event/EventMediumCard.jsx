@@ -1,24 +1,29 @@
-/* eslint-disable react/prop-types */
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import { EventCardCapsule } from './EventCardCapsule';
+import { EventCardBody } from './EventCardBody';
 
-export const EventMediumCard = ({event}) => {
+export const EventMediumCardFragment = `
+fragment EventMediumCardFragment on EventGQLModel {
+        id
+        name
+        nameen
+        lastchange
+        created
+        duration
+        description
+        place
+        placeid
+        startdate
+        enddate
+    }`
+
+export const EventMediumCardConstant = ({ event, children, label="" }) => {
     return (
-        <CardCapsule title={"Událost - atributy " + event?.name}>
-            
-            <Row>
-                <Col>Název</Col>
-                <Col>{event?.name}</Col>
-            </Row>
-            <Row>
-                <Col>Počátek</Col>
-                <Col>{event?.startdate}</Col>
-            </Row>
-            <Row>
-                <Col>Konec</Col>
-                <Col>{event?.enddate}</Col>
-            </Row>
-        </CardCapsule>
+        <EventCardCapsule event={ event } label={label} >
+            <EventCardBody event={ event }>
+                {children}
+            </EventCardBody>
+        </EventCardCapsule>        
     )
 }
+export let EventMediumCard = EventMediumCardConstant
+export const setMediumCard = (newMediumCard) => EventMediumCard = newMediumCard

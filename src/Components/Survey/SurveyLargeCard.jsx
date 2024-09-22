@@ -1,37 +1,41 @@
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
+import { SurveyMediumCard } from './SurveyMediumCard';
+import { SurveyLargeCardLayout } from './SurveyLargeCardLayout';
+import { SurveyVectorLinksCard } from './SurveyVectorLinksCard';
 
-const RawCard = ({survey}) => {
+/**/
+//  Survey: Survey
+/**/
+
+//  Changedby: User
+// import { User } from '../User/UserMediumCard';
+// changedby survey
+
+//  Createdby: User
+// import { User } from '../User/UserMediumCard';
+// createdby survey
+
+
+import { UserMediumCard as MediumCard3 } from '../User/UserMediumCard';
+// <MediumCard3 user={ survey?.changedby }/>
+import { UserMediumCard as MediumCard5 } from '../User/UserMediumCard';
+// <MediumCard5 user={ survey?.createdby }/>
+
+/**
+ * Entity representing a relation between an user and a group
+ */
+export const SurveyLargeCard = ({ survey, children}) => {
+    // console.log("SurveyLargeCard", survey)
     return (
-        <CardCapsule title="JSON data">
-            <JsonView data={survey} shouldExpandNode={allExpanded} style={defaultStyles} />
-        </CardCapsule>
+        <SurveyLargeCardLayout survey={ survey } grandchildren={children}>
+            <SurveyMediumCard survey={ survey }/>
+            <SurveyVectorLinksCard  survey={ survey } />
+            { 
+                survey?.changedby?<MediumCard3 user={ survey?.changedby } label={"Changedby"} />:null
+            }
+            { 
+                survey?.createdby?<MediumCard5 user={ survey?.createdby } label={"Createdby"} />:null
+            }
+        </SurveyLargeCardLayout>
     )
 }
 
-export const SurveyLargeCard = ({survey, children}) => {
-    return (
-        <CardCapsule  title={<>Anketa {survey?.name }</>}>
-        <Row>
-            <Col md={3}>
-            </Col>
-            <Col md={6}>
-                {children}
-            </Col>
-            <Col md={3}>
-            </Col>
-            
-        </Row>
-        <br />
-        <Row>
-            <Col>
-                <RawCard survey={survey}/>
-            </Col>
-        </Row>
-    </CardCapsule>
-
-    )
-}

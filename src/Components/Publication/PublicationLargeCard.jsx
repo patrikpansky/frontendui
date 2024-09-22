@@ -1,37 +1,50 @@
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
+import { PublicationMediumCard } from './PublicationMediumCard';
+import { PublicationLargeCardLayout } from './PublicationLargeCardLayout';
+import { PublicationVectorLinksCard } from './PublicationVectorLinksCard';
 
-const RawCard = ({publication}) => {
+/**/
+//  Publication: Publication
+/**/
+
+//  Createdby: User
+// import { User } from '../User/UserMediumCard';
+// createdby publication
+
+//  Changedby: User
+// import { User } from '../User/UserMediumCard';
+// changedby publication
+
+//  Publicationtype: Publicationtype
+// import { Publicationtype } from '../Publicationtype/PublicationtypeMediumCard';
+// publicationtype publication
+
+
+import { UserMediumCard as MediumCard4 } from '../User/UserMediumCard';
+// <MediumCard4 user={ publication?.createdby }/>
+import { UserMediumCard as MediumCard5 } from '../User/UserMediumCard';
+// <MediumCard5 user={ publication?.changedby }/>
+import { PublicationtypeMediumCard as MediumCard11 } from '../Publicationtype/PublicationtypeMediumCard';
+// <MediumCard11 publicationtype={ publication?.publicationtype }/>
+
+/**
+ * Entity representing a publication
+ */
+export const PublicationLargeCard = ({ publication, children}) => {
+    // console.log("PublicationLargeCard", publication)
     return (
-        <CardCapsule title="JSON data">
-            <JsonView data={publication} shouldExpandNode={allExpanded} style={defaultStyles} />
-        </CardCapsule>
+        <PublicationLargeCardLayout publication={ publication } grandchildren={children}>
+            <PublicationMediumCard publication={ publication }/>
+            <PublicationVectorLinksCard  publication={ publication } />
+            { 
+                publication?.createdby?<MediumCard4 user={ publication?.createdby } label={"Createdby"} />:null
+            }
+            { 
+                publication?.changedby?<MediumCard5 user={ publication?.changedby } label={"Changedby"} />:null
+            }
+            { 
+                publication?.publicationtype?<MediumCard11 publicationtype={ publication?.publicationtype } label={"Publicationtype"} />:null
+            }
+        </PublicationLargeCardLayout>
     )
 }
 
-export const PublicationLargeCard = ({publication, children}) => {
-    return (
-        <CardCapsule  title={<>Publikace {publication?.name }</>}>
-        <Row>
-            <Col md={3}>
-            </Col>
-            <Col md={6}>
-                {children}
-            </Col>
-            <Col md={3}>
-            </Col>
-            
-        </Row>
-        <br />
-        <Row>
-            <Col>
-                <RawCard publication={publication}/>
-            </Col>
-        </Row>
-    </CardCapsule>
-
-    )
-}

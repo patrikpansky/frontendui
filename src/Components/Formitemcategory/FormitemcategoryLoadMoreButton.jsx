@@ -1,0 +1,35 @@
+import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
+
+export const FormitemcategoryLoadMoreButtonFragment = `
+fragment FormitemcategoryLoadMoreButtonFragment on FormitemcategoryGQLModel {
+        id
+        types { 
+            id
+            name
+            lastchange
+            created
+            nameEn
+        }
+    }`
+
+export const FormitemcategoryLoadMoreButton = ({ formitemcategorys, children }) => {
+    const [skip, setSkip] = useState(0)
+    const [more, setMore] = useState(true)
+    const [loading, setLoading] = useState(false)
+
+    const onLoadMore = () => {
+
+    }
+    if (formitemcategorys.length === 0) {
+        return (
+            <button className="btn btn-outline-success w-100 " onClick={(e)=>{e.innerHTML = 'Více už toho opravdu není.'} }>{children || "Více toho není"}</button>
+        )
+    } else {
+        return (
+            <button className="btn btn-outline-success w-100 " onClick={onLoadMore}>{children || "Načíst více (neimplementováno)"}</button>
+        )        
+    }
+
+}
+

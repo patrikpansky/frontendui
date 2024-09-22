@@ -1,67 +1,77 @@
-import { CardCapsule } from '@hrbolek/uoisfrontend-shared/src'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
 import { RequestMediumCard } from './RequestMediumCard';
-import { RequestHistoryCard } from './RequestHistoryCard';
-import { RequestButtons } from './RequestButtons';
-import { RequestRights } from './RequestRights';
+import { RequestLargeCardLayout } from './RequestLargeCardLayout';
+import { RequestVectorLinksCard } from './RequestVectorLinksCard';
 
-const RawCard = ({request}) => {
+/**/
+//  Request: Request
+/**/
+
+//  Changedby: User
+// import { User } from '../User/UserMediumCard';
+// changedby request
+
+//  Createdby: User
+// import { User } from '../User/UserMediumCard';
+// createdby request
+
+//  Rbacobject: Rbacobject
+// import { Rbacobject } from '../Rbacobject/RbacobjectMediumCard';
+// rbacobject request
+
+//  Creator: User
+// import { User } from '../User/UserMediumCard';
+// creator request
+
+//  State: State
+// import { State } from '../State/StateMediumCard';
+// state request
+
+//  Form: Form
+// import { Form } from '../Form/FormMediumCard';
+// form request
+
+
+import { UserMediumCard as MediumCard2 } from '../User/UserMediumCard';
+// <MediumCard2 user={ request?.changedby }/>
+import { UserMediumCard as MediumCard5 } from '../User/UserMediumCard';
+// <MediumCard5 user={ request?.createdby }/>
+import { RbacobjectMediumCard as MediumCard7 } from '../Rbacobject/RbacobjectMediumCard';
+// <MediumCard7 rbacobject={ request?.rbacobject }/>
+import { UserMediumCard as MediumCard8 } from '../User/UserMediumCard';
+// <MediumCard8 user={ request?.creator }/>
+import { StateMediumCard as MediumCard11 } from '../State/StateMediumCard';
+// <MediumCard11 state={ request?.state }/>
+import { FormMediumCard as MediumCard12 } from '../Form/FormMediumCard';
+// <MediumCard12 form={ request?.form }/>
+
+/**
+ * Entity representing a request (digital form of a paper, aka &quot;student request to the dean&quot;)
+ */
+export const RequestLargeCard = ({ request, children}) => {
+    // console.log("RequestLargeCard", request)
     return (
-        <CardCapsule title="JSON data">
-            <JsonView data={request} shouldExpandNode={allExpanded} style={defaultStyles} />
-        </CardCapsule>
+        <RequestLargeCardLayout request={ request } grandchildren={children}>
+            <RequestMediumCard request={ request }/>
+            <RequestVectorLinksCard  request={ request } />
+            { 
+                request?.changedby?<MediumCard2 user={ request?.changedby } label={"Changedby"} />:null
+            }
+            { 
+                request?.createdby?<MediumCard5 user={ request?.createdby } label={"Createdby"} />:null
+            }
+            { 
+                request?.rbacobject?<MediumCard7 rbacobject={ request?.rbacobject } label={"Rbacobject"} />:null
+            }
+            { 
+                request?.creator?<MediumCard8 user={ request?.creator } label={"Creator"} />:null
+            }
+            { 
+                request?.state?<MediumCard11 state={ request?.state } label={"State"} />:null
+            }
+            { 
+                request?.form?<MediumCard12 form={ request?.form } label={"Form"} />:null
+            }
+        </RequestLargeCardLayout>
     )
 }
 
-export const RequestLargeCard = ({request, children}) => {
-    return (
-        <CardCapsule  title={<>Požadavek {request?.name } </>}>
-            {/* <Row className='justify-content-center'>
-
-                <Col className="offset-md-3 align-self-center"><RequestButtons request={request}/></Col>
-            </Row>
-            <br/>
-            <div className='row justify-content-center'>
-                <div className="col offset-md-3 align-self-center"><RequestButtons request={request}/></div>
-            </div>
-            <br/> */}
-            <Row>
-                <Col md={3}>
-                    <RequestMediumCard request={request} />
-                </Col>
-                <Col>
-                    <RequestHistoryCard request={request} />
-                    
-                </Col>
-                <Col md={4}>
-                    <RequestRights request={request} />
-                    < br/><RequestButtons request={request}/>
-                </Col>
-                {/* <Col md={9}>
-                    {children}
-                </Col>                */}
-            </Row>
-            <br/>
-            <Row>
-                <Col>
-                    {children}
-                </Col>
-            </Row>
-            <br/>
-            {/* <Row>
-                <Col><RequestButtons request={request}/></Col>
-            </Row>
-
-            <br /> */}
-            <Row>
-                <Col>
-                    <RawCard request={request}/>
-                </Col>
-            </Row>
-        </CardCapsule>
-
-    )
-}
