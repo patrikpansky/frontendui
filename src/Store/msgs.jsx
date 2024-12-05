@@ -106,142 +106,273 @@ export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatc
 }
 
 /**
- * Creates validator (function) which called with dispatch returns [onResolve, onReject] functions usable in Promise.then(onResolve, onReject)
- * const validator = CreateAsyncQueryValidator({error: "Error happend", "success": "All went ok"})
- * const dispatch = useDispatch()
- * const [onResolve, onReject] = validator(dispatch)
- * ...
- * fetch().then(onResolve, onReject)
+ * Creates asynchronous query resolution and rejection handlers for validating GraphQL responses.
+ *
+ * @param {Object} reactions - Predefined messages for success and error scenarios.
+ * @param {string} reactions.success - The title for a success message.
+ * @param {string} reactions.error - The title for an error message.
  * 
- * @param {object} reactions {error: "Error happend", "success": "All went ok"}
- * @returns 
+ * @returns {Function} A higher-order function that takes a `dispatch` function and returns:
+ *                     - `onResolve`: Handler for resolving GraphQL responses.
+ *                     - `onReject`: Handler for handling rejected promises.
+ * 
+ * @example
+ * const reactions = {
+ *   success: "Query succeeded!",
+ *   error: "Query failed!",
+ * };
+ *
+ * const [onResolve, onReject] = CreateAsyncQueryValidator(reactions)(dispatch);
+ * 
+ * fetchGraphQL()
+ *   .then(onResolve)
+ *   .catch(onReject);
  */
 export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
     const onResolve = (json) => {
-        // console.log("CreateAsyncQueryValidator.onResolve", json)
-        const errors = json?.errors
+        const errors = json?.errors;
+
+        // Check if `errors` key exists in the response
         if (errors) {
-            dispatch(MsgAddAction({title: reactions.error, variant: "danger", detail: errors}));
-        } 
-        const data = json?.data
-        if (data) {
-            const result = data?.result
-            if (result) {
-                // console.log("result?.msg", result?.msg)
-                if (result?.msg) {
-                    if (result?.msg !== "ok") { 
-                        dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
-                    } else {
-                        dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
-                    }
-                } else {
-                    dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
-                }
+            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errors }));
+            return json;
+        }
+
+        const data = json?.data;
+
+        // If no data is present, treat it as an error
+        if (!data) {
+            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: "No data in response" }));
+            return json;
+        }
+
+        // Detect `result` or consider a single key as `result`
+        let result = data?.result;
+        if (!result && Object.keys(data).length === 1) {
+            const singleKey = Object.keys(data)[0];
+            result = data[singleKey];
+        }
+
+        // Check for `__typename` errors
+        const typename = result?.__typename;
+        if (!typename || typename.includes("Error")) {
+            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: "Error indicated in typename" }));
+            return json;
+        }
+
+        // Handle specific `msg` values
+        const msg = result?.msg;
+        if (msg) {
+            if (msg !== "ok") {
+                dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: msg }));
+                return json;
             }
         }
-        return json
-    }
+
+        // Handle successful result
+        dispatch(MsgFlashAction({ title: reactions.success, variant: "success" }));
+        return json;
+    };
 
     const onReject = (error) => {
-        console.log("CreateAsyncQueryValidator.onReject", error)
-        dispatch(MsgAddAction({title: reactions.error, variant: "danger", detail: ['' + error]}))
-        return error
-    }
+        console.log("CreateAsyncQueryValidator.onReject", error);
+        dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: ['' + error] }));
+        return error;
+    };
 
-    return [onResolve, onReject]
-}
-
-export const CreateAsyncQueryValidator2 = (reactions) => {
-    const [onResolve, onReject] = CreateAsyncQueryValidator(reactions)
-    return (actionwithvariables) => (dispatch /*, getState*/) => {
-        return actionwithvariables(dispatch).then(onResolve, onReject)
-    }
-}
-// export const CreateAsyncQueryValidator_ = (reactions) => async (thenable) => {
-//     const dispatch = useDispatch()
-//     console.log("CreateAsyncQueryValidator")
-//     let json = null
-//     try {
-//         json = await thenable
-
-//         const errors = json?.errors
-//         if (errors) {
-//             dispatch(MsgAddAction({title: reactions.error, variant: "danger"}));
-//         } else {
-//             const data = json?.data
-//             if (data) {
-//                 const result = data?.result
-//                 if (result) {
-//                     dispatch(MsgFlashAction({title: reactions.success, variant: "success" }))
-//                 }
-//             } 
-//         }
-        
-//     } catch (error) {
-//         MsgAddAction({title: reactions.error, variant: "danger"});
-//     }
-//     return json
-// }
-
-// export const CreateExceptionCatcher = (exception) => (dispatch, getState) => {
-//     dispatch(MsgAddAction())
-// }
+    return [onResolve, onReject];
+};
 
 /**
- * @param {function} reactions.errors function to be called when gql endpoint returns json.errors 
- * @param {function} reactions.fail function to be called when mutation returns json.data.result.msg has no value "ok" and reactions[msg] not present
- * @param {function} reactions.ok function to be called when mutation returns json.data.result or json.data.result.msg is has value "ok"
+ * Creates a validator function to handle GraphQL query promises, validating responses and dispatching appropriate Redux actions.
+ *
+ * @param {Object} reactions - An object containing predefined messages for success and error scenarios.
+ * @param {string} reactions.success - The title for a success message.
+ * @param {string} reactions.error - The title for an error message.
+ *
+ * @returns {Function} A higher-order function that takes a `dispatch` function and returns a validator function.
+ *                     The validator function accepts a promise (`future`) and attaches `then` and `catch` handlers to:
+ *                     - Dispatch success or error messages based on the promise's resolved or rejected value.
+ *
+ * @example
+ * const reactions = {
+ *   success: "Query succeeded!",
+ *   error: "Query failed!",
+ * };
+ *
+ * const validator = CreateAsyncQueryValidator(reactions)(dispatch);
+ *
+ * const future = fetchGraphQL();
+ * validator(future)
+ *   .then((json) => {
+ *       console.log("Validation passed, response:", json);
+ *   })
+ *   .catch((error) => {
+ *       console.error("Validation failed, error:", error);
+ *   });
  */
+export const CreateAsyncQueryValidator2 = (reactions) => (dispatch) => {
+    return (future) => {
+        return future
+            .then((json) => {
+                const errors = json?.errors;
+
+                // Check if `errors` key exists in the response
+                if (errors) {
+                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errors }));
+                    return Promise.reject(json);
+                }
+
+                const data = json?.data;
+
+                // If no data is present, treat it as an error
+                if (!data) {
+                    const errorDetail = "No data in response";
+                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errorDetail }));
+                    return Promise.reject(json);
+                }
+
+                // Detect `result` or consider a single key as `result`
+                let result = data?.result;
+                if (!result && Object.keys(data).length === 1) {
+                    const singleKey = Object.keys(data)[0];
+                    result = data[singleKey];
+                }
+
+                // Check for `__typename` errors
+                const typename = result?.__typename;
+                if (!typename || typename.includes("Error")) {
+                    const errorDetail = "Error indicated in typename";
+                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errorDetail }));
+                    return Promise.reject(json);
+                }
+
+                // Handle specific `msg` values
+                const msg = result?.msg;
+                if (msg && msg !== "ok") {
+                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: msg }));
+                    return Promise.reject(json);
+                }
+
+                // Handle successful result
+                dispatch(MsgFlashAction({ title: reactions.success, variant: "success" }));
+                return json;
+            })
+            .catch((error) => {
+                console.error("CreateAsyncQueryValidator.catch", error);
+                dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: [`${error}`] }));
+                return Promise.reject(error);
+            });
+    };
+};
+
+
+/**
+ * Handles a GraphQL response, checking for errors or successful results, and triggering appropriate reactions.
+ * 
+ * @param {Object} reactions - An object containing callback functions for various response states.
+ * @param {Function} [reactions.ok] - Callback triggered for a successful result.
+ * @param {Function} [reactions.fail] - Callback triggered for a general failure or missing data.
+ * @param {Function} [reactions.error] - Callback triggered for GraphQL-specific errors (e.g., `errors` key in the response).
+ * @param {Function} [reactions.<message>] - Custom callbacks for specific messages found in `data.result.msg`.
+ * 
+ * @returns {Function} A higher-order function that takes a GraphQL response object (`json`),
+ *                     inspects its structure for errors or results, and triggers the appropriate reaction.
+ * 
+ * @example
+ * const reactions = {
+ *   ok: (json) => console.log("Success:", json),
+ *   fail: (json) => console.error("Failure:", json),
+ *   error: (json) => console.error("GraphQL Error:", json),
+ *   customMessage: (json) => console.warn("Custom error handling:", json),
+ * };
+ * 
+ * const response = {
+ *   data: {
+ *     result: {
+ *       __typename: "Error",
+ *       msg: "customMessage",
+ *     },
+ *   },
+ * };
+ * 
+ * CheckGQLError(reactions)(response);
+ */
+
 export const CheckGQLError = (reactions) => (json) => {
-    
-    console.log("CheckGQLError call")
-    const errors = json?.errors
+    console.log("CheckGQLError call");
+
+    const errors = json?.errors;
+    const data = json?.data;
+
+    // 1. Check if GraphQL response has errors
     if (errors) {
-        const reaction = reactions?.errors || reactions?.error || reactions["fail"]
-        reaction(json)
-    } else {
-        const msg = json?.data?.result?.msg
-        if (msg) {
-            const reaction = reactions[msg] || reactions["fail"]
-            // const successVariant = "success"
-            // const dangerVariant = "danger"
-            // const defaultVariant = reaction === "ok" ? successVariant : dangerVariant
-            // const variant = reaction?.variant || defaultVariant
-            // const label = reaction || ("Změna " + msg)
-            // if (variant === successVariant) {
-                
-            // } else {
-            //     variant()
-            // }
-            if (reaction) {
-                reaction(json)
-            } else {
-                console.warn("no proper reaction found", json)
-            }
-            
+        const errorReaction = reactions?.errors || reactions?.error || reactions?.fail;
+        if (errorReaction) {
+            errorReaction(json);
         } else {
-            const jsonresult = json?.data?.result
-            if (jsonresult) {
-                const reaction = reactions["ok"]
-                if (reaction) {
-                    reaction(json)
-                } else {
-                    console.error("ok reaction missing")
-                }
-                    
-            } else {
-                const reaction = reactions?.errors || reactions?.error || reactions?.fail
-                if (reaction) {
-                    reaction(`Data nenalezena. ${JSON.stringify(json)}  Server nenašel položku v databázi. Položka neexistuje.`)
-                }
-                
-                console.warn("no proper reaction found", json)
-            }
-            
+            console.error("No error reaction defined for GraphQL errors", errors);
+        }
+        return json;
+    }
+
+    // 2. Determine the `result` key
+    let result = data?.result;
+
+    // If `result` is not explicitly present, and `data` has exactly one key, consider it as the `result`
+    if (!result && data && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    // 3. Check if the `result` or equivalent key indicates an error
+    const typename = result?.__typename;
+    const msg = result?.msg;
+
+    if (!typename || typename.includes("Error")) {
+        const typenameReaction = reactions?.error || reactions?.fail;
+        if (typenameReaction) {
+            typenameReaction(json);
+        } else {
+            console.warn(`No reaction for __typename indicating error: ${typename}`, json);
+        }
+        return json;
+    }
+
+    // 4. Handle `msg` describing success or error
+    if (msg) {
+        const msgReaction = reactions[msg] || reactions["fail"];
+        if (msgReaction) {
+            msgReaction(json);
+        } else {
+            console.warn(`No reaction found for message: ${msg}`, json);
+        }
+        return json;
+    }
+
+    // 5. Handle successful result
+    if (result) {
+        const successReaction = reactions["ok"];
+        if (successReaction) {
+            successReaction(json);
+        } else {
+            console.error("No 'ok' reaction defined for successful result", result);
+        }
+    } else {
+        // If no valid result, fallback to error reaction
+        const fallbackReaction = reactions?.errors || reactions?.error || reactions?.fail;
+        if (fallbackReaction) {
+            fallbackReaction(
+                `Data not found. ${JSON.stringify(json)}. Server did not find the item in the database. The item does not exist.`
+            );
+        } else {
+            console.warn("No fallback reaction defined for missing data", json);
         }
     }
-    return json
-}
+
+    return json;
+};
+
 
 // fetch().then(
 //     CheckMutationMsg({ok: () => MsgFlashAction(), fail: "Chyba"})()
