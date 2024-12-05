@@ -1,46 +1,51 @@
 /**
- * Vytvari zpozdovac,
- * @param {*} delay 
- * @returns function which delays and / or cancels calls
+ * Creates a delayer that ensures delayed execution of a function.
+ * If the delayer is triggered again before the delay period expires, the previous delay is canceled.
+ *
+ * @param {number} delay - The delay in milliseconds (default: 300).
+ * @returns {Function} A function that delays the execution of a given function.
  */
-export const CreateDelayer = (delay=300) => {
-    //lokalni promenna
-    let oldTimer = -1;
-    let state = 0;
+export const CreateDelayer = (delay = 300) => {
+    let timerId = null; // Tracks the active timer
+    let isPending = false; // Tracks if a delay is currently pending
 
-    //navratovou hodnotou je funkce umoznujici zpozdeni volani
+    /**
+     * Delays the execution of the given function by the specified delay.
+     *
+     * @param {Function} delayedFunc - The function to be executed after the delay.
+     * @returns {Promise} A promise that resolves when the delayed function completes.
+     */
     return (delayedFunc) => {
-        /*
-        //https://stackoverflow.com/questions/26150232/resolve-javascript-promise-outside-the-promise-constructor-scope
-        implement as function returning a Promise:
-
-        const main = () => {
-            let resolver = null
-            const result = new Promise((resolve, reject) => {resolver = resolve})
-            resolver(25)
-            return result
+        if (typeof delayedFunc !== 'function') {
+            throw new Error("Delayed function must be a valid function.");
         }
 
-        main().then(data=>{console.log('a', data)})
-        */
-        //zruseni stareho timeru
-        if (state !== 0) {
-            clearTimeout(oldTimer)
-            oldTimer = -1;
-            state = 0;
+        // Cancel any existing timer
+        if (isPending) {
+            clearTimeout(timerId);
+            timerId = null;
+            isPending = false;
         }
 
-        //zabaleni funkce, pri volani je poznamenano, ze byl volan
-        const encapsulatedFunc = () => {
-            oldTimer = -1;
-            state = 0;
-            return delayedFunc(); // obvykle delayedFunc() vraci Promise, takze lze pouzit .then, .catch a .finally
-        }
+        // Return a promise that resolves when the delayed function is executed
+        return new Promise((resolve, reject) => {
+            const encapsulatedFunc = () => {
+                timerId = null;
+                isPending = false;
 
-        //ocekavame zpozdene volani funkce
-        state = 1;
+                try {
+                    // Execute the delayed function and resolve the promise
+                    const result = delayedFunc();
+                    resolve(result);
+                } catch (error) {
+                    // Reject the promise if the delayed function throws
+                    reject(error);
+                }
+            };
 
-        //definice noveho timeru
-        oldTimer = setTimeout(encapsulatedFunc, delay);
-    }
-}
+            // Set a new timer
+            isPending = true;
+            timerId = setTimeout(encapsulatedFunc, delay);
+        });
+    };
+};
