@@ -8,40 +8,49 @@ import { CreateDelayer } from './CreateDelayer'
  */
 
 /**
- * input control (html input input type="text"), callback is delayed
- * @function
- * @param {*} props.sid mandatory identification, often related to id of entity 
- * @param {str} props.value value of input
- * @param {str} props.placeholder value of help if the text is not displayed
- * @param {function} props.onChange delayed callback notifying about the change
- * @returns JSX.Element
+ * A controlled text input component with debounced onChange handling.
+ * 
+ * @param {Function} onChange - Callback to handle input changes.
+ * @param {string} [type="text"] - Input type (e.g., "text", "password").
+ * @param {string} value - The input's current value.
+ * @param {Object} props - Additional props passed to the input element.
+ * @returns {JSX.Element} A debounced text input field.
  */
-export const TextInput = ({onChange, type="text", value, ...props}) => {
-    const [localValue, setLocalValue] = useState(value)
-    const [delayer] = useState(() => CreateDelayer())
+export const TextInput = ({ onChange, type = "text", value, ...props }) => {
+    const [localValue, setLocalValue] = useState(value);
+    const delayer = useCallback(CreateDelayer(), []); // Initialize delayer once
 
-    const localOnChange = //useCallback(
+    // Handle local input value change
+    const localOnChange = useCallback(
         (e) => {
-            const newValue = e.target.value
-            setLocalValue(newValue)
+            const newValue = e.target.value;
+            setLocalValue(newValue); // Update local state
             if (onChange) {
-                delayer(() => onChange(newValue))
+                delayer(() => onChange(newValue)); // Debounced onChange
             }
-            //console.log("TextInput", newValue)
-        }
-        //, [id, onChange])
-    const onBlur = //useCallback(
+        },
+        [onChange, delayer]
+    );
+
+    // Handle blur event to ensure the latest value is sent to onChange
+    const onBlur = useCallback(
         (e) => {
-            const newValue = e.target.value
+            const newValue = e.target.value;
             if (newValue !== localValue) {
-                //console.log("onFocusOut")
-                localOnChange(e)
-                onChange(newValue)
+                onChange?.(newValue); // Ensure onChange is called if value changes
             }
-        }
-        //, [id, onChange])
+        },
+        [onChange, localValue]
+    );
 
     return (
-        <input className="form-control" {...props} type={type} value={localValue} onChange={localOnChange} onBlur={onBlur}/>
-    )
-}
+        <input
+            className="form-control"
+            {...props}
+            type={type}
+            value={localValue}
+            onChange={localOnChange}
+            onBlur={onBlur}
+        />
+    );
+};
