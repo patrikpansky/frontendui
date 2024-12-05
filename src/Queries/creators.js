@@ -20,11 +20,21 @@ const CreatePayload = (querystring, query_variables) => {
  * @function
  */
 const ResponseFromQuery = (query, params={}) => (query_variables) => {
-    // console.log("ResponseFromQuery", item)
-    // console.log("ResponseFromQuery", Query)
+    if (!query || typeof query !== 'string') {
+        throw new Error('Invalid query: must be a non-empty string.');
+    }
+
+    // Default fetch parameters
+    const defaultParams = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
     const body = JSON.stringify(CreatePayload(query, query_variables))
     // console.log("ResponseFromQuery", body)
-    const result = authorizedFetch2('', {body, ...params})
+    const result = authorizedFetch2('', {body, ...defaultParams, ...params})
     // .then(
     //     json => {
     //         console.log("ResponseFromQuery got", json)
