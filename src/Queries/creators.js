@@ -107,7 +107,6 @@ export const GQLQueryLazyVectorAfterFetch = (vectorname) => (jsonResult) => (dis
  * @function
  */
 export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQueryAfterFetch) => {
-    const afterFetch_ = afterFetch
     // console.log("CreateAsyncActionFromQuery.query", query)
     if (typeof query !== "string") {
         throw new Error("CreateAsyncActionFromQuery query param have be string!")
@@ -117,25 +116,20 @@ export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQuery
         // console.log("CreateAsyncActionFromQuery.variables", query_variables)
         // console.log("CreateAsyncActionFromQuery parametrization function parameters", (typeof query_variables))
         // type checking of query_variables, are they "dict" / "json object?"
-        return async (dispatch /*, getState*/) => {
-            const jsonResult = await unparametrizedFetch(query_variables)
-            // console.log("afterFetch", afterFetch_)
-            return dispatch(afterFetch_(jsonResult))
-            // const data = jsonResult?.data
-            // if (data) {
-            //     const result = data?.result
-            //     if (result) {
-            //         if (Array.isArray(result)) {
-            //             result.forEach(item => {
-            //                 dispatch(ItemActions.item_update(item))
-            //             });
-            //         } else {
-            //             dispatch(ItemActions.item_update(result))
-            //         }
-            //     }
-            // }
-            // return jsonResult
+        
+        if (typeof query_variables !== "object" || query_variables === null) {
+            throw new Error("CreateAsyncActionFromQuery: query_variables must be a valid JSON object.");
         }
+
+        return async (dispatch /*, getState*/) => {
+            try {
+                const jsonResult = await unparametrizedFetch(query_variables);
+                return dispatch(afterFetch(jsonResult));
+            } catch (error) {
+                console.error("CreateAsyncActionFromQuery: Error in async action", error);
+                throw error;
+            }
+        };
     }
 }
 
