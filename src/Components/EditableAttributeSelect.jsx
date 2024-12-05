@@ -1,41 +1,60 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux"
-import { CreateAsyncQueryValidator } from "../Store"
+import { CreateAsyncQueryValidator2 } from "../Store"
 
 /**
  * shared module.
  * @module shared/components
  */
 
-const validator = CreateAsyncQueryValidator({error: "Něco se nepovedlo", success: "Změna uložena"})
+const validator = CreateAsyncQueryValidator2({error: "Něco se nepovedlo", success: "Změna uložena"})
 
 /**
- * @function
- * @param {Object} props.item item to be edited
- * @param {Object[]} props.children would be list of <option />
- * @param {String} props.attributeName name of the attribute 
- * @param {function(item): Promise} props.asyncUpdater
- * @returns JSX.Element
+ * A component for editing a select attribute of an item with asynchronous updates.
+ *
+ * @param {Object} props - Component properties.
+ * @param {Object} props.item - The item being edited.
+ * @param {React.ReactNode} props.children - List of <option /> elements.
+ * @param {string} props.attributeName - Name of the attribute to be edited.
+ * @param {Function} props.asyncUpdater - A function that returns a Promise for updating the item.
+ * @param {string} [props.label] - Label for the select input.
+ * @returns {JSX.Element} The editable attribute select component.
  */
-export const EditableAttributeSelect = ({item, label, children, attributeName, asyncUpdater}) => {
-    const dispatch = useDispatch()
-    const attributeValue = item[attributeName]
-    const [onResolve, onReject] = validator(dispatch)
-    const onChange_ = (e) => {
-        const value = e.target.value
-        const newItem = {...item}
-        newItem[attributeName] = value
-        const action = asyncUpdater({...newItem})
-        // console.log("EditableAttributeText.action", action)
-        dispatch(action).then(onResolve, onReject)
-    }
+export const EditableAttributeSelect = ({
+    item,
+    label,
+    children,
+    attributeName,
+    asyncUpdater,
+}) => {
+    const dispatch = useDispatch();
+    const attributeValue = item[attributeName];
+
+    // Initialize validators with predefined messages
+    const validate = validator(dispatch);
+
+    // Handle changes to the select input
+    const handleChange = (e) => {
+        const value = e.target.value;
+        const updatedItem = { ...item, [attributeName]: value };
+        const action = asyncUpdater(updatedItem);
+
+        // Dispatch the async action and validate the response
+        validate(dispatch(action));
+    };
+
     return (
-        // <EditableText id={item.id} value={attributeValue} onChange={onChange_} />
         <div className="form-floating">
-            <select className="form-select" id={"select-"+item.id} value={attributeValue} onChange={onChange_} aria-label="">
+            <select
+                className="form-select"
+                id={`select-${item.id}`}
+                value={attributeValue}
+                onChange={handleChange}
+                aria-label={label || ""}
+            >
                 {children}
             </select>
-            <label htmlFor={"select-"+item.id}>{label}</label>
+            {label && <label htmlFor={`select-${item.id}`}>{label}</label>}
         </div>
-    )
-}
+    );
+};

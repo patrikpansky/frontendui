@@ -1,41 +1,60 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux"
 import { TextInput } from './TextInput'
-import { CreateAsyncQueryValidator } from "../Store"
+import { CreateAsyncQueryValidator2 } from "../Store"
 
 /**
  * shared module.
  * @module shared/components
  */
 
-const validator = CreateAsyncQueryValidator({error: "Něco se nepovedlo", success: "Změna uložena"})
+const validator = CreateAsyncQueryValidator2({error: "Něco se nepovedlo", success: "Změna uložena"})
 
 /**
- * @function
- * @param {Object} props.item item which text attribute is edited
- * @param {String} props.attributeName name of the attribute 
- * @param {function} props.asyncUpdater async function which represents an async action for dispatch
- * @returns JSX.Element
+ * A component for editing an attribute of an item with asynchronous updates.
+ * 
+ * @param {Object} props - The props for the component.
+ * @param {Object} props.item - The item being edited.
+ * @param {string} props.attributeName - The name of the attribute to be edited.
+ * @param {Function} props.asyncUpdater - A function that returns an async action for updating the item.
+ * @param {string} [props.label] - The label for the input field.
+ * @param {string} [props.type="text"] - The input type (e.g., "text", "number").
+ * 
+ * @returns {JSX.Element} The editable attribute component.
  */
-export const EditableAttributeText = ({item, attributeName, asyncUpdater, label, type="text"}) => {
-    const dispatch = useDispatch()
-    const attributeValue = item[attributeName]
-    const [onResolve, onReject] = validator(dispatch)
-    const onChange_ = (value) => {
-        const newItem = {...item}
-        newItem[attributeName] = value
-        const action = asyncUpdater(newItem)
-        // console.log("EditableAttributeText.action", action)
-        dispatch(action).then(onResolve, onReject)
-    }
+export const EditableAttributeText = ({
+    item,
+    attributeName,
+    asyncUpdater,
+    label,
+    type = "text",
+    ...props
+}) => {
+    const dispatch = useDispatch();
+    const attributeValue = item[attributeName];
+
+    // Initialize validators with the provided messages
+    const validate = validator(dispatch);
+
+    // Handle changes to the attribute
+    const handleChange = (value) => {
+        const updatedItem = { ...item, [attributeName]: value };
+        const action = asyncUpdater(updatedItem);
+
+        // Dispatch the async action and validate the response
+        validate(dispatch(action));
+    };
+
     return (
-        // <EditableText id={item.id} value={attributeValue} onChange={onChange_} />
-        // <TextInput id={item.id} value={attributeValue} onChange={onChange_} />
-
         <div className="form-floating">
-            <TextInput type={type} id={item.id} value={attributeValue} onChange={onChange_} />
-            <label htmlFor={item.id}>{label}</label>
+            <TextInput
+                type={type}
+                id={item.id}
+                value={attributeValue}
+                onChange={handleChange}
+                {...props}
+            />
+            {label && <label htmlFor={item.id}>{label}</label>}
         </div>
-
-    )
-}
+    );
+};
