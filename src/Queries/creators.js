@@ -55,21 +55,35 @@ const ResponseFromQuery = (query, params={}) => (query_variables) => {
 export const CreateFetchQuery = ResponseFromQuery
 
 export const GQLQueryAfterFetch = (jsonResult) => (dispatch) => {
-    const data = jsonResult?.data
-    if (data) {
-        const result = data?.result
-        if (result) {
-            if (Array.isArray(result)) {
-                result.forEach(item => {
-                    dispatch(ItemActions.item_update(item))
-                });
-            } else {
-                dispatch(ItemActions.item_update(result))
-            }
-        }
+    const data = jsonResult?.data;
+
+    if (!data) {
+        console.warn("GQLQueryAfterFetch: No data found in jsonResult");
+        return jsonResult;
     }
-    return jsonResult
-}
+
+    let result = data?.result;
+
+    // Check if `data` has exactly one key and use it as the result
+    if (!result && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    if (result) {
+        if (Array.isArray(result)) {
+            result.forEach((item) => {
+                dispatch(ItemActions.item_update(item));
+            });
+        } else {
+            dispatch(ItemActions.item_update(result));
+        }
+    } else {
+        console.warn("GQLQueryAfterFetch: No valid result found in data");
+    }
+
+    return jsonResult;
+};
 
 export const GQLMutationAfterFetch = (jsonResult) => (dispatch) => {
     const data = jsonResult?.data
