@@ -18,7 +18,7 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
             redirect: 'follow', // manual, *follow, error
         
         },
-        overridenPath = path, // Default to `path` if not overridden
+        overridenPath = '/api/gql', // Default to `path` if not overridden
     } = options;
 
     // Merge headers and parameters
@@ -50,5 +50,9 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
 
         // Parse and return JSON response
         return response.json();
-    }) 
+    })
+    // .then(json => {
+    //     console.log("fetch", json)
+    //     return json
+    // })
 }

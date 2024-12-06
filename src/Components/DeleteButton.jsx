@@ -6,35 +6,39 @@ import { useState, useCallback } from 'react';
  */
 
 /**
- * This is Delete Button with confirmation (two state button). To get onClick response, user must click twice
- * @function
- * @param {JSX.Element[]} props.children This is usually an Icon (like the trash icon from boostrap icons)
- * @param {callback} props.onClick is called when user confirms the action by clicking secondary on red button
- * @returns JSX.Element
+ * A `DeleteButton` component that toggles between a warning button and a confirmation red button.
+ *
+ * @param {Object} props - The properties object.
+ * @param {React.ReactNode} props.children - The content to display inside the button(s).
+ * @param {function} props.onClick - The callback function invoked when the red delete button is clicked.
+ *
+ * @example
+ * <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
+ *
+ * @returns {JSX.Element} A toggleable button component.
  */
-export const DeleteButton = ({children, onClick}) => {
+export const DeleteButton = ({ children, onClick }) => {
+  const [isRedButtonVisible, setIsRedButtonVisible] = useState(false);
 
-    //vnitrni stavova promenna definujici, zda je cervene tlacitko zobrazene nebo neni
-    const [ state, setState ] = useState(0)
+  const hideWarningButton = useCallback(() => setIsRedButtonVisible(false), []);
+  const showWarningButton = useCallback(() => setIsRedButtonVisible(true), []);
 
-    //nastavi, ze se cervene tlacitko nezobrazuje
-    const setState0 = useCallback(() => setState(0))
+  return (
+    <>
+      {/* Yellow warning button */}
+      <button
+        className="btn btn-sm btn-warning"
+        onClick={isRedButtonVisible ? hideWarningButton : showWarningButton}
+      >
+        {children}
+      </button>
 
-    //nastavi, ze se cervene tlacitko zobrazuje
-    const setState1 = useCallback(() => setState(1))
-
-    if (state === 0) {
-        //cervene tlacitko nema byt zobrazeno
-        return (
-            <button className='btn btn-sm btn-warning' onClick={setState1}>{children}</button>
-        )
-    } else {
-        //cervene tlacitko ma byt zobrazeno
-        return (
-            <>
-                <button className='btn btn-sm btn-warning' onClick={setState0}>{children}</button>
-                <button className='btn btn-sm btn-danger' onClick={onClick}>{children}</button>
-            </>
-        )
-    }
-}
+      {/* Red confirmation delete button */}
+      {isRedButtonVisible && (
+        <button className="btn btn-sm btn-danger" onClick={onClick}>
+          {children}
+        </button>
+      )}
+    </>
+  );
+};

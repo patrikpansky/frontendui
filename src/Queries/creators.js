@@ -138,7 +138,9 @@ export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQuery
         return async (dispatch /*, getState*/) => {
             try {
                 const jsonResult = await unparametrizedFetch(query_variables);
-                return dispatch(afterFetch(jsonResult));
+                // console.log("jsonResult", query, "->", jsonResult)
+                dispatch(afterFetch(jsonResult));
+                return jsonResult
             } catch (error) {
                 console.error("CreateAsyncActionFromQuery: Error in async action", error);
                 throw error;

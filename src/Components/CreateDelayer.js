@@ -1,4 +1,10 @@
 /**
+ * shared module.
+ * @module shared/components
+ */
+
+
+/**
  * Creates a delayer that ensures delayed execution of a function.
  * If the delayer is triggered again before the delay period expires, the previous delay is canceled.
  *

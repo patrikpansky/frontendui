@@ -82,7 +82,7 @@ export const useFreshItem = ({id, ...queryVariables}, AsyncAction) => {
     const result = items[id]
 
     const [_state, _setState] = useState({
-        resultPromise: new Promise(() => 0),
+        resultPromise: new Promise(()=>{}),
         errors: null,
         data: null,
         json: null,
@@ -100,6 +100,7 @@ export const useFreshItem = ({id, ...queryVariables}, AsyncAction) => {
                     resultPromise: resultPromise,
                     errors, data, json: dispatchResult, loading: false, done: true}
                 _setState(newState)
+                return dispatchResult
             }
             resultPromise = fetcher()
             const newState = {

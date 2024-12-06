@@ -4,6 +4,7 @@ import { CreateAsyncActionFromQuery } from './Queries'
 import { CreateAsyncQueryValidator } from './Store';
 import { useDispatch, useSelector } from 'react-redux';
 import { TableHeaderWithFilters, where2filter } from './Components/Filters';
+import { StringFilterEditor } from './Components/Filters/StringFilterEditor';
 
 // realizovany dotaz
 const UserPageQuery = `query ($skip: Int, $limit: Int, $where: UserInputWhereFilter, $orderby: String) {
@@ -17,15 +18,11 @@ const UserPageQuery = `query ($skip: Int, $limit: Int, $where: UserInputWhereFil
     }
   }`
 
-//pokud bezime "mimo deployment", musime se autorizovat, token lze vzit z cookies v systsemu a pouzit zde
-const token = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYWNjZXNzX3Rva2VuIjoiQUNDVC02MUVseG5oVHlhRVN4RkFna2lvb3AwdjF5WG96T0xUSiIsImV4cGlyZXNfaW4iOjM2MDAsInJlZnJlc2hfdG9rZW4iOiJSRUZULU5SQmRDekdwb09SMENIMWo3ZVBGdFRRWFVQcEtmdmxoIiwidXNlcl9pZCI6IjJkOWRjNWNhLWE0YTItMTFlZC1iOWRmLTAyNDJhYzEyMDAwMyJ9.K0UJ4RaHUrgl-HewYTcEBRHZ677ieGXEPbnfNn6gbOX-5o6A_u19mtr7IjuiX_DNXdDG4KdiC3mZ7GkOlMgQvO2N0lHlSFd2f8I-zI_UgQYfEYR33vGuSQC1KGv_hrTO2Cn7wUZen33Mz6DvcPrUPAaw86izf4pliKUX28lhRnIaRKIUWmVUAKumJxBVJZzDtEaG68rXT6PGkJ4zzN0eqCOgIfq2vDXRpNBlvFQ8rok2MRLBnV2H_IlKskpebiRck8qDVdJ81__IvBdNo7e3dZyvlSYBemPn96j_58WE--99_4v6BqfdBdkLDea7yLxz2IMCeygVDo2h4wyYwWmBKQ`
-const headers = {authorization: `Bearer ${token}`}
-
 // ze stringu specifikujiciho query vytvori asynchronni action (dispatchable action)
-const UserPageQueryAsyncAction = CreateAsyncActionFromQuery(UserPageQuery, {headers})
+const UserPageQueryAsyncAction = CreateAsyncActionFromQuery(UserPageQuery)
 
 // validator je prostredek pro osetreni chyb, je konstruovan tak, aby se nemusel cely vytvaret pri kazdem renderingu
-const validator = CreateAsyncQueryValidator({error: "Nepovedlo se načíst uživatele", success: "Načtení uživatelů se povedlo"})
+const validator = CreateAsyncQueryValidator({error: "Nepovedlo se Nnačíst uživatele", success: "Načtení uživatelů se povedlo"})
 
 
 
@@ -236,11 +233,11 @@ const UsersTable = ({users}) => {
 export const AppBody = () => {
     // ziskame aktualizovana data ze serveru, pokud by se jednalo o jediny prvek (query by id), id by se uvedlo
     // protoze se jedna o "page", nebere se id v uvahu, proto "idonotcare"
-    const [data_, thenable] = useFreshItem({id: "idontcare"}, UserPageQueryAsyncAction)
+    const [data_, thenable, status] = useFreshItem({id: "idontcare"}, UserPageQueryAsyncAction)
     // funkce, ktere se pouziji pro pripad uspesneho nacteni a pro pripad chybz
     const [onResolve, onReject] = validator(useDispatch())
     
-    console.log("AppBody.render", thenable)
+    // console.log("AppBody.render", thenable)
     // thenable je Promise, takze lze pouzit jeji metodu then; 
     // teto metode predame funkce pro zpracovani spravneho (uspesneho) a chyboveho cteni
     thenable.then(onResolve, onReject)
@@ -250,13 +247,48 @@ export const AppBody = () => {
     // identifikujeme ty polozky, jejichz typ je "UserGQLModel", pozor na ten je potreba se v dotazech ptat
     // pokud by byl dotaz na jediny prvek, bylo by mozne vzit z promenne "data_"
     const data = Object.values(items).filter(i => i?.__typename === "UserGQLModel")
-    if (data) {
-        return (
-            <div>
-                <UsersTable users={data} />
-            </div>
-        )
-    } else {
+
+                const [filter, setFilter] = useState({
+                    _and: [
+                    { name: { _eq: "John" } },
+                    {
+                        _or: [
+                        { surname: { _lt: "E" } },
+                        { surname: { _gt: "O" } },
+                        ],
+                    },
+                    ],
+                });
+                const handleFilterChange = (newFilter) => {
+                    console.log("Updated Filter:", newFilter);
+                    setFilter(newFilter);
+                };
+    if (status.done) {
+        if (data) {
+            return (
+                <div>
+                    <UsersTable users={data} />
+                    <div>
+                        <h1>String Filter Editor</h1>
+                        <StringFilterEditor
+                            field="name"
+                            initialFilter={filter}
+                            onFilterChange={handleFilterChange}
+                        />
+                        <h2>Generated Filter</h2>
+                        <pre>{JSON.stringify(filter, null, 2)}</pre>
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    Chyba {status.errors}
+                </div>
+            )
+        }
+    }
+    if (status.loading) {
         return (
           <div className='card'>{JSON.stringify(items)}<br />Loading ...</div>
         )

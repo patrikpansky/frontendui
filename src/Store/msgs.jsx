@@ -90,7 +90,7 @@ export const Msgs = () => {
 
 const uuid = () => crypto.randomUUID()
 
-export const MsgFlashAction = ({title, delay = 5000, variant = "success", detail=[]}) => (dispatch, getState) => {
+export const MsgFlashAction = ({title, delay = 5000, variant = "success", detail=[]}) => (dispatch/*, getState */) => {
     const msgWithId = {id: uuid(), variant: variant, title: title, detail: detail}
 
     setTimeout(
@@ -99,7 +99,7 @@ export const MsgFlashAction = ({title, delay = 5000, variant = "success", detail
     return dispatch(MsgActions.msg_add(msgWithId))
 }
 
-export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatch, getState) => {
+export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatch/*, getState */) => {
     const msgWithId = {id: uuid(), variant: variant, title: title, detail: detail}
 
     return dispatch(MsgActions.msg_add(msgWithId))
@@ -130,21 +130,23 @@ export const MsgAddAction = ({title, variant = "danger", detail=[]}) => (dispatc
  */
 export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
     const onResolve = (json) => {
+        // console.log("CreateAsyncQueryValidator", json)
         const errors = json?.errors;
 
         // Check if `errors` key exists in the response
-        if (errors) {
-            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errors }));
-            return json;
-        }
+        // if (errors) {
+        //     dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errors }));
+        //     return json;
+        // }
 
         const data = json?.data;
 
-        // If no data is present, treat it as an error
-        if (!data) {
-            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: "No data in response" }));
-            return json;
-        }
+        // // If no data is present, treat it as an error
+        // if (!data) {
+        //     // console.log("CreateAsyncQueryValidator no data", json)
+        //     dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: "No data in response" }));
+        //     return json;
+        // }
 
         // Detect `result` or consider a single key as `result`
         let result = data?.result;
@@ -154,20 +156,31 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
         }
 
         // Check for `__typename` errors
-        const typename = result?.__typename;
-        if (!typename || typename.includes("Error")) {
-            dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: "Error indicated in typename" }));
-            return json;
-        }
+        // Skip the `if` block if `result` is an array
+        if (!Array.isArray(result)) {
+            const typename = result?.__typename;
 
-        // Handle specific `msg` values
-        const msg = result?.msg;
-        if (msg) {
-            if (msg !== "ok") {
-                dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: msg }));
+            const isError = (!typename || typename.includes("Error"));
+    
+            if (isError) {
+                dispatch(MsgAddAction({
+                    title: reactions.error,
+                    variant: "danger",
+                    detail: "Error indicated in typename"
+                }));
                 return json;
             }
         }
+        
+
+        // // Handle specific `msg` values
+        // const msg = result?.msg;
+        // if (msg) {
+        //     if (msg !== "ok") {
+        //         dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: msg }));
+        //         return json;
+        //     }
+        // }
 
         // Handle successful result
         dispatch(MsgFlashAction({ title: reactions.success, variant: "success" }));
@@ -212,57 +225,11 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
  *   });
  */
 export const CreateAsyncQueryValidator2 = (reactions) => (dispatch) => {
+    const [onResolve, onReject] = CreateAsyncQueryValidator(reactions)(dispatch)
     return (future) => {
         return future
-            .then((json) => {
-                const errors = json?.errors;
-
-                // Check if `errors` key exists in the response
-                if (errors) {
-                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errors }));
-                    return Promise.reject(json);
-                }
-
-                const data = json?.data;
-
-                // If no data is present, treat it as an error
-                if (!data) {
-                    const errorDetail = "No data in response";
-                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errorDetail }));
-                    return Promise.reject(json);
-                }
-
-                // Detect `result` or consider a single key as `result`
-                let result = data?.result;
-                if (!result && Object.keys(data).length === 1) {
-                    const singleKey = Object.keys(data)[0];
-                    result = data[singleKey];
-                }
-
-                // Check for `__typename` errors
-                const typename = result?.__typename;
-                if (!typename || typename.includes("Error")) {
-                    const errorDetail = "Error indicated in typename";
-                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: errorDetail }));
-                    return Promise.reject(json);
-                }
-
-                // Handle specific `msg` values
-                const msg = result?.msg;
-                if (msg && msg !== "ok") {
-                    dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: msg }));
-                    return Promise.reject(json);
-                }
-
-                // Handle successful result
-                dispatch(MsgFlashAction({ title: reactions.success, variant: "success" }));
-                return json;
-            })
-            .catch((error) => {
-                console.error("CreateAsyncQueryValidator.catch", error);
-                dispatch(MsgAddAction({ title: reactions.error, variant: "danger", detail: [`${error}`] }));
-                return Promise.reject(error);
-            });
+            .then(onResolve)
+            .catch(onReject);
     };
 };
 

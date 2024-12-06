@@ -2,6 +2,11 @@
 import Card from "react-bootstrap/Card";
 
 /**
+ * shared module.
+ * @module shared/components
+ */
+
+/**
  * Card encapsulator as simple as possible
  * @param {*} param0 
  * @returns 
