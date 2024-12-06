@@ -247,37 +247,11 @@ export const AppBody = () => {
     // identifikujeme ty polozky, jejichz typ je "UserGQLModel", pozor na ten je potreba se v dotazech ptat
     // pokud by byl dotaz na jediny prvek, bylo by mozne vzit z promenne "data_"
     const data = Object.values(items).filter(i => i?.__typename === "UserGQLModel")
-
-                const [filter, setFilter] = useState({
-                    _and: [
-                    { name: { _eq: "John" } },
-                    {
-                        _or: [
-                        { surname: { _lt: "E" } },
-                        { surname: { _gt: "O" } },
-                        ],
-                    },
-                    ],
-                });
-                const handleFilterChange = (newFilter) => {
-                    console.log("Updated Filter:", newFilter);
-                    setFilter(newFilter);
-                };
     if (status.done) {
         if (data) {
             return (
                 <div>
                     <UsersTable users={data} />
-                    <div>
-                        <h1>String Filter Editor</h1>
-                        <StringFilterEditor
-                            field="name"
-                            initialFilter={filter}
-                            onFilterChange={handleFilterChange}
-                        />
-                        <h2>Generated Filter</h2>
-                        <pre>{JSON.stringify(filter, null, 2)}</pre>
-                    </div>
                 </div>
             )
         } else {
