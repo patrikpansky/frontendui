@@ -60,6 +60,24 @@ const UserGDPR = ({user}) => {
     )
 }
 
+export const UserRolesOn = ({user}) => {
+    const rolesOn = user?.rolesOn || []
+    const rolesOnValid = rolesOn.filter(role => role?.valid)
+    return (
+        <>
+            {rolesOnValid.map(r => 
+                (<Row key={r.id}>
+                    <Col>{r?.roletype?.name}</Col>
+                    <Col>
+                        <ProxyLink to={"/ug/user/view/" + r?.user?.id}>{r?.user?.fullname}</ProxyLink>
+                    </Col>
+                </Row>)
+            )}
+        </>
+    )
+
+}
+
 export const UserMediumBody = ({user}) => {
     return (
         <>
@@ -89,9 +107,21 @@ export const UserMediumBody = ({user}) => {
                 </Col>
             </Row>
             <UserGDPR user={user}/>
+            {/* <Membership membership={user?.memberships||[]} /> */}
 
-            <Membership membership={user?.membership||[]} />
+            <div className="py-3">
+                <Membership membership={user?.memberships || []} />
+            </div>
         </>
+    )
+}
+
+
+export const UserUserRolesOnCard = ({user}) => {
+    return (
+        <CardCapsule  title={<><PersonFill /> <UserLink user={user } /></>}>
+            <UserRolesOn user={user} />
+        </CardCapsule>
     )
 }
 
