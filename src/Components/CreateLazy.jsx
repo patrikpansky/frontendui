@@ -55,11 +55,47 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
  * Higher-Order Component to:
  * 1. Lazily fetch data when the component becomes visible in the viewport.
  * 2. Render the wrapped component only after data is fetched.
+ * 3. Handle async actions provided as strings (GraphQL queries) or functions.
  *
  * @param {React.ComponentType} WrappedComponent - The component to wrap.
- * @param {string} entityName - The name of the entity prop.
- * @param {Function} asyncAction - The async Redux action to fetch the entity.
- * @returns {React.ComponentType} A wrapped component with both lazy loading and lazy data fetching.
+ * @param {string} entityName - The name of the entity prop, representing the data to fetch.
+ * @param {Function|string} asyncAction - The async Redux action to fetch the entity or a GraphQL query string.
+ * @returns {React.ComponentType} A wrapped component with both lazy loading and deferred data fetching capabilities.
+ *
+ * @example
+ * // Example usage with a GraphQL query string
+ * const UserQuery = `
+ *     query GetUserById($id: ID!) {
+ *         user(id: $id) {
+ *             id
+ *             name
+ *             email
+ *         }
+ *     }
+ * `;
+ *
+ * const LazyUserComponent = createDefferedComponentWithLazyLoading(
+ *     UserCard,
+ *     "user",
+ *     UserQuery
+ * );
+ *
+ * // Example usage with an async function
+ * const fetchUser = (variables) => async (dispatch) => {
+ *     const response = await fetch("/api/users", { method: "POST", body: JSON.stringify(variables) });
+ *     const result = await response.json();
+ *     dispatch({ type: "USER_FETCH_SUCCESS", payload: result });
+ *     return result;
+ * };
+ *
+ * const LazyUserComponentWithFunction = createDefferedComponentWithLazyLoading(
+ *     UserCard,
+ *     "user",
+ *     fetchUser
+ * );
+ *
+ * @throws Will throw an error if the entityName prop is missing from the wrapped component's props.
+ * @throws Will throw an error if the Redux store does not contain an `items` key.
  */
 export const createDefferedComponentWithLazyLoading = (WrappedComponent, entityName, asyncAction) => {
     let _asyncAction = asyncAction
@@ -157,8 +193,8 @@ export const createDefferedComponentWithLazyLoading = (WrappedComponent, entityN
                     ref={containerRef}
                     style={{
                         height: "100vh",
-                        borderColor: "#2196F3",
-                        borderLeft: "6px solid #ccc",
+                        borderColor: "#cc0000",
+                        borderLeft: "6px solid #ffe6e6",
                     }}
                 >
                     Nahrávám...
