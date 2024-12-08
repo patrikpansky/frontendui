@@ -278,6 +278,52 @@ export const GQLExtendSubVectorMDLWR = (vectorname) => (jsonResult) => (dispatch
 };
 
 
+/**
+ * Middleware to extract the `result` data or the value from one key in the `data` object.
+ * Designed to be the last middleware in the chain.
+ *
+ * @param {Object} jsonResult - The GraphQL query result.
+ * @returns {Function} Middleware function to extract and return the result.
+ *
+ * @example
+ * const extractMiddleware = ExtractResultMiddleware();
+ *
+ * const jsonResult = {
+ *   data: {
+ *     user: {
+ *       id: "12345",
+ *       name: "John Doe"
+ *     }
+ *   }
+ * };
+ *
+ * extractMiddleware(jsonResult)(dispatch, getState)((result) => {
+ *   console.log("Extracted result:", result); // Logs: { id: "12345", name: "John Doe" }
+ * });
+ */
+export const ExtractResultMDLWR = (jsonResult) => (dispatch, getState) => (next) => {
+    const data = jsonResult?.data;
+
+    if (!data) {
+        console.warn("ExtractResultMiddleware: No data found in jsonResult.");
+        return next(null);
+    }
+
+    let result = data?.result;
+
+    // If `result` is not directly present, check for a single key in `data`
+    if (!result && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    if (!result) {
+        console.warn("ExtractResultMiddleware: No valid result found in data.");
+    }
+
+    // Pass the extracted result to the next function
+    return next(result);
+};
 
 
 /**
