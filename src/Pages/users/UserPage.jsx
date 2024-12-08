@@ -111,11 +111,13 @@ const UserAsyncActionRead = CreateAsyncActionFromQuery(readquery);
  * @example
  * <UserPageContent user={user} />
  */
-const UserPageContent = ({ user }) => (
-    <UserLargeCard user={user}>
-        <UserEventsCard user={user} />
-    </UserLargeCard>
-);
+const UserPageContent = ({ user }) => {
+    return (
+        <UserLargeCard user={user}>
+            <UserEventsCard user={user} />
+        </UserLargeCard>
+    )
+};
 
 /**
  * A lazy-loading wrapper for the UserPageContent component.

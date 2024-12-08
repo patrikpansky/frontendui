@@ -29,7 +29,8 @@ import { GroupAnalysisPage } from "./Pages/ug/GroupAnalysisPage";
 import { RequestEditPage } from "./Pages/requests/RequestEditPage";
 import { GroupEventsPage } from "./Pages/ug/GroupEventsPage";
 import { EventsPage } from "./Pages/events/EventsPage";
-import { UsersPage } from "./Pages/user/UsersPage";
+import { UsersPage } from "./Pages/users/UsersPage";
+import { GroupsPage } from "./Pages/groups/GroupsPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -121,6 +122,11 @@ export const Routes = [
     {
         path: prefix + "/userroles/edit/:id",
         element: <UserRolesEditPage />,
+        errorElement: <SearchPage />,
+    },
+    {
+        path: prefix + "/groups",
+        element: <GroupsPage />,
         errorElement: <SearchPage />,
     },
     {

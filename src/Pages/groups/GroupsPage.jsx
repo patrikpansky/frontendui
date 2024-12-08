@@ -1,6 +1,4 @@
-// import { useFreshItem } from "@hrbolek/uoisfrontend-shared/src"
-import { useParams } from "react-router-dom"
-import { UsersInfinityComponent } from "../../Components/User/Users";
+import { GroupInfinityComponent } from "../../Components/Group/Groups";
 
 /**
  * The main user page component that renders user details.
@@ -11,9 +9,9 @@ import { UsersInfinityComponent } from "../../Components/User/Users";
  * // Rendered via React Router
  * <Route path="/user/:id" element={<UserPage />} />
  */
-export const UsersPage = () => {
+export const GroupsPage = () => {
     // const { id } = useParams();
 
-    return <UsersInfinityComponent />;
+    return <GroupInfinityComponent />;
 };
 
