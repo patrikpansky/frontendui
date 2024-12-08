@@ -28,6 +28,8 @@ import { GroupSubFacultiesPage } from "./Pages/ug/GroupSubFacultiesPage";
 import { GroupAnalysisPage } from "./Pages/ug/GroupAnalysisPage";
 import { RequestEditPage } from "./Pages/requests/RequestEditPage";
 import { GroupEventsPage } from "./Pages/ug/GroupEventsPage";
+import { EventsPage } from "./Pages/events/EventsPage";
+import { UsersPage } from "./Pages/user/UsersPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"
@@ -37,6 +39,14 @@ export const Routes = [
     //     element: <SearchPage />,
     //     errorElement: <SearchPage />
     // },
+    {
+        path: "/events/:startdate",
+        element: <EventsPage />,
+    },
+    {
+        path: "/events",
+        element: <EventsPage />,
+    },
     {
         path: "/events/event/view/:id",
         element: <EventPage />,
@@ -92,6 +102,11 @@ export const Routes = [
     {
         path: "/plans/plan/edit/:id",
         element: <PlanEditPage />,
+    },
+    {
+        path: prefix + "/users",
+        element: <UsersPage />,
+        errorElement: <SearchPage />,
     },
     {
         path: prefix + "/user/view/:id",
