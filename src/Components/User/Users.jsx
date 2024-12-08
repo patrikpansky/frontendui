@@ -8,8 +8,7 @@ import { InfiniteScroll } from "../InfiniteScroll";
  * Wraps the result of CreateAsyncActionFromQuery and adds an additional function call.
  *
  * @param {Function} asyncActionCreator - The async action creator returned by CreateAsyncActionFromQuery.
- * @param {Function} additionalFunction - A function to call during the async action process.
- * @param {string} [hook="after"] - When to call the additional function ("before" or "after").
+ * @param {Function} additionalFunction - A function to call after the dispatch of asyncActionCreator.
  * @returns {Function} A new async action creator with the additional function call.
  */
 export const WrapAsyncActionWithFunction = (asyncActionCreator, additionalFunction) => {
