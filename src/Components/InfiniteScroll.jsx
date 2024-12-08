@@ -65,7 +65,7 @@ export const InfiniteScroll = ({
     actionParams, 
     asyncAction, 
     Visualiser,
-    calculateNewFilter = (oldfilter) => ({...oldfilter, skip: oldfilter.skip + oldfilter.limit })
+    calculateNewFilter = (oldfilter) => ({...oldfilter, skip: oldfilter.skip + oldfilter.limit || 10, limit: oldfilter.limit || 10})
  }) => {
     // const { 
     //     skip=0, 
@@ -82,7 +82,7 @@ export const InfiniteScroll = ({
         loading: false,
         hasMore: true,
         errors: null,
-        results: []//preloadedItems
+        results: preloadedItems
     });
 
     const containerRef = useRef(null);
@@ -95,7 +95,7 @@ export const InfiniteScroll = ({
         _setState({ ..._state, loading: true });
         try {
             const params = _state.filter;
-            console.log("going to fetch more", JSON.stringify(params))
+            // console.log("going to fetch more", JSON.stringify(params))
             const fetchedResults = await dispatch(asyncAction(params));
 
             if (fetchedResults.length == 0 ) {
@@ -128,24 +128,12 @@ export const InfiniteScroll = ({
         }
     };
 
-    // // Load initial items
-    // useEffect(() => {
-    //     if (_state.hasMore) {
-    //         console.log("loading more", JSON.stringify(_state))
-    //         loadItems();
-    //     }
-    // });
-
     // Intersection Observer to detect when the user scrolls to the bottom
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting && _state.hasMore && !_state.loading) {
                     loadItems()
-                    // _setState((prevState) => ({
-                    //     ...prevState,
-                    //     // skip: prevState.skip + prevState.limit
-                    // }));
                 }
             },
             { threshold: 1.0 }

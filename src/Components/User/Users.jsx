@@ -64,10 +64,8 @@ const UsersVisualiser = ({items=[]}) =>
 
 const UserPageAsyncAction = WrapAsyncActionWithFunction(CreateAsyncActionFromQuery(allusersquery), (jsonresult => jsonresult?.data?.result))
 
-export const UsersInfinityComponent = ({skip=0, limit=10, ...props}) => {
-
+export const UsersInfinityComponent = ({skip=0, limit=10, UserPageAsyncAction=UserPageAsyncAction, ...props}) => {
     return (
         <InfiniteScroll actionParams={{...props, skip, limit}} asyncAction={UserPageAsyncAction} Visualiser={UsersVisualiser} />
-        // <>UsersInfinityComponent</>
     )
 }
