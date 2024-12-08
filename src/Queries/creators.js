@@ -54,7 +54,7 @@ const ResponseFromQuery = (query, params={}) => (query_variables) => {
  */
 export const CreateFetchQuery = ResponseFromQuery
 
-export const GQLQueryAfterFetch = (jsonResult) => (dispatch) => {
+export const GQLQueryAfterFetch = (jsonResult) => (dispatch, /*getState */) => {
     const data = jsonResult?.data;
 
     if (!data) {
@@ -85,6 +85,105 @@ export const GQLQueryAfterFetch = (jsonResult) => (dispatch) => {
     return jsonResult;
 };
 
+/**
+ * Chains multiple middleware-like functions into a single function.
+ *
+ * Each middleware receives `jsonResult`, `dispatch`, `getState`, and `next` as arguments.
+ * The result of one middleware is passed as input to the next.
+ *
+ * @param  {...Function} middlewares - Middleware functions to chain.
+ * @returns {Function} A single middleware-like function.
+ *
+ * @example
+ * // Example Middleware Functions
+ * const middleware1 = (jsonResult) => (dispatch, getState) => (next) => {
+ *     console.log("Middleware 1:", jsonResult);
+ *     console.log("State:", getState());
+ *     jsonResult.modifiedBy1 = true;
+ *     dispatch({ type: "MIDDLEWARE_1_EXECUTED" });
+ *     return next(jsonResult);
+ * };
+ *
+ * const middleware2 = (jsonResult) => (dispatch, getState) => (next) => {
+ *     console.log("Middleware 2:", jsonResult);
+ *     console.log("State:", getState());
+ *     jsonResult.modifiedBy2 = true;
+ *     dispatch({ type: "MIDDLEWARE_2_EXECUTED" });
+ *     return next(jsonResult);
+ * };
+ *
+ * // Chain the middleware functions
+ * const chainedMiddleware = chainMiddlewares(middleware1, middleware2);
+ *
+ * // Simulated dispatch, getState, and next functions
+ * const dispatch = (action) => console.log("Dispatched:", action);
+ * const getState = () => ({ some: "state" });
+ * const next = (result) => {
+ *     console.log("Final Result:", result);
+ *     return result;
+ * };
+ *
+ * // Invoke the chained middleware
+ * const jsonResult = { data: { result: "example data" } };
+ * chainedMiddleware(jsonResult)(dispatch, getState)(next);
+ *
+ * @example
+ * // Output:
+ * // Middleware 1: { data: { result: "example data" } }
+ * // State: { some: "state" }
+ * // Dispatched: { type: "MIDDLEWARE_1_EXECUTED" }
+ * // Middleware 2: { data: { result: "example data" }, modifiedBy1: true }
+ * // State: { some: "state" }
+ * // Dispatched: { type: "MIDDLEWARE_2_EXECUTED" }
+ * // Final Result: { data: { result: "example data" }, modifiedBy1: true, modifiedBy2: true }
+ */
+export const chainMiddlewares = (...middlewares) => {
+    return (jsonResult) => (dispatch, getState) => (next) => {
+        const invokeNext = (index, currentJsonResult) => {
+            if (index >= middlewares.length) {
+                return next(currentJsonResult);
+            }
+            const currentMiddleware = middlewares[index];
+            return currentMiddleware(currentJsonResult)(dispatch, getState)((newJsonResult) =>
+                invokeNext(index + 1, newJsonResult)
+            );
+        };
+        return invokeNext(0, jsonResult);
+    };
+};
+
+
+export const GQLQueryAfterFetchMDLWR = (jsonResult) => (dispatch, /*getState */) => (next) => {
+    const data = jsonResult?.data;
+
+    if (!data) {
+        console.warn("GQLQueryAfterFetch: No data found in jsonResult");
+        return jsonResult;
+    }
+
+    let result = data?.result;
+
+    // Check if `data` has exactly one key and use it as the result
+    if (!result && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    if (result) {
+        if (Array.isArray(result)) {
+            result.forEach((item) => {
+                dispatch(ItemActions.item_update(item));
+            });
+        } else {
+            dispatch(ItemActions.item_update(result));
+        }
+    } else {
+        console.warn("GQLQueryAfterFetch: No valid result found in data");
+    }
+
+    return next(jsonResult);
+};
+
 export const GQLMutationAfterFetch = (jsonResult) => (dispatch) => {
     const data = jsonResult?.data
     if (data) {
@@ -112,6 +211,19 @@ export const GQLQueryLazyVectorAfterFetch = (vectorname) => (jsonResult) => (dis
     return jsonResult
 }
 
+export const UpdateItemsFromVectorAttribute = (vectorname) => (jsonResult) => (dispatch) => {
+    // console.log("GQLQueryLazyVectorAfterFetch", JSON.stringify(jsonResult), vectorname)
+    const data = jsonResult?.data
+    if (data) {
+        const result = data?.result
+        if (result) {
+            // console.log("GQLQueryLazyVectorAfterFetch", JSON.stringify(result))
+            dispatch(ItemActions.item_updateAttributeVector({item: result, vectorname}))
+        }
+    }
+    return jsonResult
+}
+
 /**
  * from GQL query string creates dispatchable async action (see react-redux)
  * @param {string} query 
@@ -120,7 +232,7 @@ export const GQLQueryLazyVectorAfterFetch = (vectorname) => (jsonResult) => (dis
  * 
  * @function
  */
-export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQueryAfterFetch) => {
+export const CreateAsyncActionFromQuery = (query, params={}, next=GQLQueryAfterFetch) => {
     // console.log("CreateAsyncActionFromQuery.query", query)
     if (typeof query !== "string") {
         throw new Error("CreateAsyncActionFromQuery query param have be string!")
@@ -139,7 +251,7 @@ export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQuery
             try {
                 const jsonResult = await unparametrizedFetch(query_variables);
                 // console.log("jsonResult", query, "->", jsonResult)
-                dispatch(afterFetch(jsonResult));
+                dispatch(next(jsonResult));
                 return jsonResult
             } catch (error) {
                 console.error("CreateAsyncActionFromQuery: Error in async action", error);
@@ -148,6 +260,52 @@ export const CreateAsyncActionFromQuery = (query, params={}, afterFetch=GQLQuery
         };
     }
 }
+
+/**
+ * Creates a dispatchable async action from a GraphQL query.
+ * Supports chaining multiple middleware-like functions for post-fetch processing.
+ *
+ * @param {string} query - The GraphQL query string.
+ * @param {object} params - Additional parameters for the query, such as headers.
+ * @param  {...Function} middlewares - Middleware-like functions to process the result.
+ * @returns {Function} A dispatchable async action.
+ *
+ * @function
+ */
+export const CreateAsyncActionFromQueryMDLWR = (query, params = {}, ...middlewares) => {
+    if (typeof query !== "string") {
+        throw new Error("CreateAsyncActionFromQuery: query must be a string.");
+    }
+
+    const unparametrizedFetch = ResponseFromQuery(query, params);
+
+    return (query_variables) => {
+        if (typeof query_variables !== "object" || query_variables === null) {
+            throw new Error("CreateAsyncActionFromQuery: query_variables must be a valid JSON object.");
+        }
+
+        return async (dispatch, getState) => {
+            try {
+                const jsonResult = await unparametrizedFetch(query_variables);
+
+                // Chain the middleware-like functions
+                const chain = middlewares.reduceRight(
+                    (next, middleware) => (result) => middleware(result)(dispatch, getState)(next),
+                    (finalResult) => finalResult // Base case: pass through final result
+                );
+
+                // Start the middleware chain
+                chain(jsonResult);
+
+                return jsonResult;
+            } catch (error) {
+                console.error("CreateAsyncActionFromQuery: Error in async action", error);
+                throw error;
+            }
+        };
+    };
+};
+
 
 /**
  * from GQL query string creates dispatchable async action (see react-redux)
@@ -185,3 +343,26 @@ export const CreateAsyncActionFromMutation = (mutation, params={}, afterFetch=GQ
         }
     }
 }
+
+/**
+ * Wraps the result of CreateAsyncActionFromQuery and adds an additional function call.
+ *
+ * @param {Function} asyncActionCreator - The async action creator returned by CreateAsyncActionFromQuery.
+ * @param {Function} additionalFunction - A function to call after the dispatch of asyncActionCreator.
+ * @returns {Function} A new async action creator with the additional function call.
+ */
+export const WrapAsyncActionWithFunction = (asyncActionCreator, additionalFunction) => {
+    if (typeof asyncActionCreator !== "function") {
+        throw new Error("WrapAsyncActionWithFunction: asyncActionCreator must be a function.");
+    }
+
+    if (typeof additionalFunction !== "function") {
+        throw new Error("WrapAsyncActionWithFunction: additionalFunction must be a function.");
+    }
+
+    return (query_variables) => async (dispatch, getState) => {
+        let result = await asyncActionCreator(query_variables)(dispatch, getState);
+        result = additionalFunction(result, dispatch, getState);
+        return result;
+    };
+};
