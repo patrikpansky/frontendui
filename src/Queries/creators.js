@@ -421,9 +421,7 @@ export const CreateAsyncActionFromQueryWithMiddlewares = (query, params = {}, fi
                 );
 
                 // Start the middleware chain
-                chain(jsonResult);
-
-                return jsonResult;
+                return chain(jsonResult);
             } catch (error) {
                 console.error("CreateAsyncActionFromQueryMDLWR: Error during async action execution", error);
                 throw error;
