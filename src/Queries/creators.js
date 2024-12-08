@@ -153,7 +153,7 @@ export const chainMiddlewares = (...middlewares) => {
 };
 
 
-export const GQLQueryAfterFetchMDLWR = (jsonResult) => (dispatch, /*getState */) => (next) => {
+export const GQLUpdateItemAfterFetchMDLWR = (jsonResult) => (dispatch, /*getState */) => (next) => {
     const data = jsonResult?.data;
 
     if (!data) {
@@ -249,7 +249,7 @@ export const UpdateItemsFromVectorAttribute = (vectorname) => (jsonResult) => (d
  *
  * processVectorMiddleware(jsonResult)(dispatch, getState)(next);
  */
-export const ProcessVectorMiddleware = (vectorname) => (jsonResult) => (dispatch, /* getState */) => (next) => {
+export const GQLUpdateSubVectorMDLWR = (vectorname) => (jsonResult) => (dispatch, /* getState */) => (next) => {
     const data = jsonResult?.data;
 
     if (!data) {
@@ -347,7 +347,7 @@ export const CreateAsyncActionFromQuery = (query, params={}, next=GQLQueryAfterF
  *
  * dispatch(fetchAction({ id: "12345" }));
  */
-export const CreateAsyncActionFromQueryMDLWR = (query, params = {}, firstmiddleware = GQLQueryAfterFetchMDLWR, ...middlewares) => {
+export const CreateAsyncActionFromQueryWithMiddlewares = (query, params = {}, firstmiddleware = GQLUpdateItemAfterFetchMDLWR, ...middlewares) => {
     if (typeof query !== "string") {
         throw new Error("CreateAsyncActionFromQueryMDLWR: 'query' must be a string.");
     }
