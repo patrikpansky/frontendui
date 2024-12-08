@@ -249,7 +249,7 @@ export const UpdateItemsFromVectorAttribute = (vectorname) => (jsonResult) => (d
  *
  * processVectorMiddleware(jsonResult)(dispatch, getState)(next);
  */
-export const GQLUpdateSubVectorMDLWR = (vectorname) => (jsonResult) => (dispatch, /* getState */) => (next) => {
+export const GQLExtendSubVectorMDLWR = (vectorname) => (jsonResult) => (dispatch, /* getState */) => (next) => {
     const data = jsonResult?.data;
 
     if (!data) {
