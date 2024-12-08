@@ -225,6 +225,62 @@ export const UpdateItemsFromVectorAttribute = (vectorname) => (jsonResult) => (d
 }
 
 /**
+ * Middleware-like function to process `currentJsonResult` by extracting data,
+ * identifying a vector attribute, and dispatching the `UpdateSubVector` action.
+ *
+ * @param {Object} jsonResult - The JSON result to process.
+ * @returns {Function} Middleware function for processing and dispatching actions.
+ *
+ * @example
+ * const processVectorMiddleware = ProcessVectorMiddleware("events");
+ *
+ * const jsonResult = {
+ *   data: {
+ *     result: {
+ *       id: 1,
+ *       name: "Item 1",
+ *       events: [
+ *         { id: 101, name: "Event 1" },
+ *         { id: 102, name: "Event 2" }
+ *       ]
+ *     }
+ *   }
+ * };
+ *
+ * processVectorMiddleware(jsonResult)(dispatch, getState)(next);
+ */
+export const ProcessVectorMiddleware = (vectorname) => (jsonResult) => (dispatch, /* getState */) => (next) => {
+    const data = jsonResult?.data;
+
+    if (!data) {
+        console.warn("ProcessVectorMiddleware: No data found in jsonResult");
+        return next(jsonResult);
+    }
+
+    let result = data?.result;
+
+    // Extract the single key's value if result is not directly present
+    if (!result && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    if (!result || !Array.isArray(result[vectorname])) {
+        console.warn(`ProcessVectorMiddleware: No valid vector '${vectorname}' found in the result`);
+        return next(jsonResult);
+    }
+
+    // Dispatch UpdateSubVector synchronously
+    dispatch(ItemActions.item_updateAttributeVector({item: result, vectorname}))
+
+    // console.log(`ProcessVectorMiddleware: Dispatched UpdateSubVector for vector '${vectorname}'`);
+    return next(jsonResult); // Pass to the next middleware
+};
+
+
+
+
+/**
  * from GQL query string creates dispatchable async action (see react-redux)
  * @param {string} query 
  * @param {object} params can contain header (special token if needed)
@@ -267,29 +323,53 @@ export const CreateAsyncActionFromQuery = (query, params={}, next=GQLQueryAfterF
  *
  * @param {string} query - The GraphQL query string.
  * @param {object} params - Additional parameters for the query, such as headers.
- * @param  {...Function} middlewares - Middleware-like functions to process the result.
+ * @param {Function} firstmiddleware - The first middleware function to process the result.
+ * @param {...Function} middlewares - Additional middleware functions to process the result.
  * @returns {Function} A dispatchable async action.
  *
  * @function
+ * @example
+ * const exampleQuery = `
+ *   query ExampleQuery($id: ID!) {
+ *     user(id: $id) {
+ *       id
+ *       name
+ *     }
+ *   }
+ * `;
+ *
+ * const fetchAction = CreateAsyncActionFromQueryMDLWR(
+ *   exampleQuery,
+ *   { headers: { Authorization: "Bearer token" } },
+ *   logMiddleware,
+ *   processMiddleware
+ * );
+ *
+ * dispatch(fetchAction({ id: "12345" }));
  */
-export const CreateAsyncActionFromQueryMDLWR = (query, params = {}, ...middlewares) => {
+export const CreateAsyncActionFromQueryMDLWR = (query, params = {}, firstmiddleware = GQLQueryAfterFetchMDLWR, ...middlewares) => {
     if (typeof query !== "string") {
-        throw new Error("CreateAsyncActionFromQuery: query must be a string.");
+        throw new Error("CreateAsyncActionFromQueryMDLWR: 'query' must be a string.");
+    }
+
+    if (typeof firstmiddleware !== "function") {
+        throw new Error("CreateAsyncActionFromQueryMDLWR: 'firstmiddleware' must be a function.");
     }
 
     const unparametrizedFetch = ResponseFromQuery(query, params);
 
     return (query_variables) => {
         if (typeof query_variables !== "object" || query_variables === null) {
-            throw new Error("CreateAsyncActionFromQuery: query_variables must be a valid JSON object.");
+            throw new Error("CreateAsyncActionFromQueryMDLWR: 'query_variables' must be a valid JSON object.");
         }
 
         return async (dispatch, getState) => {
             try {
                 const jsonResult = await unparametrizedFetch(query_variables);
 
-                // Chain the middleware-like functions
-                const chain = middlewares.reduceRight(
+                // Combine the first middleware with additional middlewares
+                const extendedMiddlewares = [firstmiddleware, ...middlewares];
+                const chain = extendedMiddlewares.reduceRight(
                     (next, middleware) => (result) => middleware(result)(dispatch, getState)(next),
                     (finalResult) => finalResult // Base case: pass through final result
                 );
@@ -299,13 +379,12 @@ export const CreateAsyncActionFromQueryMDLWR = (query, params = {}, ...middlewar
 
                 return jsonResult;
             } catch (error) {
-                console.error("CreateAsyncActionFromQuery: Error in async action", error);
+                console.error("CreateAsyncActionFromQueryMDLWR: Error during async action execution", error);
                 throw error;
             }
         };
     };
 };
-
 
 /**
  * from GQL query string creates dispatchable async action (see react-redux)
