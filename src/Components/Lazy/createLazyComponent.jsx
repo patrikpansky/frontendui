@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useFreshItem } from "../Hooks";
+import { useFreshItem } from "../../Hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { CreateAsyncActionFromQuery } from "../Queries";
+import { CreateAsyncActionFromQuery } from "../../Queries";
 
 /**
  * High-order function to create a lazy-loading component using a custom hook.
