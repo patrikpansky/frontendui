@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from "react"
 import { GroupAsyncActions } from "../../Queries/_groups"
 import { UserLink } from "../User/UserLink"
 import { GroupLink } from "../Group/GroupLink"
-import { InfiniteScroll } from "../InfiniteScroll"
 import { CreateAsyncActionFromQuery } from "@hrbolek/uoisfrontend-shared/src"
-import { start } from "@popperjs/core"
+import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared/src";
 
 const EventsOverlap = (eventA, eventB) => {
     return eventA._startdate <= eventB._enddate && eventA._enddate >= eventB._startdate;

@@ -3,7 +3,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
-import { UserPage, UserEditPage, UserRolesEditPage, GroupPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
+import { UserPage, UserEditPage, UserRolesEditPage, GroupEditPage, GroupRolesEditPage } from "./Pages";
 import { SearchPage } from "./Pages/SearchPage";
 
 import { GroupSubgroupsPage } from "./Pages/ug/GroupSubgroupsPage";
@@ -31,6 +31,7 @@ import { GroupEventsPage } from "./Pages/ug/GroupEventsPage";
 import { EventsPage } from "./Pages/events/EventsPage";
 import { UsersPage } from "./Pages/users/UsersPage";
 import { GroupsPage } from "./Pages/groups/GroupsPage";
+import { GroupPage } from "./Pages/groups/GroupPage";
 
 // import { UserPage, GroupPage } from "./Pages";
 const prefix = "/ug"

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { CardCapsule, useDispatch} from '@hrbolek/uoisfrontend-shared/src'
+import { CardCapsule, CreateAsyncActionFromQueryWithMiddlewares, useDispatch} from '@hrbolek/uoisfrontend-shared/src'
 // import { Link as ProxyLink } from "react-router-dom";
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -8,6 +8,7 @@ import { UserLink } from './UserLink'
 import { ProxyLink } from '../ProxyLink'
 import { UserAsyncActions } from '../../Queries/_users'
 import { PersonFill } from 'react-bootstrap-icons'
+import { createDefferedComponentWithLazyLoading } from '@hrbolek/uoisfrontend-shared/src/Components/Lazy/createLazyComponent'
 
 const groupPriorityMap = {
     "cd49e152-610c-11ed-9f29-001a7dda7110": 1, //"name": "univerzita"
@@ -134,3 +135,32 @@ export const UserMediumCard = ({user}) => {
         </CardCapsule>
     )
 }
+
+const usersquery = `
+query UserById($id: UUID!) {
+  result: userById(id: $id) {
+    ...User
+  }
+}
+fragment User on UserGQLModel {
+  __typename
+  id
+  lastchange
+  name
+  surname
+  fullname
+  email
+  created
+  createdby {
+    id
+    email
+  }
+  changedby {
+    id
+    name
+  }
+}`
+const UserReadAsyncAction = CreateAsyncActionFromQueryWithMiddlewares(
+    usersquery, {}
+)
+export const UserMediumCardDeffered  = createDefferedComponentWithLazyLoading(UserMediumCard, "user", UserReadAsyncAction)

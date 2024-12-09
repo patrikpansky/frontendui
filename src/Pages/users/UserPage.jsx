@@ -1,7 +1,7 @@
 // import { useFreshItem } from "@hrbolek/uoisfrontend-shared/src"
 import { useParams } from "react-router-dom"
 import { UserLargeCard } from "../../Components"
-import { CreateAsyncQueryValidator, createLazyComponent, CreateAsyncActionFromQuery } from "@hrbolek/uoisfrontend-shared/src"
+import { CreateAsyncQueryValidator, createLazyComponent, CreateAsyncActionFromQuery, CreateAsyncActionFromQueryWithMiddlewares } from "@hrbolek/uoisfrontend-shared/src"
 import { UserEventsCard } from "../../Components/User/UserEventsCard"
 
 // export const CreateAsyncQueryValidator2 = (reactions) => {
@@ -99,7 +99,7 @@ const readquery = `
  *       console.error("Error fetching user data:", error);
  *   });
  */
-const UserAsyncActionRead = CreateAsyncActionFromQuery(readquery);
+const UserAsyncActionRead = CreateAsyncActionFromQueryWithMiddlewares(readquery);
 
 /**
  * Component to render the main content of the user page.

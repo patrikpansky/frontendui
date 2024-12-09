@@ -2,7 +2,7 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import { UserMediumCard } from "./UserMediumCard"
 import { CreateAsyncActionFromQueryWithMiddlewares, ExtractResultMDLWR, GQLUpdateItemAfterFetchMDLWR } from "@hrbolek/uoisfrontend-shared/src";
-import { InfiniteScroll } from "../InfiniteScroll";
+import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared/src";
 
 const allusersquery = `
 query UserPage($skip: Int, $limit: Int, $where: UserInputWhereFilter) {

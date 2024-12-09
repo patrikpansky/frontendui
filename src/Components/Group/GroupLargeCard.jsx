@@ -28,15 +28,10 @@ export const GroupLargeCard = ({group, children}) => {
                 <GroupProjects group={group} />
                 <GroupAnalysisLinksCard group={group} />
             </Col>
-            <Col md={6}>
+            <Col md={9}>
                 {/* <GroupEventsCard group={group} /> */}
                 {children}
-            </Col>
-            <Col md={3}>
-                <GroupMembersCard group={group} />
-                
-            </Col>
-            
+            </Col>           
         </Row>
         <br />
         <Row>
