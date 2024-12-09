@@ -1,6 +1,0 @@
-export * from './ug/UserPage'
-export * from './ug/UserEditPage'
-export * from './ug/UserRolesEditPage'
-export * from './ug/GroupPage'
-export * from './ug/GroupEditPage'
-export * from './ug/GroupRolesEditPage'

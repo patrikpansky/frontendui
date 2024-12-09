@@ -1,5 +1,0 @@
-{
-    "skip": 0,
-    "limit": 10,
-    "where": {"name": {"like": "%ni%"} }
-}
