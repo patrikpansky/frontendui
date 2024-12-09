@@ -1,1 +1,0 @@
-export const Button = (props) => <button {...props}>shared-BTN2</button>

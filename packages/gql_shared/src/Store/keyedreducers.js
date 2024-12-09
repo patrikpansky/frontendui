@@ -20,7 +20,7 @@ export const CreateItem = (state, action) => {
     if (!item.id) {
         item.id = id;
     }
-    
+
     state[id] = item
     return state
 }
@@ -67,7 +67,7 @@ export const UpdateItem = (state, action) => {
     const newItem = action.payload;
     const oldItem = state[newItem.id];
     state[newItem.id] = { ...oldItem, ...newItem };
-    
+
     return state;
 };
 

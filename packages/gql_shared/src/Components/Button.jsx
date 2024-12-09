@@ -1,1 +1,0 @@
-export const Button = (props) => <button {...props}>BTN2</button>

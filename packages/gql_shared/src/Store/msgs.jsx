@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 /**
  * Slice for managing messages in the Redux store.
  * Provides actions and reducers to add, delete, and handle messages.
-*/
+ */
 const MsgSlice = createSlice({
-   name: 'msgs',
-   initialState: {},
-   reducers: {
-       msg_add: CreateItem,
+    name: 'msgs',
+    initialState: {},
+    reducers: {
+        msg_add: CreateItem,
         msg_delete: DeleteItem,
     },
 });
@@ -111,11 +111,11 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
             result = data[singleKey];
         }
 
-            const typename = result?.__typename;
+        const typename = result?.__typename;
         if (!typename || typename.includes('Error')) {
             dispatch(MsgAddAction({ title: reactions.error, variant: 'danger', detail: 'Error in typename' }));
-                return json;
-            }
+            return json;
+        }
 
         dispatch(MsgFlashAction({ title: reactions.success, variant: 'success' }));
         return json;
@@ -138,11 +138,11 @@ export const CreateAsyncQueryValidator = (reactions) => (dispatch) => {
 export const CreateAsyncQueryValidator2 = (reactions) => (dispatch) => {
     const [onResolve, onReject] = CreateAsyncQueryValidator(reactions)(dispatch);
     return (future) => future.then(onResolve).catch(onReject);
-    };
+};
 
 /**
  * Inspects a GraphQL response for errors or success indicators and triggers appropriate reactions.
- * 
+ *
  * @param {Object} reactions - Callback functions for different response scenarios.
  * @param {Function} [reactions.ok] - Called for successful responses.
  * @param {Function} [reactions.fail] - Called for failed responses or missing data.

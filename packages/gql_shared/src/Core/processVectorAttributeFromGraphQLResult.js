@@ -1,3 +1,5 @@
+import { ItemActions } from "../Store";
+
 /**
  * Middleware-like function to process a specific vector attribute from a GraphQL query result.
  * Extracts the relevant data, identifies the vector attribute, and dispatches an action to update the attribute.

@@ -1,3 +1,5 @@
+import { ItemActions } from "../Store";
+
 /**
  * Middleware function for processing GraphQL query results and dispatching item update actions.
  *
