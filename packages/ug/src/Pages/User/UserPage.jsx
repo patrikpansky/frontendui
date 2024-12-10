@@ -10,6 +10,7 @@ query UserRead($id: UUID!) {
         __typename
         id
         name
+        surname
         fullname
         email
     }

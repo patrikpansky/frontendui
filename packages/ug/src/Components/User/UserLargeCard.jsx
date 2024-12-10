@@ -10,10 +10,11 @@ export const UserLargeCard = ({user, children}) => {
     return (
         <CardCapsule  title={<><PersonFill /> <UserLink user={user } /></>}>
             <Row>
-                <Col md={3}>
+                <Col xl={3} md={12}>
                     <UserMediumCard user={user}/>
                 </Col>
-                <Col md={9}>
+                <Col xl={9} md={12}>
+                    <UserMediumCard user={user}/>
                     {children}
                 </Col>
             </Row>
