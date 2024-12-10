@@ -10,7 +10,7 @@ export const Routes = [
   {
     path: `/${prefix}/user/view/:id`,
     element: <UserPage />,
-},
+  },  
 ]
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});

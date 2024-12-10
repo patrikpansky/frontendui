@@ -1,5 +1,5 @@
-import { CreateFetchQuery } from "./createFetchQuery";
-
+import { createFetchQuery } from "./createFetchQuery";
+import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
 /**
  * Creates a dispatchable async action from a GraphQL query.
  * Supports chaining multiple middleware-like functions for post-fetch processing.
@@ -48,7 +48,7 @@ import { CreateFetchQuery } from "./createFetchQuery";
  * // Dispatch the action with query variables
  * dispatch(fetchAction({ id: "12345" }));
  */
-export const createAsyncGraphQLAction = (query, params = GQLUpdateItemAfterFetchMDLWR, ...middlewares) => {
+export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLResult, ...middlewares) => {
     if (typeof query !== "string") {
         throw new Error("createAsyncGraphQLAction: 'query' must be a string.");
     }
@@ -66,7 +66,7 @@ export const createAsyncGraphQLAction = (query, params = GQLUpdateItemAfterFetch
         params = {}; // Reset params to an empty object
     }
 
-    const unparametrizedFetch = CreateFetchQuery(query, params);
+    const unparametrizedFetch = createFetchQuery(query, params);
 
     return (query_variables) => {
         if (typeof query_variables !== "object" || query_variables === null) {
@@ -77,8 +77,7 @@ export const createAsyncGraphQLAction = (query, params = GQLUpdateItemAfterFetch
             try {
                 const jsonResult = await unparametrizedFetch(query_variables);
 
-                // Combine the first middleware with additional middlewares
-                const extendedMiddlewares = [firstmiddleware, ...middlewares];
+                const extendedMiddlewares = [...middlewares];
                 const chain = extendedMiddlewares.reduceRight(
                     (next, middleware) => (result) => middleware(result)(dispatch, getState)(next),
                     (finalResult) => finalResult // Base case: pass through final result

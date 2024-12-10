@@ -1,3 +1,4 @@
+import { useParams } from 'react-router'
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { UserLargeCard } from "../../Components/User/UserLargeCard"
@@ -5,7 +6,7 @@ import { UserLargeCard } from "../../Components/User/UserLargeCard"
 
 const UserRead = `
 query UserRead($id: UUID!) {
-    result: userById(is: $id) {
+    result: userById(id: $id) {
         __typename
         id
         name

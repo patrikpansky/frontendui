@@ -2,7 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 
-import { AppCanvas, LogButton } from '@hrbolek/uoisfrontend-gql-shared'
+import { AppCanvas } from '@hrbolek/uoisfrontend-gql-shared'
+import { LogButton } from '@hrbolek/uoisfrontend-shared'
 import { AppRouter } from './AppRouter';
 
 export const App = () => {

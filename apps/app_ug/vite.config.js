@@ -9,10 +9,16 @@ export default defineConfig({
     preserveSymlinks: true,
     alias: {
       "@hrbolek/uoisfrontend-shared": path.resolve(__dirname, "../../packages/shared/src"),
+      "@hrbolek/uoisfrontend-gql-shared": path.resolve(__dirname, "../../packages/gql_shared/src"),
       "@hrbolek/uoisfrontend-ug": path.resolve(__dirname, "../../packages/ug/src"),
     },
   },
   optimizeDeps: {
+    include: [
+      'invariant',
+      'classnames',
+      'react-bootstrap'
+    ],
     exclude: [
       "@hrbolek/uoisfrontend-shared",
       "@hrbolek/uoisfrontend-gql-shared",

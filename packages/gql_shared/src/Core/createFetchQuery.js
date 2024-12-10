@@ -1,5 +1,5 @@
 import { authorizedFetch2 } from "./fetch";
-
+import { createPayload } from './createPayload'
 /**
  * Creates a fetch function for a given GraphQL query string. The resulting function
  * accepts query variables, constructs the request payload, and initiates the fetch request.
@@ -38,7 +38,7 @@ import { authorizedFetch2 } from "./fetch";
  *   .then(response => console.log(response))
  *   .catch(err => console.error(err));
  */
-export const CreateFetchQuery = (query, params = {}) => (query_variables) => {
+export const createFetchQuery = (query, params = {}) => async (query_variables) => {
     if (!query || typeof query !== 'string') {
         throw new Error('Invalid query: must be a non-empty string.');
     }
@@ -51,7 +51,15 @@ export const CreateFetchQuery = (query, params = {}) => (query_variables) => {
         },
     };
 
-    const body = JSON.stringify(CreatePayload(query, query_variables));
+    const body = JSON.stringify(createPayload(query, query_variables));
     const result = authorizedFetch2('', { body, ...defaultParams, ...params });
     return result;
+    try {
+        const result = authorizedFetch2('', { body, ...defaultParams, ...params });
+        return result;
+    } 
+    catch {
+        throw "Probably not logged in"
+    }
+    
 };
