@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "description": "",
-
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]  
+  ],
+  "devDependencies": {
+    "jsdoc": "^4.0.4"
+  }
 }
