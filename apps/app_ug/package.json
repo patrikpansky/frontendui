@@ -1,7 +1,7 @@
 {
-  "name": "app_ug",
+  "name": "@hrbolek/app_ug",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,12 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "shared": "*"
+    "react-router": "7.0.2",
+    "bootstrap": "^5.3.3",
+    
+    "@hrbolek/uoisfrontend-shared": "*",
+    "@hrbolek/uoisfrontend-gql-shared": "*",
+    "@hrbolek/uoisfrontend-ug": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

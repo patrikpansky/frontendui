@@ -7,5 +7,10 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "react-bootstrap-icons": "^1.11.5",
+    "@hrbolek/uoisfrontend-shared": "*",
+    "@hrbolek/uoisfrontend-gql-shared": "*"
+  }
 }

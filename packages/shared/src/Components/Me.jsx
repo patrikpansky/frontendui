@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { CreateAsyncActionFromQuery } from "../Queries";
+import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 /**
  * shared module.
@@ -33,7 +33,7 @@ const MeQuery = `
 }`;
 
 // Create an async action from the GraphQL query
-const MeAsyncAction = CreateAsyncActionFromQuery(MeQuery);
+const MeAsyncAction = createAsyncGraphQLAction(MeQuery);
 
 /**
  * A `LogButton` component that displays login/logout links and the user's profile link.

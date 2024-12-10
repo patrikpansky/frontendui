@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux"
-import { CreateAsyncQueryValidator2 } from "../Store"
+import { CreateAsyncQueryValidator2 } from "@hrbolek/uoisfrontend-gql-shared"
 
 /**
  * shared module.

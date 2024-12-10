@@ -8,5 +8,12 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+
+  "dependencies": {
+    "react-redux": "9.1.2",
+    "react-bootstrap": "^2.10.6",
+    "react-router-dom": "^7.0.2",
+    "@reduxjs/toolkit": "^2.4.0"
+  }
 }
