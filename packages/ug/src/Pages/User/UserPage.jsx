@@ -7,8 +7,8 @@ import { UserMediumCard } from '../../Components'
 import { UserEventsCard } from '../../Components/User/Vectors/UserEventsCard'
 
 
-const UserRead = `
-query UserRead($id: UUID!) {
+const UserQueryRead = `
+query UserQueryRead($id: UUID!) {
     result: userById(id: $id) {
         __typename
         id

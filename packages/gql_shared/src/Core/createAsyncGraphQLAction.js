@@ -6,11 +6,14 @@ import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
  * Supports chaining multiple middleware-like functions for post-fetch processing.
  * @function
  * @param {string} query - The GraphQL query string. Must be a valid, non-empty string.
- * @param {object|Function} [params=GQLUpdateItemAfterFetchMDLWR] - Additional parameters for the query (e.g., headers), 
+ * @param {object|Function} [params=updateItemsFromGraphQLResult] - Additional parameters for the query (e.g., headers), 
  * or a middleware function. If it is a middleware function, it is added to the middleware chain.
  * @param {...Function} middlewares - Additional middleware functions to process the result.
  * Each middleware must be a function that returns a higher-order function `(result) => (dispatch, getState) => next(result)`.
  *
+ * @see processVectorAttributeFromGraphQLResult
+ * @see updateItemsFromGraphQLResult
+ * 
  * @returns {Function} A dispatchable async action that processes the GraphQL query, applies middleware, and dispatches the result.
  *
  * @throws {Error} If `query` is not a string.
@@ -27,23 +30,12 @@ import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
  *   }
  * `;
  *
- * // Example middlewares
- * const logMiddleware = (result) => (dispatch, getState) => (next) => {
- *   console.log("Middleware log:", result);
- *   return next(result);
- * };
- *
- * const processMiddleware = (result) => (dispatch, getState) => (next) => {
- *   const processedResult = { ...result, processed: true };
- *   return next(processedResult);
- * };
- *
- * // Create an async action
+  * // Create an async action
  * const fetchAction = createAsyncGraphQLAction(
  *   exampleQuery,
- *   { headers: { Authorization: "Bearer token" } },
- *   logMiddleware,
- *   processMiddleware
+ *   processVectorAttributeFromGraphQLResult("users"),
+ *   updateItemsFromGraphQLResult,
+ *   hookGraphQLResult(jsonResult => console.log(jsonResult))
  * );
  *
  * // Dispatch the action with query variables

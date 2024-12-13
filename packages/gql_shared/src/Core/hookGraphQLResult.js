@@ -12,20 +12,25 @@
  * @returns {Function} A middleware function that processes the GraphQL result.
  *
  * @example
- * const logHook = (jsonResult) => {
- *   console.log("Processing GraphQL result:", jsonResult);
- * };
- *
- * const jsonResult = {
- *   data: {
- *     result: [
- *       { id: 1, name: "Item 1" },
- *       { id: 2, name: "Item 2" }
- *     ]
+ * const exampleQuery = `
+ *   query ExampleQuery($id: ID!) {
+ *     user(id: $id) {
+ *       id
+ *       name
+ *     }
  *   }
- * };
+ * `;
  *
- * hookGraphQLResult(logHook)(jsonResult)(dispatch, getState)(next);
+  * // Create an async action
+ * const fetchAction = createAsyncGraphQLAction(
+ *   exampleQuery,
+ *   processVectorAttributeFromGraphQLResult("users"),
+ *   updateItemsFromGraphQLResult,
+ *   hookGraphQLResult(jsonResult => console.log(jsonResult))
+ * );
+ *
+ * // Dispatch the action with query variables
+ * dispatch(fetchAction({ id: "12345" }));
  */
 export const hookGraphQLResult = (hook) => {
     if (typeof hook !== "function") throw new Error("hook must be a function");

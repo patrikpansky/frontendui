@@ -14,22 +14,14 @@ import { ItemActions } from "../Store";
  * // Define the vector processing middleware
  * const processVectorMiddleware = processVectorAttributeFromGraphQLResult("events");
  *
- * // Example GraphQL response
- * const jsonResult = {
- *   data: {
- *     result: {
- *       id: 1,
- *       name: "Item 1",
- *       events: [
- *         { id: 101, name: "Event 1" },
- *         { id: 102, name: "Event 2" }
- *       ]
- *     }
- *   }
- * };
+ * const query EmptyQueryRead($id: id) {
+ *   result: emptyById(id: $id) {
+ *      __typename
+ *      id
+ * }
  *
- * // Use the middleware to process the result
- * processVectorMiddleware(jsonResult)(dispatch, getState)(next);
+ * const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyQueryRead, processVectorMiddleware)
+ * dispatch(EmptyReadAsyncAction)
  */
 export const processVectorAttributeFromGraphQLResult = (vectorname) => {
     if (typeof vectorname !== "string") {
