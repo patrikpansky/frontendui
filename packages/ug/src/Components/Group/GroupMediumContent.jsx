@@ -1,6 +1,5 @@
-import { CardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PersonFill } from "react-bootstrap-icons"
-import { GroupLink } from "./GroupLink"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 
 /**
  * A component that displays medium-level content for an group entity.
@@ -47,6 +46,7 @@ export const GroupMediumContent = ({group, children}) => {
             </Col>
         </Row>
         }
+        {children}
         </>
     )
 }

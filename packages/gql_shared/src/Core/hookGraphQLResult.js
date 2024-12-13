@@ -35,7 +35,7 @@
 export const hookGraphQLResult = (hook) => {
     if (typeof hook !== "function") throw new Error("hook must be a function");
     return (jsonResult) => (dispatch, /* getState */) => (next) => {
-        hook(jsonResult);
-        return next(jsonResult);
+        const hooked = hook(jsonResult);
+        return next(hooked);
     };
 };
