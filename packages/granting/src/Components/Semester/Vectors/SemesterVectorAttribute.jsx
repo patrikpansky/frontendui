@@ -2,33 +2,33 @@ import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } fro
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 
 /**
- * A component for displaying the `vector` attribute of an empty entity.
+ * A component for displaying the `vector` attribute of an semester entity.
  *
- * This component checks if the `vector` attribute exists on the `empty` object. If `vector` is undefined,
+ * This component checks if the `vector` attribute exists on the `semester` object. If `vector` is undefined,
  * the component returns `null` and renders nothing. Otherwise, it maps over the `vector` array and
  * displays a placeholder message and a JSON representation for each item in the `vector`.
  *
  * @component
- * @param {Object} props - The props for the EmptyVectorAttribute component.
- * @param {Object} props.empty - The object representing the empty entity.
- * @param {Array} [props.empty.vector] - An array of vector items associated with the empty entity.
+ * @param {Object} props - The props for the SemesterVectorAttribute component.
+ * @param {Object} props.semester - The object representing the semester entity.
+ * @param {Array} [props.semester.vector] - An array of vector items associated with the semester entity.
  * Each item is expected to have a unique `id` property.
  *
  * @returns {JSX.Element|null} A JSX element displaying the `vector` items or `null` if the attribute is undefined.
  *
  * @example
  * // Example usage:
- * const emptyEntity = { 
+ * const semesterEntity = { 
  *   vector: [
  *     { id: 1, name: "Vector Item 1" }, 
  *     { id: 2, name: "Vector Item 2" }
  *   ] 
  * };
  *
- * <EmptyVectorAttribute empty={emptyEntity} />
+ * <SemesterVectorAttribute semester={semesterEntity} />
  */
-export const EmptyVectorAttribute = ({empty}) => {
-    const {vector} = empty
+export const SemesterVectorAttribute = ({semester}) => {
+    const {vector} = semester
     if (typeof vector === 'undefined') return null
     return (
         <>
@@ -43,8 +43,8 @@ export const EmptyVectorAttribute = ({empty}) => {
 }
 
 const VectorAttributeQuery = `
-query EmptyQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: emptyById(id: $id) {
+query SemesterQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: semesterById(id: $id) {
         __typename
         id
         vector(skip: $skip, limit: $limit, where: $where) {
@@ -60,8 +60,8 @@ const VectorAttributeAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("vector")
 )
 
-export const EmptyVectorAttributeInifite = ({empty}) => { 
-    const {vector} = empty
+export const SemesterVectorAttributeInifite = ({semester}) => { 
+    const {vector} = semester
 
     return (
         <InfiniteScroll 
