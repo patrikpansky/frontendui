@@ -97,6 +97,7 @@ export const LogButton = ({
 
 /**
  * A component that conditionally renders its children based on user permissions.
+ * It should disable visualisation if logged user (me) would get uncompleted data.
  *
  * @component
  * @param {Object} props - The props for the PageSentinel component.

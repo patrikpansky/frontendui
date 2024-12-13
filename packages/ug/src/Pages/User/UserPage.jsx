@@ -64,7 +64,7 @@ export const UserPage = () => {
     const { id } = useParams()
     const user = {id}
     return ( 
-        <PageSentinel meCondition={me => "world" in me?.email}>
+        <PageSentinel meCondition={me => me?.email?.includes("world")}>
             <UserPageContentLazy user ={user} />
         </PageSentinel>
     )
