@@ -21,5 +21,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * <ProgramLink program={programEntity} />
  */
 export const ProgramLink = ({program}) => {
-    return <ProxyLink to={'/program/program/view/' + program.id}>{program.name}</ProxyLink>
+    return <ProxyLink to={'/granting/program/view/' + program.id}>{program.name}</ProxyLink>
 }
