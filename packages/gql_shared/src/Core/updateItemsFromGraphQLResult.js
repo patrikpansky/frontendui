@@ -48,7 +48,7 @@ export const updateItemsFromGraphQLResult = (jsonResult) => (dispatch, /*getStat
     const data = jsonResult?.data;
 
     if (!data) {
-        console.warn("GQLQueryAfterFetch: No data found in jsonResult");
+        console.warn("GQLQueryAfterFetch: No data found in jsonResult", jsonResult);
         return jsonResult;
     }
 
@@ -69,7 +69,12 @@ export const updateItemsFromGraphQLResult = (jsonResult) => (dispatch, /*getStat
             dispatch(ItemActions.item_update(result));
         }
     } else {
-        console.warn("GQLQueryAfterFetch: No valid result found in data");
+        if (Object.keys(data).length === 1) {
+            console.warn("GQLQueryAfterFetch: result is null", jsonResult);
+        } else {
+            console.warn("GQLQueryAfterFetch: No valid result found in data", jsonResult);
+        }
+        
     }
 
     return next(jsonResult);

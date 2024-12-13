@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
+import { createLazyComponent, PageSentinel } from "@hrbolek/uoisfrontend-shared"
 import { UserLargeCard } from "../../Components/User/UserLargeCard"
 import { GroupSchemaLazy } from '../../Components/Group/GroupSchema'
 import { UserMediumCard } from '../../Components'
@@ -58,12 +58,14 @@ const UserPageContent = ({user}) => {
     )
 }
 
-const UserReadAsyncAction = createAsyncGraphQLAction(UserRead)
+const UserReadAsyncAction = createAsyncGraphQLAction(UserQueryRead)
 const UserPageContentLazy = createLazyComponent(UserPageContent, "user", UserReadAsyncAction)
 export const UserPage = () => {
     const { id } = useParams()
     const user = {id}
     return ( 
-        <UserPageContentLazy user ={user} />
+        <PageSentinel meCondition={me => "world" in me?.email}>
+            <UserPageContentLazy user ={user} />
+        </PageSentinel>
     )
 }

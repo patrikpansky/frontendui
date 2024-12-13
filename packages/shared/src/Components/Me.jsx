@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 /**
@@ -92,4 +92,43 @@ export const LogButton = ({
             </a>
         </div>
     );
+};
+
+
+/**
+ * A component that conditionally renders its children based on user permissions.
+ *
+ * @component
+ * @param {Object} props - The props for the PageSentinel component.
+ * @param {Function} [props.meCondition=(me => me?.email?.includes("world"))] - 
+ *    A function that determines whether the current user (`me`) has permission. 
+ *    Receives the user object as an argument and returns a boolean.
+ * @param {React.ReactNode} props.children - The content to render if the user meets the condition.
+ *
+ * @returns {JSX.Element|null} - The rendered component if the condition is met, a message if not,
+ *    or null if the user data is not available.
+ *
+ * @example
+ * // Usage example
+ * const MyComponent = () => (
+ *   <PageSentinel meCondition={(me) => me?.role === "admin"}>
+ *     <div>Welcome, Admin!</div>
+ *   </PageSentinel>
+ * );
+ */
+export const PageSentinel = ({ meCondition = (me => me?.email?.includes("world")), children }) => {
+    const items = useSelector(state => state?.items) || {};
+
+    // console.log("PageSentinel items", items)
+    const me = Object.values(items).find(user => user?.__typename === "UserGQLModel" && user?.isThisMe);
+
+    // console.log("PageSentinel me", me)
+
+    if (!me) return <div>Nejste přihlášeni</div>;
+
+    const hasPermission = meCondition(me);
+    // console.log("PageSentinel hasPermission", hasPermission)
+    if (!hasPermission) return <div>Nemáte oprávnění</div>;
+
+    return <>{children}</>;
 };
