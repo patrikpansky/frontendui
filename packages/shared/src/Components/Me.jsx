@@ -117,7 +117,7 @@ export const LogButton = ({
  *   </PageSentinel>
  * );
  */
-export const PageSentinel = ({ meCondition = (me => me?.email?.includes("world")), children }) => {
+export const ComponentSentinel = ({ meCondition = (me => me?.email?.includes("world")), children }) => {
     const items = useSelector(state => state?.items) || {};
 
     // console.log("PageSentinel items", items)

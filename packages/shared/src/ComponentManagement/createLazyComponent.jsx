@@ -75,8 +75,8 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
 
         return (
             <div>
-                <h2>Unexpected Error</h2>
-                <p>{state.errors || "Unknown issue occurred."}</p>
+                <h2>Nenalezeno</h2>
+                {/* <p>{state.errors || "Unknown issue occurred."}</p> */}
             </div>
         );
     }
