@@ -5,6 +5,8 @@ import { PersonFill } from 'react-bootstrap-icons'
 import { CardCapsule } from '@hrbolek/uoisfrontend-shared'
 import { UserMediumCard } from './UserMediumCard'
 import { UserLink } from './UserLink'
+import { UserGroups } from './Vectors/Groups'
+import { UserEventsCard } from './Vectors/UserEventsCard'
 
 export const UserLargeCard = ({user, children}) => {
     return (
@@ -12,9 +14,9 @@ export const UserLargeCard = ({user, children}) => {
             <Row>
                 <Col xl={3} md={12}>
                     <UserMediumCard user={user}/>
+                    <UserGroups user={user} />
                 </Col>
                 <Col xl={9} md={12}>
-                    <UserMediumCard user={user}/>
                     {children}
                 </Col>
             </Row>

@@ -1,5 +1,6 @@
 import { createFetchQuery } from "./createFetchQuery";
 import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
+
 /**
  * Creates a dispatchable async action from a GraphQL query.
  * Supports chaining multiple middleware-like functions for post-fetch processing.
