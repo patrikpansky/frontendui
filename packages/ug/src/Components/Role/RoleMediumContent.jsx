@@ -42,6 +42,14 @@ export const RoleMediumContent = ({role, children}) => {
             </Row>
             <Row>
                 <Col>
+                    Zástup
+                </Col>
+                <Col>
+                    {role?.deputy?"Ano":"Ne"}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                     Počátek
                 </Col>
                 <Col>

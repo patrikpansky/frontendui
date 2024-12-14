@@ -84,7 +84,7 @@ export const UpdateItem = (state, action) => {
  */
 export const UpdateSubVector = (state, action) => {
     const { item, vectorname } = action.payload;
-    const oldItem = state[item.id];
+    const oldItem = state[item.id] || {...item};
     const subItems = vectorname in oldItem ? oldItem[vectorname] : [];
     const indexedSubItems = {};
 

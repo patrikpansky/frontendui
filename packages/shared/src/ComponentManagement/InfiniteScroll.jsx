@@ -96,8 +96,8 @@ export const InfiniteScroll = ({
             const params = _state.filter;
             // console.log("going to fetch more", JSON.stringify(params))
             const fetchedResults = await dispatch(asyncAction(params));
-            console.log("fetchedResults", params.skip, params.limit)
-            console.log("fetchedResults", JSON.stringify(fetchedResults))
+            // console.log("fetchedResults", params.skip, params.limit)
+            // console.log("fetchedResults", JSON.stringify(fetchedResults))
 
             if (fetchedResults.length == 0 ) {
                 _setState({
@@ -156,9 +156,9 @@ export const InfiniteScroll = ({
         <>
             <Visualiser items={_state.results} />
             {/* {JSON.stringify(_state)} */}
-            {!_state.hasMore && <div>No more items to load.</div>}
+            {!_state.hasMore && <div>Více toho není.</div>}
             {_state.errors && <div><h2>Chyba</h2>{JSON.stringify(_state.errors, null, 4)}</div>}
-            {_state.loading && <div>Loading more...</div>}
+            {_state.loading && <div>Nahrávám další...</div>}
             <div ref={containerRef} style={{ height: "50px" }} />
         </>
     );

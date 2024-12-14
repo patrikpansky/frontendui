@@ -1,7 +1,7 @@
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-import { RoleMediumCard } from "../../Role"
+import { RoleAddDeputyButton, RoleMediumCard } from "../../Role"
 import { UserCardCapsule } from "../UserCardCapsule"
 import { createAsyncGraphQLAction, hookGraphQLResult, processVectorAttributeFromGraphQLResult } from '@hrbolek/uoisfrontend-gql-shared'
 import { InfiniteScroll, LazyRender } from '@hrbolek/uoisfrontend-shared'
@@ -25,6 +25,7 @@ fragment Roles on RoleGQLModel {
     id
     startdate
     enddate
+    deputy
     roletype {
         id
         name
@@ -36,6 +37,7 @@ fragment Roles on RoleGQLModel {
     user {
         id
         fullname
+        isThisMe
     }
     group {
         id
@@ -54,34 +56,39 @@ const UserRolesReadAsyncAction = createAsyncGraphQLAction(
     })    
 )
 
+const RoleVisualiser = ({role}) => {
+    return (
+        <Col>
+            <RoleMediumCard role={role}>           
+                {role?.user?.isThisMe &&<hr />}
+                <RoleAddDeputyButton role={role} />
+            </RoleMediumCard>
+            {/* {JSON.stringify(role)} */}
+        </Col>
+    )
+}
+
 const RolesVisualiser = ({items}) => {
     return (
         <Row>
             {items.map(
-                role => {
-                    if (!role?.id) return null
-                    return (
-                        <Col key={role?.id}>
-                            <RoleMediumCard role={role} />
-                            {/* {JSON.stringify(role)} */}
-                        </Col>)
-                }
+                // role => <>{(role?.id)&&<RoleVisualiser role={role}/>}</>
+                role => <RoleVisualiser key={role?.id} role={role}/>
             )} 
-            <Col>
-            {/* {JSON.stringify(items)} */}
-            </Col>
         </Row>
     )
 }
 
-const UserRolesContent = ({user, ...props}) => {
+const UserRolesContent = ({user, children, ...props}) => {  
     return (
         <InfiniteScroll 
-            // preloadedItems={user.roles || []}
+            preloadedItems={user.roles || []}
             Visualiser={RolesVisualiser}
             actionParams={{...props, ...user}}
             asyncAction={UserRolesReadAsyncAction}
-        />
+        >
+            {children}
+        </InfiniteScroll>
     )
 }
 
@@ -113,10 +120,10 @@ const UserRolesContent = ({user, ...props}) => {
  * 
  * <UserRoles user={user} />
  */
-export const UserRolesCard = ({user}) => {
-    const roles = user?.roles || []
+export const UserRolesCard = ({user, id="roles"}) => {
+    // const roles = user?.roles || []
     return (
-        <UserCardCapsule user={user} >
+        <UserCardCapsule user={user} id={id}>
             <UserRolesContent user={user} />
         </UserCardCapsule>
     )

@@ -29,9 +29,9 @@ import { EmptyLink } from "./EmptyLink"
  *   <Button variant="primary">Click Me</Button>
  * </EmptyCardCapsule>
  */
-export const EmptyCardCapsule = ({empty, children}) => {
+export const EmptyCardCapsule = ({empty, children, title=<><PersonFill /> <EmptyLink empty={empty} /></>}) => {
     return (
-        <CardCapsule title={<><PersonFill /> <EmptyLink empty={empty} /></>}>
+        <CardCapsule title={title}>
             {children}
         </CardCapsule>
     )

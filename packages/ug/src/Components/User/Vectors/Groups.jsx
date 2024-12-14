@@ -1,5 +1,4 @@
-import { GroupMediumCard } from "../../Group/GroupMediumCard"
-import { GroupRolesCard } from "../../Group/GroupRolesCard"
+import { GroupRolesCard } from "../../Group"
 
 export const UserGroups = ({user}) => {
     const groups = user?.groups || []

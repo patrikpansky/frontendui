@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import Card from "react-bootstrap/Card";
+import {useEffect} from 'react'
 
 /**
  * shared module.
@@ -25,14 +26,38 @@ import Card from "react-bootstrap/Card";
  *   <p>This is some content inside the card.</p>
  * </CardCapsule>
  */
-export const CardCapsule = ({title="", children=null}) => 
-    <Card>
-        <Card.Header>
-            <Card.Title>
-                {title}
-            </Card.Title>
-        </Card.Header>
-        <Card.Body>
-            {children}
-        </Card.Body>
-    </Card>
+export const CardCapsule = ({title="", children=null, id=null}) => {
+    useEffect(() => {
+        if (!id) return
+        const hash = window?.location?.hash; // Get the hash from the URL
+        // console.log("CardCapsule", hash, id, (hash !== `#${id}`))
+        if (hash !== `#${id}`) return
+        
+        const scrollTo = () => {
+            const elementId = hash.substring(1); // Remove the '#' to get the ID
+            const targetElement = document.getElementById(elementId);
+
+            if (targetElement) {
+                // Scroll to the element if it exists
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        const timeout = setTimeout(scrollTo, 100);
+
+        return () => clearTimeout(timeout);
+    }, [id]); // Run only once when the component mounts
+
+    return (
+        <Card id={id}>
+            <Card.Header>
+                <Card.Title>
+                    {title}
+                </Card.Title>
+            </Card.Header>
+            <Card.Body>
+                {children}
+            </Card.Body>
+        </Card>
+    )
+}
+    

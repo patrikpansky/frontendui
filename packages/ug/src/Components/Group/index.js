@@ -8,3 +8,4 @@ export * from './GroupRolesContent'
 export * from './GroupSchema'
 
 export * from './Vectors'
+export * from './Scalars'

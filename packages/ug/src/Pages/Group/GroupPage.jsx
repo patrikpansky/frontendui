@@ -1,7 +1,7 @@
 import { useParams } from 'react-router'
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent, ComponentSentinel } from "@hrbolek/uoisfrontend-shared"
-import { GroupLargeCard, GroupMediumCard, GroupUsersInfinite } from '../../Components'
+import { GroupLargeCard, GroupMediumCard, GroupRolesCard, GroupUsersInfinite } from '../../Components'
 
 const GroupQueryRead = `
 query GroupQueryRead($id: UUID!) {
@@ -18,7 +18,8 @@ const GroupPageContent = ({group}) => {
         <>
         {/* {group?.groups && <GroupSchemaLazy group={group?.groups[0]} />} */}
         <GroupLargeCard group={group} >
-            <GroupMediumCard group={group} />
+            {/* <GroupMediumCard group={group} /> */}
+            <GroupRolesCard group={group} />
             <GroupUsersInfinite group={group} />
         </GroupLargeCard>
         </>

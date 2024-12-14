@@ -6,9 +6,11 @@ import { UserGroups } from './Vectors/Groups'
 import { UserCardCapsule } from './UserCardCapsule'
 import { UserRolesCard } from './Vectors'
 
-export const UserLargeCard = ({user, children}) => {
+export const UserLargeCard = ({user, children, title=<><PersonFill /> <UserLink user={user } /></>}) => {
     return (
-        <UserCardCapsule user={user } >
+    <>
+        <UserCardCapsule user={user} title={title} >
+        </UserCardCapsule>
             <Row>
                 <Col xl={3} md={12}>
                     <UserMediumCard user={user}/>
@@ -16,9 +18,11 @@ export const UserLargeCard = ({user, children}) => {
                 </Col>
                 <Col xl={9} md={12}>
                     <UserRolesCard user={user} />
+                    <UserMediumCard user={user} id="basic"/>
                     {children}
                 </Col>
             </Row>
-        </UserCardCapsule>
+       
+    </>
     )
 }
