@@ -1,3 +1,6 @@
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 import { GroupLink } from "../Group"
 import { UserLink } from "../User"
 
@@ -37,8 +40,30 @@ export const RoleMediumContent = ({role, children}) => {
                     <GroupLink group={role?.group} />
                 </Col>
             </Row>
-            RoleMediumContent <br />
-            {JSON.stringify(Role)}
+            <Row>
+                <Col>
+                    Počátek
+                </Col>
+                <Col>
+                    {new Date(role?.startdate).toLocaleDateString()}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    Konec
+                </Col>
+                <Col>
+                    {new Date(role?.enddate).toLocaleDateString()}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    Typ
+                </Col>
+                <Col>
+                    {role?.roletype?.name}
+                </Col>
+            </Row>
             {children}
         </>
     )

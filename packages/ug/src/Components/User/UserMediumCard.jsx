@@ -1,13 +1,13 @@
 import { CardCapsule } from '@hrbolek/uoisfrontend-shared'
-import { UserLink } from './UserLink'
-import { PersonFill } from 'react-bootstrap-icons'
+
 import { UserMediumContent } from './UserMediumContent'
+import { UserCardCapsule } from './UserCardCapsule'
 
 export const UserMediumCard = ({user, children}) => {
     return (
-        <CardCapsule title={<><PersonFill /> <UserLink user={user } /></>}>
+        <UserCardCapsule user={user } >
             <UserMediumContent user={user} />
             {children}
-        </CardCapsule>
+        </UserCardCapsule>
     )
 }

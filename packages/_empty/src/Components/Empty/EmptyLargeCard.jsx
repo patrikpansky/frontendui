@@ -31,7 +31,7 @@ export const EmptyLargeCard = ({empty}) => {
         <EmptyCardCapsule empty={empty} >
             <Row>
                 <LeftColumn>
-                    <EmptyMediumCard user={user}/>
+                    <EmptyMediumCard empty={empty}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}
