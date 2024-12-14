@@ -8,9 +8,9 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * 
  * @component
  * @param {Object} props - The properties for the RoleLink component.
- * @param {Object} props.Role - The object representing the Role entity.
- * @param {string|number} props.Role.id - The unique identifier for the Role entity.
- * @param {string} props.Role.name - The display name for the Role entity.
+ * @param {Object} props.role - The object representing the Role entity.
+ * @param {string|number} props.role.id - The unique identifier for the Role entity.
+ * @param {string} props.role.name - The display name for the Role entity.
  * 
  * @returns {JSX.Element} A `ProxyLink` component linking to the Role view page.
  * 
@@ -20,6 +20,6 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * 
  * <RoleLink Role={RoleEntity} />
  */
-export const RoleLink = ({Role}) => {
-    return <ProxyLink to={'/Role/Role/view/' + Role.id}>{Role.name}</ProxyLink>
+export const RoleLink = ({role}) => {
+    return <ProxyLink to={'/role/role/view/' + role.id}>{role.name}</ProxyLink>
 }

@@ -11,9 +11,9 @@ import { RoleMediumCard } from "./RoleMediumCard"
  *
  * @component
  * @param {Object} props - The properties for the RoleLargeCard component.
- * @param {Object} props.Role - The object representing the Role entity.
+ * @param {Object} props.role - The object representing the Role entity.
  * @param {string|number} props.Role.id - The unique identifier for the Role entity.
- * @param {string} props.Role.name - The name or label of the Role entity.
+ * @param {string} props.role.name - The name or label of the Role entity.
  * @param {React.ReactNode} [props.children=null] - Additional content to render in the middle column.
  *
  * @returns {JSX.Element} A JSX element combining a large card layout with dynamic content.
@@ -22,16 +22,16 @@ import { RoleMediumCard } from "./RoleMediumCard"
  * // Example usage:
  * const RoleEntity = { id: 123, name: "Sample Entity" };
  * 
- * <RoleLargeCard Role={RoleEntity}>
+ * <RoleLargeCard role={RoleEntity}>
  *   <p>Additional content for the middle column.</p>
  * </RoleLargeCard>
  */
-export const RoleLargeCard = ({Role}) => {
+export const RoleLargeCard = ({role}) => {
     return (
-        <RoleCardCapsule Role={Role} >
+        <RoleCardCapsule role={role} >
             <Row>
                 <LeftColumn>
-                    <RoleMediumCard user={user}/>
+                    <RoleMediumCard role={role}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}

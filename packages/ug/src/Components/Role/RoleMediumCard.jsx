@@ -13,9 +13,9 @@ import { RoleMediumContent } from "./RoleMediumContent"
  *
  * @component
  * @param {Object} props - The properties for the RoleMediumCard component.
- * @param {Object} props.Role - The object representing the Role entity.
- * @param {string|number} props.Role.id - The unique identifier for the Role entity.
- * @param {string} props.Role.name - The name or label of the Role entity.
+ * @param {Object} props.role - The object representing the Role entity.
+ * @param {string|number} props.role.id - The unique identifier for the Role entity.
+ * @param {string} props.role.name - The name or label of the Role entity.
  * @param {React.ReactNode} [props.children=null] - Additional content to render inside the card body.
  *
  * @returns {JSX.Element} A JSX element combining a card with a title and detailed content.
@@ -28,10 +28,10 @@ import { RoleMediumContent } from "./RoleMediumContent"
  *   <p>Additional details or actions for the entity.</p>
  * </RoleMediumCard>
  */
-export const RoleMediumCard = ({Role, children}) => {
+export const RoleMediumCard = ({role, children}) => {
     return (
-        <RoleCardCapsule title={<><PersonFill /> <RoleLink Role={Role} /></>}>
-            <RoleMediumContent Role={Role}>
+        <RoleCardCapsule title={<><PersonFill /> <RoleLink role={role} /></>}>
+            <RoleMediumContent role={role}>
                 {children}
             </RoleMediumContent>
         </RoleCardCapsule>

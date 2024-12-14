@@ -11,9 +11,9 @@ import { RoleLink } from "./RoleLink"
  *
  * @component
  * @param {Object} props - The props for the RoleCardCapsule component.
- * @param {Object} props.Role - The object representing the Role entity.
- * @param {string|number} props.Role.id - The unique identifier for the Role entity.
- * @param {string} props.Role.name - The display name for the Role entity.
+ * @param {Object} props.role - The object representing the Role entity.
+ * @param {string|number} props.role.id - The unique identifier for the Role entity.
+ * @param {string} props.role.name - The display name for the Role entity.
  * @param {React.ReactNode} [props.children=null] - The content to render inside the card's body.
  *
  * @returns {JSX.Element} The rendered card component with a dynamic title and body content.
@@ -25,13 +25,13 @@ import { RoleLink } from "./RoleLink"
  *
  * const RoleEntity = { id: 123, name: "Example Entity" };
  *
- * <RoleCardCapsule Role={RoleEntity}>
+ * <RoleCardCapsule role={RoleEntity}>
  *   <Button variant="primary">Click Me</Button>
  * </RoleCardCapsule>
  */
-export const RoleCardCapsule = ({Role, children}) => {
+export const RoleCardCapsule = ({role, children}) => {
     return (
-        <CardCapsule title={<><PersonFill /> <RoleLink Role={Role} /></>}>
+        <CardCapsule title={<><PersonFill /> <RoleLink role={role} /></>}>
             {children}
         </CardCapsule>
     )

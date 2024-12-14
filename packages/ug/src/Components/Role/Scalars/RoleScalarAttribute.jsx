@@ -18,8 +18,8 @@
  *
  * <RoleScalarAttribute Role={RoleEntity} />
  */
-export const RoleScalarAttribute = ({Role}) => {
-    const {scalar} = Role
+export const RoleScalarAttribute = ({role}) => {
+    const {scalar} = role
     if (typeof scalar === 'undefined') return null
     return (
         <>

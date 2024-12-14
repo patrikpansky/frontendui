@@ -44,7 +44,7 @@ export const RoleVectorAttribute = ({Role}) => {
 
 const VectorAttributeQuery = `
 query RoleQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: RoleById(id: $id) {
+    result: roleById(id: $id) {
         __typename
         id
         vector(skip: $skip, limit: $limit, where: $where) {
@@ -60,8 +60,8 @@ const VectorAttributeAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("vector")
 )
 
-export const RoleVectorAttributeInifite = ({Role}) => { 
-    const {vector} = Role
+export const RoleVectorAttributeInifite = ({role}) => { 
+    const {vector} = role
 
     return (
         <InfiniteScroll 
