@@ -38,6 +38,16 @@ const GroupQueryAsyncAction = createAsyncGraphQLAction(
     })
 )
 
+const MembershipRow = ({membership}) => {
+    const user = membership?.user || {}
+    return (
+        <tr>
+            <td>{membership?.startdate}</td>
+            <td><UserLink user={user} /></td>
+        </tr>
+    )
+}
+
 const MembershipVisualiser = ({items}) => {
     if (!items) return null
     // return (
@@ -64,7 +74,12 @@ export const GroupUsersInfinite = ({group}) => {
     return (
         <GroupCardCapsule group={group} >
             <Row>
-                <InfiniteScroll asyncAction={GroupQueryAsyncAction} Visualiser={MembershipVisualiser} actionParams={{...group, limit:20}}/>
+                <InfiniteScroll 
+                    preloadedItems={group?.memberships || []}
+                    asyncAction={GroupQueryAsyncAction} 
+                    Visualiser={MembershipVisualiser} 
+                    actionParams={{...group, limit:20}}
+                />
             </Row>
             {/* <div>
                 {JSON.stringify(group, null, 4)}

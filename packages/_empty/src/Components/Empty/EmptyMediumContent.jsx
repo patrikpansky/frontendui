@@ -1,7 +1,3 @@
-import { CardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PersonFill } from "react-bootstrap-icons"
-import { EmptyLink } from "./EmptyLink"
-
 /**
  * A component that displays medium-level content for an empty entity.
  *
