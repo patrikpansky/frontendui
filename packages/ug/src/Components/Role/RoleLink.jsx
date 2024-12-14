@@ -21,5 +21,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * <RoleLink Role={RoleEntity} />
  */
 export const RoleLink = ({role}) => {
-    return <ProxyLink to={'/ug/role/view/' + role.id}>{role.name}</ProxyLink>
+    return <ProxyLink to={'/ug/role/view/' + role.id}>{role?.roletype?.name || "role"}</ProxyLink>
 }

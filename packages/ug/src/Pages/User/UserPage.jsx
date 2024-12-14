@@ -50,8 +50,8 @@ const UserPageContent = ({user}) => {
         <>
         {/* {user?.groups && <GroupSchemaLazy group={user?.groups[0]} />} */}
         <UserLargeCard user={user} >
-            <UserMediumCard user={user} />
-            <UserEventsCard user={user} />
+            {/* <UserMediumCard user={user} />
+            <UserEventsCard user={user} /> */}
 
         </UserLargeCard>
         </>

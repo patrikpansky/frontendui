@@ -1,4 +1,4 @@
-import { PersonFill } from "react-bootstrap-icons"
+import { PersonFill, ShieldFill } from "react-bootstrap-icons"
 import { RoleLink } from "./RoleLink"
 import { RoleCardCapsule } from "./RoleCardCapsule"
 import { RoleMediumContent } from "./RoleMediumContent"
@@ -30,7 +30,7 @@ import { RoleMediumContent } from "./RoleMediumContent"
  */
 export const RoleMediumCard = ({role, children}) => {
     return (
-        <RoleCardCapsule title={<><PersonFill /> <RoleLink role={role} /></>}>
+        <RoleCardCapsule role={role} >
             <RoleMediumContent role={role}>
                 {children}
             </RoleMediumContent>

@@ -20,6 +20,7 @@ const MeQuery = `
         fullname
         email
         roles {
+            id
             group {
                 id
                 name

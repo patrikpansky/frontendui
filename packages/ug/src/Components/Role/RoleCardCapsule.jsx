@@ -1,5 +1,5 @@
 import { CardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PersonFill } from "react-bootstrap-icons"
+import { PersonFill, ShieldFill } from "react-bootstrap-icons"
 import { RoleLink } from "./RoleLink"
 
 /**
@@ -31,7 +31,8 @@ import { RoleLink } from "./RoleLink"
  */
 export const RoleCardCapsule = ({role, children}) => {
     return (
-        <CardCapsule title={<><PersonFill /> <RoleLink role={role} /></>}>
+        // <CardCapsule title={<><PersonFill /> <RoleLink role={role} /></>}>
+        <CardCapsule title={<><ShieldFill /> <RoleLink role={role} /></>}>
             {children}
         </CardCapsule>
     )

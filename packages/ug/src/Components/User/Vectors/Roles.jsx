@@ -8,12 +8,12 @@ import { InfiniteScroll, LazyRender } from '@hrbolek/uoisfrontend-shared'
 
 
 const UserRolesQuery = `
-query UserRolesQuery($id: UUID!, $where: RoleInputWhereFilter ) {
+query UserRolesQuery($id: UUID!, $where: RoleInputWhereFilter, $skip: Int, $limit: Int ) {
     result: userById(id: $id) {
         __typename
         id
-        fullname
-        roles(skip:0, limit: 10, where: $where, orderby: "startdate")
+        # fullname
+        roles(skip: $skip, limit: $limit, where: $where, orderby: "startdate")
         {
             ...Roles
         }
@@ -23,6 +23,8 @@ query UserRolesQuery($id: UUID!, $where: RoleInputWhereFilter ) {
 fragment Roles on RoleGQLModel {
     __typename
     id
+    startdate
+    enddate
     roletype {
         id
         name
@@ -59,11 +61,15 @@ const RolesVisualiser = ({items}) => {
                 role => {
                     if (!role?.id) return null
                     return (
-                        <Col key={role.id}>
+                        <Col key={role?.id}>
                             <RoleMediumCard role={role} />
+                            {/* {JSON.stringify(role)} */}
                         </Col>)
                 }
-            )}
+            )} 
+            <Col>
+            {/* {JSON.stringify(items)} */}
+            </Col>
         </Row>
     )
 }
@@ -71,7 +77,7 @@ const RolesVisualiser = ({items}) => {
 const UserRolesContent = ({user, ...props}) => {
     return (
         <InfiniteScroll 
-            preloadedItems={user.roles || []}
+            // preloadedItems={user.roles || []}
             Visualiser={RolesVisualiser}
             actionParams={{...props, ...user}}
             asyncAction={UserRolesReadAsyncAction}

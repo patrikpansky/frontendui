@@ -53,7 +53,8 @@ export const RoleMediumContent = ({role, children}) => {
                     Konec
                 </Col>
                 <Col>
-                    {new Date(role?.enddate).toLocaleDateString()}
+                    {role?.enddate && new Date(role?.enddate).toLocaleDateString()}
+                    <br />{role?.enddate}
                 </Col>
             </Row>
             <Row>

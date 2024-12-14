@@ -96,7 +96,8 @@ export const InfiniteScroll = ({
             const params = _state.filter;
             // console.log("going to fetch more", JSON.stringify(params))
             const fetchedResults = await dispatch(asyncAction(params));
-            // console.log("fetchedResults", JSON.stringify(fetchedResults))
+            console.log("fetchedResults", params.skip, params.limit)
+            console.log("fetchedResults", JSON.stringify(fetchedResults))
 
             if (fetchedResults.length == 0 ) {
                 _setState({
