@@ -52,14 +52,11 @@ export const createFetchQuery = (query, params = {}) => async (query_variables) 
     };
 
     const body = JSON.stringify(createPayload(query, query_variables));
-    const result = authorizedFetch2('', { body, ...defaultParams, ...params });
-    return result;
     try {
-        const result = authorizedFetch2('', { body, ...defaultParams, ...params });
+        const result = await authorizedFetch2('', { body, ...defaultParams, ...params });
         return result;
-    } 
-    catch {
-        throw "Probably not logged in"
-    }
-    
+    } catch (error) {
+        console.error("createAsyncGraphQLAction: Error during async action execution", error);
+        throw error;
+    }    
 };

@@ -35,6 +35,7 @@ export const ProxyLink = ({ to, children, ...others }) => {
     const currentSearch = currentUrl.search; // Extracts the current query parameters
 
     const destinationUrl = new URL(to, window.location.origin); // Resolve `to` as a complete URL
+    // const destinationUrl_hash = destinationUrl.hash
     destinationUrl.search = destinationUrl.search || currentSearch; // Merge query parameters if missing
     destinationUrl.hash = destinationUrl.hash || currentHash; // Merge hash if missing
 

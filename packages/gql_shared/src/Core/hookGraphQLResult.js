@@ -21,7 +21,7 @@
  *   }
  * `;
  *
-  * // Create an async action
+ * // Create an async action
  * const fetchAction = createAsyncGraphQLAction(
  *   exampleQuery,
  *   processVectorAttributeFromGraphQLResult("users"),
@@ -33,9 +33,20 @@
  * dispatch(fetchAction({ id: "12345" }));
  */
 export const hookGraphQLResult = (hook) => {
-    if (typeof hook !== "function") throw new Error("hook must be a function");
-    return (jsonResult) => (dispatch, /* getState */) => (next) => {
-        const hooked = hook(jsonResult);
-        return next(hooked);
+    if (typeof hook !== "function") {
+        throw new Error("hookGraphQLResult: 'hook' must be a function.");
+    }
+
+    return (result) => (dispatch, getState, next = (jsonResult) => jsonResult) => {
+        try {
+            // Invoke the hook with the current result
+            const hookedResult = hook(result);
+
+            // Pass the modified or original result to the next middleware
+            return next(hookedResult);
+        } catch (error) {
+            console.error("hookGraphQLResult: Error in middleware hook", error);
+            throw error;
+        }
     };
 };

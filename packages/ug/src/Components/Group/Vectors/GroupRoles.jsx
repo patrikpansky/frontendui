@@ -51,7 +51,7 @@ const GroupRolesReadAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("roles"),
     hookGraphQLResult(jsonResult => {
         const data = jsonResult?.data?.result?.roles;
-        // console.log('GroupQueryAsyncAction', data)
+        // console.log('GroupRolesReadAsyncAction', data)
         return data
     })    
 )
@@ -82,7 +82,7 @@ const RolesVisualiser = ({items}) => {
 const GroupRolesContent = ({group, children, ...props}) => {  
     return (
         <InfiniteScroll 
-            preloadedItems={group.roles || []}
+            preloadedItems={group?.roles || []}
             Visualiser={RolesVisualiser}
             actionParams={{...props, ...group}}
             asyncAction={GroupRolesReadAsyncAction}

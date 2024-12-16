@@ -10,6 +10,8 @@
   "description": "",
 
   "dependencies": {
+    "bootstrap-icons": "1.11.3",
+    "react-bootstrap-icons": "^1.11.5",
     "@hrbolek/uoisfrontend-gql-shared": "*"
   }
 }

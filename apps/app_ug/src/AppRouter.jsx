@@ -6,6 +6,7 @@ import {
 import { UserPage } from "@hrbolek/uoisfrontend-ug";
 import { UserStudiesPage } from "@hrbolek/uoisfrontend-granting";
 import { GroupPage } from "@hrbolek/uoisfrontend-ug";
+import { AdmissionPage } from "../../../packages/admissions/src";
 
 const prefix = "/ug"
 export const Routes = [
@@ -16,6 +17,10 @@ export const Routes = [
     {
       path: `/${prefix}/group/view/:id`,
       element: <GroupPage />,
+    },  
+    {
+        path: `/admissions/admission/view/:id`,
+        element: <AdmissionPage />
     },  
     {
         path: `/studies/user/view/:id`,

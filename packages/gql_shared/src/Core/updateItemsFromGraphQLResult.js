@@ -1,4 +1,5 @@
 import { ItemActions } from "../Store";
+import { createFetchQuery } from "./createFetchQuery";
 
 /**
  * Creates a dispatchable async action from a GraphQL query.
@@ -44,7 +45,7 @@ import { ItemActions } from "../Store";
  * // Dispatch the action with query variables
  * dispatch(fetchAction({ id: "12345" }));
  */
-export const updateItemsFromGraphQLResult = (jsonResult) => (dispatch, /*getState */) => (next) => {
+export const updateItemsFromGraphQLResult_ = (jsonResult) => (dispatch, /*getState */) => (next) => {
     const data = jsonResult?.data;
 
     if (!data) {
@@ -79,3 +80,78 @@ export const updateItemsFromGraphQLResult = (jsonResult) => (dispatch, /*getStat
 
     return next(jsonResult);
 };
+
+
+
+
+
+
+
+/**
+ * Processes a GraphQL result and dispatches Redux actions for each item in the result.
+ * This function can be used as a middleware in a chain and supports asynchronous behavior.
+ *
+ * @param {object} jsonData - The JSON result from a GraphQL query.
+ * @param {object} jsonData.data - The `data` field containing the query result.
+ *
+ * @returns {Function} A middleware function that:
+ *  - Takes `dispatch`, `getState`, and an optional `next` function.
+ *  - Dispatches Redux actions for items in `data.result`.
+ *  - Calls the `next` function with the processed `jsonData`.
+ *
+ * @example
+ * // Example usage as a standalone middleware
+ * const middleware = updateItemsFromGraphQLResult2(queryResult);
+ * middleware(dispatch, getState, (jsonResult) => console.log("Next middleware:", jsonResult));
+ *
+ * // Example usage in action chaining
+ * const query = `
+ *   query GetUser($id: ID!) {
+ *     user(id: $id) {
+ *       id
+ *       name
+ *     }
+ *   }
+ * `;
+ *
+ * const getPostsAction = createAsyncGraphQLAction2(query2, logMiddleware, transformMiddleware);
+ * const getUserAndPostsAction = createAsyncGraphQLAction2(query, updateItemsFromGraphQLResult2, getPostsAction);
+ * dispatch(getUserAndPostsAction({ id: "12345" }));
+ */
+export const updateItemsFromGraphQLResult = (jsonData) => async (dispatch, getState, next = (jsonResult) => jsonResult) => {
+    const data = jsonData?.data;
+
+    if (!data) {
+        console.warn("GQLQueryAfterFetch: No data found in jsonResult", jsonData);
+        return next(jsonData);
+    }
+
+    let result = data?.result;
+
+    // Check if `data` has exactly one key and use it as the result
+    if (!result && Object.keys(data).length === 1) {
+        const singleKey = Object.keys(data)[0];
+        result = data[singleKey];
+    }
+
+    if (result) {
+        if (Array.isArray(result)) {
+            result.forEach((item) => {
+                dispatch(ItemActions.item_update(item));
+            });
+        } else {
+            dispatch(ItemActions.item_update(result));
+        }
+    } else {
+        if (Object.keys(data).length === 1) {
+            console.warn("GQLQueryAfterFetch: result is null", jsonData);
+        } else {
+            console.warn("GQLQueryAfterFetch: No valid result found in data", jsonData);
+        }
+    }
+
+    // Call the next middleware with the processed data
+    return next(jsonData);
+};
+
+

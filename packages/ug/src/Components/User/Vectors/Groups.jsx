@@ -1,6 +1,6 @@
 import { GroupRolesCard } from "../../Group"
 
-export const UserGroups = ({user}) => {
+export const UserGroupsLargeContent = ({user}) => {
     const groups = user?.groups || []
     return (
         <>

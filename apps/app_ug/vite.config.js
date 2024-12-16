@@ -11,7 +11,8 @@ export default defineConfig({
       "@hrbolek/uoisfrontend-shared": path.resolve(__dirname, "../../packages/shared/src"),
       "@hrbolek/uoisfrontend-gql-shared": path.resolve(__dirname, "../../packages/gql_shared/src"),
       "@hrbolek/uoisfrontend-ug": path.resolve(__dirname, "../../packages/ug/src"),
-      "@hrbolek/uoisfrontend-granting": path.resolve(__dirname, "../../packages/granting/src")
+      "@hrbolek/uoisfrontend-granting": path.resolve(__dirname, "../../packages/granting/src"),
+      "@hrbolek/uoisfrontend-admissions": path.resolve(__dirname, "../../packages/admissions/src")
     },
   },
   optimizeDeps: {
@@ -25,6 +26,7 @@ export default defineConfig({
       "@hrbolek/uoisfrontend-gql-shared",
       "@hrbolek/uoisfrontend-ug",
       "@hrbolek/uoisfrontend-granting",
+      "@hrbolek/uoisfrontend-admissions",
     ], // Replace 'shared' with your library's name
   },  
   server: {
@@ -38,6 +40,7 @@ export default defineConfig({
         '!../../packages/gql-shared/**',
         '!../../packages/ug/**',
         '!../../packages/granting/**',
+        '!../../packages/admissions/**',
       ], // Adjust path to your library
     },
     hmr: {

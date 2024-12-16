@@ -60,7 +60,11 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
         }
     }
 
-    return fetch(overridenPath, newParams).then(response => {
+    const fetchResult = fetch(overridenPath, newParams)
+    // if (!fetchResult.ok) {
+    //     throw new Error(`HTTP error!`);
+    // }
+    return fetchResult.then(response => {
         if (response.status === 302 && typeof window !== "undefined") {
             const location = response.headers.get("location");
             if (location) {

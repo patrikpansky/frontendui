@@ -33,7 +33,7 @@ export const processVectorAttributeFromGraphQLResult = (vectorname) => {
             throw new Error("processVectorAttributeFromGraphQLResult: 'jsonResult' must be a valid object.");
         }
 
-        return (dispatch, /* getState */) => (next) => {
+        return (dispatch, getState, next) => {
             const data = jsonResult?.data;
 
             if (!data) {

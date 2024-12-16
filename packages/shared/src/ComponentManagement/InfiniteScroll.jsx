@@ -102,7 +102,7 @@ export const InfiniteScroll = ({
             if (fetchedResults.length == 0 ) {
                 _setState({
                     ..._state,
-                    results: mergeArraysById(_state.results, fetchedResults),
+                    results: mergeArraysById(_state.results, fetchedResults || []),
                     // skip: _state.skip + _state.limit,
                     hasMore: false,
                     loading: false
@@ -112,7 +112,7 @@ export const InfiniteScroll = ({
                 _setState({
                     ..._state,
                     filter: newfilter,
-                    results: mergeArraysById(_state.results, fetchedResults),
+                    results: mergeArraysById(_state.results, fetchedResults || []),
                     // skip: _state.skip + _state.limit,
                     hasMore: true,
                     loading: false

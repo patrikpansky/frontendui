@@ -2,6 +2,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { AdmissionLargeCard } from "../Components/Admission/AdmissionLargeCard"
+import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
 
 const AdmissionQueryRead = `
 query AdmissionQueryRead($id: id) {
@@ -64,9 +65,12 @@ const AdmissionReadAsyncAction = createAsyncGraphQLAction(AdmissionQueryRead)
  */
 const AdmissionPageContent = ({admission}) => {
     return (
-        <AdmissionLargeCard admission={admission}>
-            Admission {JSON.stringify(admission)}
-        </AdmissionLargeCard>
+        <>
+            <AdmissionPageNavbar admission={admission} />
+            <AdmissionLargeCard admission={admission}>
+                Admission {JSON.stringify(admission)}
+            </AdmissionLargeCard>
+        </>
     )
 }
 
