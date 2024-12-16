@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 import { ArrowRightCircle, ArrowRightCircleFill, BoxArrowInLeft, BoxArrowRight, DoorOpen, HouseFill, PersonCircle } from "react-bootstrap-icons";
-import Nav from "react-bootstrap"
+
+import Navbar from "react-bootstrap/Navbar"
+import Nav from "react-bootstrap/Nav"
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import { Dropdown } from "react-bootstrap";
 import { ProxyLink } from "./ProxyLink";
 
@@ -209,7 +215,7 @@ export const MyNavbar = ({
     logoutURL = '/oauth/logout',
     showmeURL = '/ug/user/view/',
     indexURL = '/index',
-    onSearchChange = 1,
+    onSearchChange = null,
     children
 }) => {
     // const dispatch = useDispatch();
@@ -256,59 +262,69 @@ export const MyNavbar = ({
     }
     //navbar-light bg-light
     return (
-        <Nav className="navbar navbar-expand-lg w-100"> 
-            <ProxyLink to={indexURL} className="d-flex align-items-center me-3" aria-label="Home">
-                <HouseFill size={24} />
-            </ProxyLink>
-            <button
-                className="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-                {/* <ul className="navbar-nav me-auto"> */}
-                {/* <ul className="navbar-nav d-flex justify-content-center w-100">
-                    <li className="nav-item active">
-                        <a className="nav-link" href="#">
-                            Home <span className="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">Link</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a className="dropdown-item" href="#">Action</a>
-                            <a className="dropdown-item" href="#">Another action</a>
-                            <div className="dropdown-divider"></div>
-                            <a className="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li>
-                </ul> */}
-                {children}
-                {onSearchChange && 
-                    <form className="d-flex my-2 w-50">
-                        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" onChange={handleSearchChange} />
-                    </form>
-                }
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <ProxyLink to={`${showmeURL}${state?.me?.id}`} className="d-flex align-items-center me-3" aria-label="Profile">
-                            <PersonCircle size={24} />
-                        </ProxyLink>
-                    </li>
-                </ul>
-            </div>
-        </Nav>
+        <Navbar bg="light" expand="lg">
+            {/* Navbar Brand or Logo */}
+            {/* <Navbar.Collapse id="never">
+            <Nav variant="tabs" className="align-items-left">
+                <Nav.Item>          
+                    <ProxyLink to={indexURL} aria-label="Home">
+                        <HouseFill size={32} />
+                    </ProxyLink>
+                </Nav.Item>
+            </Nav>
+            </Navbar.Collapse> */}
+            {/* <Navbar.Brand as="span">
+                    <ProxyLink to={indexURL} aria-label="Home">
+                        <HouseFill size={32} />
+                    </ProxyLink>
+            </Navbar.Brand> */}
+
+            {/* Toggle Button for Collapsing */}
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
+            {/* Collapsible Nav Section */}
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav variant="tabs" className="align-items-center w-100 flex-column flex-lg-row">
+                    <div className="mb-0">
+                        <ProxyLink to={indexURL} aria-label="Home" className="mr-3">
+                            <HouseFill size={32} />
+                        </ProxyLink>                        
+                    </div>                    
+
+                    <div className="mx-auto d-flex align-items-center flex-column flex-lg-row mb-0">
+                        {children}
+                    </div>                    
+
+                    {/* Search Form and Profile Icon (Right-Aligned in Large Screens) */}
+                    <div className="d-flex flex-column flex-lg-row align-items-center ml-lg-auto">
+                        {/* Search Form */}
+                        {onSearchChange && (
+                            <Form className="d-flex align-items-center mb-3 mb-lg-0">
+                                <Row>
+                                    <Col xs="auto">
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Search"
+                                            onChange={handleSearchChange}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Form>
+                        )}
+
+                        {/* Profile Icon */}
+                        <Nav.Item className="ml-lg-3" style={{ marginLeft: '16px' }}>
+                            <ProxyLink to={`${showmeURL}${state?.me?.id}`} aria-label="Profile">
+                                <PersonCircle size={32} />
+                            </ProxyLink>
+                        </Nav.Item>
+                    </div>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+
+
+
     );
 };
 
