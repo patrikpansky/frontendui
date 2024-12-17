@@ -3,8 +3,8 @@ import Col from 'react-bootstrap/Col'
 
 import { useParams } from 'react-router'
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { createLazyComponent, ComponentSentinel, LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
-import { GroupLargeCard, GroupMediumCard, GroupRolesCard, GroupSubgroups, GroupUsersInfinite } from '../../Components'
+import { createLazyComponent, ComponentSentinel, LeftColumn, MiddleColumn, HashContainer } from "@hrbolek/uoisfrontend-shared"
+import { GroupLargeCard, GroupMediumCard, GroupMembershipsCard, GroupRolesCard, GroupSubgroups, GroupUsersInfinite } from '../../Components'
 import { GroupPageNavbar } from './GroupPageNavbar'
 
 const GroupQueryRead = `
@@ -19,14 +19,14 @@ query GroupQueryRead($id: UUID!) {
 
 const GroupPageContent = ({group}) => {
     return (
-        <>
+        <HashContainer>
             <GroupPageNavbar group={group} />
             <Row>
                 <LeftColumn>
                     <GroupMediumCard group={group} />
                 </LeftColumn>
                 <MiddleColumn>
-                    <GroupRolesCard group={group} />    
+                    {/* <GroupRolesCard group={group} />     */}
                 </MiddleColumn>
             </Row>
             <Row id="events">
@@ -34,14 +34,14 @@ const GroupPageContent = ({group}) => {
                     <GroupMediumCard group={group} />
                 </Col>
             </Row>
-            <Row id="subgroups">
+            <Row id="groups">
                 <Col>
                     <GroupSubgroups group={group} />
                 </Col>
             </Row>
             <Row id="memberships">
                 <Col>
-                    <GroupMediumCard group={group} />
+                    <GroupMembershipsCard group={group} />
                 </Col>
             </Row>
             <Row id="publications">
@@ -54,7 +54,7 @@ const GroupPageContent = ({group}) => {
                     <GroupMediumCard group={group} />
                 </Col>
             </Row>
-        </>
+        </HashContainer>
     )
 }
 

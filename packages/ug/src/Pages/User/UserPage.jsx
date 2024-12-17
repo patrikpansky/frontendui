@@ -2,16 +2,17 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { useParams } from 'react-router'
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { createLazyComponent, ComponentSentinel, ProxyLink, MyNavbar, LeftColumn, MiddleColumn, HashContainer } from "@hrbolek/uoisfrontend-shared"
+import { createLazyComponent, ComponentSentinel, ProxyLink, MyNavbar, LeftColumn, MiddleColumn, HashContainer, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { UserLargeCard } from "../../Components/User/UserLargeCard"
 import { GroupSchemaLazy } from '../../Components/Group/GroupSchema'
-import { UserGroupsLargeContent, UserLink, UserMediumCard, UserRolesCard } from '../../Components'
+import { UserGroupsLargeContent, UserLink, UserMediumCard, UserMembershipsCard, UserRolesCard } from '../../Components'
 import { UserEventsCard } from '../../Components/User/Vectors/UserEventsCard'
 import { EmojiSmile, EmojiSmileFill, Person, PersonBadgeFill, PersonCircle, PersonFill } from 'react-bootstrap-icons'
 import Button from 'react-bootstrap/Button'
 import { UserPageNavbar } from './UserPageNavbar'
 import { UserMembershipsGroups } from '../../Components/User/Vectors/Memberships'
 import { UserCardCapsule } from '../../Components/User/UserCardCapsule'
+import { UserGroupsCard } from '../../Components/User/Vectors/UserGroups'
 
 
 const UserQueryRead = `
@@ -113,11 +114,27 @@ const UserPageContent = ({user}) => {
             </Row>
             <Row id="memberships">
                 <Col>
-                    <UserCardCapsule user={user} id={"memberships"}>
+                    {/* <UserCardCapsule user={user} id={"memberships"}>
                         <UserMembershipsGroups user={user} />
-                    </UserCardCapsule>
+                    </UserCardCapsule> */}
+                    <UserMembershipsCard user={user} />
                 </Col>
             </Row>
+            <Row id="groups">
+                <Col>
+                    <LazyRender>
+                        <UserGroupsCard user={user} />
+                    </LazyRender>
+                </Col>
+            </Row>            
+            <Row id="roles">
+                <Col>
+                    <LazyRender>
+                        <UserRolesCard user={user} />
+                    </LazyRender>
+                </Col>
+            </Row>            
+            
             <Row id="publications">
                 <Col>
                     Publikace

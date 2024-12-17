@@ -1,8 +1,5 @@
-import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import { LogButton, ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
-import { UserLink } from '../../Components';
-import { House, HouseFill, PersonFill } from 'react-bootstrap-icons';
+import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
 
 /**
  * A navigation button component that generates a URL based on the user's ID and a specific segment.
@@ -56,6 +53,7 @@ export const UserPageNavbar = ({ user, onSearchChange }) => {
         { segment: 'events', label: 'Rozvrh' },
         { segment: 'roles', label: 'Role' },
         { segment: 'groups', label: 'Skupiny' },
+        { segment: 'memberships', label: 'Příslušnost'},
         { segment: 'projects', label: 'Projekty' },
         { segment: 'publications', label: 'Výsledky' },
         { segment: 'requests', label: 'Požadavky' },

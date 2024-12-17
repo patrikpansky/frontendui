@@ -24,14 +24,14 @@ query GroupQueryRead($id: UUID!) {
 }
 `
 
-const GroupSubgroupsQueryAsyncAction = createAsyncGraphQLAction(
+const GroupSubgroupsReadAsyncAction = createAsyncGraphQLAction(
     GroupSubgroupsQueryRead,
     processVectorAttributeFromGraphQLResult("subgroups"),
     updateItemsFromGraphQLResult
 )
 
 export const GroupSubgroupsContent = ({group, Visualiser}) => {
-    const [updatedGroup] = useFreshItem(group, GroupSubgroupsQueryAsyncAction)
+    const [updatedGroup] = useFreshItem(group, GroupSubgroupsReadAsyncAction)
     const subgroups = updatedGroup?.subgroups || []
     return (
         <Row>
