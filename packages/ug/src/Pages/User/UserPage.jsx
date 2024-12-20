@@ -96,56 +96,60 @@ query UserQueryRead($id: UUID!) {
 
 const UserPageContent = ({user}) => {
     return (
-        <HashContainer>
-            <UserPageNavbar user={user } />
-            <Row>
-                <LeftColumn>
-                    <UserMediumCard user={user} />
-                    {/* <UserGroupsLargeContent user={user} /> */}
-                </LeftColumn>
-                <MiddleColumn>
-                    {/* <UserRolesCard user={user} /> */}
-                </MiddleColumn>
-            </Row>      
-            <Row id="events">
-                <Col>
-                    Rozvrh
-                </Col>
-            </Row>
-            <Row id="memberships">
-                <Col>
-                    {/* <UserCardCapsule user={user} id={"memberships"}>
-                        <UserMembershipsGroups user={user} />
-                    </UserCardCapsule> */}
-                    <UserMembershipsCard user={user} />
-                </Col>
-            </Row>
-            <Row id="groups">
-                <Col>
-                    <LazyRender>
-                        <UserGroupsCard user={user} />
-                    </LazyRender>
-                </Col>
-            </Row>            
-            <Row id="roles">
-                <Col>
-                    <LazyRender>
-                        <UserRolesCard user={user} />
-                    </LazyRender>
-                </Col>
-            </Row>            
-            
-            <Row id="publications">
-                <Col>
-                    Publikace
-                </Col>
-            </Row>
-            <Row id="projects">
-                <Col>
-                    Projekty
-                </Col>
-            </Row>
-        </HashContainer>
+        <>
+        <UserPageNavbar user={user } />
+        <Row>
+            <LeftColumn>
+                <UserMediumCard user={user} />
+                {/* <UserGroupsLargeContent user={user} /> */}
+            </LeftColumn>
+            <MiddleColumn>
+                {/* <UserRolesCard user={user} /> */}
+
+                <HashContainer>
+                    <Row id="events">
+                        <Col>
+                            Rozvrh
+                        </Col>
+                    </Row>
+                    <Row id="memberships">
+                        <Col>
+                            {/* <UserCardCapsule user={user} id={"memberships"}>
+                                <UserMembershipsGroups user={user} />
+                            </UserCardCapsule> */}
+                            <UserMembershipsCard user={user} />
+                        </Col>
+                    </Row>
+                    <Row id="groups">
+                        <Col>
+                            <LazyRender>
+                                <UserGroupsCard user={user} />
+                            </LazyRender>
+                        </Col>
+                    </Row>            
+                    <Row id="roles">
+                        <Col>
+                            <LazyRender>
+                                <UserRolesCard user={user} />
+                            </LazyRender>
+                        </Col>
+                    </Row>            
+                    
+                    <Row id="publications">
+                        <Col>
+                            Publikace
+                        </Col>
+                    </Row>
+                    <Row id="projects">
+                        <Col>
+                            Projekty
+                        </Col>
+                    </Row>
+                </HashContainer>
+            </MiddleColumn>
+        </Row>      
+        </>
+
     )
 }
 

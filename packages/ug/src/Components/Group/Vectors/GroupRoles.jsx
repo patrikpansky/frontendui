@@ -6,6 +6,7 @@ import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared";
 
 import { GroupCardCapsule } from "../GroupCardCapsule"
 import { RoleAddDeputyButton, RoleMediumCard } from '../../Role';
+import { UserLink } from '../../User';
 
 
 const GroupRolesQuery = `
@@ -56,7 +57,7 @@ const GroupRolesReadAsyncAction = createAsyncGraphQLAction(
     })    
 )
 
-const RoleVisualiser = ({role}) => {
+const RoleCardVisualiser = ({role}) => {
     return (
         <Col>
             <RoleMediumCard role={role}>           
@@ -68,22 +69,48 @@ const RoleVisualiser = ({role}) => {
     )
 }
 
-const RolesVisualiser = ({items}) => {
+const RoleColVisualiser = ({role}) => {
+    return (
+        <>
+            <Col>
+                {role?.roletype?.name}
+            </Col>
+            {role?.user && <Col>
+                <UserLink user={role?.user} />
+            </Col>}
+        </>
+    )
+}
+
+const RolesVisualiser = ({items, Visualiser=RoleCardVisualiser}) => {
     return (
         <Row>
             {items.map(
                 // role => <>{(role?.id)&&<RoleVisualiser role={role}/>}</>
-                role => <RoleVisualiser key={role?.id} role={role}/>
+                role => <Visualiser key={role?.id} role={role}/>
             )} 
         </Row>
     )
 }
 
-const GroupRolesContent = ({group, children, ...props}) => {  
+export const RolesToColsVisualiser = ({items}) => {
+    return (
+        <>
+            {items.map(
+                // role => <>{(role?.id)&&<RoleVisualiser role={role}/>}</>
+                role => <Row key={role?.id}>
+                        <RoleColVisualiser role={role}/>
+                    </Row>
+            )} 
+        </>
+    )
+}
+
+export const GroupRolesContent = ({group, children, Visualiser=RolesVisualiser, ...props}) => {  
     return (
         <InfiniteScroll 
             preloadedItems={group?.roles || []}
-            Visualiser={RolesVisualiser}
+            Visualiser={Visualiser}
             actionParams={{...props, ...group}}
             asyncAction={GroupRolesReadAsyncAction}
         >
@@ -92,11 +119,10 @@ const GroupRolesContent = ({group, children, ...props}) => {
     )
 }
 
-export const GroupRolesCard = ({group}) => {
-    
+export const GroupRolesCard = ({group, Visualiser=RolesVisualiser, ...props}) => {
     return (
         <GroupCardCapsule group={group} >
-            <GroupRolesContent group={group}>
+            <GroupRolesContent group={group} Visualiser={RolesVisualiser} {...props}>
 
             </GroupRolesContent>
         </GroupCardCapsule>

@@ -1,5 +1,61 @@
 import React from "react";
+import Spinner from "react-bootstrap/Spinner";
 import { useFreshItem } from "@hrbolek/uoisfrontend-gql-shared";
+
+
+const LoadingSpinner = ({ text = "Loading..." }) => (
+    <div style={overlayStyle}>
+        <div style={spinnerContainerStyle}>
+            <div style={spinnerStyle}></div>
+            <span style={textStyle}>{text}</span>
+        </div>
+        <style>{`
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        `}</style>
+    </div>
+);
+
+// Styles for the overlay and spinner
+const overlayStyle = {
+    position: "fixed",
+    top: 0,
+    left: "50%",       // Centers it horizontally
+    transform: "translateX(-50%)", // Adjusts for its own width
+    width: "10vw",
+    height: "20vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent white background
+    zIndex: 9999, // Ensure it's above all other components
+};
+
+const spinnerContainerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+};
+
+const spinnerStyle = {
+    width: "60px", // Larger size
+    height: "60px",
+    border: "6px solid rgba(0, 0, 0, 0.2)",
+    borderTopColor: "#007bff", // Spinner color
+    borderRadius: "50%",
+    animation: "spin 1s infinite linear",
+    marginBottom: "15px",
+};
+
+const textStyle = {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    color: "#555",
+};
 
 /**
  * Higher-order function to create a lazy-loading component that fetches an entity using a custom hook.
@@ -50,8 +106,23 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
         const entityValue = props[entityName];
         const [result, promise, state] = useFreshItem(entityValue, asyncAction);
 
+
+        if (result) {
+            // Dynamically set the entity name in props
+            const wrappedProps = {
+                ...props,
+                [entityName]: result,
+            };
+
+            return (<>
+                <WrappedComponent {...wrappedProps} />
+                {state.loading && <LoadingSpinner text="Aktualizuji..."/>}
+            </>);
+        }
+
+
         if (state.loading) {
-            return <div>Nahrávám...</div>;
+            return <LoadingSpinner text="Nahrávám..."/>;
         }
 
         if (state.errors) {
@@ -61,16 +132,6 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
                     <p>{state.errors}</p>
                 </div>
             );
-        }
-
-        if (result) {
-            // Dynamically set the entity name in props
-            const wrappedProps = {
-                ...props,
-                [entityName]: result,
-            };
-
-            return <WrappedComponent {...wrappedProps} />;
         }
 
         return (

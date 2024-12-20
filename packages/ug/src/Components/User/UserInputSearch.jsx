@@ -58,7 +58,7 @@ export const UserInputSearch = ({onSelect}) => {
         setState(prev => {
             return {...prev, searchphrase: value}
         })
-        setSearchParams({...searchParams, searchphrase: value})
+        // setSearchParams({...searchParams, searchphrase: value})
         // setState({...prev, searchphrase: value})
         load(value)
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared";
 import { ArrowRightCircle, ArrowRightCircleFill, BoxArrowInLeft, BoxArrowRight, DoorOpen, HouseFill, PersonCircle } from "react-bootstrap-icons";
 
 import Navbar from "react-bootstrap/Navbar"
@@ -35,6 +35,7 @@ const MeQuery = `
                 id
                 name
             }
+            userId
             roletype {
                 id
                 name
@@ -151,20 +152,20 @@ export const LogButton = ({
  * );
  */
 export const ComponentSentinel = ({ meCondition = (me => me?.email?.includes("world")), children }) => {
-    // const items = useSelector(state => state?.items) || {};
+    const items = useSelector(state => state?.items) || {};
 
     // console.log("PageSentinel items", items)
     // const me = Object.values(items).find(user => user?.__typename === "UserGQLModel" && user?.isThisMe);
 
+    const { me } = useMe()
     // console.log("PageSentinel me", me)
 
-    // const { me } = useMe()
+    if (!me) return <div>Nejste přihlášeni</div>;
 
-    // if (!me) return <div>Nejste přihlášeni</div>;
-
-    // const hasPermission = meCondition(me);
+    const hasPermission = meCondition(me);
     // console.log("PageSentinel hasPermission", hasPermission)
     // if (!hasPermission) return <div>Nemáte oprávnění</div>;
+    if (!hasPermission) return null;
 
     return <>{children}</>;
 };
@@ -209,6 +210,131 @@ export const useMe = ({refresh=false, AsyncAction=MeAsyncAction}={}) => {
 
     return {...state}
 }
+
+/**
+ * Determines if the current user has a specified role type in an RBAC object.
+ *
+ * @param {Object} rbacobject - The RBAC (Role-Based Access Control) object containing role information.
+ * @param {string[]} roletypenames - An array of role type names to check against.
+ * @returns {boolean} - Returns `true` if the user has any of the specified roles, otherwise `false`.
+ * @throws {Error} - Throws an error if the input is invalid.
+ */
+export const useRbacObject = (rbacobject, roletypenames) => {
+    const { me } = useMe();
+
+    // Validate input parameters
+    if (!rbacobject || typeof rbacobject !== "object") {
+        throw new Error("Invalid input: 'rbacobject' must be a valid object.");
+    }
+    if (!Array.isArray(roletypenames)) {
+        throw new Error("Invalid input: 'roletypenames' must be an array.");
+    }
+
+    // Destructure roles with a fallback to an empty array
+    const { roles = [] } = rbacobject;
+
+    // Helper function to check if a user has a role
+    const userHasRole = role => {
+        return role?.userId === me?.id && roletypenames.includes(role?.roletype?.name);
+    };
+
+    // Check if the user has any of the specified roles
+    return roles.some(userHasRole);
+};
+
+const StateReadQuery = `
+query StateReadQuery($id: UUID!) {
+    stateById(id: $id) {
+    __typename
+    id
+    readers: roletypes(access: READ) {
+      __typename
+      id
+      name
+    }
+    writers: roletypes(access: WRITE) {
+      __typename
+      id
+      name
+    }
+  } 
+}`
+
+const StateReadAsyncAction = createAsyncGraphQLAction(StateReadQuery)
+
+/**
+ * A custom hook to check if the logged-in user has specific roles associated with an entity.
+ *
+ * This function validates the input parameters, retrieves state information if necessary,
+ * and determines if the current user has any of the specified roles.
+ *
+ * @function
+ * @param {Object} entity - The entity object containing role and state information.
+ * @param {Object} [entity.state] - The current state of the entity, if available.
+ * @param {string|number} [entity.stateId] - The identifier for the entity's state, if applicable.
+ * @param {Object} entity.rbacobject - The RBAC object containing role information.
+ * @param {Array<string>} [roletypenames] - An array of role type names to check against.
+ *
+ * @returns {Object} An object containing:
+ *  - `userHasRole` {boolean}: Whether the logged-in user has any of the specified roles.
+ *
+ * @throws {Error} If input validation fails, such as missing or invalid parameters.
+ *
+ * @example
+ * // Example usage:
+ * const entity = { stateId: 123, rbacobject: { roles: [{ userId: 1, roletype: { name: 'editor' } }] } };
+ * const roletypenames = ['editor', 'admin'];
+ *
+ * const result = useRoles(entity, roletypenames);
+ * console.log(result.userHasRole); // Outputs: true or false based on roles
+ */
+export const useRoles = (entity, roletypenames) => {
+    const { me } = useMe();
+    const { state, stateId, rbacobject } = entity;
+
+    // Determine role type names from the state if available
+    if (state) {
+        roletypenames = state?.writers || [];
+    } else if (stateId) {
+        const [retrievedState] = useFreshItem({ id: stateId }, StateReadAsyncAction);
+        roletypenames = retrievedState?.writers || [];
+    }
+
+    // Validate input parameters
+    if (!rbacobject || typeof rbacobject !== "object") {
+        throw new Error("Invalid input: 'rbacobject' must be a valid object.");
+    }
+
+    if (!state && !stateId && !Array.isArray(roletypenames)) {
+        throw new Error("Invalid input: 'roletypenames' must be an array or stateId/state must be present.");
+    }
+
+    if (roletypenames.length === 0) {
+        throw new Error("Invalid input: 'roletypenames' is an empty array.");
+    }
+
+    // Extract roles from RBAC object
+    const { roles = [] } = rbacobject;
+
+    /**
+     * Helper function to check if the current user has a specific role.
+     * @param {Object} role - A role object from the RBAC roles list.
+     * @param {number|string} role.userId - The user ID associated with the role.
+     * @param {Object} role.roletype - The role type object.
+     * @param {string} role.roletype.name - The name of the role type.
+     * @returns {boolean} `true` if the current user has the role; otherwise, `false`.
+     */
+    const hasRole = role => {
+        return role?.userId === me?.id && roletypenames.includes(role?.roletype?.name);
+    };
+
+    // Check if the current user has any of the specified roles
+    const userHasRole = roles.some(hasRole);
+
+    return { userHasRole };
+};
+
+
 
 export const MyNavbar = ({
     loginURL = '/oauth/login2?redirect_uri=/',

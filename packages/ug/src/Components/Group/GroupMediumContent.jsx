@@ -1,5 +1,6 @@
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
+import { GroupLink } from "./GroupLink"
 
 /**
  * A component that displays medium-level content for an group entity.
@@ -26,7 +27,7 @@ import Col from "react-bootstrap/Col"
  */
 export const GroupMediumContent = ({group, children}) => {
     return (
-        <>
+        <>  {group?.mastergroup && <Row><Col>Nadřízený</Col><Col><GroupLink group={group?.mastergroup} /></Col></Row>}
             <Row>
                 <Col>Název</Col>
                 <Col>{group.name}</Col>

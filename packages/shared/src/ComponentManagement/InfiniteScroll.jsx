@@ -19,20 +19,31 @@ const mergeArraysById = (array1, array2) => {
 };
 
 /**
- * A reusable component that provides infinite scrolling functionality.
- * 
- * It dynamically fetches and displays items in pages, loading more items as the user scrolls to the end of the list.
+ * InfiniteScroll Component
  *
+ * A reusable component that provides infinite scrolling functionality. 
+ * It dynamically fetches and appends items to the list as the user scrolls to the end.
+ *
+ * @component
  * @param {Object} props - Component props.
- * @param {Object} props.actionParams - Initial parameters for the async action, including pagination info.
+ * @param {Array<Object>} [props.preloadedItems=[]] - An optional array of preloaded items to display initially.
+ * @param {Object} props.actionParams - Initial parameters for the async action, including pagination details.
  * @param {number} props.actionParams.skip - Initial skip value for pagination.
  * @param {number} props.actionParams.limit - Number of items to fetch per page.
  * @param {Object} [props.actionParams.otherParams] - Additional parameters to pass to the async action.
- * @param {Function} props.asyncAction - The async Redux action used to fetch data. 
- *   This function must return a promise resolving to an array of fetched items.
- * @param {React.ComponentType} props.Visualiser - A component to visualize the fetched data.
- *   It receives the fetched results as a prop `events`.
- * 
+ * @param {Function} props.asyncAction - An asynchronous function or Redux action used to fetch more data.
+ *   This function must return a promise that resolves to an array of fetched items.
+ * @param {React.ComponentType} props.Visualiser - A component responsible for visualizing the fetched data.
+ *   It receives the fetched items as a prop `items` and renders them.
+ * @param {Function} [props.calculateNewFilter] - A function to calculate the new filter (pagination params) 
+ *   after fetching more items. Defaults to incrementing `skip` and maintaining `limit`.
+ *   @param {Object} oldFilter - The previous filter object.
+ *   @returns {Object} A new filter object.
+ * @param {React.ReactNode} [props.children] - Optional child components to pass to the `Visualiser`.
+ * @param {...any} props - Additional props passed to the `Visualiser` component.
+ *
+ * @returns {JSX.Element} The rendered infinite scroll component.
+ *
  * @example
  * // Redux action to fetch items
  * const fetchItems = ({ skip, limit }) => async (dispatch) => {
@@ -40,31 +51,34 @@ const mergeArraysById = (array1, array2) => {
  *   const result = await response.json();
  *   return result.items;
  * };
- * 
+ *
  * // Visualizer Component
- * const ItemsVisualizer = ({ events }) => (
+ * const ItemsVisualizer = ({ items }) => (
  *   <ul>
- *     {events.map((item) => (
+ *     {items.map((item) => (
  *       <li key={item.id}>{item.name}</li>
  *     ))}
  *   </ul>
  * );
- * 
+ *
  * // Usage
  * <InfiniteScroll
+ *   preloadedItems={[{ id: 1, name: "Item 1" }, { id: 2, name: "Item 2" }]}
  *   actionParams={{ skip: 0, limit: 10 }}
  *   asyncAction={fetchItems}
  *   Visualiser={ItemsVisualizer}
+ *   calculateNewFilter={(oldFilter) => ({ ...oldFilter, skip: oldFilter.skip + 10 })}
  * />
- * 
- * @returns {JSX.Element} The rendered infinite scroll component.
  */
 export const InfiniteScroll = ({ 
     preloadedItems=[], 
     actionParams, 
     asyncAction, 
     Visualiser,
-    calculateNewFilter = (oldfilter) => ({...oldfilter, skip: oldfilter.skip + oldfilter.limit || 10, limit: oldfilter.limit || 10})
+    calculateNewFilter = (oldfilter) => ({...oldfilter, skip: oldfilter.skip + oldfilter.limit || 10, limit: oldfilter.limit || 10}),
+    children,
+    onAll = () => null,
+    ...props
  }) => {
     // const { 
     //     skip=0, 
@@ -87,6 +101,21 @@ export const InfiniteScroll = ({
     const containerRef = useRef(null);
     const dispatch = useDispatch();
 
+    // preloaded (store content) have changed, so take them as loaded
+    useEffect(() => {
+        if (_state.hasMore) return
+        _setState(prevState => {
+            // const items = mergeArraysById(_state.results, preloadedItems)
+            const newState = ({
+                ...prevState,
+                results: preloadedItems,
+                // filter: {...actionParams},
+                // hasMore: true
+            })
+            return newState
+        })
+    },[preloadedItems])
+
     // Function to load more items
     const loadItems = async () => {
         if (_state.loading || !_state.hasMore) return;
@@ -100,6 +129,7 @@ export const InfiniteScroll = ({
             // console.log("fetchedResults", JSON.stringify(fetchedResults))
 
             if (fetchedResults.length == 0 ) {
+                onAll()
                 _setState({
                     ..._state,
                     results: mergeArraysById(_state.results, fetchedResults || []),
@@ -154,12 +184,14 @@ export const InfiniteScroll = ({
 
     return (
         <>
-            <Visualiser items={_state.results} />
+            <Visualiser items={_state.results} {...props}>
+                {children}
+            </Visualiser>
             {/* {JSON.stringify(_state)} */}
-            {!_state.hasMore && <div>Více toho není.</div>}
+            {/* {!_state.hasMore && <div>Více toho není.</div>} */}
             {_state.errors && <div><h2>Chyba</h2>{JSON.stringify(_state.errors, null, 4)}</div>}
             {_state.loading && <div>Nahrávám další...</div>}
-            <div ref={containerRef} style={{ height: "50px" }} />
+            {_state.hasMore && <div ref={containerRef} style={{ height: "50px" }} />}
         </>
     );
 };

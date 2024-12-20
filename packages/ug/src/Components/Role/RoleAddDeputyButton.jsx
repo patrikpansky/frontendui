@@ -11,15 +11,16 @@ import { UserInputSearch } from '../User/UserInputSearch';
 
 const RoleInsertQuery = 
 `
-mutation roleInsert($id: UUID, $user_id: UUID!, $group_id: UUID!, $roletype_id: UUID!) {
+mutation roleInsert($id: UUID, $user_id: UUID!, $group_id: UUID!, $roletype_id: UUID!, $startdate: DateTime, $enddate: DateTime, $deputy: Boolean) {
   
-  result: roleInsert(role: {id: $id, userId: $user_id, groupId: $group_id, roletypeId: $roletype_id}) {
+  result: roleInsert(role: {id: $id, userId: $user_id, groupId: $group_id, roletypeId: $roletype_id, startdate: $startdate, enddate: $enddate, deputy: $deputy}) {
     __typename
     ...on InsertError {
       failed
       msg
     }
     ...on RoleGQLModel {
+      __typename
       id
       lastchange
       startdate
@@ -37,19 +38,40 @@ mutation roleInsert($id: UUID, $user_id: UUID!, $group_id: UUID!, $roletype_id: 
         id
         name
       }
+      rbacobjectId
+      rbacobject {
+        roles {
+            userId
+            roletype {
+                id
+                name
+            }
+        }
+    }
     }
   }
 }
 `
 
-const RoleInsertAsyncAction = createAsyncGraphQLAction(
+export const RoleInsertAsyncAction = createAsyncGraphQLAction(
     RoleInsertQuery,
-    (jsonResult) => (dispatch, /* getState */) => next => {
+    (jsonResult) => (dispatch,  getState, next) => {
         const role = jsonResult?.data?.result
         if (role?.__typename !== "RoleGQLModel") return next(jsonResult)
+
+        // const store = getState()
+        // const items = store.items
         const {user, group} = role
-        const updatedUser = {...user, roles: [role]}
-        const updatedGroup = {...group, roles: [role]}
+        
+        // const storeUser = items[user?.id] || {}
+        // const storeGroup = items[group?.id] || {}
+        // console.log("RoleInsertAsyncAction.storeUser", storeUser)
+        // console.log("RoleInsertAsyncAction.storeGroup", storeGroup)
+
+        const updatedUser = {...user, roles:[role]}
+        // console.log("RoleInsertAsyncAction.user", updatedUser)
+        const updatedGroup = {...group, roles:[role]}
+        // console.log("RoleInsertAsyncAction.group", updatedGroup)
         dispatch(ItemActions.item_updateAttributeVector({item: updatedUser, vectorname: "roles"}))
         dispatch(ItemActions.item_updateAttributeVector({item: updatedGroup, vectorname: "roles"}))
         return next(jsonResult)
@@ -58,13 +80,13 @@ const RoleInsertAsyncAction = createAsyncGraphQLAction(
 
 const RoleInsertAsyncActionValidator = CreateAsyncQueryValidator2({error: "Nepovedlo se nastavit zástup", success: "Zástup nastaven"});
 
-const RoleAddDeputyDialog = ({role, onClose=(()=>null)}) => {
+const RoleAddDeputyDialog = ({role, onClose=(()=>null), onOk=((newRole)=>null)}) => {
     const title = <>
         Přidat zástup za <UserLink user={role?.user}/> ({role?.roletype?.name}) @<GroupLink group={role?.group}/>  </>
     const now = new Date()
     const fourteenDaysAhead = new Date();
     fourteenDaysAhead.setDate(now.getDate() + 14); // Add 14 days
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     const [state, setState] = useState({
         now: now,
         id: crypto.randomUUID(),
@@ -73,6 +95,7 @@ const RoleAddDeputyDialog = ({role, onClose=(()=>null)}) => {
         roletype_id: role?.roletype?.id,
         user_id: role?.user?.id,
         group_id: role?.group?.id,
+        deputy: true,
         userSelector: true
         // startdate: new Date().toISOString(),
         // enddate: fourteenDaysAhead.toISOString(),
@@ -91,8 +114,8 @@ const RoleAddDeputyDialog = ({role, onClose=(()=>null)}) => {
 
     const _onClose = () => onClose()
     const _okOk = () => {
+        onOk(state)
         _onClose()
-        RoleInsertAsyncActionValidator(dispatch(RoleInsertAsyncAction(state)))
     }
     const onUserSelect = (user) => {
         setState(prev => ({...prev, user_id: user.id, user, userSelector: false}))
@@ -102,7 +125,7 @@ const RoleAddDeputyDialog = ({role, onClose=(()=>null)}) => {
     }
     return (
         // <Dialog title='Přidat zástup'>
-        <Dialog title={title} onOk={_okOk} onCancel={_onClose}>
+        <Dialog title={title} onOk={_okOk} onCancel={_onClose} oklabel='Potvrdit zástup'>
             {/* <Row>
                 <LeftColumn>Kde</LeftColumn>
                 <Col><GroupLink group={role?.group}/></Col>
@@ -170,14 +193,19 @@ const RoleAddDeputyDialog = ({role, onClose=(()=>null)}) => {
 }
 
 
-export const RoleAddDeputyButton = ({role}) => {
+export const RoleAddDeputyButton = ({role, AsyncAction=RoleInsertAsyncAction}) => {
     const [visible, setVisible] = useState(false)
+    const dispatch = useDispatch()
+    const onOk = (newRole) => {
+        console.log('newRole', newRole)
+        RoleInsertAsyncActionValidator(dispatch(AsyncAction(newRole)))
+    }
     return (
         <Row>
             <Col>
                 {!role?.user && "Chybí informace o uživateli!"}
-                {role?.user?.isThisMe && <button className='btn btn-outline-success form-control' onClick={()=>setVisible((prev)=>!prev)}>Určit zástup</button>}
-                {visible&&<RoleAddDeputyDialog role={role} onClose={()=>setVisible(false)}/>}
+                {role?.user?.isThisMe && <button className='btn btn-sm btn-outline-success' onClick={()=>setVisible((prev)=>!prev)}>Určit zástup</button>}
+                {visible&&<RoleAddDeputyDialog role={role} onClose={()=>setVisible(false)} onOk={onOk}/>}
             </Col>
         </Row>
     )
