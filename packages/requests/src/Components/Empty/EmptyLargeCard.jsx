@@ -1,42 +1,42 @@
 import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
-import { EmptyCardCapsule } from "./EmptyCardCapsule"
-import { EmptyMediumCard } from "./EmptyMediumCard"
+import { requestCardCapsule } from "./requestCardCapsule"
+import { requestMediumCard } from "./requestMediumCard"
 
 /**
- * A large card component for displaying detailed content and layout for an empty entity.
+ * A large card component for displaying detailed content and layout for an request entity.
  *
- * This component wraps an `EmptyCardCapsule` with a flexible layout that includes multiple
- * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `EmptyMediumCard`
+ * This component wraps an `requestCardCapsule` with a flexible layout that includes multiple
+ * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `requestMediumCard`
  * and a `MiddleColumn` for rendering additional children.
  *
  * @component
- * @param {Object} props - The properties for the EmptyLargeCard component.
- * @param {Object} props.empty - The object representing the empty entity.
- * @param {string|number} props.empty.id - The unique identifier for the empty entity.
- * @param {string} props.empty.name - The name or label of the empty entity.
+ * @param {Object} props - The properties for the requestLargeCard component.
+ * @param {Object} props.request - The object representing the request entity.
+ * @param {string|number} props.request.id - The unique identifier for the request entity.
+ * @param {string} props.request.name - The name or label of the request entity.
  * @param {React.ReactNode} [props.children=null] - Additional content to render in the middle column.
  *
  * @returns {JSX.Element} A JSX element combining a large card layout with dynamic content.
  *
  * @example
  * // Example usage:
- * const emptyEntity = { id: 123, name: "Sample Entity" };
+ * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <EmptyLargeCard empty={emptyEntity}>
+ * <requestLargeCard request={requestEntity}>
  *   <p>Additional content for the middle column.</p>
- * </EmptyLargeCard>
+ * </requestLargeCard>
  */
-export const EmptyLargeCard = ({empty}) => {
+export const requestLargeCard = ({request}) => {
     return (
-        <EmptyCardCapsule empty={empty} >
+        <requestCardCapsule request={request} >
             <Row>
                 <LeftColumn>
-                    <EmptyMediumCard empty={empty}/>
+                    <requestMediumCard request={request}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}
                 </MiddleColumn>
             </Row>
-        </EmptyCardCapsule>
+        </requestCardCapsule>
     )
 }

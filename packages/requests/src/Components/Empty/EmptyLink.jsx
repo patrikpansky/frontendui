@@ -1,25 +1,25 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
 /**
- * A component that renders a `ProxyLink` to an empty view page.
+ * A component that renders a `ProxyLink` to an request view page.
  * 
- * The target URL is dynamically constructed using the `empty` object's `id`, 
- * and the link displays the `empty` object's `name` as its content.
+ * The target URL is dynamically constructed using the `request` object's `id`, 
+ * and the link displays the `request` object's `name` as its content.
  * 
  * @component
- * @param {Object} props - The properties for the EmptyLink component.
- * @param {Object} props.empty - The object representing the empty entity.
- * @param {string|number} props.empty.id - The unique identifier for the empty entity.
- * @param {string} props.empty.name - The display name for the empty entity.
+ * @param {Object} props - The properties for the requestLink component.
+ * @param {Object} props.request - The object representing the request entity.
+ * @param {string|number} props.request.id - The unique identifier for the request entity.
+ * @param {string} props.request.name - The display name for the request entity.
  * 
- * @returns {JSX.Element} A `ProxyLink` component linking to the empty view page.
+ * @returns {JSX.Element} A `ProxyLink` component linking to the request view page.
  * 
  * @example
  * // Example usage:
- * const emptyEntity = { id: 123, name: "Example Empty Entity" };
+ * const requestEntity = { id: 123, name: "Example request Entity" };
  * 
- * <EmptyLink empty={emptyEntity} />
+ * <requestLink request={requestEntity} />
  */
-export const EmptyLink = ({empty}) => {
-    return <ProxyLink to={'/empty/empty/view/' + empty.id}>{empty.name}</ProxyLink>
+export const requestLink = ({request}) => {
+    return <ProxyLink to={'/request/request/view/' + request.id}>{request.name}</ProxyLink>
 }

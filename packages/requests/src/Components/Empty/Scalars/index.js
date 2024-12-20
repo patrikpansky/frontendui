@@ -1,1 +1,1 @@
- export * from './EmptyScalarAttribute'
+ export * from './requestScalarAttribute'
