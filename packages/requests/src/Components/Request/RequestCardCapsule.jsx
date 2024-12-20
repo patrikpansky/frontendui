@@ -1,16 +1,16 @@
 import { CardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { PersonFill } from "react-bootstrap-icons"
-import { requestLink } from "./requestLink"
+import { RequestLink } from "./RequestLink"
 
 /**
- * A specialized card component that displays an `requestLink` as its title and encapsulates additional content.
+ * A specialized card component that displays an `RequestLink` as its title and encapsulates additional content.
  *
  * This component extends the `CardCapsule` component by using a combination of a `PersonFill` icon and 
- * an `requestLink` component in the card's header. The `children` prop is used to render any content 
+ * an `RequestLink` component in the card's header. The `children` prop is used to render any content 
  * inside the card body. It is designed for use with entities represented by the `request` object.
  *
  * @component
- * @param {Object} props - The props for the requestCardCapsule component.
+ * @param {Object} props - The props for the RequestCardCapsule component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The display name for the request entity.
@@ -20,16 +20,16 @@ import { requestLink } from "./requestLink"
  *
  * @example
  * // Example usage:
- * import { requestCardCapsule } from './requestCardCapsule';
+ * import { RequestCardCapsule } from './RequestCardCapsule';
  * import { Button } from 'react-bootstrap';
  *
  * const requestEntity = { id: 123, name: "Example Entity" };
  *
- * <requestCardCapsule request={requestEntity}>
+ * <RequestCardCapsule request={requestEntity}>
  *   <Button variant="primary">Click Me</Button>
- * </requestCardCapsule>
+ * </RequestCardCapsule>
  */
-export const requestCardCapsule = ({request, children, title=<><PersonFill /> <requestLink request={request} /></>}) => {
+export const RequestCardCapsule = ({request, children, title=<><PersonFill /> <RequestLink request={request} /></>}) => {
     return (
         <CardCapsule title={title}>
             {children}

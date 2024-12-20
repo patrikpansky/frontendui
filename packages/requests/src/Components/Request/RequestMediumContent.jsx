@@ -1,11 +1,11 @@
 /**
  * A component that displays medium-level content for an request entity.
  *
- * This component renders a label "requestMediumContent" followed by a serialized representation of the `request` object
+ * This component renders a label "RequestMediumContent" followed by a serialized representation of the `request` object
  * and any additional child content. It is designed to handle and display information about an request entity object.
  *
  * @component
- * @param {Object} props - The properties for the requestMediumContent component.
+ * @param {Object} props - The properties for the RequestMediumContent component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -17,14 +17,14 @@
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestMediumContent request={requestEntity}>
+ * <RequestMediumContent request={requestEntity}>
  *   <p>Additional information about the entity.</p>
- * </requestMediumContent>
+ * </RequestMediumContent>
  */
-export const requestMediumContent = ({request, children}) => {
+export const RequestMediumContent = ({request, children}) => {
     return (
         <>
-            requestMediumContent <br />
+            RequestMediumContent <br />
             {JSON.stringify(request)}
             {children}
         </>

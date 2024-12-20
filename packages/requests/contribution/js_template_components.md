@@ -1,6 +1,6 @@
-## Set of Template Components for an Entity Named request
+## Set of Template Components for an Entity Named Request
 
-### requestLink
+### RequestLink
 ```js
 /**
  * A component that renders a `ProxyLink` to an request view page.
@@ -9,7 +9,7 @@
  * and the link displays the `request` object's `name` as its content.
  * 
  * @component
- * @param {Object} props - The properties for the requestLink component.
+ * @param {Object} props - The properties for the RequestLink component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The display name for the request entity.
@@ -18,25 +18,25 @@
  * 
  * @example
  * // Example usage:
- * const requestEntity = { id: 123, name: "Example request Entity" };
+ * const requestEntity = { id: 123, name: "Example Request Entity" };
  * 
- * <requestLink request={requestEntity} />
+ * <RequestLink request={requestEntity} />
  */
-export const requestLink = ({request}) => {
+export const RequestLink = ({request}) => {
     return <ProxyLink to={'/request/request/view/' + request.id}>{request.name}</ProxyLink>
 }
 ```
 
-### requestMediumContent
+### RequestMediumContent
 ```js
 /**
  * A component that displays medium-level content for an request entity.
  *
- * This component renders a label "requestMediumContent" followed by a serialized representation of the `request` object
+ * This component renders a label "RequestMediumContent" followed by a serialized representation of the `request` object
  * and any additional child content. It is designed to handle and display information about an request entity object.
  *
  * @component
- * @param {Object} props - The properties for the requestMediumContent component.
+ * @param {Object} props - The properties for the RequestMediumContent component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -48,14 +48,14 @@ export const requestLink = ({request}) => {
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestMediumContent request={requestEntity}>
+ * <RequestMediumContent request={requestEntity}>
  *   <p>Additional information about the entity.</p>
- * </requestMediumContent>
+ * </RequestMediumContent>
  */
-export const requestMediumContent = ({request, children}) => {
+export const RequestMediumContent = ({request, children}) => {
     return (
         <>
-            requestMediumContent <br />
+            RequestMediumContent <br />
             {JSON.stringify(request)}
             {children}
         </>
@@ -64,18 +64,18 @@ export const requestMediumContent = ({request, children}) => {
 
 ```
 
-### requestCardCapsule
+### RequestCardCapsule
 
 ```js
 /**
- * A specialized card component that displays an `requestLink` as its title and encapsulates additional content.
+ * A specialized card component that displays an `RequestLink` as its title and encapsulates additional content.
  *
  * This component extends the `CardCapsule` component by using a combination of a `PersonFill` icon and 
- * an `requestLink` component in the card's header. The `children` prop is used to render any content 
+ * an `RequestLink` component in the card's header. The `children` prop is used to render any content 
  * inside the card body. It is designed for use with entities represented by the `request` object.
  *
  * @component
- * @param {Object} props - The props for the requestCardCapsule component.
+ * @param {Object} props - The props for the RequestCardCapsule component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The display name for the request entity.
@@ -85,25 +85,25 @@ export const requestMediumContent = ({request, children}) => {
  *
  * @example
  * // Example usage:
- * import { requestCardCapsule } from './requestCardCapsule';
+ * import { RequestCardCapsule } from './RequestCardCapsule';
  * import { Button } from 'react-bootstrap';
  *
  * const requestEntity = { id: 123, name: "Example Entity" };
  *
- * <requestCardCapsule request={requestEntity}>
+ * <RequestCardCapsule request={requestEntity}>
  *   <Button variant="primary">Click Me</Button>
- * </requestCardCapsule>
+ * </RequestCardCapsule>
  */
-export const requestCardCapsule = ({request, children}) => {
+export const RequestCardCapsule = ({request, children}) => {
     return (
-        <CardCapsule title={<><PersonFill /> <requestLink request={request} /></>}>
+        <CardCapsule title={<><PersonFill /> <RequestLink request={request} /></>}>
             {children}
         </CardCapsule>
     )
 }
 ```
 
-### requestMediumCard
+### RequestMediumCard
 
 This component must be always based on appropriate `CardCapsule` and `MediumContent` components
 
@@ -111,13 +111,13 @@ This component must be always based on appropriate `CardCapsule` and `MediumCont
 /**
  * A card component that displays detailed content for an request entity.
  *
- * This component combines `requestCardCapsule` and `requestMediumContent` to create a card layout
+ * This component combines `RequestCardCapsule` and `RequestMediumContent` to create a card layout
  * with a title and medium-level content. The title includes a `PersonFill` icon and a link to
  * the request entity's details, while the body displays serialized details of the entity along
  * with any additional children passed to the component.
  *
  * @component
- * @param {Object} props - The properties for the requestMediumCard component.
+ * @param {Object} props - The properties for the RequestMediumCard component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -129,35 +129,35 @@ This component must be always based on appropriate `CardCapsule` and `MediumCont
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestMediumCard request={requestEntity}>
+ * <RequestMediumCard request={requestEntity}>
  *   <p>Additional details or actions for the entity.</p>
- * </requestMediumCard>
+ * </RequestMediumCard>
  */
-export const requestMediumCard = ({request, children}) => {
+export const RequestMediumCard = ({request, children}) => {
     return (
-        <requestCardCapsule title={<><PersonFill /> <requestLink request={request} /></>}>
-            <requestMediumContent request={request}>
+        <RequestCardCapsule title={<><PersonFill /> <RequestLink request={request} /></>}>
+            <RequestMediumContent request={request}>
                 {children}
-            </requestMediumContent>
-        </requestCardCapsule>
+            </RequestMediumContent>
+        </RequestCardCapsule>
     )
 }
 ```
 
-### requestLargeCard
+### RequestLargeCard
 
-This component must be always based on appropriate `requestCardCapsule` and `requestMediumCard` components, it is expected that `Row`, `LeftColumn` and `MiddleColumn` are used
+This component must be always based on appropriate `RequestCardCapsule` and `RequestMediumCard` components, it is expected that `Row`, `LeftColumn` and `MiddleColumn` are used
 
 ```js
 /**
  * A large card component for displaying detailed content and layout for an request entity.
  *
- * This component wraps an `requestCardCapsule` with a flexible layout that includes multiple
- * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `requestMediumCard`
+ * This component wraps an `RequestCardCapsule` with a flexible layout that includes multiple
+ * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `RequestMediumCard`
  * and a `MiddleColumn` for rendering additional children.
  *
  * @component
- * @param {Object} props - The properties for the requestLargeCard component.
+ * @param {Object} props - The properties for the RequestLargeCard component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -169,22 +169,22 @@ This component must be always based on appropriate `requestCardCapsule` and `req
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestLargeCard request={requestEntity}>
+ * <RequestLargeCard request={requestEntity}>
  *   <p>Additional content for the middle column.</p>
- * </requestLargeCard>
+ * </RequestLargeCard>
  */
-export const requestLargeCard = ({request}) => {
+export const RequestLargeCard = ({request}) => {
     return (
-        <requestCardCapsule request={request} >
+        <RequestCardCapsule request={request} >
             <Row>
                 <LeftColumn>
-                    <requestMediumCard user={user}/>
+                    <RequestMediumCard user={user}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}
                 </MiddleColumn>
             </Row>
-        </requestCardCapsule>
+        </RequestCardCapsule>
     )
 }
 
@@ -201,7 +201,7 @@ export const requestLargeCard = ({request}) => {
  * and a JSON representation of the `scalar` attribute.
  *
  * @component
- * @param {Object} props - The props for the requestScalarAttribute component.
+ * @param {Object} props - The props for the RequestScalarAttribute component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {*} [props.request.scalar] - The scalar attribute of the request entity to be displayed, if defined.
  *
@@ -211,9 +211,9 @@ export const requestLargeCard = ({request}) => {
  * // Example usage:
  * const requestEntity = { scalar: { id: 1, name: "Sample Scalar" } };
  *
- * <requestScalarAttribute request={requestEntity} />
+ * <RequestScalarAttribute request={requestEntity} />
  */
-export const requestScalarAttribute = ({request}) => {
+export const RequestScalarAttribute = ({request}) => {
     const {scalar} = request
     if (typeof scalar === 'undefined') return null
     return (
@@ -237,7 +237,7 @@ export const requestScalarAttribute = ({request}) => {
  * displays a placeholder message and a JSON representation for each item in the `vector`.
  *
  * @component
- * @param {Object} props - The props for the requestVectorAttribute component.
+ * @param {Object} props - The props for the RequestVectorAttribute component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {Array} [props.request.vector] - An array of vector items associated with the request entity.
  * Each item is expected to have a unique `id` property.
@@ -253,9 +253,9 @@ export const requestScalarAttribute = ({request}) => {
  *   ] 
  * };
  *
- * <requestVectorAttribute request={requestEntity} />
+ * <RequestVectorAttribute request={requestEntity} />
  */
-export const requestVectorAttribute = ({request}) => {
+export const RequestVectorAttribute = ({request}) => {
     const {vector} = request
     if (typeof vector === 'undefined') return null
     return (
@@ -271,7 +271,7 @@ export const requestVectorAttribute = ({request}) => {
 }
 
 const VectorAttributeQuery = `
-query requestQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+query RequestQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
     result: requestById(id: $id) {
         __typename
         id
@@ -288,7 +288,7 @@ const VectorAttributeAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("vector")
 )
 
-export const requestVectorAttributeInifite = ({request}) => { 
+export const RequestVectorAttributeInifite = ({request}) => { 
     const {vector} = request
 
     return (
@@ -301,7 +301,7 @@ export const requestVectorAttributeInifite = ({request}) => {
 }
 ```
 
-### requestPage
+### RequestPage
 
 This is a component which can be linked into react router
 
@@ -309,10 +309,10 @@ This is a component which can be linked into react router
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { requestLargeCard } from "../Components/request/requestLargeCard"
+import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
 
-const requestQueryRead = `
-query requestQueryRead($id: id) {
+const RequestQueryRead = `
+query RequestQueryRead($id: id) {
     result: requestById(id: $id) {
         __typename
         id
@@ -323,7 +323,7 @@ query requestQueryRead($id: id) {
 /**
  * An async action for executing a GraphQL query to read request entities.
  *
- * This action is created using `createAsyncGraphQLAction` with a predefined `requestQueryRead` query.
+ * This action is created using `createAsyncGraphQLAction` with a predefined `RequestQueryRead` query.
  * It can be dispatched with query variables to fetch data related to request entities from the GraphQL API.
  *
  * @constant
@@ -340,7 +340,7 @@ query requestQueryRead($id: id) {
  * // Example usage:
  * const queryVariables = { id: "12345" };
  *
- * dispatch(requestReadAsyncAction(queryVariables))
+ * dispatch(RequestReadAsyncAction(queryVariables))
  *   .then((result) => {
  *     console.log("Fetched data:", result);
  *   })
@@ -348,16 +348,16 @@ query requestQueryRead($id: id) {
  *     console.error("Error fetching data:", error);
  *   });
  */
-const requestReadAsyncAction = createAsyncGraphQLAction(requestQueryRead)
+const RequestReadAsyncAction = createAsyncGraphQLAction(RequestQueryRead)
 
 /**
  * A page content component for displaying detailed information about an request entity.
  *
- * This component utilizes `requestLargeCard` to create a structured layout and displays 
+ * This component utilizes `RequestLargeCard` to create a structured layout and displays 
  * the serialized representation of the `request` object within the card's content.
  *
  * @component
- * @param {Object} props - The properties for the requestPageContent component.
+ * @param {Object} props - The properties for the RequestPageContent component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -368,21 +368,21 @@ const requestReadAsyncAction = createAsyncGraphQLAction(requestQueryRead)
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestPageContent request={requestEntity} />
+ * <RequestPageContent request={requestEntity} />
  */
-const requestPageContent = ({request}) => {
+const RequestPageContent = ({request}) => {
     return (
-        <requestLargeCard request={request}>
-            request {JSON.stringify(request)}
-        </requestLargeCard>
+        <RequestLargeCard request={request}>
+            Request {JSON.stringify(request)}
+        </RequestLargeCard>
     )
 }
 
 /**
  * A lazy-loading component for displaying content of an request entity.
  *
- * This component is created using `createLazyComponent` and wraps `requestPageContent` to provide
- * automatic data fetching for the `request` entity. It uses the `requestReadAsyncAction` to fetch
+ * This component is created using `createLazyComponent` and wraps `RequestPageContent` to provide
+ * automatic data fetching for the `request` entity. It uses the `RequestReadAsyncAction` to fetch
  * the entity data and dynamically injects it into the wrapped component as the `request` prop.
  *
  * @constant
@@ -392,36 +392,36 @@ const requestPageContent = ({request}) => {
  * @param {string|number} props.request - The identifier of the request entity to fetch and display.
  *
  * @returns {JSX.Element} A component that fetches the `request` entity data and displays it
- * using `requestPageContent`, or shows loading and error states as appropriate.
+ * using `RequestPageContent`, or shows loading and error states as appropriate.
  *
  * @example
  * // Example usage:
  * const requestId = "12345";
  *
- * <requestPageContentLazy request={requestId} />
+ * <RequestPageContentLazy request={requestId} />
  */
-const requestPageContentLazy = createLazyComponent(requestPageContent, "request", requestReadAsyncAction)
+const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request", RequestReadAsyncAction)
 
 /**
  * A page component for displaying lazy-loaded content of an request entity.
  *
  * This component extracts the `id` parameter from the route using `useParams`,
- * constructs an `request` object, and passes it to the `requestPageContentLazy` component.
- * The `requestPageContentLazy` component handles the lazy-loading and rendering of the entity's content.
+ * constructs an `request` object, and passes it to the `RequestPageContentLazy` component.
+ * The `RequestPageContentLazy` component handles the lazy-loading and rendering of the entity's content.
  *
  * @component
  * @returns {JSX.Element} The rendered page component displaying the lazy-loaded content for the request entity.
  *
  * @example
  * // Example route setup:
- * <Route path="/request/:id" element={<requestPage />} />
+ * <Route path="/request/:id" element={<RequestPage />} />
  *
  * // Navigating to "/request/12345" will render the page for the request entity with ID 12345.
  */
-export const requestPage = () => {
+export const RequestPage = () => {
     const {id} = useParams()
     const request = {id}
-    return <requestPageContentLazy request={request} />
+    return <RequestPageContentLazy request={request} />
 }
 ```
 
@@ -429,20 +429,20 @@ export const requestPage = () => {
 
 - src
     - Components
-        - request
+        - Request
             - Scalars
-                - requestScalarAttribute.jsx
+                - RequestScalarAttribute.jsx
                 - index.js
             - Vectors
-                - requestVectorAttribute.jsx
+                - RequestVectorAttribute.jsx
                 - index.js
-            requestCardCapsule.jsx
-            requestLargeCard.jsx
-            requestLink.jsx
-            requestMediumContent.jsx
+            RequestCardCapsule.jsx
+            RequestLargeCard.jsx
+            RequestLink.jsx
+            RequestMediumContent.jsx
             index.js
         index.js
     - Pages
-        - requestPage.jsx
+        - RequestPage.jsx
         - index.js
     - index.js

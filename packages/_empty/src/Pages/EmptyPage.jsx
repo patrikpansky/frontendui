@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import { EmptyLargeCard } from "../Components/Empty/EmptyLargeCard"
 
 const EmptyQueryRead = `
-query EmptyQueryRead($id: id) {
+query EmptyQueryRead($id: UUID) {
     result: emptyById(id: $id) {
         __typename
         id

@@ -1,21 +1,70 @@
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { requestLargeCard } from "../Components/request/requestLargeCard"
+import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
 
-const requestQueryRead = `
-query requestQueryRead($id: id) {
+const RequestQueryRead = `
+query RequestQueryRead($id: UUID) {
     result: requestById(id: $id) {
+     __typename
+    id
+    name
+    histories {
+      __typename
+      id
+      name
+      form {
+        ...Form
+      }
+    }
+    form {
+      __typename
+      ...Form
+    }
+  }
+}
+
+fragment Form on FormGQLModel {
+        __typename
+      id
+      name
+      state {
         __typename
         id
-    }
+        name
+        readerslistId
+      }
+      sections {
+        __typename
+        id
+        name
+        order
+        parts {
+          __typename
+          id
+          name
+          order
+          items {
+            __typename
+            id
+            name
+            value
+            order
+            type {
+              id
+              name
+            }
+          }
+        }
+      }
+
 }
 `
 
 /**
  * An async action for executing a GraphQL query to read request entities.
  *
- * This action is created using `createAsyncGraphQLAction` with a predefined `requestQueryRead` query.
+ * This action is created using `createAsyncGraphQLAction` with a predefined `RequestQueryRead` query.
  * It can be dispatched with query variables to fetch data related to request entities from the GraphQL API.
  *
  * @constant
@@ -32,7 +81,7 @@ query requestQueryRead($id: id) {
  * // Example usage:
  * const queryVariables = { id: "12345" };
  *
- * dispatch(requestReadAsyncAction(queryVariables))
+ * dispatch(RequestReadAsyncAction(queryVariables))
  *   .then((result) => {
  *     console.log("Fetched data:", result);
  *   })
@@ -40,16 +89,16 @@ query requestQueryRead($id: id) {
  *     console.error("Error fetching data:", error);
  *   });
  */
-const requestReadAsyncAction = createAsyncGraphQLAction(requestQueryRead)
+const RequestReadAsyncAction = createAsyncGraphQLAction(RequestQueryRead)
 
 /**
  * A page content component for displaying detailed information about an request entity.
  *
- * This component utilizes `requestLargeCard` to create a structured layout and displays 
+ * This component utilizes `RequestLargeCard` to create a structured layout and displays 
  * the serialized representation of the `request` object within the card's content.
  *
  * @component
- * @param {Object} props - The properties for the requestPageContent component.
+ * @param {Object} props - The properties for the RequestPageContent component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -60,21 +109,21 @@ const requestReadAsyncAction = createAsyncGraphQLAction(requestQueryRead)
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestPageContent request={requestEntity} />
+ * <RequestPageContent request={requestEntity} />
  */
-const requestPageContent = ({request}) => {
+const RequestPageContent = ({request}) => {
     return (
-        <requestLargeCard request={request}>
-            request {JSON.stringify(request)}
-        </requestLargeCard>
+        <RequestLargeCard request={request}>
+            Request {JSON.stringify(request)}
+        </RequestLargeCard>
     )
 }
 
 /**
  * A lazy-loading component for displaying content of an request entity.
  *
- * This component is created using `createLazyComponent` and wraps `requestPageContent` to provide
- * automatic data fetching for the `request` entity. It uses the `requestReadAsyncAction` to fetch
+ * This component is created using `createLazyComponent` and wraps `RequestPageContent` to provide
+ * automatic data fetching for the `request` entity. It uses the `RequestReadAsyncAction` to fetch
  * the entity data and dynamically injects it into the wrapped component as the `request` prop.
  *
  * @constant
@@ -84,34 +133,34 @@ const requestPageContent = ({request}) => {
  * @param {string|number} props.request - The identifier of the request entity to fetch and display.
  *
  * @returns {JSX.Element} A component that fetches the `request` entity data and displays it
- * using `requestPageContent`, or shows loading and error states as appropriate.
+ * using `RequestPageContent`, or shows loading and error states as appropriate.
  *
  * @example
  * // Example usage:
  * const requestId = "12345";
  *
- * <requestPageContentLazy request={requestId} />
+ * <RequestPageContentLazy request={requestId} />
  */
-const requestPageContentLazy = createLazyComponent(requestPageContent, "request", requestReadAsyncAction)
+const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request", RequestReadAsyncAction)
 
 /**
  * A page component for displaying lazy-loaded content of an request entity.
  *
  * This component extracts the `id` parameter from the route using `useParams`,
- * constructs an `request` object, and passes it to the `requestPageContentLazy` component.
- * The `requestPageContentLazy` component handles the lazy-loading and rendering of the entity's content.
+ * constructs an `request` object, and passes it to the `RequestPageContentLazy` component.
+ * The `RequestPageContentLazy` component handles the lazy-loading and rendering of the entity's content.
  *
  * @component
  * @returns {JSX.Element} The rendered page component displaying the lazy-loaded content for the request entity.
  *
  * @example
  * // Example route setup:
- * <Route path="/request/:id" element={<requestPage />} />
+ * <Route path="/request/:id" element={<RequestPage />} />
  *
  * // Navigating to "/request/12345" will render the page for the request entity with ID 12345.
  */
-export const requestPage = () => {
+export const RequestPage = () => {
     const {id} = useParams()
     const request = {id}
-    return <requestPageContentLazy request={request} />
+    return <RequestPageContentLazy request={request} />
 }

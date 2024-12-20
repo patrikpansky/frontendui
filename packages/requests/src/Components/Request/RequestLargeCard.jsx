@@ -1,16 +1,16 @@
 import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
-import { requestCardCapsule } from "./requestCardCapsule"
-import { requestMediumCard } from "./requestMediumCard"
+import { RequestCardCapsule } from "./RequestCardCapsule"
+import { RequestMediumCard } from "./RequestMediumCard"
 
 /**
  * A large card component for displaying detailed content and layout for an request entity.
  *
- * This component wraps an `requestCardCapsule` with a flexible layout that includes multiple
- * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `requestMediumCard`
+ * This component wraps an `RequestCardCapsule` with a flexible layout that includes multiple
+ * columns. It uses a `Row` layout with a `LeftColumn` for displaying an `RequestMediumCard`
  * and a `MiddleColumn` for rendering additional children.
  *
  * @component
- * @param {Object} props - The properties for the requestLargeCard component.
+ * @param {Object} props - The properties for the RequestLargeCard component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The name or label of the request entity.
@@ -22,21 +22,21 @@ import { requestMediumCard } from "./requestMediumCard"
  * // Example usage:
  * const requestEntity = { id: 123, name: "Sample Entity" };
  * 
- * <requestLargeCard request={requestEntity}>
+ * <RequestLargeCard request={requestEntity}>
  *   <p>Additional content for the middle column.</p>
- * </requestLargeCard>
+ * </RequestLargeCard>
  */
-export const requestLargeCard = ({request}) => {
+export const RequestLargeCard = ({request}) => {
     return (
-        <requestCardCapsule request={request} >
+        <RequestCardCapsule request={request} >
             <Row>
                 <LeftColumn>
-                    <requestMediumCard request={request}/>
+                    <RequestMediumCard request={request}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}
                 </MiddleColumn>
             </Row>
-        </requestCardCapsule>
+        </RequestCardCapsule>
     )
 }

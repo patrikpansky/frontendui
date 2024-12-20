@@ -7,7 +7,7 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * and the link displays the `request` object's `name` as its content.
  * 
  * @component
- * @param {Object} props - The properties for the requestLink component.
+ * @param {Object} props - The properties for the RequestLink component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {string|number} props.request.id - The unique identifier for the request entity.
  * @param {string} props.request.name - The display name for the request entity.
@@ -16,10 +16,10 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * 
  * @example
  * // Example usage:
- * const requestEntity = { id: 123, name: "Example request Entity" };
+ * const requestEntity = { id: 123, name: "Example Request Entity" };
  * 
- * <requestLink request={requestEntity} />
+ * <RequestLink request={requestEntity} />
  */
-export const requestLink = ({request}) => {
+export const RequestLink = ({request}) => {
     return <ProxyLink to={'/request/request/view/' + request.id}>{request.name}</ProxyLink>
 }

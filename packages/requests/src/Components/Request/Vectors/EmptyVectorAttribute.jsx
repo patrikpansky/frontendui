@@ -9,7 +9,7 @@ import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
  * displays a placeholder message and a JSON representation for each item in the `vector`.
  *
  * @component
- * @param {Object} props - The props for the requestVectorAttribute component.
+ * @param {Object} props - The props for the RequestVectorAttribute component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {Array} [props.request.vector] - An array of vector items associated with the request entity.
  * Each item is expected to have a unique `id` property.
@@ -25,9 +25,9 @@ import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
  *   ] 
  * };
  *
- * <requestVectorAttribute request={requestEntity} />
+ * <RequestVectorAttribute request={requestEntity} />
  */
-export const requestVectorAttribute = ({request}) => {
+export const RequestVectorAttribute = ({request}) => {
     const {vector} = request
     if (typeof vector === 'undefined') return null
     return (
@@ -43,7 +43,7 @@ export const requestVectorAttribute = ({request}) => {
 }
 
 const VectorAttributeQuery = `
-query requestQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+query RequestQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
     result: requestById(id: $id) {
         __typename
         id
@@ -60,7 +60,7 @@ const VectorAttributeAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("vector")
 )
 
-export const requestVectorAttributeInifite = ({request}) => { 
+export const RequestVectorAttributeInifite = ({request}) => { 
     const {vector} = request
 
     return (

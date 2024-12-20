@@ -6,7 +6,7 @@
  * and a JSON representation of the `scalar` attribute.
  *
  * @component
- * @param {Object} props - The props for the requestScalarAttribute component.
+ * @param {Object} props - The props for the RequestScalarAttribute component.
  * @param {Object} props.request - The object representing the request entity.
  * @param {*} [props.request.scalar] - The scalar attribute of the request entity to be displayed, if defined.
  *
@@ -16,9 +16,9 @@
  * // Example usage:
  * const requestEntity = { scalar: { id: 1, name: "Sample Scalar" } };
  *
- * <requestScalarAttribute request={requestEntity} />
+ * <RequestScalarAttribute request={requestEntity} />
  */
-export const requestScalarAttribute = ({request}) => {
+export const RequestScalarAttribute = ({request}) => {
     const {scalar} = request
     if (typeof scalar === 'undefined') return null
     return (
