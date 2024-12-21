@@ -1,5 +1,6 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { UserLink } from "@hrbolek/uoisfrontend-ug"
 
 /**
  * A component for displaying the `history` attribute of an request entity.
@@ -34,8 +35,9 @@ export const RequestHistoryAttribute = ({request}) => {
         <>
             {histories.map(
                 item => <div key={item.id}>
-                    Probably {'<HistoryMediumCard history=\{item\} />'} <br />
-                    {JSON.stringify(item)}
+                    {item?.form?.name}, <UserLink user={item?.createdby} /> <br />
+                    {JSON.stringify(item?.createdby)}<br />
+                    {JSON.stringify(item?.state)}<br />
                 </div>
             )}
         </>
@@ -57,7 +59,7 @@ query RequestQueryRead($id: id, $where: HistoryInputFilter, $skip: Int, $limit: 
 
 const HistoryAttributeAsyncAction = createAsyncGraphQLAction(
     HistoryAttributeQuery,
-    processHistoryAttributeFromGraphQLResult("history")
+    processVectorAttributeFromGraphQLResult("history")
 )
 
 export const RequestHistoryAttributeInifite = ({request}) => { 

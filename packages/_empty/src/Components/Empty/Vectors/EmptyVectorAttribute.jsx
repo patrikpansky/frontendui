@@ -2,52 +2,52 @@ import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } fro
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 
 /**
- * A component for displaying the `vector` attribute of an empty entity.
+ * A component for displaying the `vectors` attribute of an empty entity.
  *
- * This component checks if the `vector` attribute exists on the `empty` object. If `vector` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `vector` array and
- * displays a placeholder message and a JSON representation for each item in the `vector`.
+ * This component checks if the `vectors` attribute exists on the `empty` object. If `vectors` is undefined,
+ * the component returns `null` and renders nothing. Otherwise, it maps over the `vectors` array and
+ * displays a placeholder message and a JSON representation for each item in the `vectors`.
  *
  * @component
- * @param {Object} props - The props for the EmptyVectorAttribute component.
+ * @param {Object} props - The props for the EmptyVectorsAttribute component.
  * @param {Object} props.empty - The object representing the empty entity.
- * @param {Array} [props.empty.vector] - An array of vector items associated with the empty entity.
+ * @param {Array} [props.empty.vectors] - An array of vectors items associated with the empty entity.
  * Each item is expected to have a unique `id` property.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `vector` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the `vectors` items or `null` if the attribute is undefined.
  *
  * @example
  * // Example usage:
  * const emptyEntity = { 
- *   vector: [
+ *   vectors: [
  *     { id: 1, name: "Vector Item 1" }, 
  *     { id: 2, name: "Vector Item 2" }
  *   ] 
  * };
  *
- * <EmptyVectorAttribute empty={emptyEntity} />
+ * <EmptyVectorsAttribute empty={emptyEntity} />
  */
-export const EmptyVectorAttribute = ({empty}) => {
-    const {vector} = empty
-    if (typeof vector === 'undefined') return null
+export const EmptyVectorsAttribute = ({empty}) => {
+    const {vectors} = empty
+    if (typeof vectors === 'undefined') return null
     return (
         <>
-            {vector.map(
-                item => <div key={item.id}>
-                    Probably {'<VectorMediumCard vector=\{item\} />'} <br />
-                    {JSON.stringify(item)}
+            {vectors.map(
+                vector => <div key={item.id}>
+                    Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
+                    {JSON.stringify(vector)}
                 </div>
             )}
         </>
     )
 }
 
-const VectorAttributeQuery = `
+const VectorsAttributeQuery = `
 query EmptyQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
     result: emptyById(id: $id) {
         __typename
         id
-        vector(skip: $skip, limit: $limit, where: $where) {
+        vectors(skip: $skip, limit: $limit, where: $where) {
             __typename
             id
         }
@@ -55,19 +55,19 @@ query EmptyQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int
 }
 `
 
-const VectorAttributeAsyncAction = createAsyncGraphQLAction(
-    VectorAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vector")
+const VectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    VectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
 )
 
-export const EmptyVectorAttributeInifite = ({empty}) => { 
-    const {vector} = empty
+export const EmptyVectorsAttributeInifite = ({empty}) => { 
+    const {vectors} = empty
 
     return (
         <InfiniteScroll 
             Visualiser={'VectorMediumCard'} 
             actionParams={{skip: 0, limit: 10}}
-            asyncAction={VectorAttributeAsyncAction}
+            asyncAction={VectorsAttributeAsyncAction}
         />
     )
 }

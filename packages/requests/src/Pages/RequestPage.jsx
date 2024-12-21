@@ -2,6 +2,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
+import { FormMediumCard } from "../Components/Form"
 
 const RequestQueryRead = `
 query RequestQueryRead($id: UUID!) {
@@ -18,6 +19,11 @@ query RequestQueryRead($id: UUID!) {
       }
       request {
         __typename
+        id
+        name
+      }
+      createdby { id fullname }
+      state {
         id
         name
       }
@@ -117,9 +123,12 @@ const RequestReadAsyncAction = createAsyncGraphQLAction(RequestQueryRead)
  * <RequestPageContent request={requestEntity} />
  */
 const RequestPageContent = ({request}) => {
+  const histories = request?.histories || []
+  const firstform = histories[0]?.form || {}
     return (
         <RequestLargeCard request={request}>
-            Request {JSON.stringify(request)}
+            {/* Request {JSON.stringify(request)} */}
+            <FormMediumCard form={firstform} />
         </RequestLargeCard>
     )
 }
