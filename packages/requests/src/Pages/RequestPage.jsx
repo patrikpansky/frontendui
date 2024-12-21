@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
 
 const RequestQueryRead = `
-query RequestQueryRead($id: UUID) {
+query RequestQueryRead($id: UUID!) {
     result: requestById(id: $id) {
      __typename
     id

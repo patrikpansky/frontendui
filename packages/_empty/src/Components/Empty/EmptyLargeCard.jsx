@@ -1,3 +1,4 @@
+import Row from "react-bootstrap/Row"
 import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
 import { EmptyCardCapsule } from "./EmptyCardCapsule"
 import { EmptyMediumCard } from "./EmptyMediumCard"
@@ -26,7 +27,7 @@ import { EmptyMediumCard } from "./EmptyMediumCard"
  *   <p>Additional content for the middle column.</p>
  * </EmptyLargeCard>
  */
-export const EmptyLargeCard = ({empty}) => {
+export const EmptyLargeCard = ({empty, children}) => {
     return (
         <EmptyCardCapsule empty={empty} >
             <Row>

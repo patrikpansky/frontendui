@@ -1,6 +1,7 @@
 import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
 import { RequestCardCapsule } from "./RequestCardCapsule"
 import { RequestMediumCard } from "./RequestMediumCard"
+import Row from "react-bootstrap/Row"
 
 /**
  * A large card component for displaying detailed content and layout for an request entity.
@@ -26,7 +27,7 @@ import { RequestMediumCard } from "./RequestMediumCard"
  *   <p>Additional content for the middle column.</p>
  * </RequestLargeCard>
  */
-export const RequestLargeCard = ({request}) => {
+export const RequestLargeCard = ({request, children}) => {
     return (
         <RequestCardCapsule request={request} >
             <Row>

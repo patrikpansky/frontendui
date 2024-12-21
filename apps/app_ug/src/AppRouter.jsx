@@ -7,7 +7,7 @@ import { UserPage } from "@hrbolek/uoisfrontend-ug";
 import { UserStudiesPage } from "@hrbolek/uoisfrontend-granting";
 import { GroupPage } from "@hrbolek/uoisfrontend-ug";
 import { AdmissionPage } from "../../../packages/admissions/src";
-import { RequestPage } from "../../../packages/requests/src/Pages/RequestPage";
+import { RequestPage } from "../../../packages/requests/src";
 
 const prefix = "/ug"
 export const Routes = [
