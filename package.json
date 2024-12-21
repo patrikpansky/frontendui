@@ -14,7 +14,9 @@
     "packages/*"
   ],
   "devDependencies": {
-    "jsdoc": "^4.0.4"
+    "jsdoc": "^4.0.4",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-pwa": "^0.21.1"
   },
   "dependencies": {
     "classnames": "^2.5.1",

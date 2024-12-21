@@ -1,5 +1,5 @@
 import { CardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PersonFill } from "react-bootstrap-icons"
+import { FileEarmark, FileEarmarkRichtextFill, PersonFill } from "react-bootstrap-icons"
 import { RequestLink } from "./RequestLink"
 
 /**
@@ -29,7 +29,7 @@ import { RequestLink } from "./RequestLink"
  *   <Button variant="primary">Click Me</Button>
  * </RequestCardCapsule>
  */
-export const RequestCardCapsule = ({request, children, title=<><PersonFill /> <RequestLink request={request} /></>}) => {
+export const RequestCardCapsule = ({request, children, title=<><FileEarmarkRichtextFill /> <RequestLink request={request} /></>}) => {
     return (
         <CardCapsule title={title}>
             {children}

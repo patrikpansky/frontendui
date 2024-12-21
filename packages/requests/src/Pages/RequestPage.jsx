@@ -16,6 +16,11 @@ query RequestQueryRead($id: UUID!) {
       form {
         ...Form
       }
+      request {
+        __typename
+        id
+        name
+      }
     }
     form {
       __typename

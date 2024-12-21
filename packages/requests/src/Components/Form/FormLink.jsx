@@ -21,5 +21,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * <FormLink form={formEntity} />
  */
 export const FormLink = ({form}) => {
-    return <ProxyLink to={'/form/form/view/' + form.id}>{form.name}</ProxyLink>
+    return <ProxyLink to={'/requests/form/view/' + form.id}>{form.name}</ProxyLink>
 }

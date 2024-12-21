@@ -2,6 +2,7 @@ import { PersonFill } from "react-bootstrap-icons"
 import { RequestLink } from "./RequestLink"
 import { RequestCardCapsule } from "./RequestCardCapsule"
 import { RequestMediumContent } from "./RequestMediumContent"
+import { PageItem } from "react-bootstrap"
 
 /**
  * A card component that displays detailed content for an request entity.
@@ -30,7 +31,7 @@ import { RequestMediumContent } from "./RequestMediumContent"
  */
 export const RequestMediumCard = ({request, children}) => {
     return (
-        <RequestCardCapsule title={<><PersonFill /> <RequestLink request={request} /></>}>
+        <RequestCardCapsule request={request} >
             <RequestMediumContent request={request}>
                 {children}
             </RequestMediumContent>

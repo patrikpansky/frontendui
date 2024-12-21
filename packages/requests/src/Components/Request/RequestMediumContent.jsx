@@ -1,3 +1,5 @@
+import { RequestHistoryAttribute } from "./Vectors/RequestHistoryAttribute"
+
 /**
  * A component that displays medium-level content for an request entity.
  *
@@ -21,9 +23,10 @@
  *   <p>Additional information about the entity.</p>
  * </RequestMediumContent>
  */
-export const RequestMediumContent = ({request, children}) => {
+export const RequestMediumContent = ({request, children}) => {   
     return (
         <>
+            <RequestHistoryAttribute request={request} /><br />
             RequestMediumContent <br />
             {JSON.stringify(request)}
             {children}
