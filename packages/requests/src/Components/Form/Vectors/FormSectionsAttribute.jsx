@@ -1,5 +1,6 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { SectionMediumContent } from "../../Section/SectionMediumContent"
 
 /**
  * A component for displaying the `section` attribute of an form entity.
