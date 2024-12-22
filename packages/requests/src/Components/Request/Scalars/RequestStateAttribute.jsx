@@ -6,6 +6,7 @@ query StateReadQuery($id: UUID!) {
   result: stateById(id: $id)  {
   	__typename
     id  
+    name
     targets {
       __typename
       id
@@ -42,11 +43,20 @@ const StateReadAsyncAction = createAsyncGraphQLAction(StateReadQuery)
  * <RequestStateAttribute request={requestEntity} />
  */
 export const RequestStateAttribute = ({request}) => {
-    const {state} = request
+    const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
     if (typeof state === 'undefined') return null
+    
     const [_state] = useFreshItem(state, StateReadAsyncAction)
     return (
         <>
+            <span className="btn btn-sm btn-info">{state?.name}A</span>
+            {(state?.targets || []).map(
+                transition => {
+                    return (
+                        <span className="btn btn-sm btn-outline-success">{transition?.name} ({transition?.target?.name})</span>
+                    )
+                }
+            )}
             Probably {'<StateMediumCard state=\{state\} />'} <br />
             {JSON.stringify(_state)}
         </>

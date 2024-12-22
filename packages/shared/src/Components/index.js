@@ -16,3 +16,5 @@ export * from './SelectInput'
 
 export * from './LeftColumn'
 export * from './MiddleColumn'
+
+export * from './LoadingSpinner'

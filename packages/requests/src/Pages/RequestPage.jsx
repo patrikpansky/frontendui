@@ -129,16 +129,15 @@ const RequestPageContent = ({request}) => {
   const histories = request?.histories || []
   const firstform = histories[0]?.form || {}
     return (
-        <>
-        Request {JSON.stringify(request)}
-        </>
-        // <RequestLargeCard request={request}>
-            
-        //     <RequestStateAttribute request={request} />
-        //     <FormMediumCard form={firstform}>
-        //         <FormSectionAttribute form={firstform} />
-        //     </FormMediumCard>
-        // </RequestLargeCard>
+        // <>
+        // Request {JSON.stringify(request)}
+        // </>
+        <RequestLargeCard request={request}>
+            <RequestStateAttribute request={request} />
+            <FormMediumCard form={firstform}>
+                <FormSectionAttribute form={firstform} />
+            </FormMediumCard>
+        </RequestLargeCard>
     )
 }
 
