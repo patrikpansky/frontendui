@@ -3,6 +3,8 @@ import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
 import { FormMediumCard } from "../Components/Form"
+import { FormSectionAttribute } from "../Components/Form/Vectors/FormSectionsAttribute"
+import { RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
 
 const RequestQueryRead = `
 query RequestQueryRead($id: UUID!) {
@@ -57,6 +59,7 @@ fragment Form on FormGQLModel {
           order
           items {
             __typename
+            lastchange
             id
             name
             value
@@ -126,10 +129,16 @@ const RequestPageContent = ({request}) => {
   const histories = request?.histories || []
   const firstform = histories[0]?.form || {}
     return (
-        <RequestLargeCard request={request}>
-            {/* Request {JSON.stringify(request)} */}
-            <FormMediumCard form={firstform} />
-        </RequestLargeCard>
+        <>
+        Request {JSON.stringify(request)}
+        </>
+        // <RequestLargeCard request={request}>
+            
+        //     <RequestStateAttribute request={request} />
+        //     <FormMediumCard form={firstform}>
+        //         <FormSectionAttribute form={firstform} />
+        //     </FormMediumCard>
+        // </RequestLargeCard>
     )
 }
 

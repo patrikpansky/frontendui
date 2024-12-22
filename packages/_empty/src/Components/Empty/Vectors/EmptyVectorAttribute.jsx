@@ -28,12 +28,12 @@ import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
  * <EmptyVectorsAttribute empty={emptyEntity} />
  */
 export const EmptyVectorsAttribute = ({empty}) => {
-    const {vectors} = empty
+    const { vectors } = empty
     if (typeof vectors === 'undefined') return null
     return (
         <>
             {vectors.map(
-                vector => <div key={item.id}>
+                vector => <div vector={item.id}>
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     {JSON.stringify(vector)}
                 </div>

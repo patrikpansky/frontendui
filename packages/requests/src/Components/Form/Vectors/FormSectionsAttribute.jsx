@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { InfiniteScroll, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { SectionMediumContent } from "../../Section/SectionMediumContent"
+import { SectionPartsAttribute } from "../../Section/Vectors/SectionPartsAttribute"
 
 /**
  * A component for displaying the `section` attribute of an form entity.
@@ -29,16 +31,28 @@ import { SectionMediumContent } from "../../Section/SectionMediumContent"
  * <FormSectionAttribute form={formEntity} />
  */
 export const FormSectionAttribute = ({form}) => {
-    const {section} = form
-    if (typeof section === 'undefined') return null
+    const sections = ([...form?.sections || []]).sort((a,b) => a?.order - b?.order)
+    if (typeof sections === 'undefined') return null
+    const [index, setIndex] = useState(0)
+    const sectionToRender = sections[index]
     return (
-        <>
-            {section.map(
-                item => <div key={item.id}>
-                    Probably {'<SectionMediumCard section=\{item\} />'} <br />
-                    {JSON.stringify(item)}
-                </div>
+        <>  
+
+            <div className='btn-group' role='group' aria-label="Sekce formuláře">
+            {sections.map(
+                (section, _index) => 
+                    <button key={section.id}
+                        type={"button"} 
+                        onClick={() => setIndex(_index)}
+                        className={"btn btn-sm " + (index === _index? "btn-primary": "btn-outline-success")} 
+                        >
+                            {section?.name}
+                    </button>
             )}
+            </div>
+            <LazyRender>
+                <SectionPartsAttribute section={sectionToRender} />
+            </LazyRender>
         </>
     )
 }

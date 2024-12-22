@@ -24,8 +24,6 @@
 export const FormMediumContent = ({form, children}) => {
     return (
         <>
-            FormMediumContent <br />
-            {JSON.stringify(form)}
             {children}
         </>
     )

@@ -1,7 +1,7 @@
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
-export const UserMediumContent = ({user}) => {
+export const UserMediumContent = ({user, children}) => {
     return (
         <>
         <Row>
@@ -34,6 +34,7 @@ export const UserMediumContent = ({user}) => {
                 <a href="tel:973211111">973 211 111</a>
             </Col>
         </Row>
+        {children}
     </>
     )
 }
