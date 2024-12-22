@@ -50,51 +50,78 @@ import { useDispatch, useSelector } from "react-redux"
  *     );
  * };
  */
-export const useFreshItem = ({id, ...queryVariables}, AsyncAction) => {
-    //const id = oldItemWithId.id
-    // console.log("useFreshItem", id)
-    
-    const dispatch = useDispatch()
-    const items = useSelector(state => state["items"])
+
+export const useFreshItem = ({ id, ...queryVariables }, AsyncAction) => {
+    const dispatch = useDispatch();
+    const items = useSelector(state => state["items"]);
+
     if (!items) {
-        throw Error("bad use of store and useFreshItem hook, checks that store state has items attribute")
+        throw Error(
+            "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useFreshItem."
+        );
     }
-    const result = items[id]
+
+    const result = items[id];
 
     const [_state, _setState] = useState({
-        resultPromise: new Promise(()=>{}),
+        resultPromise: null,
         errors: null,
         data: null,
         json: null,
         loading: false,
         done: false
-    })
+    });
 
-    useEffect(
-        () => {
-            let resultPromise = null
-            const fetcher = async () => {
-                const dispatchResult = await dispatch(AsyncAction({id, ...queryVariables}), null)
-                const {data, errors} = dispatchResult
-                const newState = {
-                    resultPromise: resultPromise,
-                    errors, data, json: dispatchResult, loading: false, done: true}
-                _setState(newState)
-                return dispatchResult
-            }
-            resultPromise = fetcher()
-            const newState = {
-                resultPromise: resultPromise,
-                errors: null,
-                data: null,
-                json: null,
+    useEffect(() => {
+        let isMounted = true; // Track if the component is mounted
+        const fetchItem = async () => {
+            _setState(prevState => ({
+                ...prevState,
                 loading: true,
+                errors: null,
                 done: false
+            }));
+
+            try {
+                const dispatchResult = await dispatch(AsyncAction({ id, ...queryVariables }));
+                const { data, errors } = dispatchResult;
+
+                if (isMounted) {
+                    _setState({
+                        resultPromise: Promise.resolve(dispatchResult),
+                        errors,
+                        data,
+                        json: dispatchResult,
+                        loading: false,
+                        done: true
+                    });
+                }
+                return dispatchResult;
+            } catch (error) {
+                if (isMounted) {
+                    _setState({
+                        resultPromise: Promise.reject(error),
+                        errors: error,
+                        data: null,
+                        json: null,
+                        loading: false,
+                        done: false
+                    });
+                }
+                console.error("useFreshItem: Error fetching item", error);
             }
-            _setState(newState)
-        }
-        ,[id, AsyncAction, dispatch] // this is ok, if ...queryVariables change, useEffect will not happen which is we wanted
-    )
-    //console.log("useFresh", _state)
-    return [result, _state.resultPromise, _state]
-}
+        };
+
+        const resultPromise = fetchItem();
+        _setState(prevState => ({
+            ...prevState,
+            resultPromise
+        }));
+
+        return () => {
+            isMounted = false; // Cleanup on component unmount
+        };
+    }, [id, AsyncAction, dispatch]);
+
+    return [result, _state.resultPromise, _state];
+};

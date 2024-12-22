@@ -166,10 +166,34 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
             throw new Error("createAsyncGraphQLAction: 'query_variables' must be a valid JSON object.");
         }
 
+        // Validate jsonData for known errors
+        if (jsonData.hasOwnProperty("error")) {
+            return async (dispatch) => {
+                console.warn("createAsyncGraphQLAction: 'jsonData' contains an error.", jsonData.error);
+                // Optionally dispatch an error-specific action
+                dispatch({
+                    type: "ASYNC_GRAPHQL_ACTION_ERROR",
+                    payload: jsonData.error,
+                });
+                return Promise.reject(new Error(jsonData.error));
+            };
+        }
+
         return async (dispatch, getState, next = (jsonResult) => jsonResult) => {
             try {
                 // Fetch the result from the GraphQL query
                 const jsonResult = await unparametrizedFetch(jsonData);
+
+                // Check if the server response contains errors
+                if (jsonResult.errors && Array.isArray(jsonResult.errors)) {
+                    console.error("createAsyncGraphQLAction: Server returned errors.", jsonResult.errors);
+                    // Optionally dispatch an error action
+                    dispatch({
+                        type: "ASYNC_GRAPHQL_ACTION_SERVER_ERROR",
+                        payload: jsonResult.errors,
+                    });
+                    return Promise.reject(jsonResult.errors);
+                }
 
                 // Middleware chain
                 const chain = middlewares.reduceRight(
@@ -185,9 +209,15 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
                 return chain(jsonResult);
             } catch (error) {
                 console.error("createAsyncGraphQLAction: Error during async action execution", error);
+                // Dispatch a general error action
+                dispatch({
+                    type: "ASYNC_GRAPHQL_ACTION_GENERAL_ERROR",
+                    payload: error.message,
+                });
                 throw error;
             }
         };
     };
 };
+
 
