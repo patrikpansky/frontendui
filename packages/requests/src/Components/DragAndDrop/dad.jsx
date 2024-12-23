@@ -143,11 +143,11 @@ export const DragableEnvelopContent = ({provided, snapshot, children, getItemSty
  *   </Droppable>
  * </DragDropContext>
  */
-export const DragableEnvelop = ({draggableId, index, children}) => {
+export const DragableEnvelop = ({draggableId, index, children, getItemStyle=getItemStyleDefault}) => {
     return (
         <Draggable draggableId={draggableId} index={index}>
             {(provided, snapshot) => 
-                <DragableEnvelopContent provided={provided} snapshot={snapshot}>
+                <DragableEnvelopContent provided={provided} snapshot={snapshot} getItemStyle={getItemStyle} >
                     {children}
                 </DragableEnvelopContent>
             }
@@ -233,10 +233,10 @@ export const DroppableContainerContent = ({provided, snapshot, children, getList
  *   </DroppableContainer>
  * </DragDropContext>
  */
-export const DroppableContainer = ({droppableId, children, direction="horizontal"}) => { 
+export const DroppableContainer = ({droppableId, children, direction="horizontal", getListStyle=getListStyleDefault}) => { 
     return (
         <Droppable key={droppableId} droppableId={droppableId} direction={direction}>
-            {(provided, snapshot) => <DroppableContainerContent provided={provided} snapshot={snapshot}>
+            {(provided, snapshot) => <DroppableContainerContent provided={provided} snapshot={snapshot} getListStyle={getListStyle}>
                     {children}
                 </DroppableContainerContent>
             }

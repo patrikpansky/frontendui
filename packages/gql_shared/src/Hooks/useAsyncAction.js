@@ -70,10 +70,18 @@ export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: fa
     const fetchData = async (fetchParams) => {
         const newParams = fetchParams?{...lastParams, ...fetchParams}:lastParams
         if (fetchParams) setLastParams(newParams)
-        resource.fetch(async () => {
-            const actionResult = await dispatch(AsyncAction(newParams));
-            setDispatchResult(actionResult); // Save the result of dispatch
-            return actionResult;
+        return new Promise((resolve, reject) => {
+            resource.fetch(async () => {
+                try {
+                    const actionResult = await dispatch(AsyncAction(newParams));
+                    setDispatchResult(actionResult); // Save the result of dispatch
+                    resolve(actionResult); // Resolve the promise with the action result
+                    return actionResult;
+                } catch (error) {
+                    reject(error); // Reject the promise in case of an error
+                    throw error;
+                }
+            });
         });
     };
 

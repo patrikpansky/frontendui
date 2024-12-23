@@ -52,11 +52,13 @@ fragment Form on FormGQLModel {
       sections {
         __typename
         id
+        lastchange
         name
         order
         parts {
           __typename
           id
+          lastchange
           name
           order
           items {
@@ -177,7 +179,7 @@ const styles = {
   textDividerLine: {
       flex: 1,
       borderTop: "2px solid #6c757d",
-      margin: "0 0.5rem",
+      // margin: "0 0.5rem",
       opacity: 0.7,
   },
 };
@@ -191,7 +193,7 @@ const Divider = ({ type, text }) => {
       return (
           <div style={styles.textDividerContainer}>
               <div style={styles.textDividerLine}></div>
-              <span>{text}</span>
+              <span style={{"margin": "0 0.5rem"}}>{text}</span>
               <div style={styles.textDividerLine}></div>
           </div>
       );

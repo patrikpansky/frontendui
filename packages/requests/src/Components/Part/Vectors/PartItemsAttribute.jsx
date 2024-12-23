@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
+
 import { Item } from "../../Item/Item"
 
 /**
@@ -28,7 +31,7 @@ import { Item } from "../../Item/Item"
  *
  * <PartItemsAttribute part={partEntity} />
  */
-export const PartItemsAttribute = ({part}) => {
+export const PartItemsAttributeView = ({part}) => {
     const items = ([...part?.items || []]).sort((a,b) => a?.order - b?.order)
 
     if (typeof items === 'undefined') return null
@@ -41,6 +44,52 @@ export const PartItemsAttribute = ({part}) => {
             )}
         </>
     )
+}
+
+
+const grid = 8
+const getListStyleDefault = (provided, snapshot) => ({
+    display: "flex",
+    // flexDirection: snapshot.isDraggingOver ?"column":"row", // Stack items horizontaly
+    flexDirection: "column", // Stack items horizontaly
+    gap: `${grid}px`, // Add consistent spacing
+    background: snapshot.isDraggingOver ? "lightblue" : "transparent",
+    // padding: `${grid}px`,
+    borderRadius: "4px",
+    // minHeight: "100px", // Ensure droppable area has a minimum height
+    transition: "background-color 0.3s ease",
+});
+
+
+
+export const PartItemsAttribute = ({part}) => {
+    const items = ([...part?.items || []]).sort((a,b) => a?.order - b?.order)
+
+    if (typeof items === 'undefined') return null
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedItems = Array.from(items);
+        const [movedItem] = reorderedItems.splice(result.source.index, 1);
+        reorderedItems.splice(result.destination.index, 0, movedItem);
+        console.log("PartItemsAttribute.onDragEnd", reorderedItems)
+        // setItems(reorderedItems);
+    };
+
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            <DroppableContainer droppableId={`items-${part.id}`} getListStyle={getListStyleDefault}>
+                {items.map((item, index) => (
+                    <DragableEnvelop key={item.id} index={index} draggableId={item.id}>
+                        {/* <div style={{ padding: "8px", background: "white", borderRadius: "4px" }}> */}
+                            <Item item={item} />
+                        {/* </div> */}
+                    </DragableEnvelop>
+                ))}
+            </DroppableContainer>
+        </DragDropContext>
+    );
 }
 
 const ItemsAttributeQuery = `

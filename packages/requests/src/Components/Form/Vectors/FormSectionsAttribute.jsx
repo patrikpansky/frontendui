@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { SectionMediumContent } from "../../Section/SectionMediumContent"
 import { SectionPartsAttribute } from "../../Section/Vectors/SectionPartsAttribute"
@@ -78,15 +78,118 @@ const ButtonLike = ({section, children, ...props}) => {
 
 const SectionUpdateMutation = 
 `
-
+mutation SectionUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $order: Int) {
+  result: formSectionUpdate(section: {id: $id, lastchange: $lastchange, name: $name, order: $order}) {
+    id
+    msg
+    section {
+      __typename
+      id
+      form {
+        id
+        request { 
+          id
+        }
+      }
+    }
+  }
+}
 `
 
+const RequestQueryRead = `
+query RequestQueryRead($id: UUID!) {
+    result: requestById(id: $id) {
+     __typename
+    id
+    name
+    histories {
+      __typename
+      id
+      name
+      state { name }
+      form {
+        ...Form
+      }
+      request {
+        __typename
+        id
+        name
+      }
+      createdby { id fullname }
+      state {
+        id
+        name
+      }
+      lastchange
+    }
+    form {
+      __typename
+      ...Form
+    }
+  }
+}
+
+fragment Form on FormGQLModel {
+        __typename
+      id
+      name
+      state {
+        __typename
+        id
+        name
+        readerslistId
+      }
+      sections {
+        __typename
+        id
+        lastchange
+        name
+        order
+        parts {
+          __typename
+          id
+          lastchange
+          name
+          order
+          items {
+            __typename
+            lastchange
+            id
+            name
+            value
+            order
+            type {
+              id
+              name
+            }
+          }
+        }
+      }
+}
+`
+
+const RequestReadAsyncAction = createAsyncGraphQLAction(RequestQueryRead)
+
+const SectionUpdateAsyncAction = createAsyncGraphQLAction(
+    SectionUpdateMutation,
+    (jsonResult) => (dispatch, getState, next) => {
+        console.log("SectionUpdateAsyncAction", jsonResult)
+        const result = jsonResult?.data?.result
+        console.log("SectionUpdateAsyncAction", result)
+        if (result) {
+            const request = result?.section?.form?.request
+            console.log("SectionUpdateAsyncAction", request)
+            if (request) return next(request)
+        }
+    },
+    // RequestReadAsyncAction
+)
 
 export const FormSectionAttribute = ({ form }) => {
     // Sort and initialize sections
-    const [sections, setSections] = useState(
-        [...(form?.sections || [])].sort((a, b) => a?.order - b?.order)
-    );
+    const sections = [...(form?.sections || [])].sort((a, b) => a?.order - b?.order)
+    const {error: errorSection, loading: loadingSection, fetch: updateSection} = useAsyncAction(SectionUpdateAsyncAction, {}, {deferred: true})
+    const {error: errorRequest, loading: loadingRequest, fetch: refreshRequest} = useAsyncAction(RequestReadAsyncAction, {}, {deferred: true})
     const [index, setIndex] = useState(0);
 
     const onDragEnd = (result) => {       
@@ -98,9 +201,25 @@ export const FormSectionAttribute = ({ form }) => {
 
         // Optionally update the "order" field if it's needed
         // reorderedSections.forEach((section, idx) => (section.order = idx + 1));
-
-        setSections(reorderedSections);
-
+        const reorder = async (reorderedSections) => {
+            const futures = reorderedSections.map(
+                (section, idx) => {
+                    // (section.order = idx + 1)
+                    return updateSection({...section, order: idx + 1})
+            });
+            const updates = await Promise.all(futures)
+            console.log("updates", updates)
+            return updates
+        }
+        const reorderAndUpdateRequest = async (reorderedSections) => {
+            const results = await reorder(reorderedSections)
+            const request = results[0]
+            console.log("reorderAndUpdateRequest", results)
+            console.log("reorderAndUpdateRequest", request)
+            refreshRequest(request)
+        }
+        // setSections(reorderedSections);
+        reorderAndUpdateRequest(reorderedSections)
         // Adjust active index if the dragged item is the currently selected section
         if (index === result.source.index) {
             setIndex(result.destination.index);
@@ -111,8 +230,12 @@ export const FormSectionAttribute = ({ form }) => {
 
     return (
         <>
+            {loadingSection && "Ukládám sekci"}
+            {loadingRequest && "Aktualizuji sekci"}
+            {errorSection && "Chyba při ukládání sekce"}
+            {errorRequest && "Chyba při aktualizaci"}
             <DragDropContext onDragEnd={onDragEnd}>
-                <DroppableContainer droppableId="library">
+                <DroppableContainer droppableId="library" >
                     {sections.map((section, _index) => (
                         <DragableEnvelop key={section.id} index={_index} draggableId={section.id} >
                             <ButtonLike 

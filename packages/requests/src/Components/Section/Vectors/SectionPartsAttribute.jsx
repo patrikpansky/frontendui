@@ -1,7 +1,59 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
+import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
 
+const styles = {
+    divider: {
+        border: "none",
+        height: "2px",
+        backgroundColor: "#6c757d",
+        margin: "1rem 0",
+        opacity: 0.7,
+    },
+    dottedDivider: {
+        border: "0",
+        borderTop: "2px dotted #6c757d",
+        margin: "1.5rem 0",
+        opacity: 0.8,
+    },
+    textDividerContainer: {
+      display: "flex",
+      alignItems: "center",
+      color: "#6c757d",
+      textTransform: "uppercase",
+      fontSize: "0.85rem",
+      fontWeight: "bold",
+      letterSpacing: "0.05em",
+      marginTop: "1.5rem",
+      marginBottom: "1.5rem",
+    },
+    textDividerLine: {
+        flex: 1,
+        borderTop: "2px solid #6c757d",
+        // margin: "0 0.5rem",
+        opacity: 0.7,
+    },
+  };
+  
+  const Divider = ({ type, text }) => {
+    if (type === "dotted") {
+        return <hr style={styles.dottedDivider} />;
+    }
+  
+    if (type === "text") {
+        return (
+            <div style={styles.textDividerContainer}>
+                <div style={styles.textDividerLine}></div>
+                <span style={{"margin": "0 0.5rem"}}>{text}</span>
+                <div style={styles.textDividerLine}></div>
+            </div>
+        );
+    }
+  
+    return <hr style={styles.divider} />;
+  };
+  
 /**
  * A component for displaying the `parts` attribute of an section entity.
  *
@@ -28,19 +80,68 @@ import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
  *
  * <SectionPartsAttribute section={sectionEntity} />
  */
-export const SectionPartsAttribute = ({section}) => {
+export const SectionPartsAttributeView = ({section}) => {
     const parts = ([...section?.parts || []]).sort((a,b) => a?.order - b?.order)
     if (typeof parts === 'undefined') return null
     return (
         <>
             {parts.map(
                 part => <div key={part.id}>
+                    <Divider type="text" text={part?.name || "Sekce"} />
                     <PartItemsAttribute part={part} />
                 </div>
             )}
         </>
     )
 }
+
+
+const grid = 8
+const getListStyleDefault = (provided, snapshot) => ({
+    // display: "flex",
+    // flexDirection: snapshot.isDraggingOver ?"column":"row", // Stack items horizontaly
+    // flexDirection: "row", // Stack items horizontaly
+    gap: `${grid}px`, // Add consistent spacing
+    background: snapshot.isDraggingOver ? "lightblue" : "transparent",
+    // padding: `${grid}px`,
+    borderRadius: "4px",
+    // minHeight: "100px", // Ensure droppable area has a minimum height
+    transition: "background-color 0.3s ease",
+});
+
+
+export const SectionPartsAttribute = ({section}) => {
+    const parts = ([...section?.parts || []]).sort((a,b) => a?.order - b?.order)
+    if (typeof parts === 'undefined') return null
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedParts = Array.from(parts);
+        const [movedPart] = reorderedParts.splice(result.source.index, 1);
+        reorderedParts.splice(result.destination.index, 0, movedPart);
+
+        // setParts(reorderedParts);
+    };
+
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
+            <DroppableContainer droppableId="parts" direction="vertical" getListStyle={getListStyleDefault}>
+                {parts.map((part, index) => (
+                    <DragableEnvelop key={part.id} index={index} draggableId={part.id}>
+                        <div style={{ padding: "8px", background: "white", borderRadius: "4px" }}>
+                            <Divider type="text" text={part?.name || "Část"} />
+                            <PartItemsAttribute part={part} />
+                        </div>
+                    </DragableEnvelop>
+                ))}
+            </DroppableContainer>
+        </DragDropContext>
+    );
+}
+
+
+
 
 const PartsAttributeQuery = `
 query SectionQueryRead($id: id, $where: PartInputFilter, $skip: Int, $limit: Int) {
