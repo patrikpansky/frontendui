@@ -63,7 +63,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: fa
     const result = items[id];
 
     // Suspense resource
-    const [resource, setResource] = useState(() => createResource());
+    const [resource, setResource] = useState(() => createResource(deferred?"success":"pending"));
     const [lastParams, setLastParams] = useState(queryVariables);
     const [dispatchResult, setDispatchResult] = useState(null);
 
@@ -95,8 +95,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: fa
 };
 
 // Helper to create a Suspense-compatible resource
-const createResource = () => {
-    let status = "pending";
+const createResource = (initialStatus="pending") => {
+    let status = initialStatus;
     let result;
     let suspender;
 
