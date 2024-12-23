@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useFreshItem } from "@hrbolek/uoisfrontend-gql-shared";
+import { useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared";
 import { LoadingSpinner } from "../Components";
 import { ErrorHandler } from "../Components/ErrorHandler";
 
@@ -55,7 +55,8 @@ import { ErrorHandler } from "../Components/ErrorHandler";
 export const createLazyComponent = (WrappedComponent, entityName, asyncAction) => {
     function LazyComponent(props) {
         const entityValue = props[entityName];
-        const [result, promise, state] = useFreshItem(entityValue, asyncAction);
+        // const [result, promise, state] = useFreshItem(entityValue, asyncAction);
+        const { entity: result, loading, error } = useAsyncAction(asyncAction, entityValue)
 
         if (result) {
             const wrappedProps = {
@@ -66,17 +67,17 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
             return (
                 <>
                     <WrappedComponent {...wrappedProps} />
-                    {state.loading && <LoadingSpinner text="Aktualizuji..." />}
+                    {loading && <LoadingSpinner text="Aktualizuji..." />}
                 </>
             );
         }
 
-        if (state.loading) {
+        if (loading) {
             return <LoadingSpinner text="Nahrávám..." />;
         }
 
-        if (state.errors) {
-            return <ErrorHandler errors={state.errors} />;
+        if (error) {
+            return <ErrorHandler errors={error} />;
         }
 
         return (

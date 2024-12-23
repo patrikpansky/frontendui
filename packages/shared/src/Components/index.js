@@ -18,3 +18,4 @@ export * from './LeftColumn'
 export * from './MiddleColumn'
 
 export * from './LoadingSpinner'
+export * from './ErrorHandler'

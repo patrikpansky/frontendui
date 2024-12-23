@@ -1,4 +1,6 @@
-import { createAsyncGraphQLAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
+import { createAsyncGraphQLAction, useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
+import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
 
 const StateReadQuery = 
 `
@@ -46,19 +48,22 @@ export const RequestStateAttribute = ({request}) => {
     const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
     if (typeof state === 'undefined') return null
     
-    const [_state] = useFreshItem(state, StateReadAsyncAction)
+    // const [_state] = useFreshItem(state, StateReadAsyncAction)
+    const { entity: _state, error, loading } = useAsyncAction(StateReadAsyncAction, state)
+    if (error) return <ErrorHandler errors={error} />
+    if (loading) return <LoadingSpinner text="Nahrávám stavy"/>
     return (
         <>
-            <span className="btn btn-sm btn-info">{state?.name}A</span>
-            {(state?.targets || []).map(
+            <span className="btn btn-lg btn-info">{_state?.name}</span>
+            {(_state?.targets || []).map(
                 transition => {
                     return (
-                        <span className="btn btn-sm btn-outline-success">{transition?.name} ({transition?.target?.name})</span>
+                        <span key={transition.id} className="btn btn-lg btn-outline-success">{transition?.name} ({transition?.target?.name})</span>
                     )
                 }
             )}
-            Probably {'<StateMediumCard state=\{state\} />'} <br />
-            {JSON.stringify(_state)}
+            {/* <br/>Probably {'<StateMediumCard state=\{state\} />'} <br />
+            {JSON.stringify(_state)} */}
         </>
     )
 }
