@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createAsyncGraphQLAction, updateItemsFromGraphQLResult, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
+import { createAsyncGraphQLAction, updateItemsFromGraphQLResult, useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
 import { CreateDelayer, createLazyComponent, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { UserLink, UserMediumCard, UserMediumContent } from "@hrbolek/uoisfrontend-ug"
 
@@ -123,11 +123,13 @@ const ItemUpdateAsyncAction = createAsyncGraphQLAction(ItemUpdateQuery,
 
 export const LargeText = ({item, value}) => {
     const [_value, setValue] = useState(value)
+    const { fetch } = useAsyncAction(ItemUpdateAsyncAction, item, {deferred: true})
     const [delayUpdate] = useState(()=>CreateDelayer())
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     const onChange = (e) => {
         const value = e.target.value
-        delayUpdate(() => dispatch(ItemUpdateAsyncAction({...item, value: value})))
+        // delayUpdate(() => dispatch(ItemUpdateAsyncAction({...item, value: value})))
+        delayUpdate(() => fetch({value: value}))
         setValue(value)
     }
     return (

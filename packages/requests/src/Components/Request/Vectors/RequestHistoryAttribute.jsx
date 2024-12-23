@@ -34,10 +34,12 @@ export const RequestHistoryAttribute = ({request}) => {
     return (
         <>
             {histories.map(
-                item => <div key={item.id}>
-                    {item?.form?.name}, <UserLink user={item?.createdby} /> <br />
-                    {JSON.stringify(item?.createdby)}<br />
-                    {JSON.stringify(item?.state)}<br />
+                history => <div key={history.id}>
+                    {history?.state?.name}, {history?.form?.name}, <UserLink user={history?.createdby} />, {history?.name}, {history?.lastchange}
+                    {/* <br />
+                    {JSON.stringify(history)}<br /> */}
+                    {/* {JSON.stringify(history?.createdby)}<br />
+                    {JSON.stringify(history?.state)}<br /> */}
                 </div>
             )}
         </>

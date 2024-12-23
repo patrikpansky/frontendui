@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
 import { FormMediumCard } from "../Components/Form"
 import { FormSectionAttribute } from "../Components/Form/Vectors/FormSectionsAttribute"
-import { RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
+import { RequestCurrentState, RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
 
 const RequestQueryRead = `
 query RequestQueryRead($id: UUID!) {
@@ -16,6 +16,7 @@ query RequestQueryRead($id: UUID!) {
       __typename
       id
       name
+      state { name }
       form {
         ...Form
       }
@@ -29,6 +30,7 @@ query RequestQueryRead($id: UUID!) {
         id
         name
       }
+      lastchange
     }
     form {
       __typename
@@ -133,13 +135,71 @@ const RequestPageContent = ({request}) => {
         // Request {JSON.stringify(request)}
         // </>
         <RequestLargeCard request={request}>
-            <RequestStateAttribute request={request} />
-            <FormMediumCard form={firstform}>
+            {/* <FormMediumCard form={firstform}> */}
+                <RequestCurrentState request={request} />
+                {/* <hr /> */}
+                <Divider type="text" text="Formulář žádosti" />
                 <FormSectionAttribute form={firstform} />
-            </FormMediumCard>
+                {/* <hr /> */}
+                <Divider type="text" text="Odeslání k dalšímu zpracování" />
+                <RequestStateAttribute request={request} />
+            {/* </FormMediumCard> */}
         </RequestLargeCard>
     )
 }
+
+
+const styles = {
+  divider: {
+      border: "none",
+      height: "2px",
+      backgroundColor: "#6c757d",
+      margin: "1rem 0",
+      opacity: 0.7,
+  },
+  dottedDivider: {
+      border: "0",
+      borderTop: "2px dotted #6c757d",
+      margin: "1.5rem 0",
+      opacity: 0.8,
+  },
+  textDividerContainer: {
+    display: "flex",
+    alignItems: "center",
+    color: "#6c757d",
+    textTransform: "uppercase",
+    fontSize: "0.85rem",
+    fontWeight: "bold",
+    letterSpacing: "0.05em",
+    marginTop: "1.5rem",
+    marginBottom: "1.5rem",
+  },
+  textDividerLine: {
+      flex: 1,
+      borderTop: "2px solid #6c757d",
+      margin: "0 0.5rem",
+      opacity: 0.7,
+  },
+};
+
+const Divider = ({ type, text }) => {
+  if (type === "dotted") {
+      return <hr style={styles.dottedDivider} />;
+  }
+
+  if (type === "text") {
+      return (
+          <div style={styles.textDividerContainer}>
+              <div style={styles.textDividerLine}></div>
+              <span>{text}</span>
+              <div style={styles.textDividerLine}></div>
+          </div>
+      );
+  }
+
+  return <hr style={styles.divider} />;
+};
+
 
 /**
  * A lazy-loading component for displaying content of an request entity.

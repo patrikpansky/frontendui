@@ -27,8 +27,8 @@ export const RequestMediumContent = ({request, children}) => {
     return (
         <>
             <RequestHistoryAttribute request={request} /><br />
-            RequestMediumContent <br />
-            {JSON.stringify(request)}
+            {/* RequestMediumContent <br />
+            {JSON.stringify(request)} */}
             {children}
         </>
     )

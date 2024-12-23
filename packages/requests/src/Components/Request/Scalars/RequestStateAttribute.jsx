@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 import { createAsyncGraphQLAction, useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
 import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
@@ -54,7 +56,7 @@ export const RequestStateAttribute = ({request}) => {
     if (loading) return <LoadingSpinner text="Nahrávám stavy"/>
     return (
         <>
-            <span className="btn btn-lg btn-info">{_state?.name}</span>
+            
             {(_state?.targets || []).map(
                 transition => {
                     return (
@@ -66,4 +68,16 @@ export const RequestStateAttribute = ({request}) => {
             {JSON.stringify(_state)} */}
         </>
     )
+}
+
+export const RequestCurrentState = ({request}) => {
+    const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
+    if (typeof state === 'undefined') return null
+    const items = useSelector((state) => state["items"]);
+    const _state = items[state.id]
+    if (_state) {
+        return (
+            <span className="btn btn-lg btn-outline-secondary form-control">Stav {_state?.name}</span>
+        )
+    }
 }
