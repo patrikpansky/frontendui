@@ -6,48 +6,48 @@ import { useDispatch, useSelector } from "react-redux";
  *
  * @param {Function} AsyncAction - The Redux async action to dispatch.
  * @param {Object} queryVariables - The parameters for the async action, including `id`.
- * @returns {{
-*   read: Function, // Suspense-compatible function to read data.
-*   entity: any,      // The fetched data or null if not loaded.
-*   loading: boolean, // Indicates if the data is being fetched.
-*   error: any,     // The error object if the fetch failed.
-*   retry: Function, // Retries the last fetch operation with the previous parameters.
-*   refetch: Function, // Fetches data with new parameters.
-*   dispatchResult: any, // The raw value returned by the dispatch action.
-* }}
-*
-* @example <caption>Using with Suspense</caption>
-* const ParentComponent = () => {
-*   const { read, dispatchResult } = useAsyncAction(fetchParentAction, { id: "parent-id" });
-*
-*   const entity = read(); // Suspends until data is ready
-*
-*   return (
-*       <div>
-*           <div>Parent Data: {entity.name}</div>
-*           <div>Dispatch Result: {JSON.stringify(dispatchResult)}</div>
-*       </div>
-*   );
-* };
-*
-* @example <caption>Using without Suspense</caption>
-* const ParentComponent = () => {
-*   const { entity, loading, error, dispatchResult, retry, refetch } = useAsyncAction(fetchParentAction, { id: "parent-id" });
-*
-*   if (loading) return <div>Loading Parent Data...</div>;
-*   if (error) return <div>Error: {error.message}</div>;
-*
-*   return (
-*       <div>
-*           <div>Parent Data: {entity.name}</div>
-*           <div>Raw Dispatch Result: {JSON.stringify(dispatchResult)}</div>
-*           <button onClick={retry}>Retry</button>
-*           <button onClick={() => refetch({ id: "new-parent-id" })}>Fetch New Data</button>
-*       </div>
-*   );
-* };
-*/
-
+ * @param {Object} [params] - Optional configuration for fetching behavior.
+ * @param {boolean} [params.deferred=false] - If true, delays the initial fetch until explicitly triggered using the `fetch` function.
+ * @param {boolean} [params.network=true] - If false, prevents any network requests.
+ *
+ * @returns {Object} The hook return values.
+ * @returns {Function} read - A Suspense-compatible function that suspends rendering until data is available.
+ * @returns {any} entity - The fetched data from the cache (if `params.cache` is true) or null if not available.
+ * @returns {boolean} loading - Indicates if the data is being fetched.
+ * @returns {any} error - The error object if the fetch failed.
+ * @returns {Function} fetch - Fetches data with new parameters or retries the last fetch operation.
+ * @returns {any} dispatchResult - The raw value returned by the dispatched Redux action.
+ *
+ * @example <caption>Using with Suspense</caption>
+ * const ParentComponent = () => {
+ *   const { read, dispatchResult } = useAsyncAction(fetchParentAction, { id: "parent-id" });
+ *
+ *   const entity = read(); // Suspends until data is ready
+ *
+ *   return (
+ *       <div>
+ *           <div>Parent Data: {entity.name}</div>
+ *           <div>Dispatch Result: {JSON.stringify(dispatchResult)}</div>
+ *       </div>
+ *   );
+ * };
+ *
+ * @example <caption>Using without Suspense</caption>
+ * const ParentComponent = () => {
+ *   const { entity, loading, error, fetch } = useAsyncAction(fetchParentAction, { id: "parent-id" });
+ *
+ *   if (loading) return <div>Loading Parent Data...</div>;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *       <div>
+ *           <div>Parent Data: {entity.name}</div>
+ *           <button onClick={() => fetch()}>Retry</button>
+ *           <button onClick={() => fetch({ id: "new-parent-id" })}>Fetch New Data</button>
+ *       </div>
+ *   );
+ * };
+ */
 export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: false, network: true}) => {
     const dispatch = useDispatch();
     const items = useSelector((state) => state["items"]);
