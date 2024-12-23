@@ -123,7 +123,7 @@ const ItemUpdateAsyncAction = createAsyncGraphQLAction(ItemUpdateQuery,
 
 export const LargeText = ({item, value}) => {
     const [_value, setValue] = useState(value)
-    const { fetch, loading } = useAsyncAction(ItemUpdateAsyncAction, item, {deferred: true})
+    const { fetch, loading, error } = useAsyncAction(ItemUpdateAsyncAction, item, {deferred: true})
     const [delayUpdate] = useState(()=>CreateDelayer())
     // const dispatch = useDispatch()
     const onChange = (e) => {
@@ -135,6 +135,7 @@ export const LargeText = ({item, value}) => {
     return (
         <>
             {loading && <span>Ukládám</span>}
+            {error && <span>Chyba {JSON.stringify(error)}</span>}
             <textarea 
                 className="form-control" 
                 value={_value} 

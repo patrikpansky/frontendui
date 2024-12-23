@@ -44,7 +44,7 @@ export const FormSectionAttribute = ({form}) => {
                     <button key={section.id}
                         type={"button"} 
                         onClick={() => setIndex(_index)}
-                        className={"btn btn-sm " + (index === _index? "btn-primary": "btn-outline-success")} 
+                        className={"btn btn-lg " + (index === _index? "btn-primary": "btn-outline-success")} 
                         >
                             {section?.name}
                     </button>
