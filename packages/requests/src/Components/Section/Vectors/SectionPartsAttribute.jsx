@@ -2,36 +2,9 @@ import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } fro
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
+import { PartHeaderLine } from "../../Part";
 
-const styles = {
-    textDividerContainer: {
-      display: "flex",
-      alignItems: "center",
-      color: "#6c757d",
-      textTransform: "uppercase",
-      fontSize: "0.85rem",
-      fontWeight: "bold",
-      letterSpacing: "0.05em",
-      marginTop: "1.5rem",
-      marginBottom: "1.5rem",
-    },
-    textDividerLine: {
-        flex: 1,
-        borderTop: "2px solid #6c757d",
-        // margin: "0 0.5rem",
-        opacity: 0.7,
-    },
-  };
-  
-const PartHeaderLine = ({ part }) => {
-    return (
-        <div style={styles.textDividerContainer}>
-            <div style={styles.textDividerLine}></div>
-            <span style={{"margin": "0 0.5rem"}}>{part.name || "Část"}</span>
-            <div style={styles.textDividerLine}></div>
-        </div>
-    );
-};
+
   
 /**
  * A component for displaying the `parts` attribute of an section entity.

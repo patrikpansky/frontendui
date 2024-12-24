@@ -140,6 +140,7 @@ export const LargeText = ({item, value}) => {
                 className="form-control" 
                 value={_value} 
                 onChange={onChange} // Handle changes in the textarea
+                onBlur={onChange}
             />
         </>
     )
