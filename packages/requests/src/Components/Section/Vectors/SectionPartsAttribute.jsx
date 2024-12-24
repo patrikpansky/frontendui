@@ -36,23 +36,15 @@ const styles = {
     },
   };
   
-  const Divider = ({ type, text }) => {
-    if (type === "dotted") {
-        return <hr style={styles.dottedDivider} />;
-    }
-  
-    if (type === "text") {
-        return (
-            <div style={styles.textDividerContainer}>
-                <div style={styles.textDividerLine}></div>
-                <span style={{"margin": "0 0.5rem"}}>{text}</span>
-                <div style={styles.textDividerLine}></div>
-            </div>
-        );
-    }
-  
-    return <hr style={styles.divider} />;
-  };
+const PartHeader = ({ part }) => {
+    return (
+        <div style={styles.textDividerContainer}>
+            <div style={styles.textDividerLine}></div>
+            <span style={{"margin": "0 0.5rem"}}>{part.name || "Část"}</span>
+            <div style={styles.textDividerLine}></div>
+        </div>
+    );
+};
   
 /**
  * A component for displaying the `parts` attribute of an section entity.
@@ -87,7 +79,7 @@ export const SectionPartsAttributeView = ({section}) => {
         <>
             {parts.map(
                 part => <div key={part.id}>
-                    <Divider type="text" text={part?.name || "Sekce"} />
+                    <PartHeader type="text" text={part?.name || "Sekce"} />
                     <PartItemsAttribute part={part} />
                 </div>
             )}
@@ -129,8 +121,8 @@ export const SectionPartsAttribute = ({section}) => {
             <DroppableContainer droppableId="parts" direction="vertical" getListStyle={getListStyleDefault}>
                 {parts.map((part, index) => (
                     <DragableEnvelop key={part.id} index={index} draggableId={part.id}>
-                        <div style={{ padding: "8px", background: "white", borderRadius: "4px" }}>
-                            <Divider type="text" text={part?.name || "Část"} />
+                        <div style={{ padding: "8px", borderRadius: "4px" }}>
+                            <PartHeader part={part} />
                             <PartItemsAttribute part={part} />
                         </div>
                     </DragableEnvelop>
