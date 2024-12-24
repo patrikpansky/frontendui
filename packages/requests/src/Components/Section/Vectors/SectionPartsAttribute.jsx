@@ -4,19 +4,6 @@ import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
 
 const styles = {
-    divider: {
-        border: "none",
-        height: "2px",
-        backgroundColor: "#6c757d",
-        margin: "1rem 0",
-        opacity: 0.7,
-    },
-    dottedDivider: {
-        border: "0",
-        borderTop: "2px dotted #6c757d",
-        margin: "1.5rem 0",
-        opacity: 0.8,
-    },
     textDividerContainer: {
       display: "flex",
       alignItems: "center",
@@ -36,7 +23,7 @@ const styles = {
     },
   };
   
-const PartHeader = ({ part }) => {
+const PartHeaderLine = ({ part }) => {
     return (
         <div style={styles.textDividerContainer}>
             <div style={styles.textDividerLine}></div>
@@ -79,7 +66,7 @@ export const SectionPartsAttributeView = ({section}) => {
         <>
             {parts.map(
                 part => <div key={part.id}>
-                    <PartHeader type="text" text={part?.name || "Sekce"} />
+                    <PartHeaderLine type="text" text={part?.name || "Sekce"} />
                     <PartItemsAttribute part={part} />
                 </div>
             )}
@@ -122,7 +109,7 @@ export const SectionPartsAttribute = ({section}) => {
                 {parts.map((part, index) => (
                     <DragableEnvelop key={part.id} index={index} draggableId={part.id}>
                         <div style={{ padding: "8px", borderRadius: "4px" }}>
-                            <PartHeader part={part} />
+                            <PartHeaderLine part={part} />
                             <PartItemsAttribute part={part} />
                         </div>
                     </DragableEnvelop>
