@@ -94,7 +94,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
             });
         }
     }, [id, dispatch, AsyncAction]);
-
+    //queryVariables must be ommited, otherwise this will be infinite loop of rendering;
+    
     return {
         read: resource.read, // Provide Suspense-compatible `read` function
         entity: result || dispatchResult,

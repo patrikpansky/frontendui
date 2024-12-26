@@ -79,5 +79,8 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
 
         // Parse and return JSON response
         return response.json();
+    }).catch(error => {
+        console.log("fetch", error)
+        return Promise.reject(new Error(error));
     })
 }
