@@ -118,10 +118,12 @@ const createResource = (initialStatus="pending") => {
                     result = res;
                 },
                 (err) => {
+                    console.log("got error with useAsyncAction", err)
                     status = "error";
                     result = err;
                 }
             );
+            return suspender
         },
         read() {
             if (status === "pending") {

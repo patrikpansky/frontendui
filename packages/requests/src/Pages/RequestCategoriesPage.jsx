@@ -1,8 +1,13 @@
-import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
+import { useState } from 'react'
+import Row from 'react-bootstrap/Row'
+import { ButtonWithDialog, createLazyComponent, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { RequestCategoryReadAsyncAction } from "./Queries/RequestCategoryReadAsyncAction"
 import { RequestCategoryPageReadAsyncAction } from "./Queries/RequestCategoryPageReadAsyncAction"
 import { RequestPageNavbar } from "./RequestPageNavbar"
+import { RequestCategoriesTable } from "../Components/RequestCategory"
+import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
+import { RequestCategoryInsertAsuncAction } from './Queries/RequestCategoryInsertMutation'
 
 /**
  * A page content component for displaying detailed information about an requestcategory entity.
@@ -56,9 +61,22 @@ const RequestCategoriesPageContent = ({requestcategories}) => {
         <>
             <RequestPageNavbar />
             RequestCategory {JSON.stringify(requestcategories)}
+            <Row>
+                <LeftColumn>
+
+                </LeftColumn>
+                <MiddleColumn>
+                    <RequestCategoriesTable requestcategories={requestcategories}>
+                        A
+                    </RequestCategoriesTable>
+                    
+                    <RequestCategoryCreateButton />
+                </MiddleColumn>
+            </Row>
         </>
     )
 }
+
 
 /**
  * A lazy-loading component for displaying the content of a `requestcategory` entity.
@@ -135,7 +153,42 @@ const RequestCategoriesPageContentLazy = createLazyComponent(RequestCategoriesPa
 export const RequestCategoryPage = () => {
     const {id, where} = useParams()
     const requestcategory = {id}
-
+    const requestcategories = {}
     if (id) return <RequestCategoryPageContentLazy requestcategory={requestcategory} />
-    return <RequestCategoriesPageContentLazy requestcategories={{where: where, skip: 0, limit: 0}} />
+    return <RequestCategoriesPageContentLazy requestcategories={{where: where, skip: 0, limit: 10}} />
+}
+
+const RequestCategoryCreateButton = ({}) => {
+    const { fetch, loading, error, dispatchResult } = useAsyncAction(RequestCategoryInsertAsuncAction, {}, {deferred: true})
+    const [newCategory, setNewCategory] = useState({})
+    const onChange = (e) => {
+        const name = e.target.id
+        const value = e.target.value
+        setNewCategory(prev => ({...prev, [name]: value}))
+    }
+
+    const onConfirmCreate = () => {
+        fetch({...newCategory, id: crypto.randomUUID()})
+    }
+
+    return (<>
+        {JSON.stringify(error)}< br/>
+        {JSON.stringify(dispatchResult)} <br />
+        {error && <ErrorHandler errors={error} />}
+        {loading && <LoadingSpinner text='Ukládám' />}
+
+        <ButtonWithDialog
+            dialogTitle="Nová kategorie požadavků"
+            buttonLabel='Vytvořit novou kategorii požadavků'
+            className='btn btn-outline-primary form-control'
+            onClick={onConfirmCreate}
+        >
+            <SimpleCardCapsule title={"Název kategorie"}>
+                <input id="name" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={""} />
+            </SimpleCardCapsule>
+            <SimpleCardCapsule title={"Anglický název"}>
+                <input id="name_en" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={""} />
+            </SimpleCardCapsule>
+        </ButtonWithDialog>
+    </>)
 }

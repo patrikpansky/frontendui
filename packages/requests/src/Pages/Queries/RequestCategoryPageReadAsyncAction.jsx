@@ -1,4 +1,4 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, updateItemsFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared";
 
 const RequestCategoryPageRead = `
 query RequestCategoryPageRead($skip: Int, $limit: Int, $where: RequestCategoryInputFilter) {
@@ -50,4 +50,11 @@ fragment RequestCategory on RequestCategoryGQLModel {
  *   });
  */
 
-export const RequestCategoryPageReadAsyncAction = createAsyncGraphQLAction(RequestCategoryPageRead);
+export const RequestCategoryPageReadAsyncAction = createAsyncGraphQLAction(
+    RequestCategoryPageRead,
+    updateItemsFromGraphQLResult,
+    (jsonResult) => (dispatch, getState, next) => {
+        const requests = jsonResult?.data?.result || [];
+        return requests;
+    }  
+);

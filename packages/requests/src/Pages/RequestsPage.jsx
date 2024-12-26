@@ -20,7 +20,7 @@ const RequestsVisualiser = ({items}) => {
 export const RequestsPageContent = ({requests, ...props}) => {
     const [settings, setSettings] = useState({mode: "cards"})
     return (<>
-        
+        <RequestPageNavbar />
         {/* {JSON.stringify(props)}<br /> */}
         <Row>
             <InfiniteScroll 
