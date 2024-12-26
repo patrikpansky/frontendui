@@ -48,13 +48,12 @@ import { useDispatch, useSelector } from "react-redux";
  *   );
  * };
  */
-export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred: false, network: true }) => {
+export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: false, network: true}) => {
     const dispatch = useDispatch();
     const items = useSelector((state) => state["items"]);
-    const { deferred, network } = params;
-
+    const {deferred, network} = params
     if (!items) {
-        throw new Error(
+        throw Error(
             "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
         );
     }
@@ -64,13 +63,13 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     const result = items[id];
 
     // Suspense resource
-    const [resource, setResource] = useState(() => createResource(deferred ? "success" : "pending"));
+    const [resource, setResource] = useState(() => createResource(deferred?"success":"pending"));
     const [lastParams, setLastParams] = useState(queryVariables);
     const [dispatchResult, setDispatchResult] = useState(null);
 
     const fetchData = async (fetchParams) => {
-        const newParams = fetchParams ? { ...lastParams, ...fetchParams } : lastParams;
-        if (fetchParams) setLastParams(newParams);
+        const newParams = fetchParams?{...lastParams, ...fetchParams}:lastParams
+        if (fetchParams) setLastParams(newParams)
         return new Promise((resolve, reject) => {
             resource.fetch(async () => {
                 try {
@@ -79,9 +78,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
                     resolve(actionResult); // Resolve the promise with the action result
                     return actionResult;
                 } catch (error) {
-                    console.error("Error in fetchData:", error); // Improved logging
-                    reject(error); // Reject the promise with the error
-                    throw error; // Throw the error for Suspense or other consumers
+                    reject(error); // Reject the promise in case of an error
+                    throw error;
                 }
             });
         });
@@ -89,26 +87,23 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
 
     useEffect(() => {
         if (network && !deferred) {
-            fetchData(queryVariables).catch((error) => {
-                console.error("Error during initial fetch:", error);
-            });
+            fetchData(queryVariables);
         }
     }, [id, dispatch, AsyncAction]);
     //queryVariables must be ommited, otherwise this will be infinite loop of rendering;
-    
+
     return {
         read: resource.read, // Provide Suspense-compatible `read` function
-        entity: result || dispatchResult,
+        entity: result || dispatchResult, //this is for queries for vectors, which will not be saved into store
         loading: resource.getStatus() === "pending",
-        error: resource.getStatus() === "error" ? resource.getResult() : null, // Properly reflect error
+        error: resource.getStatus() === "error" ? resource.getResult() : null,
         fetch: fetchData, // Refetch with new parameters
-        dispatchResult, // Include the raw dispatch result
+        dispatchResult: dispatchResult, // Include the raw dispatch result
     };
 };
 
-
 // Helper to create a Suspense-compatible resource
-const createResource = (initialStatus = "pending") => {
+const createResource = (initialStatus="pending") => {
     let status = initialStatus;
     let result;
     let suspender;
@@ -123,12 +118,10 @@ const createResource = (initialStatus = "pending") => {
                     result = res;
                 },
                 (err) => {
-                    console.error("Error in createResource:", err); // Improved logging
                     status = "error";
-                    result = err; // Update result with the error
+                    result = err;
                 }
             );
-            return suspender;
         },
         read() {
             if (status === "pending") {
@@ -146,4 +139,3 @@ const createResource = (initialStatus = "pending") => {
         },
     };
 };
-

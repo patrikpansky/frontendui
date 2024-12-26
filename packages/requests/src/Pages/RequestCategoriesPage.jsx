@@ -153,7 +153,8 @@ const RequestCategoriesPageContentLazy = createLazyComponent(RequestCategoriesPa
 export const RequestCategoryPage = () => {
     const {id, where} = useParams()
     const requestcategory = {id}
-    const requestcategories = {}
+    // const requestcategories = {}
+    console.log("rendering RequestCategoryPage")
     if (id) return <RequestCategoryPageContentLazy requestcategory={requestcategory} />
     return <RequestCategoriesPageContentLazy requestcategories={{where: where, skip: 0, limit: 10}} />
 }
@@ -172,7 +173,8 @@ const RequestCategoryCreateButton = ({}) => {
     }
 
     return (<>
-        {JSON.stringify(error)}< br/>
+        {"error " + error?JSON.stringify(error):""}< br/>
+        {/* {"error keys " + error?JSON.stringify(Object.keys(error)):""}< br/> */}
         {JSON.stringify(dispatchResult)} <br />
         {error && <ErrorHandler errors={error} />}
         {loading && <LoadingSpinner text='Ukládám' />}
