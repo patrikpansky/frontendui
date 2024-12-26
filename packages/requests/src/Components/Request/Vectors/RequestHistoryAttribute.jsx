@@ -33,17 +33,36 @@ export const RequestHistoryAttribute = ({request}) => {
     if (typeof histories === 'undefined') return null
     return (
         <>
-            {histories.map(
-                history => <div key={history.id}>
-                    {history?.state?.name}, {history?.form?.name}, <UserLink user={history?.createdby} />, {history?.name}, {history?.lastchange}
-                    {/* <br />
-                    {JSON.stringify(history)}<br /> */}
-                    {/* {JSON.stringify(history?.createdby)}<br />
-                    {JSON.stringify(history?.state)}<br /> */}
-                </div>
-            )}
+            <table className="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>stav</th>
+                        <th>osoba</th>
+                        <th>datum</th>
+                        <th>poz</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {histories.map(
+                        history => <tr key={history.id}>
+                            <td>{history?.state?.name}</td>
+                            <td><UserLink user={history?.createdby} /></td>
+                            <td><DateTime isoDatetime={history?.lastchange}/></td>
+                            <td>{history?.name}</td>
+                        </tr>)
+                    }
+                </tbody>
+            </table>
+            
         </>
     )
+}
+
+const DateTime = ({isoDatetime}) => {
+    if (!isoDatetime) return null
+    const date = new Date(isoDatetime);
+    const localeDatetime = date.toLocaleString()
+    return <>{localeDatetime}</>
 }
 
 const HistoryAttributeQuery = `

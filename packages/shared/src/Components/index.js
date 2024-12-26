@@ -1,9 +1,11 @@
 import { LeftColumn } from './LeftColumn'
 
 export * from './CardCapsule'
+export * from './SimpleCardCapsule'
 export * from './CreateDelayer'
 export * from './DeleteButton'
 export * from './Dialog'
+export * from './ButtonWithDialog'
 export * from './EditableAttributeSelect'
 export * from './EditableAttributeText'
 export * from './EditableAttributeSelect'

@@ -30,44 +30,44 @@ import Col from "react-bootstrap/Col"
  * @returns {JSX.Element} A styled modal dialog.
  */
 export const Dialog = ({
-  children,
-  title = "Dialog",
-  oklabel = "Ok",
-  cancellabel = "Zrušit",
-  onOk,
-  onCancel,
+    children,
+    title = "Dialog",
+    oklabel = "Ok",
+    cancellabel = "Zrušit",
+    onOk,
+    onCancel,
 }) => {
-  const handleFinish = () => {
-    if (onOk) onOk();
-  };
+    const handleFinish = () => {
+        if (onOk) onOk();
+    };
 
-  const handleCancel = () => {
-    if (onCancel) onCancel();
-  };
+    const handleCancel = () => {
+        if (onCancel) onCancel();
+    };
 
-  return (
-    <Modal size="xl" show={true} onHide={handleCancel}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{children}</Modal.Body>
-      <Modal.Footer>
-        <Row>
-          <Col>
-            <div className="d-flex justify-content-end">
-              <Button variant="outline-success" onClick={handleFinish}>
-                {oklabel}
-              </Button>
-              &nbsp;
-              <Button variant="outline-danger" onClick={handleCancel}>
-                {cancellabel}
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Modal.Footer>
-    </Modal>
-  );
+    return (
+        <Modal size="xl" show={true} onHide={handleCancel}>
+            <Modal.Header closeButton>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{children}</Modal.Body>
+            <Modal.Footer>
+                <Row>
+                    <Col>
+                        <div className="d-flex justify-content-end">
+                            <Button variant="outline-success" onClick={handleFinish}>
+                              {oklabel}
+                            </Button>
+                            &nbsp;
+                            <Button variant="outline-danger" onClick={handleCancel}>
+                                {cancellabel}
+                            </Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Modal.Footer>
+        </Modal>
+    );
 };
 
 

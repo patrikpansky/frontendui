@@ -67,17 +67,18 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
             return (
                 <>
                     <WrappedComponent {...wrappedProps} />
+                    {error && <ErrorHandler errors={error} />}
                     {loading && <LoadingSpinner text="Aktualizuji..." />}
                 </>
             );
         }
 
-        if (loading) {
-            return <LoadingSpinner text="Nahrávám..." />;
-        }
-
         if (error) {
             return <ErrorHandler errors={error} />;
+        }
+
+        if (loading) {
+            return <LoadingSpinner text="Nahrávám..." />;
         }
 
         return (

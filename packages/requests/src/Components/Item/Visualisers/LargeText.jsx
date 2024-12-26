@@ -121,27 +121,53 @@ const ItemUpdateAsyncAction = createAsyncGraphQLAction(ItemUpdateQuery,
 // const StudentWithRead = createLazyComponent(UserMediumCard, "user", StudentReadAsyncAction)
 // const StudentWithRead = createLazyComponent(ItemUpdateQuery, "user", StudentReadAsyncAction)
 
-export const LargeText = ({item, value}) => {
-    const [_value, setValue] = useState(value)
-    const { fetch, loading, error } = useAsyncAction(ItemUpdateAsyncAction, item, {deferred: true})
-    const [delayUpdate] = useState(()=>CreateDelayer())
-    // const dispatch = useDispatch()
-    const onChange = (e) => {
-        const value = e.target.value
-        // delayUpdate(() => dispatch(ItemUpdateAsyncAction({...item, value: value})))
-        delayUpdate(() => fetch({value: value}))
-        setValue(value)
-    }
-    return (
-        <>
-            {loading && <span>Ukládám</span>}
-            {error && <span>Chyba {JSON.stringify(error)}</span>}
-            <textarea 
-                className="form-control" 
-                value={_value} 
-                onChange={onChange} // Handle changes in the textarea
-                onBlur={onChange}
-            />
-        </>
-    )
-}
+
+const textareaStyles = {
+  base: {
+      border: "none", // Remove border
+      outline: "none", // Remove outline
+      resize: "none", // Hide the resize handle
+      backgroundColor: "#f8f9fa", // Light background for readability
+      transition: "border 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+      width: "100%", // Ensure full width by default
+      padding: "0.5rem", // Add padding for better usability
+      fontSize: "1rem", // Default font size
+      borderRadius: "4px", // Rounded corners
+  },
+  focus: {
+      border: "2px solid #0d6efd", // Bootstrap's primary color
+      boxShadow: "0 0 5px rgba(13, 110, 253, 0.5)", // Subtle shadow for focus
+      resize: "vertical", // Allow resizing vertically only
+      backgroundColor: "#fff", // White background on focus
+  },
+};
+
+export const LargeText = ({ item, value }) => {
+  const [_value, setValue] = useState(value);
+  const { fetch, loading, error } = useAsyncAction(ItemUpdateAsyncAction, item, { deferred: true });
+  const [delayUpdate] = useState(() => CreateDelayer());
+  const [isFocused, setIsFocused] = useState(false); // Track focus state
+
+  const onChange = (e) => {
+      const value = e.target.value;
+      delayUpdate(() => fetch({ value }));
+      setValue(value);
+  };
+
+  return (
+      <>
+          {loading && <span>Ukládám</span>}
+          {error && <span>Chyba {JSON.stringify(error)}</span>}
+          <textarea
+              style={{
+                  ...textareaStyles.base,
+                  ...(isFocused ? textareaStyles.focus : {}),
+              }}
+              value={_value}
+              onChange={onChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+          />
+      </>
+  );
+};

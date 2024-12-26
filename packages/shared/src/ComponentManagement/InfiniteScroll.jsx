@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { ErrorHandler, LoadingSpinner } from "../Components";
 
 const mergeArraysById = (array1, array2) => {
     const mergedMap = new Map();
@@ -182,16 +183,18 @@ export const InfiniteScroll = ({
         };
     }, [_state]);
 
-    return (
-        <>
-            <Visualiser items={_state.results} {...props}>
-                {children}
-            </Visualiser>
-            {/* {JSON.stringify(_state)} */}
-            {/* {!_state.hasMore && <div>Více toho není.</div>} */}
-            {_state.errors && <div><h2>Chyba</h2>{JSON.stringify(_state.errors, null, 4)}</div>}
-            {_state.loading && <div>Nahrávám další...</div>}
-            {_state.hasMore && <div ref={containerRef} style={{ height: "50px" }} />}
-        </>
-    );
+    // if (_state.errors) return <ErrorHandler errors={_state.errors} />
+    if (_state.results)
+        return (
+            <>
+                <Visualiser items={_state.results} {...props}>
+                    {children}
+                </Visualiser>
+                {/* {JSON.stringify(_state)} */}
+                {/* {!_state.hasMore && <div>Více toho není.</div>} */}
+                {_state.errors && <ErrorHandler errors={_state.errors} />}
+                {_state.loading && <LoadingSpinner text="Nahrávám další..."/>}
+                {_state.hasMore && <div ref={containerRef} style={{ height: "50px" }} />}
+            </>
+        );
 };

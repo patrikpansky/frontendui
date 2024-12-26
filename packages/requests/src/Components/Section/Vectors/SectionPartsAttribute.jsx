@@ -1,8 +1,10 @@
+import { useRef, useEffect } from 'react'
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { InfiniteScroll, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
-import { PartHeaderLine } from "../../Part";
+import { HorizontalLine, PartHeaderLine } from "../../Part";
+import { PlusLg } from "react-bootstrap-icons";
 
 
   
@@ -62,6 +64,28 @@ const getListStyleDefault = (provided, snapshot) => ({
 });
 
 
+const TooltipButton = ({title, children, ...props}) => {
+    const buttonRef = useRef(null);
+    useEffect(() => {
+        // Initialize tooltip for the button
+        const tooltip = new bootstrap.Tooltip(buttonRef.current);
+        // Cleanup function to destroy the tooltip
+        return () => tooltip.dispose();
+    }, []);
+
+    return (
+        <button
+            {...props}
+            ref={buttonRef}
+            type="button"
+            data-bs-toggle="tooltip"            
+            title={title}
+        >
+            {children}
+        </button>
+    );
+};
+
 export const SectionPartsAttribute = ({section}) => {
     const parts = ([...section?.parts || []]).sort((a,b) => a?.order - b?.order)
     if (typeof parts === 'undefined') return null
@@ -77,18 +101,25 @@ export const SectionPartsAttribute = ({section}) => {
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <DroppableContainer droppableId="parts" direction="vertical" getListStyle={getListStyleDefault}>
-                {parts.map((part, index) => (
-                    <DragableEnvelop key={part.id} index={index} draggableId={part.id}>
-                        <div style={{ padding: "8px", borderRadius: "4px" }}>
-                            <PartHeaderLine part={part} />
-                            <PartItemsAttribute part={part} />
-                        </div>
-                    </DragableEnvelop>
-                ))}
-            </DroppableContainer>
-        </DragDropContext>
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <DroppableContainer droppableId="parts" direction="vertical" getListStyle={getListStyleDefault}>
+                    {parts.map((part, index) => (
+                        <DragableEnvelop key={part.id} index={index} draggableId={part.id}>
+                            {/* <SimpleCardCapsule text={"Část"} > */}
+                            <div style={{ padding: "8px", borderRadius: "4px" }}>
+                                <PartHeaderLine part={part} />
+                                <PartItemsAttribute part={part} />
+                            </div>
+                            {/* </SimpleCardCapsule> */}
+                        </DragableEnvelop>
+                    ))}
+                </DroppableContainer>
+            </DragDropContext>
+            <div style={{ padding: "8px", borderRadius: "4px" }}>
+                <HorizontalLine><TooltipButton className="btn btn-light" title={"Přidat část"}><PlusLg /></TooltipButton></HorizontalLine>
+            </div>
+    </>
     );
 }
 

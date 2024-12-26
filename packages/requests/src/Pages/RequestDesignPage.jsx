@@ -4,8 +4,6 @@ import Col from "react-bootstrap/Col"
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent, HashContainer, LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { RequestLargeCard } from "../Components/Request/RequestLargeCard"
-import { FormMediumCard } from "../Components/Form"
 import { FormSectionAttribute } from "../Components/Form/Vectors/FormSectionsAttribute"
 import { RequestCurrentState, RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
 import { RequestPageNavbar } from "./RequestPageNavbar"
@@ -143,7 +141,7 @@ const RequestReadAsyncAction = createAsyncGraphQLAction(RequestQueryRead)
  * 
  * <RequestPageContent request={requestEntity} />
  */
-const RequestPageContent = ({request}) => {
+const RequestDesignPageContent = ({request}) => {
   const histories = request?.histories || []
   const firstform = histories[0]?.form || {}
     return (
@@ -255,7 +253,7 @@ const Divider = ({ type, text }) => {
  *
  * <RequestPageContentLazy request={requestId} />
  */
-const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request", RequestReadAsyncAction)
+const RequestPageContentLazy = createLazyComponent(RequestDesignPageContent, "request", RequestReadAsyncAction)
 
 /**
  * A page component for displaying lazy-loaded content of an request entity.
@@ -273,7 +271,7 @@ const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request"
  *
  * // Navigating to "/request/12345" will render the page for the request entity with ID 12345.
  */
-export const RequestPage = () => {
+export const RequestDesignPage = () => {
     const {id} = useParams()
     const request = {id}
     return <RequestPageContentLazy request={request} />

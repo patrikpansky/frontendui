@@ -21,7 +21,7 @@ const overlayStyle = {
     top: 0,
     left: "50%",       // Centers it horizontally
     transform: "translateX(-50%)", // Adjusts for its own width
-    width: "10vw",
+    width: "30vw",
     height: "20vh",
     display: "flex",
     justifyContent: "center",

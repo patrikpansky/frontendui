@@ -21,5 +21,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * <RequestLink request={requestEntity} />
  */
 export const RequestLink = ({request}) => {
-    return <ProxyLink to={'/request/request/view/' + request.id}>{request.name}</ProxyLink>
+    return <ProxyLink to={'/requests/request/view/' + request.id}>{request.name}</ProxyLink>
 }

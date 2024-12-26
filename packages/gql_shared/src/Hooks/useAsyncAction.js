@@ -94,7 +94,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: fa
 
     return {
         read: resource.read, // Provide Suspense-compatible `read` function
-        entity: result,
+        entity: result || dispatchResult,
         loading: resource.getStatus() === "pending",
         error: resource.getStatus() === "error" ? resource.getResult() : null,
         fetch: fetchData, // Refetch with new parameters

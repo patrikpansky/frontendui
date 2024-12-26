@@ -40,7 +40,7 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
                 'Content-Type': 'application/json'
             },
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            redirect: 'follow', // manual, *follow, error
+            redirect: 'error', // manual, *follow, error
         
         },
         overridenPath = '/api/gql', // Default to `path` if not overridden

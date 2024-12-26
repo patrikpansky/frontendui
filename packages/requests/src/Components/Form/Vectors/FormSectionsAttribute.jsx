@@ -4,6 +4,9 @@ import { InfiniteScroll, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { SectionMediumContent } from "../../Section/SectionMediumContent"
 import { SectionPartsAttribute } from "../../Section/Vectors/SectionPartsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
+import { PlusLg } from 'react-bootstrap-icons'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 /**
  * A component for displaying the `section` attribute of an form entity.
@@ -246,6 +249,16 @@ export const FormSectionAttribute = ({ form }) => {
                             </ButtonLike>
                         </DragableEnvelop>
                     ))}
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={
+                            <Tooltip id="custom-tooltip" style={{ backgroundColor: "darkblue", color: "white" }}>
+                                Přidat sekci
+                            </Tooltip>
+                        }
+                    >
+                        <button className="btn btn-light"><PlusLg /></button>
+                    </OverlayTrigger>
                 </DroppableContainer>
             </DragDropContext>
             {/* Render the currently selected section */}

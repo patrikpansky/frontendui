@@ -1,8 +1,10 @@
+import { useState } from "react"
 import { useSelector } from "react-redux";
 
-import { createAsyncGraphQLAction, useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
-import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { ButtonWithDialog, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
+import { useEffect } from "react";
 
 const StateReadQuery = 
 `
@@ -25,6 +27,102 @@ query StateReadQuery($id: UUID!) {
 `
 
 const StateReadAsyncAction = createAsyncGraphQLAction(StateReadQuery)
+
+
+const RequestUseTransitionMutation =
+`
+mutation RequestUseTransition($id: UUID!, $lastchange: DateTime!, $history_message: String!, $transition_id: UUID!) { 
+	formRequestUseTransition(request: {id: $id, lastchange: $lastchange, historyMessage: $history_message transitionId: $transition_id}){
+    __typename
+    ...on RequestGQLModelUpdateError {
+      Entity {
+        ...RequestLarge
+      }
+      msg
+      failed
+      input
+    }
+    ...RequestLarge
+  }
+}
+
+fragment FormLarge on FormGQLModel {
+  __typename
+  id
+  name
+  state {
+    __typename
+    id
+    name
+    readerslistId
+  }
+  sections {
+    __typename
+    id
+    lastchange
+    name
+    order
+    parts {
+      __typename
+      id
+      lastchange
+      name
+      order
+      items {
+        __typename
+        lastchange
+        id
+        name
+        value
+        order
+        type {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+fragment RequestLarge on RequestGQLModel {
+  __typename
+  id
+  name
+  lastchange
+  histories {
+    __typename
+    id
+    request { ...RequestLink }
+    form { ...FormLarge }
+    name
+    changedby { ...UserLink }
+    createdby { ...UserLink }
+    state { id name }
+    created
+    lastchange
+
+  }
+  state { id name }
+  createdby { ...UserLink }
+  changedby { ...UserLink }  
+}
+
+fragment UserLink on UserGQLModel {
+  __typename
+  id
+  fullname
+}
+
+fragment RequestLink on RequestGQLModel {
+  __typename
+  id
+  name
+}
+`
+
+const RequestUseTransitionAsyncAction = createAsyncGraphQLAction(
+    RequestUseTransitionMutation
+)
 
 /**
  * A component for displaying the `state` attribute of an request entity.
@@ -54,13 +152,28 @@ export const RequestStateAttribute = ({request}) => {
     const { entity: _state, error, loading } = useAsyncAction(StateReadAsyncAction, state)
     if (error) return <ErrorHandler errors={error} />
     if (loading) return <LoadingSpinner text="Nahrávám stavy"/>
+    if (_state?.targets?.length === 0) {
+        return (
+            <>
+                <span className="btn btn-outline-danger form-control">Toto je konečný stav</span>
+            </>
+        )
+    }
     return (
         <>
             
             {(_state?.targets || []).map(
                 transition => {
                     return (
-                        <span key={transition.id} className="btn btn-lg btn-outline-success">{transition?.name} ({transition?.target?.name})</span>
+                        <RequestTransitionButton 
+                            key={transition.id} 
+                            className="btn btn-lg btn-outline-success" 
+                            request={request} 
+                            transition={transition}
+                        >
+                            {transition?.name} ({transition?.target?.name})
+                        </RequestTransitionButton>
+                        // <span key={transition.id} className="btn btn-lg btn-outline-success">{transition?.name} ({transition?.target?.name})</span>
                     )
                 }
             )}
@@ -70,8 +183,57 @@ export const RequestStateAttribute = ({request}) => {
     )
 }
 
+
+export const RequestTransitionButton = ({request, transition, ...props}) => {
+    const [mutationParams, setMutationParams] = useState({
+        id: request.id,
+        lastchange: request.lastchange,
+        history_message: "",
+        transition_id: transition.id
+    })
+
+    useEffect(() => {
+        setMutationParams(oldState => ({
+            ...oldState, 
+            lastchange: request.lastchange,
+            transition_id: transition.id
+        }))
+    }, [request, transition])
+
+    const onChange = (e) => {
+        const newValue = e.target.value
+        const attributeName = e.target.id
+        setMutationParams(oldState => ({...oldState, [attributeName]: newValue}))
+    }
+
+    const onClick = () => {
+        fetch(mutationParams)
+    }    
+
+    const {loading, error, fetch} = useAsyncAction(
+        RequestUseTransitionAsyncAction, 
+        mutationParams, 
+        {deferred: true}
+    )
+    
+    return (
+        <>
+            {loading && <LoadingSpinner text="Ukládám" />}
+            {error && <ErrorHandler errors={error} />}
+            <ButtonWithDialog 
+                onClick={onClick} 
+                buttonLabel={`${transition?.name} (${transition?.target?.name})`} 
+                dialogTitle={"Potvrďte akci a napište zprávu"} {...props} 
+            >
+                <input id="history_message" className="form-control" defaultValue={""} onChange={onChange} onBlur={onChange}/>
+            </ButtonWithDialog>
+        </>
+    )
+}
+
 export const RequestCurrentState = ({request}) => {
-    const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
+    // const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
+    const {state } = request
     if (typeof state === 'undefined') return null
     const items = useSelector((state) => state["items"]);
     const _state = items[state.id]
