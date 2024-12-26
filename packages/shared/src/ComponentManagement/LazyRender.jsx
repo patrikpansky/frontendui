@@ -11,7 +11,7 @@ export const LazyRender = ({ children }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isPrinting, setIsPrinting] = useState(false);
     const containerRef = useRef(null);
-
+    console.log("Printing?", isPrinting)
     useEffect(() => {
         const handleBeforePrint = () => setIsPrinting(true);
         const handleAfterPrint = () => setIsPrinting(false);
@@ -20,8 +20,8 @@ export const LazyRender = ({ children }) => {
         window.addEventListener("afterprint", handleAfterPrint);
     
         return () => {
-          window.removeEventListener("beforeprint", handleBeforePrint);
-          window.removeEventListener("afterprint", handleAfterPrint);
+            window.removeEventListener("beforeprint", handleBeforePrint);
+            window.removeEventListener("afterprint", handleAfterPrint);
         };
       }, []);
 

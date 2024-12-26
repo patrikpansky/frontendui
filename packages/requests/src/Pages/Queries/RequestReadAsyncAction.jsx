@@ -50,6 +50,7 @@ fragment RequestLarge on RequestGQLModel {
   id
   name
   lastchange
+  form { ...FormLarge }
   histories {
     __typename
     id

@@ -61,7 +61,7 @@ export const RequestPageNavbar = ({ request, onSearchChange }) => {
     return (
         <div className='screen-only'>
         <MyNavbar onSearchChange={onSearchChange} >
-            {segments.map(({ segment, label }) => (
+            {request && segments.map(({ segment, label }) => (
                 <Nav.Item key={segment} >
                     <TitleNavButton
                         request={request}

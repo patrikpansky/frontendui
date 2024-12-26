@@ -59,7 +59,9 @@ export const FormSectionAttributeView = ({form}) => {
             </div>
             
             {sections.map((section) => <div key={section.id} className={section===sectionToRender?"":"print-only"}>
-                <SectionPartsAttributeView section={section} />
+                <LazyRender>
+                    <SectionPartsAttributeView section={section} />
+                </LazyRender>
             </div>
             )}
 

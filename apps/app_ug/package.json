@@ -19,7 +19,8 @@
 
     "@hrbolek/uoisfrontend-shared": "*",
     "@hrbolek/uoisfrontend-gql-shared": "*",
-    "@hrbolek/uoisfrontend-ug": "*"
+    "@hrbolek/uoisfrontend-ug": "*",
+    "@hrbolek/uoisfrontend-requests": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

@@ -7,7 +7,7 @@ import { UserPage } from "@hrbolek/uoisfrontend-ug";
 import { UserStudiesPage } from "@hrbolek/uoisfrontend-granting";
 import { GroupPage } from "@hrbolek/uoisfrontend-ug";
 import { AdmissionPage } from "../../../packages/admissions/src";
-import { RequestsPage, RequestDesignPage, RequestPage } from "../../../packages/requests/src";
+import { RequestsPage, RequestDesignPage, RequestPage, RequestCategoryPage } from "../../../packages/requests/src";
 
 const prefix = "/ug"
 export const Routes = [
@@ -34,6 +34,14 @@ export const Routes = [
     {
         path: `/requests/request/design/:id`,
         element: <RequestDesignPage />
+    },
+    {
+        path: `/requests/categories/view/:id`,
+        element: <RequestCategoryPage />
+    },
+    {
+        path: `/requests/categories/view`,
+        element: <RequestCategoryPage />
     },
     {
         path: `/requests/all/view`,

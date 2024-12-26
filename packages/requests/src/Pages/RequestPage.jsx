@@ -33,7 +33,7 @@ import { HorizontalLine } from "../Components/Part"
  */
 const RequestPageContent = ({request}) => {
   const histories = request?.histories || []
-  const firstform = histories[0]?.form || {}
+  const firstform = request?.form || {}
     return (
         // <>
         // Request {JSON.stringify(request)}
