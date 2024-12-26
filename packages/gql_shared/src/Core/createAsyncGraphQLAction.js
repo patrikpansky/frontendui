@@ -142,6 +142,10 @@ export const createAsyncGraphQLAction_ = (query, params = updateItemsFromGraphQL
  * dispatch(getUserAndPostsAction({ id: "12345" }));
  */
 export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLResult, ...middlewares) => {
+    if (typeof query === "function") {
+        query = query()
+    }
+
     if (typeof query !== "string") {
         throw new Error("createAsyncGraphQLAction: 'query' must be a string.");
     }

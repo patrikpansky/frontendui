@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll, LazyRender } from "@hrbolek/uoisfrontend-shared"
 import { SectionMediumContent } from "../../Section/SectionMediumContent"
-import { SectionPartsAttribute } from "../../Section/Vectors/SectionPartsAttribute"
+import { SectionPartsAttribute, SectionPartsAttributeView } from "../../Section/Vectors/SectionPartsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
 import { PlusLg } from 'react-bootstrap-icons'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import { HorizontalLine } from '../../Part'
 
 /**
  * A component for displaying the `section` attribute of an form entity.
@@ -42,21 +43,26 @@ export const FormSectionAttributeView = ({form}) => {
     return (
         <>  
 
-            <div className='btn-group' role='group' aria-label="Sekce formuláře">
+            <div className='screen-only '>
+            <div className='btn-group d-flex flex-wrap' role='group' aria-label="Sekce formuláře">
             {sections.map(
                 (section, _index) => 
                     <button key={section.id}
                         type={"button"} 
                         onClick={() => setIndex(_index)}
-                        className={"btn btn-lg " + (index === _index? "btn-primary": "btn-outline-success")} 
+                        className={"btn " + (index === _index? "btn-primary": "btn-outline-success")} 
                         >
                             {section?.name}
                     </button>
             )}
             </div>
-            <LazyRender>
-                <SectionPartsAttribute section={sectionToRender} />
-            </LazyRender>
+            </div>
+            
+            {sections.map((section) => <div key={section.id} className={section===sectionToRender?"":"print-only"}>
+                <SectionPartsAttributeView section={section} />
+            </div>
+            )}
+
         </>
     )
 }
@@ -242,7 +248,7 @@ export const FormSectionAttribute = ({ form }) => {
                     {sections.map((section, _index) => (
                         <DragableEnvelop key={section.id} index={_index} draggableId={section.id} >
                             <ButtonLike 
-                                className={`btn ${_index === index ? "btn-primary" : "btn-outline-secondary"}`}
+                                className={`d-flex flex-wrap btn ${_index === index ? "btn-primary" : "btn-outline-secondary"}`}
                                 section={section} 
                                 onClick={() => setIndex(_index)}>
                                 {section.name}

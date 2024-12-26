@@ -59,6 +59,7 @@ export const RequestPageNavbar = ({ request, onSearchChange }) => {
         { segment: 'requests', label: 'Požadavky' },
     ]
     return (
+        <div className='screen-only'>
         <MyNavbar onSearchChange={onSearchChange} >
             {segments.map(({ segment, label }) => (
                 <Nav.Item key={segment} >
@@ -71,5 +72,6 @@ export const RequestPageNavbar = ({ request, onSearchChange }) => {
                 </Nav.Item>
             ))}
       </MyNavbar>
+      </div>
     );
 };

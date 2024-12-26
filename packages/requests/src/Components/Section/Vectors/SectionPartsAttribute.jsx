@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PartItemsAttribute } from "../../Part/Vectors/PartItemsAttribute"
+import { PartItemsAttribute, PartItemsAttributeView } from "../../Part/Vectors/PartItemsAttribute"
 import { DragDropContext, DragableEnvelop, DroppableContainer } from '../../DragAndDrop/dad';
 import { HorizontalLine, PartHeaderLine } from "../../Part";
 import { PlusLg } from "react-bootstrap-icons";
@@ -41,8 +41,8 @@ export const SectionPartsAttributeView = ({section}) => {
         <>
             {parts.map(
                 part => <div key={part.id}>
-                    <PartHeaderLine type="text" text={part?.name || "Sekce"} />
-                    <PartItemsAttribute part={part} />
+                    {part?.name && <PartHeaderLine part={part} />}
+                    <PartItemsAttributeView part={part} />
                 </div>
             )}
         </>

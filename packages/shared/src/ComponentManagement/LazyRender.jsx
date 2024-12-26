@@ -9,7 +9,21 @@ import React, { useState, useEffect, useRef } from "react";
  */
 export const LazyRender = ({ children }) => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isPrinting, setIsPrinting] = useState(false);
     const containerRef = useRef(null);
+
+    useEffect(() => {
+        const handleBeforePrint = () => setIsPrinting(true);
+        const handleAfterPrint = () => setIsPrinting(false);
+    
+        window.addEventListener("beforeprint", handleBeforePrint);
+        window.addEventListener("afterprint", handleAfterPrint);
+    
+        return () => {
+          window.removeEventListener("beforeprint", handleBeforePrint);
+          window.removeEventListener("afterprint", handleAfterPrint);
+        };
+      }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -29,7 +43,7 @@ export const LazyRender = ({ children }) => {
         return () => observer.disconnect();
     }, []);
 
-    if (!isVisible) {
+    if (!isVisible && !isPrinting) {
         return (
             <div ref={containerRef} style={{ minHeight: "100px", backgroundColor: "#f8f9fa" }} />
         );

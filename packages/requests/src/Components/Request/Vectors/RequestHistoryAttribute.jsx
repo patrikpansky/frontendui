@@ -33,13 +33,13 @@ export const RequestHistoryAttribute = ({request}) => {
     if (typeof histories === 'undefined') return null
     return (
         <>
-            <table className="table table-bordered table-striped">
+            <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th>stav</th>
-                        <th>osoba</th>
-                        <th>datum</th>
-                        <th>poz</th>
+                        <th>Stav</th>
+                        <th>Osoba</th>
+                        <th>Datum</th>
+                        <th>Poznámka</th>
                     </tr>
                 </thead>
                 <tbody>

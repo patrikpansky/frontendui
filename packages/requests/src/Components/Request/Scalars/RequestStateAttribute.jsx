@@ -239,7 +239,8 @@ export const RequestCurrentState = ({request}) => {
     const _state = items[state.id]
     if (_state) {
         return (
-            <span className="btn btn-lg btn-outline-secondary form-control">Stav {_state?.name}</span>
+            // <span className="btn btn-lg btn-outline-secondary form-control">Stav {_state?.name}</span>
+            <span>Stav {_state?.name}</span>
         )
     }
 }
