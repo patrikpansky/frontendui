@@ -11,6 +11,7 @@ const styles = {
         letterSpacing: "0.05em",
         marginTop: "1.5rem",
         marginBottom: "1.5rem",
+        // width: "100%"
     },
     textDividerLine: {
         flex: 1,
@@ -82,11 +83,13 @@ export const PartHeaderLine = ({ part, onNameChange }) => {
 
 export const HorizontalLine = ({children}) => {
     return (
+        // <div style={{"width": "100%"}}>
         <div style={styles.textDividerContainer}>
             <div style={styles.textDividerLine}></div>
             <span style={{"margin": "0 0.5rem"}}>{children}</span>
             <div style={styles.textDividerLine}></div>
         </div>
+        // </div>
     )
 }
 

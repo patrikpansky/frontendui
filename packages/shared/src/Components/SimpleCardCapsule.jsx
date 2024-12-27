@@ -11,6 +11,8 @@ const styles = {
         color: "#6c757d",
         backgroundColor: "white",
         textAlign: "center",
+        width: "100%",
+        minWidth: "500px"
     },
     capsuleTitle: {
         position: "absolute", // Position the title on the border

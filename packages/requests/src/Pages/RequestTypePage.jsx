@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import { createLazyComponent, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
@@ -70,83 +70,143 @@ const RequestTypePageContent = ({requesttype}) => {
     )
 }
 
-const FormDesigner = ({form}) => {
-    const index = useMemo(
-        () => {
-            const result = {[form.id]: form}
-            form?.sections.forEach(
-                (section) => {
-                    result[section.id] = {...section, form}
-                    section?.parts.forEach(
-                        (part) => {
-                            result[part.id] = {...part, section}
-                            part?.items.forEach(
-                                (item) => {
-                                    result[item.id] = {...item, part}
-                                }
-                            )
-                        }
-                    )
-                }
-            )
-            return result
-        },
-        [form]
-    )
+export const FormDesigner = ({ form }) => {
+    const [enabledDroppableIds, setEnabledDroppableIds] = useState([]);
+    const [{formDisabled, sectionDisabled, partDisabled}, setDropAllowed] = useState({formDisabled: true, sectionDisabled: true, partDisabled: true});
+
+    const index = useMemo(() => {
+        const result = { [form.id]: form };
+        form?.sections.forEach((section) => {
+            result[section.id] = { ...section, form };
+            section?.parts.forEach((part) => {
+                result[part.id] = { ...part, section };
+                part?.items.forEach((item) => {
+                    result[item.id] = { ...item, part };
+                });
+            });
+        });
+        return result;
+    }, [form]);
+
+    const onDragStart = (start) => {
+        const { source } = start;
+
+        // Example: Enable droppable only for specific targets
+        const sourceObject = index[source.droppableId]
+        const map = {
+            "ItemGQLModel": {formDisabled: true, sectionDisabled: true, partDisabled: false},
+            "PartGQLModel": {formDisabled: true, sectionDisabled: false, partDisabled: true},
+            "SectionGQLModel": {formDisabled: false, sectionDisabled: true, partDisabled: true}
+        }
+        const allowedSetup = map[sourceObject.__typename]
+        console.log("onDragStart", start, allowedSetup);
+        setDropAllowed(allowedSetup)
+    };
+
+    const onDragUpdate = (update) => {
+        console.log("onDragUpdate", update);
+        // const { destination } = update;
+
+        // if (destination && destination.droppableId === "restricted") {
+        //     setDropAllowed(false);
+        // } else {
+        //     setDropAllowed(true);
+        // }
+    };
 
     const onDragEnd = (result) => {
-        console.log("onDragEnd", result)
+        console.log("onDragEnd", result);
         if (!result.destination) return;
 
-        // const reorderedSections = Array.from(sections);
-        // const [movedSection] = reorderedSections.splice(result.source.index, 1);
-        // reorderedSections.splice(result.destination.index, 0, movedSection);
+        const { source, destination } = result;
+        const sourceParentId = source.droppableId;
+        const destinationParentId = destination.droppableId;
 
-    }
+        const map = {
+            "FormGQLModel": "sections",
+            "PartGQLModel": "items",
+            "SectionGQLModel": "parts"
+        }
+
+        if (sourceParentId === destinationParentId) {
+            // Same parent: reorder
+            const parent = index[sourceParentId];
+            console.log(`moving ${parent.__typename}(${sourceParentId}) [${source.index}] => [${destination.index}]`)
+            
+            const itemsname = map[parent.__typename]
+            const parentitems = parent[itemsname]
+            const items = [...parentitems];
+            const [movedItem] = items.splice(source.index, 1);
+            items.splice(destination.index, 0, movedItem);
+            parent[itemsname] = items;
+        } else {
+            // Move between parents
+            const sourceParent = index[sourceParentId];
+            const itemsname = map[sourceParent.__typename]
+            const destinationParent = index[destinationParentId];
+            console.log(`moving ${sourceParent.__typename}(${sourceParentId})[${source.index}] => ${destinationParent.__typename}(${destinationParentId})[${destination.index}]`)
+            const sourceParentItems = sourceParent[itemsname]
+            const destinationParentItems = destinationParent[itemsname]
+            const [movedItem] = sourceParentItems.splice(source.index, 1);
+            destinationParentItems.splice(destination.index, 0, movedItem);
+        }
+    };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Row>
-                <LeftColumn>
-                    <DroppableContainer droppableId="library" >
-                        {/* {ItemIndex.map(
-                            (Visualiser, i) => <Visualiser key={i}/>
-                        )} */}
-                    </DroppableContainer>
-                </LeftColumn>
-                <MiddleColumn>
-                    <DroppableContainer droppableId="form" >
-                        <SimpleCardCapsule title={form.name}>
-                            {form?.sections.map(
-                                (section, i) => <DragableEnvelop draggableId={section.id} index={i}>
-                                    <SimpleCardCapsule title={section?.name}>
-                                        {section?.parts.map(
-                                            (part, j) => <DragableEnvelop draggableId={part.id} index={j}>
-                                                <SimpleCardCapsule title={part?.name}>
-                                                    <DroppableContainer droppableId={part.id} >
-                                                        {part?.items.map(
-                                                            (item, k) => <DragableEnvelop draggableId={item.id} index={k}>
-                                                                <SimpleCardCapsule title={item?.name}>
-                                                                    <Item item={item}/>
-                                                                </SimpleCardCapsule>
-                                                            </DragableEnvelop>
-                                                        )}
-                                                    </DroppableContainer>
-                                                </SimpleCardCapsule>
-                                                <HorizontalLine>Plus</HorizontalLine>
-                                            </DragableEnvelop>
-                                        )}
-                                    </SimpleCardCapsule>
-                                </DragableEnvelop>
-                            )}
-                            <HorizontalLine>Plus</HorizontalLine>
+        <DragDropContext
+            onDragStart={onDragStart}
+            onDragUpdate={onDragUpdate}
+            onDragEnd={onDragEnd}
+        >
+            <div className="row">
+                <div className="col">
+                    <DroppableContainer droppableId="library" isDropDisabled={true}>
+                        <SimpleCardCapsule title="Library">
+                            <p>Drag items here</p>
                         </SimpleCardCapsule>
                     </DroppableContainer>
-                </MiddleColumn>
-            </Row>
+                </div>
+                <div className="col">
+                    <DroppableContainer droppableId={form.id} isDropDisabled={formDisabled}>
+                        <SimpleCardCapsule title={form.name}>
+                            {form?.sections.map((section, i) => (
+                                <DroppableContainer droppableId={section.id} isDropDisabled={sectionDisabled}>
+                                    <DragableEnvelop key={section.id} draggableId={section.id} index={i}>
+                                        <SimpleCardCapsule title={section.name}>
+                                            {section?.parts.map((part, j) => (
+                                                <DragableEnvelop key={part.id} draggableId={part.id} index={j}>
+                                                    <SimpleCardCapsule title={part.name}>
+                                                        <DroppableContainer droppableId={part.id} isDropDisabled={partDisabled}>
+                                                            {part?.items.map((item, k) => (
+                                                                <DragableEnvelop
+                                                                    key={item.id}
+                                                                    draggableId={item.id}
+                                                                    index={k}
+                                                                >
+                                                                    <SimpleCardCapsule title={item.name}>
+                                                                        <p>Item Content</p>
+                                                                    </SimpleCardCapsule>
+                                                                </DragableEnvelop>
+                                                            ))}
+                                                        </DroppableContainer>
+                                                    </SimpleCardCapsule>
+                                                    <HorizontalLine>+ Add Item</HorizontalLine>
+                                                </DragableEnvelop>
+                                            ))}
+                                        </SimpleCardCapsule>
+                                        <HorizontalLine>+ Add Part</HorizontalLine>
+                                    </DragableEnvelop>
+                                </DroppableContainer>
+                            ))}
+                            <HorizontalLine>+ Add Section</HorizontalLine>
+                        </SimpleCardCapsule>
+                    </DroppableContainer>
+                </div>
+            </div>
         </DragDropContext>
-    )
-}
+    );
+};
+
 
 /**
  * A lazy-loading component for displaying the content of a `requesttype` entity.
