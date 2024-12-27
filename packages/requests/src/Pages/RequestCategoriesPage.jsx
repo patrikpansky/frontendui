@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Row from 'react-bootstrap/Row'
-import { ButtonWithDialog, createLazyComponent, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
+import Col from 'react-bootstrap/Col'
+import { ButtonWithDialog, createLazyComponent, DeleteButton, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { RequestCategoryReadAsyncAction } from "./Queries/RequestCategoryReadAsyncAction"
 import { RequestCategoryPageReadAsyncAction } from "./Queries/RequestCategoryPageReadAsyncAction"
 import { RequestPageNavbar } from "./RequestPageNavbar"
 import { RequestCategoriesTable } from "../Components/RequestCategory"
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { RequestCategoryInsertAsuncAction } from './Queries/RequestCategoryInsertMutation'
+import { RequestCategoryInsertAsyncAction } from './Queries/RequestCategoryInsertMutation'
+import { RequestTypeInsertAsyncAction } from './Queries/RequestTypeInsertMutation'
+import { RequestTypeMediumCard } from '../Components/RequestType/RequestTypeMediumCard'
+import { RequestCategoryTypesAttribute } from '../Components/RequestCategory/Vectors/RequestCategoryTypesAttribute'
+import { RequestCategoryMediumCard } from '../Components/RequestCategory/RequestCategoryMediumCard'
+import { RequestCategoryCardCapsule } from '../Components/RequestCategory/RequestCategoryCardCapsule'
+import { RequestTypeCardCapsule } from '../Components/RequestType/RequestTypeCardCapsule'
 
 /**
  * A page content component for displaying detailed information about an requestcategory entity.
@@ -32,12 +40,32 @@ import { RequestCategoryInsertAsuncAction } from './Queries/RequestCategoryInser
 const RequestCategoryPageContent = ({requestcategory}) => {
     return (
         <>
-            RequestCategory {JSON.stringify(requestcategory)}
+            <RequestPageNavbar />
+            <Row>
+                <LeftColumn></LeftColumn>
+                <MiddleColumn>
+                    RequestCategory {JSON.stringify(requestcategory)}
+                </MiddleColumn>
+            </Row>
+            
         </>
     )
 }
 
+const Some = ({requestcategory}) => {
+    return (
+        <DeleteButton>{requestcategory?.name}</DeleteButton>
+    )
+}
 
+const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
+    const {requesttype} = props
+    return (
+        <Col>
+            <RequestTypeCardCapsule {...props}/>
+        </Col>
+    )
+}
 /**
  * A page content component for displaying detailed information about an requestcategory entity.
  *
@@ -57,20 +85,52 @@ const RequestCategoryPageContent = ({requestcategory}) => {
  * <RequestCategoryPageContent requestcategory={requestcategoryEntity} />
  */
 const RequestCategoriesPageContent = ({requestcategories}) => {
+    const items = useSelector(state => state.items)
+    requestcategories = Object.values(items).filter(
+        item => item?.__typename === "RequestCategoryGQLModel"
+    )
+    const [data, setData] = useState(requestcategories || [])
+    const addRow = (newRow) => {
+        setData(prev => [...prev, newRow])
+    }
+    useEffect(() => {
+        setData(requestcategories)
+    }, [requestcategories])
     return (
         <>
             <RequestPageNavbar />
-            RequestCategory {JSON.stringify(requestcategories)}
+            {/* RequestCategory {JSON.stringify(requestcategories)} */}
             <Row>
                 <LeftColumn>
 
                 </LeftColumn>
                 <MiddleColumn>
-                    <RequestCategoriesTable requestcategories={requestcategories}>
-                        A
-                    </RequestCategoriesTable>
-                    
-                    <RequestCategoryCreateButton />
+                    {/* <RequestCategoriesTable requestcategories={data}>
+                        <RequestTypeCreateButton className="btn btn-outline-primary" />
+                    </RequestCategoriesTable> */}
+                    <Row>
+                    {requestcategories.map(requestcategory => 
+                        <Col key={requestcategory.id}>
+                            <RequestCategoryCardCapsule requestcategory={requestcategory}>
+                                <Row>
+                                    <RequestCategoryTypesAttribute requestcategory={requestcategory}>
+                                        <RequestTypeMediumCardCol>
+                                            
+                                        </RequestTypeMediumCardCol>
+                                    </RequestCategoryTypesAttribute>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <RequestTypeCreateButton requestcategory={requestcategory} className='btn btn-outline-primary form-control'/>
+                                    </Col>
+                                </Row>
+                            </RequestCategoryCardCapsule>
+                        </Col>
+                    )}   
+                    </Row>             
+                    <br />
+                    {/* {JSON.stringify(requestcategories)}     */}
+                    <RequestCategoryCreateButton onNew={addRow}/>
                 </MiddleColumn>
             </Row>
         </>
@@ -159,23 +219,31 @@ export const RequestCategoryPage = () => {
     return <RequestCategoriesPageContentLazy requestcategories={{where: where, skip: 0, limit: 10}} />
 }
 
-const RequestCategoryCreateButton = ({}) => {
-    const { fetch, loading, error, dispatchResult } = useAsyncAction(RequestCategoryInsertAsuncAction, {}, {deferred: true})
-    const [newCategory, setNewCategory] = useState({})
+const RequestCategoryCreateButton = ({onNew=()=>null}) => {
+    const state = useAsyncAction(RequestCategoryInsertAsyncAction, {}, {deferred: true})
+    const { fetch, loading, error, dispatchResult } = state
+    // console.log("RequestCategoryCreateButton got state", state)
+    const [newCategory, setNewCategory] = useState({
+        name: "Kategorie požadavků",
+        name_en: "Request category"
+    }) 
     const onChange = (e) => {
         const name = e.target.id
         const value = e.target.value
         setNewCategory(prev => ({...prev, [name]: value}))
     }
 
-    const onConfirmCreate = () => {
-        fetch({...newCategory, id: crypto.randomUUID()})
+    const onConfirmCreate = async() => {
+        const fetchResult = await fetch({...newCategory, id: crypto.randomUUID()})
+        const gotCategory = fetchResult?.data?.result
+        console.log("new category", gotCategory)
+        onNew(gotCategory)
     }
 
     return (<>
-        {"error " + error?JSON.stringify(error):""}< br/>
+        {/* {"error " + error?JSON.stringify(error):""}< br/> */}
         {/* {"error keys " + error?JSON.stringify(Object.keys(error)):""}< br/> */}
-        {JSON.stringify(dispatchResult)} <br />
+        {/* {JSON.stringify(dispatchResult)} <br /> */}
         {error && <ErrorHandler errors={error} />}
         {loading && <LoadingSpinner text='Ukládám' />}
 
@@ -186,6 +254,50 @@ const RequestCategoryCreateButton = ({}) => {
             onClick={onConfirmCreate}
         >
             <SimpleCardCapsule title={"Název kategorie"}>
+                <input id="name" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={newCategory.name} />
+            </SimpleCardCapsule>
+            <SimpleCardCapsule title={"Anglický název"}>
+                <input id="name_en" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={newCategory.name_en} />
+            </SimpleCardCapsule>
+        </ButtonWithDialog>
+    </>)
+}
+
+const RequestTypeCreateButton = ({onNew=()=>null, requestcategory, ...props}) => {
+    const state = useAsyncAction(RequestTypeInsertAsyncAction, {}, {deferred: true})
+    const { fetch, loading, error, dispatchResult } = state
+    // console.log("RequestCategoryCreateButton got state", state)
+    const [newType, setNewType] = useState({
+        category_id: requestcategory.id
+    }) 
+    const onChange = (e) => {
+        const name = e.target.id
+        const value = e.target.value
+        setNewType(prev => ({...prev, [name]: value}))
+    }
+
+    const onConfirmCreate = async() => {
+        const fetchResult = await fetch({...newType, id: crypto.randomUUID()})
+        const gotCategory = fetchResult?.data?.result
+        console.log("new type", gotCategory)
+        onNew(gotCategory)
+    }
+
+    return (<>
+        {/* {"error " + error?JSON.stringify(error):""}< br/> */}
+        {/* {"error keys " + error?JSON.stringify(Object.keys(error)):""}< br/> */}
+        {/* {JSON.stringify(dispatchResult)} <br /> */}
+        {error && <ErrorHandler errors={error} />}
+        {loading && <LoadingSpinner text='Ukládám' />}
+
+        <ButtonWithDialog
+            dialogTitle="Nový typ požadavků"
+            buttonLabel='Vytvořit nový typ požadavků'
+            className='btn btn-outline-primary form-control'
+            {...props}
+            onClick={onConfirmCreate}
+        >
+            <SimpleCardCapsule title={"Název typu"}>
                 <input id="name" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={""} />
             </SimpleCardCapsule>
             <SimpleCardCapsule title={"Anglický název"}>

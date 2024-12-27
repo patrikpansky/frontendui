@@ -93,10 +93,10 @@ import { Dialog } from './Dialog';
  * };
  */
 export const ButtonWithDialog = ({
-    buttonLabel = "Click Me",
-    dialogTitle = "Confirm Action",
+    buttonLabel = "Provést",
+    dialogTitle = "Potvrďte akci",
     oklabel = "Ok",
-    cancellabel = "Cancel",
+    cancellabel = "Zrušit",
     onClick,
     children,
     ...props

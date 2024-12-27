@@ -29,7 +29,7 @@
  * }).then(data => console.log(data))
  *   .catch(err => console.error(err));
  */
-export const authorizedFetch2 = (path, params = {}, options = {}) => {
+export const authorizedFetch2 = async (path, params = {}, options = {}) => {
     // Destructure options with default values
     const {
         replaceUUID = false,
@@ -60,33 +60,47 @@ export const authorizedFetch2 = (path, params = {}, options = {}) => {
     }
 
     // Perform the fetch request
-    return fetch(overridenPath, fetchParams)
-        .then((response) => {
-            // Handle 302 redirects explicitly if running in a browser environment
-            if (response.status === 302 && typeof window !== 'undefined') {
-                const location = response.headers.get('location');
-                if (location) {
-                    const redirectLocation = new URL(location, window.location.origin);
-                    window.location.assign(redirectLocation.toString());
-                } else {
-                    return Promise.reject(
-                        new Error('Redirect detected (302) but no location header found.')
-                    );
-                }
-            }
+    let fetchResponse = null
+    let jsonResponse = null
+    try {
+        fetchResponse = await fetch(overridenPath, fetchParams)
+        jsonResponse = await fetchResponse.json()
+    } catch (error) {
+        console.log("fetch got error ", error)
+        throw error
+    }
+    return jsonResponse
+    // return 
+    //     .then((response) => {
+    //         const 
+    //         // Handle 302 redirects explicitly if running in a browser environment
+    //         if (response.status === 302 && typeof window !== 'undefined') {
+    //             const location = response.headers.get('location');
+    //             if (location) {
+    //                 const redirectLocation = new URL(location, window.location.origin);
+    //                 window.location.assign(redirectLocation.toString());
+    //             } else {
+    //                 throw new Error(`HTTP error: ${response.status} - ${response.statusText}`)
+    //                 // return Promise.reject(
+    //                 //     new Error('Redirect detected (302) but no location header found.')
+    //                 // );
+    //             }
+    //         }
 
-            // Reject non-2xx responses
-            if (!response.ok) {
-                return Promise.reject(
-                    new Error(`HTTP error: ${response.status} - ${response.statusText}`)
-                );
-            }
+    //         // Reject non-2xx responses
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error: ${response.status} - ${response.statusText}`)
+    //             // return Promise.reject(
+    //             //     new Error(`HTTP error: ${response.status} - ${response.statusText}`)
+    //             // );
+    //         }
 
-            // Parse and return the JSON response
-            return response.json();
-        })
-        .catch((error) => {
-            console.error('Error during fetch operation:', error);
-            return Promise.reject(new Error(`Fetch failed: ${error.message || error}`));
-        });
+    //         // Parse and return the JSON response
+    //         return response.json();
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error during fetch operation:', error);
+    //         throw error
+    //         // return Promise.reject(new Error(`Fetch failed: ${error.message || error}`));
+    //     });
 };

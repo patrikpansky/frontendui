@@ -56,7 +56,9 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
     function LazyComponent(props) {
         const entityValue = props[entityName];
         // const [result, promise, state] = useFreshItem(entityValue, asyncAction);
-        const { entity: result, loading, error } = useAsyncAction(asyncAction, entityValue)
+        const state = useAsyncAction(asyncAction, entityValue)
+        const { entity: result, loading, error } = state
+        // console.log("LazyComponent.useAction got state", state)
 
         if (result) {
             const wrappedProps = {

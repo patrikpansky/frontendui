@@ -21,4 +21,4 @@ fragment RequestCategory on RequestCategoryGQLModel {
 }
 `;
 
-export const RequestCategoryInsertAsuncAction = createAsyncGraphQLAction(RequestCategoryInsertMutation);
+export const RequestCategoryInsertAsyncAction = createAsyncGraphQLAction(RequestCategoryInsertMutation);

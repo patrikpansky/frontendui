@@ -48,94 +48,70 @@ import { useDispatch, useSelector } from "react-redux";
  *   );
  * };
  */
-export const useAsyncAction = (AsyncAction, queryVariables, params={deferred: false, network: true}) => {
+export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred: false, network: true }) => {
     const dispatch = useDispatch();
     const items = useSelector((state) => state["items"]);
-    const {deferred, network} = params
+    const { deferred, network } = params;
+
     if (!items) {
-        throw Error(
+        throw new Error(
             "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
         );
     }
 
     const { id } = queryVariables;
-
     const result = items[id];
-
-    // Suspense resource
-    const [resource, setResource] = useState(() => createResource(deferred?"success":"pending"));
-    const [lastParams, setLastParams] = useState(queryVariables);
-    const [dispatchResult, setDispatchResult] = useState(null);
-
+    
     const fetchData = async (fetchParams) => {
-        const newParams = fetchParams?{...lastParams, ...fetchParams}:lastParams
-        if (fetchParams) setLastParams(newParams)
-        return new Promise((resolve, reject) => {
-            resource.fetch(async () => {
-                try {
-                    const actionResult = await dispatch(AsyncAction(newParams));
-                    setDispatchResult(actionResult); // Save the result of dispatch
-                    resolve(actionResult); // Resolve the promise with the action result
-                    return actionResult;
-                } catch (error) {
-                    reject(error); // Reject the promise in case of an error
-                    throw error;
-                }
-            });
-        });
+        // console.log("useAsyncAction fetch start while state", state)
+        const newParams = fetchParams ? { ...state.lastParams, ...fetchParams } : state.lastParams;
+        if (fetchParams) {
+            setState(prev => ({...prev, lastParams: fetchParams}))
+        }
+        let actionResult= null
+        try {
+            actionResult = await dispatch(AsyncAction(newParams));
+            setState(prev => ({...prev, loading: false, error: null, dispatchResult: actionResult }))
+        } catch (error) {
+            // console.log("useAsyncAction catch the error", error)
+            setState(prev => ({...prev, loading: false, error: error, dispatchResult: null }))
+        }
+        // console.log("useAsyncAction fetch end while state", state)
+        return actionResult
     };
 
+    const [state, setState] = useState({
+        loading: !deferred,
+        error: null,
+        dispatchResult: null,
+        fetch: fetchData,
+        lastParams: queryVariables,
+        // id: crypto.randomUUID()
+    })
+    // const setState = (what) => {
+    //     console.log("useAsyncAction settting state")
+    //     if (typeof what === "function") {
+    //         const wrap = (prev) => {
+    //             const next = what(prev)
+    //             console.log("useAsyncAction changed state from", prev)
+    //             console.log("useAsyncAction changed state into", next)
+    //             return next
+    //         }
+    //         _setState(wrap)
+    //     } else {
+    //         _setState(what)
+    //     }
+    // }
+    // console.log("useAsyncAction has state", state, params)
     useEffect(() => {
         if (network && !deferred) {
-            fetchData(queryVariables);
+            fetchData()
         }
-    }, [id, dispatch, AsyncAction]);
-    //queryVariables must be ommited, otherwise this will be infinite loop of rendering;
+    }, [id, AsyncAction]);
 
     return {
-        read: resource.read, // Provide Suspense-compatible `read` function
-        entity: result || dispatchResult, //this is for queries for vectors, which will not be saved into store
-        loading: resource.getStatus() === "pending",
-        error: resource.getStatus() === "error" ? resource.getResult() : null,
-        fetch: fetchData, // Refetch with new parameters
-        dispatchResult: dispatchResult, // Include the raw dispatch result
-    };
-};
-
-// Helper to create a Suspense-compatible resource
-const createResource = (initialStatus="pending") => {
-    let status = initialStatus;
-    let result;
-    let suspender;
-
-    return {
-        fetch(fetcher) {
-            status = "pending";
-            result = undefined;
-            suspender = fetcher().then(
-                (res) => {
-                    status = "success";
-                    result = res;
-                },
-                (err) => {
-                    status = "error";
-                    result = err;
-                }
-            );
-        },
-        read() {
-            if (status === "pending") {
-                throw suspender; // Suspends rendering
-            } else if (status === "error") {
-                throw result; // Throws the error for an ErrorBoundary
-            }
-            return result; // Returns the resolved data
-        },
-        getStatus() {
-            return status;
-        },
-        getResult() {
-            return result;
-        },
+        ...state,
+        // read: resource.read, // Suspense-compatible `read` function
+        entity: result || state.dispatchResult,
     };
 };

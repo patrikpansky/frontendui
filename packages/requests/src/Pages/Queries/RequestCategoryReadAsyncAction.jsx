@@ -2,9 +2,10 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 const RequestCategoryQueryRead = `
 query RequestCategoryQueryRead($id: UUID!) {
-    result: requestcategoryById(id: $id) {
+    result: requestCategoryById(id: $id) {
         __typename
         id
+        ...RequestCategory
     }
 }
 
@@ -14,6 +15,15 @@ fragment RequestCategory on RequestCategoryGQLModel {
   lastchange
   name
   nameEn
+  requestTypes {
+    ...RequestTypeLink
+  }
+}
+
+fragment RequestTypeLink on RequestTypeGQLModel {
+  __typename
+  id
+  name
 }
 `;
 

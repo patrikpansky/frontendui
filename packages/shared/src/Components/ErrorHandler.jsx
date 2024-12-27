@@ -65,6 +65,10 @@ const ErrorDisplay = ({ errors }) => {
                         <p><strong>Path:</strong> {error.path.join(" > ")}</p>
                     )}
                     <ErrorExtensionsDisplay extensions={error.extensions} />
+                    {error?.raw && JSON.stringify(error.raw)}
+                    {JSON.stringify(error)}
+                    {error?.raw?.toString && JSON.stringify(error.raw.toString())}
+                    {/* {error?.raw?.toString && JSON.stringify(error.toString())} */}
                 </div>
             ))}
         </div>

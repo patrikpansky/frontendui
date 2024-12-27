@@ -1,28 +1,20 @@
 import { createAsyncGraphQLAction, updateItemsFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared";
 
-const RequestCategoryPageRead = `
-query RequestCategoryPageRead($skip: Int, $limit: Int, $where: RequestCategoryInputFilter) {
-  result: requestCategoryPage(skip: $skip, limit: $limit, where: $where) {
-    ...RequestCategory
+const RequestTypePageRead = `
+query RequestTypePageRead($skip: Int, $limit: Int, $where: RequestTypeInputFilter) {
+  result: requestTypePage(skip: $skip, limit: $limit, where: $where) {
+    ...RequestType
   }
 }
 
-fragment RequestCategory on RequestCategoryGQLModel {
+fragment RequestType on RequestTypeGQLModel {
   __typename
   id
   lastchange
   name
   nameEn
-  requestTypes {
-    ...RequestTypeLink
-  }
 }
 
-fragment RequestTypeLink on RequestTypeGQLModel {
-  __typename
-  id
-  name
-}
 `;
 /**
  * An asynchronous action to execute a GraphQL query for reading request category entities.
@@ -59,8 +51,8 @@ fragment RequestTypeLink on RequestTypeGQLModel {
  *   });
  */
 
-export const RequestCategoryPageReadAsyncAction = createAsyncGraphQLAction(
-    RequestCategoryPageRead,
+export const RequestTypePageReadAsyncAction = createAsyncGraphQLAction(
+    RequestTypePageRead,
     updateItemsFromGraphQLResult,
     (jsonResult) => (dispatch, getState, next) => {
         const requests = jsonResult?.data?.result || [];
