@@ -72,8 +72,8 @@ const RequestReadAsyncAction = createAsyncGraphQLAction(RequestReadQuery);
 const ItemReadQuery = `
 `;
 const ItemUpdateQuery = `
-mutation ItemUpdateQuery($id: UUID!, $lastchange: DateTime!, $value: String) {
-  result: formItemUpdate(item: {id: $id, lastchange: $lastchange, value: $value}) {
+mutation ItemUpdateQuery($id: UUID!, $lastchange: DateTime!, $name: string, $name_en: String, $value: String) {
+  result: formItemUpdate(item: {id: $id, lastchange: $lastchange, value: $value, name: $name, nameEn: $name_en}) {
     ...ItemWithRequest
     ... on FormItemGQLModelUpdateError {
       Entity {
@@ -107,12 +107,12 @@ fragment ItemWithRequest on FormItemGQLModel {
 }
 `;
 export const ItemUpdateAsyncAction = createAsyncGraphQLAction(ItemUpdateQuery,
-  (jsonResult) => (dispatch, getState, next) => {
-    const item = jsonResult?.data?.result;
-    // console.log("ItemUpdateAsyncAction", item)
-    const request = item?.part?.section?.form?.request;
-    // dispatch(RequestReadAsyncAction(request)) // TODO integrate with mutation
-    if (item) return next(request);
-  },
-  RequestReadAsyncAction
+  // (jsonResult) => (dispatch, getState, next) => {
+  //   const item = jsonResult?.data?.result;
+  //   // console.log("ItemUpdateAsyncAction", item)
+  //   const request = item?.part?.section?.form?.request;
+  //   // dispatch(RequestReadAsyncAction(request)) // TODO integrate with mutation
+  //   if (item) return next(request);
+  // },
+  // RequestReadAsyncAction
 );

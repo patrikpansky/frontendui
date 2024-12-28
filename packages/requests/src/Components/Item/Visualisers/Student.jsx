@@ -1,7 +1,7 @@
 import { createAsyncGraphQLAction, useAsyncAction, useFreshItem } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent, LazyRender, useMe } from "@hrbolek/uoisfrontend-shared"
 import { UserLink, UserMediumCard, UserMediumContent } from "@hrbolek/uoisfrontend-ug"
-import { ItemUpdateAsyncAction } from "./Queries/ItemUpdateAsyncAction"
+import { ItemUpdateAsyncAction } from "../Queries/ItemUpdateAsyncAction"
 
 const StudentQuery = 
 `

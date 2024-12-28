@@ -1,29 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog } from './Dialog';
+import { ChildWrapper } from '../ComponentManagement';
 
 /**
- * A reusable button component that opens a dialog when clicked.
- * The dialog allows gathering data and confirms the action with a callback on confirmation.
+ * ButtonWithDialog Component
+ *
+ * A reusable button component that opens a dialog when clicked. The dialog
+ * allows gathering data and confirms the action with a callback on confirmation.
+ * Supports controlled data changes through child components.
  *
  * @component
  * @param {Object} props - Props passed to the component.
- * @param {string} [props.buttonLabel="Click Me"] - Label for the button that opens the dialog.
- * @param {string} [props.dialogTitle="Confirm Action"] - Title of the dialog.
- * @param {string} [props.oklabel="Ok"] - Label for the confirmation button in the dialog.
- * @param {string} [props.cancellabel="Cancel"] - Label for the cancel button in the dialog.
- * @param {Function} props.onClick - Callback function executed on confirmation (`onOk`) of the dialog.
- * @param {React.ReactNode} [props.children] - Content to display inside the dialog for gathering data.
- * @param {...Object} props - Additional props passed to the button element.
+ * @param {string} [props.buttonLabel="Provést"] - The label displayed on the button.
+ * @param {string} [props.dialogTitle="Potvrďte akci"] - The title displayed on the dialog.
+ * @param {string} [props.oklabel="Ok"] - The label for the confirmation button in the dialog.
+ * @param {string} [props.cancellabel="Zrušit"] - The label for the cancel button in the dialog.
+ * @param {Function} props.onClick - Callback function executed on dialog confirmation. 
+ *    Receives the updated state of the form data from the dialog.
+ *    @param {Object} state - The current state object collected from the dialog's child components.
+ * @param {Object} [props.params={}] - Initial state for tracking input changes from dialog children.
+ * @param {React.ReactNode} props.children - Content inside the dialog for gathering data.
+ * @param {Object} props - Additional props passed to the button element.
  *
  * @example
- * // Basic Usage
- * import React from "react";
- * import { ButtonWithDialog } from "./ButtonWithDialog";
- *
+ * // Basic Usage Example
  * const Example = () => {
- *     const handleAction = () => {
- *         alert("Action confirmed!");
- *     };
+ *     const handleConfirm = () => alert("Action confirmed!");
  *
  *     return (
  *         <ButtonWithDialog
@@ -31,14 +33,12 @@ import { Dialog } from './Dialog';
  *             dialogTitle="Are you sure?"
  *             oklabel="Confirm"
  *             cancellabel="Cancel"
- *             onClick={handleAction}
+ *             onClick={handleConfirm}
  *         >
  *             <p>Please confirm your action.</p>
  *         </ButtonWithDialog>
  *     );
  * };
- * 
- * export default Example;
  *
  * @example
  * // RequestTransitionButton Example
@@ -47,50 +47,76 @@ import { Dialog } from './Dialog';
  *         id: request.id,
  *         lastchange: request.lastchange,
  *         history_message: "",
- *         transition_id: transition.id
+ *         transition_id: transition.id,
  *     });
  *
  *     useEffect(() => {
- *         setMutationParams((oldState) => ({
- *             ...oldState,
+ *         setMutationParams((prev) => ({
+ *             ...prev,
  *             lastchange: request.lastchange,
- *             transition_id: transition.id
+ *             transition_id: transition.id,
  *         }));
  *     }, [request, transition]);
  *
  *     const onChange = (e) => {
- *         const newValue = e.target.value;
- *         const attributeName = e.target.id;
- *         setMutationParams((oldState) => ({ ...oldState, [attributeName]: newValue }));
+ *         const { id, value } = e.target;
+ *         setMutationParams((prev) => ({ ...prev, [id]: value }));
  *     };
  *
- *     const { loading, error, fetch } = useAsyncAction(
+ *     const { fetch } = useAsyncAction(
  *         RequestUseTransitionAsyncAction,
  *         mutationParams,
  *         { deferred: true }
  *     );
  *
- *     const onClick = () => {
- *         fetch(mutationParams);
- *     };
+ *     const handleConfirm = () => fetch(mutationParams);
  *
  *     return (
  *         <ButtonWithDialog
- *             onClick={onClick}
  *             buttonLabel={`${transition?.name} (${transition?.target?.name})`}
- *             dialogTitle={"Potvrďte akci a napište zprávu"}
+ *             dialogTitle="Confirm Action"
+ *             onClick={handleConfirm}
  *             {...props}
  *         >
  *             <input
  *                 id="history_message"
  *                 className="form-control"
- *                 defaultValue={""}
+ *                 defaultValue=""
  *                 onChange={onChange}
  *                 onBlur={onChange}
  *             />
  *         </ButtonWithDialog>
  *     );
  * };
+ *
+ * @example
+ * // Encapsulation with AsyncClickHandler
+ * const asyncAction = (params) => mockApiCall(params);
+ *
+ * const Example = () => {
+ *     return (
+ *         <AsyncClickHandler
+ *             asyncAction={asyncAction}
+ *             defaultParams={{ id: 1 }}
+ *             loadingMsg="Processing..."
+ *             onClick={(result) => console.log("Action completed:", result)}
+ *         >
+ *             <ButtonWithDialog
+ *                 buttonLabel="Perform Action"
+ *                 dialogTitle="Confirm Your Action"
+ *                 oklabel="Submit"
+ *                 cancellabel="Cancel"
+ *                 params={{ id: 1, value: "Initial Value" }}
+ *             >
+ *                 <input id="value" className="form-control" placeholder="Enter Value" />
+ *             </ButtonWithDialog>
+ *         </AsyncClickHandler>
+ *     );
+ * };
+ *
+ * export default Example;
+ *
+ * @returns {JSX.Element} A button that opens a dialog with customizable content.
  */
 export const ButtonWithDialog = ({
     buttonLabel = "Provést",
@@ -98,30 +124,55 @@ export const ButtonWithDialog = ({
     oklabel = "Ok",
     cancellabel = "Zrušit",
     onClick,
+    params = {},
     children,
     ...props
 }) => {
     const [showDialog, setShowDialog] = useState(false);
 
+    //this is potential bootleneck
+    /**
+     * when external data storage is changed as result of action in Dialog
+     * params and thus state must be also allowed to adapt the change
+     * this is guarder by firstRender
+     */
+    const [state, setState] = useState({...params});
+    const [firstRender, setFirstRender] = useState(true)
+    useEffect(() => {
+        if (!firstRender) {
+            setFirstRender(false)
+            setState({...params})
+        }
+    }, [params])
+
     const handleButtonClick = () => {
-        setShowDialog(true); // Show the dialog on the first click
+        setShowDialog(true); // Show the dialog when the button is clicked
     };
 
     const handleDialogOk = () => {
-        if (onClick) onClick(); // Call the hook on confirmation
-        setShowDialog(false); // Hide the dialog
+        if (onClick) onClick(state); // Pass the state to the callback
+        setShowDialog(false); // Close the dialog
     };
 
     const handleDialogCancel = () => {
-        setShowDialog(false); // Simply close the dialog without calling the hook
+        setShowDialog(false); // Close the dialog without executing the callback
+    };
+
+    const onChildChange = (e) => {
+        const { id, value } = e.target;
+        setFirstRender(false)
+        setState((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
+        
     };
 
     return (
         <>
-            <button {...props} onClick={handleButtonClick}>
+            <span {...props} onClick={handleButtonClick}>
                 {buttonLabel}
-            </button>
-
+            </span>
             {showDialog && (
                 <Dialog
                     title={dialogTitle}
@@ -130,7 +181,9 @@ export const ButtonWithDialog = ({
                     onOk={handleDialogOk}
                     onCancel={handleDialogCancel}
                 >
-                    {children}
+                    <ChildWrapper onChange={onChildChange} onBlur={onChildChange}>
+                        {children}
+                    </ChildWrapper>
                 </Dialog>
             )}
         </>

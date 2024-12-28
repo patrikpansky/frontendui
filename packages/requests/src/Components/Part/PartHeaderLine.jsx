@@ -11,6 +11,7 @@ const styles = {
         letterSpacing: "0.05em",
         marginTop: "1.5rem",
         marginBottom: "1.5rem",
+        // zIndex: 10
         // width: "100%"
     },
     textDividerLine: {

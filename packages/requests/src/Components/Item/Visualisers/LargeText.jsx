@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { CreateDelayer } from "@hrbolek/uoisfrontend-shared"
-import { ItemUpdateAsyncAction } from './Queries/ItemUpdateAsyncAction'
+import { ItemUpdateAsyncAction } from '../Queries/ItemUpdateAsyncAction'
 
 // const StudentWithRead = createLazyComponent(UserMediumCard, "user", StudentReadAsyncAction)
 // const StudentWithRead = createLazyComponent(ItemUpdateQuery, "user", StudentReadAsyncAction)

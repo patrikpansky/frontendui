@@ -12,7 +12,8 @@ const styles = {
         backgroundColor: "white",
         textAlign: "center",
         width: "100%",
-        minWidth: "500px"
+        minWidth: "300px",
+        // zIndex: 10
     },
     capsuleTitle: {
         position: "absolute", // Position the title on the border
@@ -43,3 +44,14 @@ export const SimpleCardCapsule = ({ title, children }) => {
         </div>
     );
 };
+
+// export const SimpleCardCapsule = ({ title, children }) => {
+//     return (
+//         <div >
+//             <span >{title}</span>
+//             <div >
+//                 {children}
+//             </div>
+//         </div>
+//     );
+// };

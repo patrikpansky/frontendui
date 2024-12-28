@@ -1,19 +1,23 @@
+import ReactDOM from "react-dom";
 
-export const LoadingSpinner = ({ text = "Loading..." }) => (
-    <div style={overlayStyle}>
-        <div style={spinnerContainerStyle}>
-            <div style={spinnerStyle}></div>
-            <span style={textStyle}>{text}</span>
-        </div>
-        <style>{`
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
+export const LoadingSpinner = ({ text = "Loading..." }) => {
+    return ReactDOM.createPortal(
+        <div style={overlayStyle}>
+            <div style={spinnerContainerStyle}>
+                <div style={spinnerStyle}></div>
+                <span style={textStyle}>{text}</span>
+            </div>
+            <style>{`
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg);
+                    }
                 }
-            }
-        `}</style>
-    </div>
-);
+            `}</style>
+        </div>,
+        document.body
+    )
+};
 
 // Styles for the overlay and spinner
 const overlayStyle = {

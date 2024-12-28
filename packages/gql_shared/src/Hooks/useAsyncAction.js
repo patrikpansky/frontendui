@@ -64,12 +64,14 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     
     const fetchData = async (fetchParams) => {
         // console.log("useAsyncAction fetch start while state", state)
+        setState({...state, loading: true})
         const newParams = fetchParams ? { ...state.lastParams, ...fetchParams } : state.lastParams;
         if (fetchParams) {
-            setState(prev => ({...prev, lastParams: fetchParams}))
+            setState(prev => ({...prev, lastParams: fetchParams, loading: true}))
         }
         let actionResult= null
         try {
+            // console.log("useAsyncAction.fetch with", newParams, fetchParams)
             actionResult = await dispatch(AsyncAction(newParams));
             setState(prev => ({...prev, loading: false, error: null, dispatchResult: actionResult }))
         } catch (error) {

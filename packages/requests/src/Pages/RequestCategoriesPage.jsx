@@ -84,18 +84,20 @@ const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
  * 
  * <RequestCategoryPageContent requestcategory={requestcategoryEntity} />
  */
-const RequestCategoriesPageContent = ({requestcategories}) => {
+const RequestCategoriesPageContent = ({requestcategories = []}) => {
     const items = useSelector(state => state.items)
     requestcategories = Object.values(items).filter(
         item => item?.__typename === "RequestCategoryGQLModel"
     )
-    const [data, setData] = useState(requestcategories || [])
+    // const [data, setData] = useState(requestcategories || [])
     const addRow = (newRow) => {
         setData(prev => [...prev, newRow])
     }
-    useEffect(() => {
-        setData(requestcategories)
-    }, [requestcategories])
+    // useEffect(() => {
+    //     if (requestcategories.length !== requestcategories.length) {
+    //         setData(requestcategories)
+    //     }
+    // }, [requestcategories])
     return (
         <>
             <RequestPageNavbar />
@@ -246,7 +248,7 @@ const RequestCategoryCreateButton = ({onNew=()=>null}) => {
         {/* {JSON.stringify(dispatchResult)} <br /> */}
         {error && <ErrorHandler errors={error} />}
         {loading && <LoadingSpinner text='Ukládám' />}
-
+        {JSON.stringify(newCategory)}
         <ButtonWithDialog
             dialogTitle="Nová kategorie požadavků"
             buttonLabel='Vytvořit novou kategorii požadavků'
@@ -265,7 +267,7 @@ const RequestCategoryCreateButton = ({onNew=()=>null}) => {
 
 const RequestTypeCreateButton = ({onNew=()=>null, requestcategory, ...props}) => {
     const state = useAsyncAction(RequestTypeInsertAsyncAction, {}, {deferred: true})
-    const { fetch, loading, error, dispatchResult } = state
+    const { fetch, loading, error } = state
     // console.log("RequestCategoryCreateButton got state", state)
     const [newType, setNewType] = useState({
         category_id: requestcategory.id

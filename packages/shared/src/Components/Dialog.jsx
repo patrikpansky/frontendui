@@ -46,7 +46,12 @@ export const Dialog = ({
     };
 
     return (
-        <Modal size="xl" show={true} onHide={handleCancel}>
+        <Modal 
+            size="xl" 
+            show={true} 
+            onHide={handleCancel}
+            backdrop="static"  // Prevent closing on outside click
+        >
             <Modal.Header closeButton>
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>

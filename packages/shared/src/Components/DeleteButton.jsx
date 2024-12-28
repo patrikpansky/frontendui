@@ -17,7 +17,7 @@ import { useState, useCallback } from 'react';
  *
  * @returns {JSX.Element} A toggleable button component.
  */
-export const DeleteButton = ({ children, onClick }) => {
+export const DeleteButton = ({ className, className1="btn btn-sm btn-warning", className2="btn btn-sm btn-danger", children, onClick }) => {
   const [isRedButtonVisible, setIsRedButtonVisible] = useState(false);
 
   const hideWarningButton = useCallback(() => setIsRedButtonVisible(false), []);
@@ -27,7 +27,7 @@ export const DeleteButton = ({ children, onClick }) => {
     <>
       {/* Yellow warning button */}
       <button
-        className="btn btn-sm btn-warning"
+        className={className || className1}
         onClick={isRedButtonVisible ? hideWarningButton : showWarningButton}
       >
         {children}
@@ -35,7 +35,7 @@ export const DeleteButton = ({ children, onClick }) => {
 
       {/* Red confirmation delete button */}
       {isRedButtonVisible && (
-        <button className="btn btn-sm btn-danger" onClick={onClick}>
+        <button className={className2} onClick={onClick}>
           {children}
         </button>
       )}
