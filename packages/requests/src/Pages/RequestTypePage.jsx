@@ -170,13 +170,13 @@ export const FormDesigner = ({ form }) => {
                     <DroppableContainer droppableId={form.id} isDropDisabled={formDisabled}>
                         <SimpleCardCapsule title={form.name}>
                             {form?.sections.map((section, i) => (
-                                <DroppableContainer droppableId={section.id} isDropDisabled={sectionDisabled}>
-                                    <DragableEnvelop key={section.id} draggableId={section.id} index={i}>
+                                <DroppableContainer key={section.id} droppableId={section.id} isDropDisabled={sectionDisabled}>
+                                    <DragableEnvelop draggableId={section.id} index={i}>
                                         <SimpleCardCapsule title={section.name}>
                                             {section?.parts.map((part, j) => (
-                                                <DragableEnvelop key={part.id} draggableId={part.id} index={j}>
+                                                <DroppableContainer key={part.id} droppableId={part.id} isDropDisabled={partDisabled}>
+                                                    <DragableEnvelop draggableId={part.id} index={j}>
                                                     <SimpleCardCapsule title={part.name}>
-                                                        <DroppableContainer droppableId={part.id} isDropDisabled={partDisabled}>
                                                             {part?.items.map((item, k) => (
                                                                 <DragableEnvelop
                                                                     key={item.id}
@@ -188,17 +188,13 @@ export const FormDesigner = ({ form }) => {
                                                                     </SimpleCardCapsule>
                                                                 </DragableEnvelop>
                                                             ))}
-                                                        </DroppableContainer>
                                                     </SimpleCardCapsule>
-                                                    <HorizontalLine>+ Add Item</HorizontalLine>
                                                 </DragableEnvelop>
                                             ))}
                                         </SimpleCardCapsule>
-                                        <HorizontalLine>+ Add Part</HorizontalLine>
                                     </DragableEnvelop>
                                 </DroppableContainer>
                             ))}
-                            <HorizontalLine>+ Add Section</HorizontalLine>
                         </SimpleCardCapsule>
                     </DroppableContainer>
                 </div>
