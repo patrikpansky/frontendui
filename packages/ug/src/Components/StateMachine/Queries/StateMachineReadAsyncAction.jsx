@@ -2,7 +2,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 const StateMachineReadQuery =
 `
-mutation StateMachineReadQuery($id: UUID!) {
+query StateMachineReadQuery($id: UUID!) {
   result: statemachineById(id: $id) {
     ...StateMachineLarge
   }

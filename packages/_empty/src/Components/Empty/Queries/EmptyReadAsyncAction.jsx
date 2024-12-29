@@ -2,7 +2,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 const EmptyReadQuery =
 `
-mutation EmptyReadQuery($id: UUID!) {
+query EmptyReadQuery($id: UUID!) {
   result: emptyById(id: $id) {
     ...EmptyLarge
   }
