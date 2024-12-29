@@ -11,7 +11,7 @@ mutation EmptyUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, 
       msg
       input
       Entity {
-        ...GroupLarge
+        ...EmptyLarge
       }      
     }
     ...EmptyLarge

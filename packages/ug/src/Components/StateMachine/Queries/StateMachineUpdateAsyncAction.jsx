@@ -11,7 +11,7 @@ mutation StateMachineUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: S
       msg
       input
       Entity {
-        ...GroupLarge
+        ...StateMachineLarge
       }      
     }
     ...StateMachineLarge
