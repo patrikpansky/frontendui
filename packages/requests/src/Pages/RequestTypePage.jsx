@@ -43,6 +43,9 @@ const RequestTypePageContent = ({requesttype}) => {
         fetch: request_type_refresh
     } = useAsyncAction(RequestTypeReadAsyncAction, {}, {deferred: true})
 
+    const OnCreateGroupDone = (group) => {
+        console.log("OnCreateGroupDone", group)
+    }
 
     const onCreateForm = (form) => {
         updateRequestType({...requesttype, template_form_id: form.id})
@@ -58,8 +61,16 @@ const RequestTypePageContent = ({requesttype}) => {
             <Row>
                 <Col>
                 {!groupId && <>
-                    A<InsertGroupButton className="btn btn-outline-secondary">Vytvořit skupinu</InsertGroupButton>B
-                        "Není nastavena skupina"
+                    <InsertGroupButton onDone={OnCreateGroupDone}
+                        className="btn btn-outline-secondary"
+                        params={{
+                            name: `Oprávnění pro požadavky (${requesttype.name})`,
+                            name_en: `Permissions for requests (${requesttype.nameEn})`
+                        }}
+                    >
+                        Vytvořit skupinu
+                    </InsertGroupButton>
+                    
                 </>}
                 </Col>
             </Row>

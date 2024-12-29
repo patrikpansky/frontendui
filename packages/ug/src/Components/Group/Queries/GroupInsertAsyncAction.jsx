@@ -6,7 +6,8 @@ mutation GroupInsertMutation($id: UUID, $name: String!, $name_en: String, $group
   result: groupInsert(
     group: {id: $id, name: $name, nameEn: $name_en, grouptypeId: $grouptype_id}
   ) {
-    ... on InsertError {
+      __typename
+      ... on InsertError {
       failed
       msg
       input

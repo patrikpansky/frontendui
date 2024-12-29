@@ -1,6 +1,4 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
-
-import { Select, Options } from "@hrbolek/uoisfrontend-shared"
+import { Input, Select, Options } from "@hrbolek/uoisfrontend-shared"
 import { GroupTypeReadPageAsyncAction, GroupTypeReadPageAsyncActionCacheId } from "../GroupType/Queries/GroupTypeReadPageAsyncAction"
 
 
@@ -34,12 +32,7 @@ export const GroupMediumEditableContent = ({group, onChange=(e)=>null, onBlur=(e
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={group?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
             <Select  id={"grouptype_id"} label={"Typ skupiny"} className="form-control" defaultValue={group?.grouptypeId} onChange={onChange} onBlur={onBlur}  >
                 <Options asyncAction={GroupTypeReadPageAsyncAction} /> 
-                {/* params={{id: GroupTypeReadPageAsyncActionCacheId}}/> */}
             </Select>
-            {/* <Select  id={"grouptype_id"} label={"Typ skupiny"} className="form-control" defaultValue={group?.grouptypeId} onChange={onChange} onBlur={onBlur}>
-                
-            </Select> */}
-            {/* <Options asyncAction={GroupTypeReadPageAsyncAction}/> */}
             {children}
         </>
     )

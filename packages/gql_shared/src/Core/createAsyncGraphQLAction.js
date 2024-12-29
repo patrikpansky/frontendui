@@ -78,28 +78,28 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
 
     const unparametrizedFetch = createFetchQuery(query, params);
 
-    return (jsonData) => {
-        if (typeof jsonData !== "object" || jsonData === null) {
+    return (queryParams) => {
+        if (typeof queryParams !== "object" || queryParams === null) {
             throw new Error("createAsyncGraphQLAction: 'query_variables' must be a valid JSON object.");
         }
 
-        // Validate jsonData for known errors
-        if (jsonData.hasOwnProperty("error")) {
-            return async (dispatch) => {
-                console.warn("createAsyncGraphQLAction: 'jsonData' contains an error.", jsonData.error);
-                // Optionally dispatch an error-specific action
-                dispatch({
-                    type: "ASYNC_GRAPHQL_ACTION_ERROR",
-                    payload: jsonData.error,
-                });
-                return Promise.reject(new Error(jsonData.error));
-            };
-        }
+        // // Validate jsonData for known errors
+        // if (jsonData.hasOwnProperty("error")) {
+        //     return async (dispatch) => {
+        //         console.warn("createAsyncGraphQLAction: 'jsonData' contains an error.", jsonData.error);
+        //         // Optionally dispatch an error-specific action
+        //         dispatch({
+        //             type: "ASYNC_GRAPHQL_ACTION_ERROR",
+        //             payload: jsonData.error,
+        //         });
+        //         return Promise.reject(new Error(jsonData.error));
+        //     };
+        // }
 
         return async (dispatch, getState, next = (jsonResult) => jsonResult) => {
             try {
                 // Fetch the result from the GraphQL query
-                const jsonResult = await unparametrizedFetch(jsonData);
+                const jsonResult = await unparametrizedFetch(queryParams);
 
                 // Check if the server response contains errors
                 if (jsonResult.errors && Array.isArray(jsonResult.errors)) {
@@ -112,6 +112,16 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
                     return Promise.reject(jsonResult.errors);
                 }
 
+                const jsonData = jsonResult?.data
+                const values = Object.values(jsonData)
+                console.log("values", values, jsonData)
+                if (values.length > 0) {
+                    const __typename = values[0]?.__typename
+                    if (__typename?.includes("Error"))
+                        return Promise.reject(new Error(values[0].msg));
+                }
+                
+        
                 // Middleware chain
                 const chain = middlewares.reduceRight(
                     (nextMiddleware, middleware) => {
