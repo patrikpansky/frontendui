@@ -85,8 +85,9 @@ const RequestTypePageContent = ({requesttype}) => {
                         <UpdateGroupButton group={requesttype?.group} className="btn btn-outline-secondary">
                             Změnit
                         </UpdateGroupButton>
-                        
+
                     </GroupCardCapsule>
+                    <span className='btn btn-outline-secondary'>ANO <br/> <span className='btn btn-outline-primary'>Ne</span></span>
                     
                     {JSON.stringify(requesttype?.group)}
                 </>}
