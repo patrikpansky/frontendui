@@ -3,7 +3,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 const EmptyInsertMutation =
 `
 mutation EmptyInsertMutation($id: UUID, $name: String, $name_en: String, $order: Int, $section_id: UUID) {
-  result: formEmptyInsert(
+  result: emptyInsert(
     empty: {id: $id, name: $name, nameEn: $name_en, order: $order, sectionId: $section_id}
   ) {
     ... on InsertError {

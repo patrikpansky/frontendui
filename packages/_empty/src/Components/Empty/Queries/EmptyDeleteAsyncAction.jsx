@@ -3,7 +3,7 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 const EmptyDeleteMutation =
 `
 mutation EmptyDeleteMutation($id: UUID!, $lastchange: DateTime!) {
-  result: formEmptyDelete(
+  result: emptyDelete(
     empty: {id: $id, lastchange: $lastchange}
   ) {
     ... on EmptyGQLModelDeleteError {
