@@ -62,7 +62,7 @@ const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
     const {requesttype} = props
     return (
         <Col>
-            <RequestTypeCardCapsule {...props}/>
+            <RequestTypeMediumCard {...props}/>
         </Col>
     )
 }

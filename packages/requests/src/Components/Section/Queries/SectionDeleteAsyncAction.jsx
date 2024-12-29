@@ -6,7 +6,7 @@ mutation SectionDeleteMutation($id: UUID!, $lastchange: DateTime!) {
   result: formSectionDelete(
     section: {id: $id, lastchange: $lastchange}
   ) {
-    ... on DeleteError {
+    ... on SectionGQLModelDeleteError {
       failed
       msg
       input

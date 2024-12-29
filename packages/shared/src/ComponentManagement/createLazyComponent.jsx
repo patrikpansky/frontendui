@@ -68,7 +68,7 @@ export const createLazyComponent = (WrappedComponent, entityName, asyncAction) =
 
             return (
                 <>  
-                    {JSON.stringify(result)}
+                    {/* {JSON.stringify(result)} */}
                     <WrappedComponent {...wrappedProps} />
                     {error && <ErrorHandler errors={error} />}
                     {loading && <LoadingSpinner text="Aktualizuji..." />}

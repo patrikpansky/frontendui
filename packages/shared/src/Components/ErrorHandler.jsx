@@ -1,31 +1,6 @@
-import ReactDOM from "react-dom";
+import { Modal } from "react-bootstrap";
 
-const overlayStyle = {
-    position: "fixed", // Changed from "fixed"
-    width: "90vw", // Span 90% of the overlay
-    top: 0,
-    left: "5vw",
-    // transform: "translateX(-50%)",
-    height: "90vh",
-    // display: "flex",
-    justifyContent: "center",
-    // alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    zIndex: 9999,
-};
-
-const errorDisplayStyle = {
-    position: "relative",
-    width: "100%", // Span 90% of the overlay
-    height: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // Semi-transparent white background
-    borderRadius: "8px", // Add rounded corners
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Add a subtle shadow for elevation
-    padding: "16px", // Add padding for better readability
-    zIndex: 10000, // Ensure it's above the overlay background
-};
-
-export const ErrorHandler = ({ errors = "DEMO ERROR" }) => {
+export const ErrorHandler = ({ errors = "DEMO ERROR", show = true, onClose = () => {} }) => {
     let parsedErrors;
 
     try {
@@ -34,14 +9,27 @@ export const ErrorHandler = ({ errors = "DEMO ERROR" }) => {
         parsedErrors = [{ message: "Unparsable error", raw: errors }];
     }
 
-    return ReactDOM.createPortal(
-        <div style={overlayStyle}>
-            <div style={errorDisplayStyle}>
-                <h2>Error</h2>
+    return (
+        <Modal
+            show={show}
+            onHide={onClose}
+            centered
+            backdrop="static" // Prevent closing the modal by clicking outside
+            size="xl" // Adjust size as needed
+            aria-labelledby="error-handler-title"
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="error-handler-title">Error</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 <ErrorDisplay errors={parsedErrors} />
-            </div>
-        </div>,
-        document.body // Ensure it renders at the root of the DOM
+            </Modal.Body>
+            <Modal.Footer>
+                <button className="btn btn-primary" onClick={onClose}>
+                    Close
+                </button>
+            </Modal.Footer>
+        </Modal>
     );
 };
 

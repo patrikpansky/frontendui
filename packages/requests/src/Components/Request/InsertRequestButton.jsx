@@ -1,27 +1,27 @@
 import { useState } from 'react'
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
 import { LoadingSpinner, ErrorHandler, ButtonWithDialog, SimpleCardCapsule } from '@hrbolek/uoisfrontend-shared';
-import { SectionInsertAsyncAction } from './Queries/SectionInsertAsyncAction';
+import { RequestInsertAsyncAction } from './Queries/RequestInsertAsyncAction';
 
-export const InsertSectionButton = ({ 
-    params, 
-    confirmationDialog=false, 
-    onDone = () => null, 
-    dialogTitle="Nová sekce",
+export const InsertRequestButton = ({ 
+    request, 
+    confirmationDialog=true, 
+    onAdd = () => null, 
+    dialogTitle="Nový požadavek",
     className='btn btn-outline-primary form-control',
     children, 
     ...props 
 }) => {
-    const { fetch, error, loading } = useAsyncAction(SectionInsertAsyncAction, {...params}, { deferred: true });
+    const { fetch, error, loading } = useAsyncAction(RequestInsertAsyncAction, {...request}, { deferred: true });
     const [state, setState] = useState({
-        id: crypto.randomUUID(),
-        name: "Nová sekce",
-        name_en: "New section",
-        ...params,
+        name: "Nový požadavek",
+        name_en: "New request",
+        ...request,
     })
     const onConfirmCreate = async () => {
-        await fetch(state);
-        onDone(state);
+        const id = crypto.randomUUID()
+        await fetch({...state, id});
+        onAdd(state);
     };
     const onChange = (e) => {
         const name = e.target.id
@@ -45,7 +45,7 @@ export const InsertSectionButton = ({
                     {...props}
                     onClick={onConfirmCreate}
                 >
-                    <SimpleCardCapsule title={"Název sekce"}>
+                    <SimpleCardCapsule title={"Název požadavku"}>
                         <input id="name" className='form-control' onChange={onChange} onBlur={onChange} defaultValue={state.name} />
                     </SimpleCardCapsule>
                     <SimpleCardCapsule title={"Anglický název"}>

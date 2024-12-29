@@ -5,10 +5,10 @@ import { createPayload } from './createPayload'
  * accepts query variables, constructs the request payload, and initiates the fetch request.
  *
  * @param {string} query - The GraphQL query string. Must be a valid, non-empty string.
- * @param {Object} [params={}] - Additional parameters to customize the fetch request.
- * @param {Object} [params.headers] - Custom headers to include in the fetch request. Can be used for authentication tokens.
- * @param {string} [params.method='POST'] - HTTP method for the request (defaults to POST).
- * @param {*} [params.body] - Custom body content (overwritten by the query payload).
+ * @param {Object} [request={}] - Additional parameters to customize the fetch request.
+ * @param {Object} [request.headers] - Custom headers to include in the fetch request. Can be used for authentication tokens.
+ * @param {string} [request.method='POST'] - HTTP method for the request (defaults to POST).
+ * @param {*} [request.body] - Custom body content (overwritten by the query payload).
  *
  * @returns {Function} A function that takes an object of query variables and returns a Promise from the fetch request.
  *

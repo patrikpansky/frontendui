@@ -67,7 +67,7 @@ const RequestTypePageContent = ({requesttype}) => {
             <Row>
                 {/* <LeftColumn></LeftColumn> */}
                 <Col>
-                    RequestType {JSON.stringify(requesttype)}<br />
+                    {/* RequestType {JSON.stringify(requesttype)}<br /> */}
                     {!templateFormId && <>
                         "Není nastaven formulář"
                         <FormCreateButtonDialog 
@@ -227,6 +227,7 @@ export const FormDesigner = ({ form, onUpdate=()=>null }) => {
                 name: "Nova polozka",
                 type_id: itemTypeId,
                 part_id: targetPartId,
+                order: destination.index,
                 state_id: crypto.randomUUID()
             }
             createItem(item)
@@ -343,7 +344,8 @@ export const FormDesigner = ({ form, onUpdate=()=>null }) => {
                                                     params={{
                                                         section_id: section.id,
                                                         name: 'Nová část',
-                                                        name_en: 'New part'
+                                                        name_en: 'New part',
+                                                        order: (section?.parts || []).length + 1
                                                     }} 
                                                     onDone={onUpdate}
                                                 >
@@ -359,7 +361,10 @@ export const FormDesigner = ({ form, onUpdate=()=>null }) => {
                             <HorizontalLine>
                                 <InsertSectionButton 
                                     className="btn btn-sm btn-outline-secondary" 
-                                    params={{form_id: form.id}} 
+                                    params={{
+                                        form_id: form.id,
+                                        order: (formCopy?.sections || []).length + 1
+                                    }} 
                                     confirmationDialog={true} 
                                     onDone={onUpdate}
                                 >

@@ -72,7 +72,7 @@ const RequestReadAsyncAction = createAsyncGraphQLAction(RequestReadQuery);
 const ItemReadQuery = `
 `;
 const ItemUpdateQuery = `
-mutation ItemUpdateQuery($id: UUID!, $lastchange: DateTime!, $name: string, $name_en: String, $value: String) {
+mutation ItemUpdateQuery($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, $value: String) {
   result: formItemUpdate(item: {id: $id, lastchange: $lastchange, value: $value, name: $name, nameEn: $name_en}) {
     ...ItemWithRequest
     ... on FormItemGQLModelUpdateError {

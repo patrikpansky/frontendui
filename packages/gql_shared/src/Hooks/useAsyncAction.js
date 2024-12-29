@@ -6,9 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
  *
  * @param {Function} AsyncAction - The Redux async action to dispatch.
  * @param {Object} queryVariables - The parameters for the async action, including `id`.
- * @param {Object} [params] - Optional configuration for fetching behavior.
- * @param {boolean} [params.deferred=false] - If true, delays the initial fetch until explicitly triggered using the `fetch` function.
- * @param {boolean} [params.network=true] - If false, prevents any network requests.
+ * @param {Object} [request] - Optional configuration for fetching behavior.
+ * @param {boolean} [request.deferred=false] - If true, delays the initial fetch until explicitly triggered using the `fetch` function.
+ * @param {boolean} [request.network=true] - If false, prevents any network requests.
  *
  * @returns {Object} The hook return values.
  * @returns {Function} read - A Suspense-compatible function that suspends rendering until data is available.
