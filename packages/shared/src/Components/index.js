@@ -16,6 +16,7 @@ export * from './Options'
 
 export * from './Me'
 export * from './AsyncClickHandler'
+export * from './AsyncComponent'
 
 export * from './ProxyLink'
 export * from './SearchInput'

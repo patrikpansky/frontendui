@@ -124,6 +124,7 @@ export const ButtonWithDialog = ({
     oklabel = "Ok",
     cancellabel = "Zrušit",
     onClick,
+    injectId=true,
     params = {},
     children,
     ...props
@@ -150,7 +151,9 @@ export const ButtonWithDialog = ({
     };
 
     const handleDialogOk = () => {
-        if (onClick) onClick(state); // Pass the state to the callback
+        const updatedState = {...state}
+        if (injectId) updatedState.id = updatedState.id?updatedState.id:crypto.randomUUID()
+        if (onClick) onClick(updatedState); // Pass the state to the callback
         setShowDialog(false); // Close the dialog
     };
 

@@ -9,6 +9,7 @@ export * from './GroupSchema'
 
 export * from './Vectors'
 export * from './Scalars'
+export * from './Queries'
 
 export * from './InsertGroupButton'
 export * from './UpdateGroupButton'

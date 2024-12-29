@@ -65,7 +65,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         );
     }
     const { deferred, network } = params;
-    const [id] = useState(queryVariables?.id)
+    // const [id] = useState(queryVariables?.id)
+    const { id } = queryVariables
     const result = items[id];
     // console.log("useAsyncAction", id, result)
     
@@ -99,6 +100,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         // 2) Now do the async part (the actual fetch/dispatch).
         //    mergedParams was set inside the setState callback above.
         try {
+            const {id} = mergedParams
             fetchPromise.current = dispatch(AsyncAction(mergedParams));
             const actionResult = await fetchPromise.current;
             fetchPromise.current = false
@@ -113,7 +115,18 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
 
             // console.log("useAsyncAction fetch end while actionResult", actionResult)
             // 4) Return the actual result of the dispatch, so the caller can await it or use it.
-            return actionResult;
+            let itemFromStore
+            const readit = (dispatch, getState) => {
+                const {items} = getState()
+                itemFromStore = items[id]
+                // console.log("got it ", items)
+                // console.log("got it ", itemFromStore)
+            }
+            dispatch(readit)
+
+            console.log("useAction", itemFromStore, result, actionResult)
+            return itemFromStore || actionResult;
+            // return state.entity
         } catch (err) {
             fetchPromise.current = false
             // console.log("useAsyncAction fetch failed err", err)

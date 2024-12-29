@@ -3,14 +3,15 @@ import Col from 'react-bootstrap/Col'
 import { useParams } from "react-router"
 
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { AsyncComponent, createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 
 import { RequestPageNavbar } from "./RequestPageNavbar"
 import { RequestTypeReadAsyncAction } from './Queries/RequestTypeReadAsyncAction'
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
-import { RequestTypeUpdateAsyncAction } from './Queries/RequestTypeUpdateAsyncAction'
 import { FormDesigner } from '../Components/Form/FormDesigner'
-import { InsertGroupButton } from '@hrbolek/uoisfrontend-ug'
+import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
+import { RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries/RequestTypeUpdateAsyncAction'
+import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
@@ -43,8 +44,10 @@ const RequestTypePageContent = ({requesttype}) => {
         fetch: request_type_refresh
     } = useAsyncAction(RequestTypeReadAsyncAction, {}, {deferred: true})
 
-    const OnCreateGroupDone = (group) => {
+    const OnCreateGroupDone = async (group) => {
         console.log("OnCreateGroupDone", group)
+        const updatedGroup = await updateRequestType({...requesttype, group_id: group.id})
+        console.log("OnCreateGroupDone.Updated", updatedGroup)
     }
 
     const onCreateForm = (form) => {
@@ -70,7 +73,22 @@ const RequestTypePageContent = ({requesttype}) => {
                     >
                         Vytvořit skupinu
                     </InsertGroupButton>
+                </>}
+                {groupId && <>
+                    <GroupCardCapsule group={requesttype?.group}>
+                        <AsyncComponent asyncAction={GroupReadAsyncAction} propertyName={"group"} queryVariables={requesttype?.group}>
+                            {/* <GroupMediumCard /> */}
+                            {/* <GroupLargeCard /> */}
+                            <GroupMediumContent />
+                            <GroupMemberships />
+                        </AsyncComponent>
+                        <UpdateGroupButton group={requesttype?.group} className="btn btn-outline-secondary">
+                            Změnit
+                        </UpdateGroupButton>
+                        
+                    </GroupCardCapsule>
                     
+                    {JSON.stringify(requesttype?.group)}
                 </>}
                 </Col>
             </Row>
