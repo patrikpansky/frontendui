@@ -50,7 +50,12 @@ export const InsertRequestCategoryButton = ({ children, params, onDone = (newReq
             loadingMsg={"Vkládám novou část"}
             onClick={onDone}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
+            <ButtonWithDialog 
+                buttonLabel={children} 
+                dialogTitle="Vložit novou část" 
+                {...props} 
+                params={params}
+            >
                 <RequestCategoryMediumEditableContent requestcategory={params} />
             </ButtonWithDialog>
         </AsyncClickHandler>

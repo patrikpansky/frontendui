@@ -1,4 +1,4 @@
-import { AsyncClickHandler, ButtonWithDialog, Input } from '@hrbolek/uoisfrontend-shared';
+import { AsyncClickHandler, ButtonWithDialog } from '@hrbolek/uoisfrontend-shared';
 import { RequestTypeInsertAsyncAction } from './Queries/RequestTypeInsertAsyncAction';
 import { RequestTypeMediumEditableContent } from './RequestTypeMediumEditableContent';
 
