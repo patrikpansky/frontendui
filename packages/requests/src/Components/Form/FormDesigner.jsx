@@ -14,6 +14,8 @@ import { DeleteItemButton } from '../Item/DeleteItemButton'
 import { HorizontalLine } from '../Part'
 import { InsertPartButton } from '../Part/InsertPartButton'
 import { InsertSectionButton } from '../Section/InsertSectionButton'
+import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
+import { ItemIndex } from '../Item/Visualisers'
 
 const grid = 8
 const getListStyleDefault = (provided, snapshot) => {
@@ -186,7 +188,7 @@ export const FormDesigner = ({ form, onUpdate=()=>null }) => {
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div className="row">
                 <LeftColumn>
-                    <SimpleCardCapsule title="Library">
+                    <SimpleCardCapsule title="Knihovna položek">
                         <DroppableContainer droppableId="library" isDropDisabled={true} getListStyle={getListStyleDefault}>
                         
                             {Object.entries(ItemIndex).map(

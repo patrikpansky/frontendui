@@ -52,6 +52,15 @@ const RequestTypePageContent = ({requesttype}) => {
     return (
         <>
             <RequestPageNavbar />
+            {(loading || request_type_loading) && <LoadingSpinner text='Ukládám' />}
+            {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}            
+            <Row>
+                <Col>
+                {!groupId && <>
+                        "Není nastavena skupina"
+                    </>}
+                </Col>
+            </Row>
             <Row>
                 {/* <LeftColumn></LeftColumn> */}
                 <Col>
@@ -68,11 +77,8 @@ const RequestTypePageContent = ({requesttype}) => {
                     {/* {templateFormId && <FormSectionAttribute form={templateForm} />} */}
                     {templateFormId && <FormDesigner form={templateForm} onUpdate={onUpdateForm}/>}
                     <br />
-                    {!groupId && <>
-                        "Není nastavena skupina"
-                    </>}
-                    {(loading || request_type_loading) && <LoadingSpinner text='Ukládám' />}
-                    {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}
+                    
+                    
                 </Col>
             </Row>
         </>
