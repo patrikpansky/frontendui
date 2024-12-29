@@ -1,1 +1,1 @@
-export * from './StateVectorAttribute'
+export * from './StateVectorsAttribute'

@@ -1,1 +1,1 @@
-export * from './EmptyVectorAttribute'
+export * from './EmptyVectorsAttribute'
