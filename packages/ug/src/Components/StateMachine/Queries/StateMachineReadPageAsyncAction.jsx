@@ -9,17 +9,21 @@ query StateMachineReadPageQuery($skip: Int, $limit: Int, $where: StateMachineWhe
 }
 
 fragment StateMachineLarge on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
+  ...StateMachineLink
   states {
     ...StateLarge
   }
   transitions {
     ...StateTransition
   }
+}
+
+fragment StateMachineLink on StateMachineGQLModel {
+  __typename
+  id
+  lastchange
+  name
+  nameEn  
 }
 
 fragment StateLarge  on StateGQLModel {

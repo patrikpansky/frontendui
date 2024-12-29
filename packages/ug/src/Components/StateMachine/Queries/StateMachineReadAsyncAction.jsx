@@ -9,17 +9,21 @@ query StateMachineReadQuery($id: UUID!) {
 }
 
 fragment StateMachineLarge on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
+  ...StateMachineLink
   states {
     ...StateLarge
   }
   transitions {
     ...StateTransition
   }
+}
+
+fragment StateMachineLink on StateMachineGQLModel {
+  __typename
+  id
+  lastchange
+  name
+  nameEn  
 }
 
 fragment StateLarge  on StateGQLModel {
