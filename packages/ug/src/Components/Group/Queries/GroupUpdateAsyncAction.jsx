@@ -2,9 +2,9 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 const GroupUpdateMutation =
 `
-mutation GroupUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, $order: Int, $section_id: UUID) {
+mutation GroupUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String) {
   result: formGroupUpdate(
-    group: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en, order: $order, sectionId: $section_id}
+    group: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en}
   ) {
     ... on GroupGQLModelUpdateError {
       failed
