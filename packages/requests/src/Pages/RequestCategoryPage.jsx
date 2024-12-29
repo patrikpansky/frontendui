@@ -123,7 +123,7 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <RequestTypeCreateButton requestcategory={requestcategory} className='btn btn-outline-primary form-control'/>
+                                        <RequestTypeCreateButton requestcategory={requestcategory} className='btn btn-outline-primary form-control' />
                                     </Col>
                                 </Row>
                             </RequestCategoryCardCapsule>

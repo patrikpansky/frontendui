@@ -85,31 +85,36 @@ export const UpdateItem = (state, action) => {
 export const UpdateSubVector = (state, action) => {
     const { item, vectorname } = action.payload;
     // console.log("UpdateSubVector.new", item[vectorname])
-    const oldItem = state[item.id] || {...item};
-    // if (oldItem[vectorname]) {
-    //     console.log("UpdateSubVector.old", [...oldItem[vectorname]])
-    //     console.log("UpdateSubVector.old", oldItem[vectorname].length)
-    // }
-        
-    const subItems = vectorname in oldItem ? oldItem[vectorname] : [];
-    const indexedSubItems = {};
+    const testItem = state[item.id]
+    if (!testItem) {
+        console.log("UpdateSubVector, item not found, setting directly", item)
+        state[item.id] = {...item}
+    } else {
+        const oldItem = state[item.id]
+        // if (oldItem[vectorname]) {
+        //     console.log("UpdateSubVector.old", [...oldItem[vectorname]])
+        //     console.log("UpdateSubVector.old", oldItem[vectorname].length)
+        // }
+            
+        const subItems = vectorname in oldItem ? oldItem[vectorname] : [];
+        const indexedSubItems = {};
 
-    // Index existing sub-items by their IDs
-    for (let i of subItems) {
-        indexedSubItems[i.id] = i;
-    }
-
-    // Update or add sub-items
-    for (let i of item[vectorname]) {
-        if (i?.__typename) {
-            state[i.id] = { ...state[i.id], ...i };
+        // Index existing sub-items by their IDs
+        for (let i of subItems) {
+            indexedSubItems[i.id] = i;
         }
-        const existing = indexedSubItems[i.id] || {};
-        indexedSubItems[i.id] = { ...existing, ...i };
+
+        // Update or add sub-items
+        for (let i of item[vectorname]) {
+            if (i?.__typename) {
+                state[i.id] = { ...state[i.id], ...i };
+            }
+            const existing = indexedSubItems[i.id] || {};
+            indexedSubItems[i.id] = { ...existing, ...i };
+        }
+
+        oldItem[vectorname] = Object.values(indexedSubItems);
     }
-
-    oldItem[vectorname] = Object.values(indexedSubItems);
-
     return state;
 };
 

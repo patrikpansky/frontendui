@@ -30,6 +30,7 @@ export const processVectorAttributeFromGraphQLResult = (vectorname) => {
 
     return (jsonResult) => {
         if (typeof jsonResult !== "object" || jsonResult === null) {
+            console.log("processVectorAttributeFromGraphQLResult: 'jsonResult' must be a valid object.", jsonResult)
             throw new Error("processVectorAttributeFromGraphQLResult: 'jsonResult' must be a valid object.");
         }
 

@@ -2,9 +2,9 @@ import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 const GroupInsertMutation =
 `
-mutation GroupInsertMutation($id: UUID, $name: String, $name_en: String) {
-  result: formGroupInsert(
-    group: {id: $id, name: $name, nameEn: $name_en}
+mutation GroupInsertMutation($id: UUID, $name: String!, $name_en: String, $grouptype_id: UUID!) {
+  result: groupInsert(
+    group: {id: $id, name: $name, nameEn: $name_en, grouptypeId: $grouptype_id}
   ) {
     ... on InsertError {
       failed

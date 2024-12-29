@@ -10,6 +10,9 @@ mutation EmptyUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, 
       failed
       msg
       input
+      Entity {
+        ...GroupLarge
+      }      
     }
     ...EmptyLarge
   }

@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 
-export const LoadingSpinner = ({ text = "Loading..." }) => {
+export const LoadingSpinner = ({ text = "Nahrávám..." }) => {
     return ReactDOM.createPortal(
         <div style={overlayStyle}>
             <div style={spinnerContainerStyle}>

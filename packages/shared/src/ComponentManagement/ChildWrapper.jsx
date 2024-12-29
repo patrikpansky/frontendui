@@ -26,6 +26,18 @@ import React from 'react'
  * // Result: Both <CustomButton /> and <CustomIcon /> receive the 'role' prop.
  */
 export const ChildWrapper = ({ children, ...props }) => {
+    // const { onChange=()=>null } = props
+    // React.useEffect(() => {
+    //     // Log all children attributes
+    //     React.Children.forEach(children, (child) => {
+    //       if (React.isValidElement(child)) {
+    //         const {id, defaultValue, value} = child.props
+    //         const e = {target: {id, value: (value || defaultValue)}}
+    //         console.log(e);
+    //         onChange(e)
+    //       }
+    //     });
+    //   }, [children]);    
     return (
         <>
             {React.Children.map(children, (child) =>

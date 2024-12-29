@@ -1,8 +1,8 @@
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 
 const RequestTypeInsertMutation = `
-mutation RequestTypeInsert($id: UUID, $name: String!, $name_en: String!) {
-  result: requestTypeInsert(type: {id: $id, name: $name, nameEn: $name_en}) {
+mutation RequestTypeInsert($id: UUID, $name: String!, $name_en: String!, $category_id: UUID!) {
+  result: requestTypeInsert(requestType: {id: $id, name: $name, nameEn: $name_en, categoryId: $category_id}) {
     ...on InsertError {
       input
       failed

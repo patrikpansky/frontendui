@@ -10,6 +10,7 @@ import { RequestTypeReadAsyncAction } from './Queries/RequestTypeReadAsyncAction
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
 import { RequestTypeUpdateAsyncAction } from './Queries/RequestTypeUpdateAsyncAction'
 import { FormDesigner } from '../Components/Form/FormDesigner'
+import { InsertGroupButton } from '@hrbolek/uoisfrontend-ug'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
@@ -57,8 +58,9 @@ const RequestTypePageContent = ({requesttype}) => {
             <Row>
                 <Col>
                 {!groupId && <>
+                    A<InsertGroupButton className="btn btn-outline-secondary">Vytvořit skupinu</InsertGroupButton>B
                         "Není nastavena skupina"
-                    </>}
+                </>}
                 </Col>
             </Row>
             <Row>
@@ -75,7 +77,7 @@ const RequestTypePageContent = ({requesttype}) => {
                         </FormCreateButtonDialog>
                     </>}
                     {/* {templateFormId && <FormSectionAttribute form={templateForm} />} */}
-                    {templateFormId && <FormDesigner form={templateForm} onUpdate={onUpdateForm}/>}
+                    {/* {templateFormId && <FormDesigner form={templateForm} onUpdate={onUpdateForm}/>} */}
                     <br />
                     
                     

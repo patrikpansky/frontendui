@@ -137,13 +137,13 @@ export const ButtonWithDialog = ({
      * this is guarder by firstRender
      */
     const [state, setState] = useState({...params});
-    const [firstRender, setFirstRender] = useState(true)
-    useEffect(() => {
-        if (!firstRender) {
-            setFirstRender(false)
-            setState({...params})
-        }
-    }, [params])
+    // const [firstRender, setFirstRender] = useState(true)
+    // useEffect(() => {
+    //     if (!firstRender) {
+    //         setFirstRender(false)
+    //         setState({...params})
+    //     }
+    // }, [params])
 
     const handleButtonClick = () => {
         setShowDialog(true); // Show the dialog when the button is clicked
@@ -159,8 +159,9 @@ export const ButtonWithDialog = ({
     };
 
     const onChildChange = (e) => {
+        console.log("ButtonWithDialog.onChildChange", state, e)
         const { id, value } = e.target;
-        setFirstRender(false)
+        // setFirstRender(false)
         setState((prev) => ({
             ...prev,
             [id]: value,

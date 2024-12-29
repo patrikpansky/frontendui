@@ -48,10 +48,10 @@ export const AsyncClickHandler = ({
         if (onClick) {
             onClick(entity);
         }
-        console.log("AsyncClickHandler.fetch with ", fetchParams)
-        console.log("AsyncClickHandler.fetch got ", entity)
+        // console.log("AsyncClickHandler.fetch with ", fetchParams)
+        // console.log("AsyncClickHandler.fetch got ", entity)
     };
-    console.log("AsyncClickHandler.render", loading, error, entity)
+    // console.log("AsyncClickHandler.render", loading, error, entity)
     return (
         <>
             {loading && <LoadingSpinner text={loadingMsg} />}

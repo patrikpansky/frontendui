@@ -52,9 +52,11 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
         item => item?.__typename === "RequestCategoryGQLModel"
     )
     // const [data, setData] = useState(requestcategories || [])
-    const addRow = (newRow) => {
-        setData(prev => [...prev, newRow])
-    }
+    // const addRow = (newRow) => {
+    //     setData(prev => [...prev, newRow])
+    // }
+
+    const addRow = () => null
     // useEffect(() => {
     //     if (requestcategories.length !== requestcategories.length) {
     //         setData(requestcategories)
@@ -83,6 +85,7 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
                                         <InsertRequestTypeButton 
                                             requestcategory={requestcategory} 
                                             className='btn btn-outline-primary form-control'
+                                            params={{category_id: requestcategory.id}}
                                         >
                                             Vložit nový typ
                                         </InsertRequestTypeButton>
@@ -92,7 +95,7 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
                         </Col>
                     )}   
                     </Row>             
-                    <InsertRequestCategoryButton className='btn btn-outline-primary form-control' onNew={addRow}>
+                    <InsertRequestCategoryButton className='btn btn-outline-primary form-control' onDone={addRow}>
                         Vložit novou kategorii
                     </InsertRequestCategoryButton>
                 </MiddleColumn>

@@ -1,86 +1,135 @@
+import { useCallback } from "react";
+import { useRef } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 /**
- * A React hook to fetch data using a Redux async action. Compatible with both React Suspense and traditional usage.
+ * A custom React hook that fetches data via a Redux async action.
+ * Allows optional delayed fetching and provides error/loading states.
  *
- * @param {Function} AsyncAction - The Redux async action to dispatch.
- * @param {Object} queryVariables - The parameters for the async action, including `id`.
- * @param {Object} [request] - Optional configuration for fetching behavior.
- * @param {boolean} [request.deferred=false] - If true, delays the initial fetch until explicitly triggered using the `fetch` function.
- * @param {boolean} [request.network=true] - If false, prevents any network requests.
+ * @function useAsyncAction
+ * @param {Function} AsyncAction - **Constant** Redux async action (thunk) to be dispatched.
+ * @param {Object} queryVariables - Initial parameters for the async action (e.g. `{ id: "some-id" }`).
+ * @param {Object} [request] - Optional configuration object.
+ * @param {boolean} [request.deferred=false] - If `true`, the hook won't fetch on mount; you'll need to call `fetch()` manually.
+ * @param {boolean} [request.network=true] - If `false`, network requests are skipped entirely (no auto-fetch).
  *
- * @returns {Object} The hook return values.
- * @returns {Function} read - A Suspense-compatible function that suspends rendering until data is available.
- * @returns {any} entity - The fetched data from the cache (if `params.cache` is true) or null if not available.
- * @returns {boolean} loading - Indicates if the data is being fetched.
- * @returns {any} error - The error object if the fetch failed.
- * @returns {Function} fetch - Fetches data with new parameters or retries the last fetch operation.
- * @returns {any} dispatchResult - The raw value returned by the dispatched Redux action.
+ * @returns {Object} Hook return values.
+ * @returns {boolean}   return.loading         - Whether a fetch operation is currently in progress.
+ * @returns {any}       return.error           - The error object if the last fetch failed, or `null` otherwise.
+ * @returns {any}       return.entity          - The fetched data from Redux state (or from the last successful dispatch).
+ * @returns {any}       return.dispatchResult  - The raw value returned by the last dispatched Redux action.
+ * @returns {Function}  return.fetch           - A function to initiate the fetch with optional new parameters.
  *
- * @example <caption>Using with Suspense</caption>
- * const ParentComponent = () => {
- *   const { read, dispatchResult } = useAsyncAction(fetchParentAction, { id: "parent-id" });
+ * @example <caption>Basic Usage (No Suspense)</caption>
+ * import { useAsyncAction } from "./useAsyncAction";
  *
- *   const entity = read(); // Suspends until data is ready
+ * const MyComponent = () => {
+ *   const { entity, loading, error, fetch } = useAsyncAction(fetchUserAction, { id: "123" });
+ *
+ *   if (loading) return <div>Loading...</div>;
+ *   if (error)   return <div>Error: {error.message}</div>;
  *
  *   return (
- *       <div>
- *           <div>Parent Data: {entity.name}</div>
- *           <div>Dispatch Result: {JSON.stringify(dispatchResult)}</div>
- *       </div>
+ *     <div>
+ *       <h2>User: {entity?.name}</h2>
+ *       <button onClick={() => fetch({ id: "456" })}>
+ *         Fetch Another User
+ *       </button>
+ *     </div>
  *   );
  * };
  *
- * @example <caption>Using without Suspense</caption>
- * const ParentComponent = () => {
- *   const { entity, loading, error, fetch } = useAsyncAction(fetchParentAction, { id: "parent-id" });
- *
- *   if (loading) return <div>Loading Parent Data...</div>;
- *   if (error) return <div>Error: {error.message}</div>;
+ * @example <caption>Delaying the Initial Fetch</caption>
+ * const MyDeferredComponent = () => {
+ *   const { entity, fetch, loading } =
+ *     useAsyncAction(fetchUserAction, { id: "123" }, { deferred: true });
  *
  *   return (
- *       <div>
- *           <div>Parent Data: {entity.name}</div>
- *           <button onClick={() => fetch()}>Retry</button>
- *           <button onClick={() => fetch({ id: "new-parent-id" })}>Fetch New Data</button>
- *       </div>
+ *     <div>
+ *       <button disabled={loading} onClick={() => fetch()}>
+ *         Load Data
+ *       </button>
+ *       {entity && <p>{entity.name}</p>}
+ *     </div>
  *   );
  * };
  */
 export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred: false, network: true }) => {
     const dispatch = useDispatch();
+    const fetchPromise = useRef(false)
     const items = useSelector((state) => state["items"]);
-    const { deferred, network } = params;
-
     if (!items) {
         throw new Error(
             "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
         );
     }
-
-    const { id } = queryVariables;
+    const { deferred, network } = params;
+    const [id] = useState(queryVariables?.id)
     const result = items[id];
+    // console.log("useAsyncAction", id, result)
     
-    const fetchData = async (fetchParams) => {
-        // console.log("useAsyncAction fetch start while state", state)
-        setState({...state, loading: true})
-        const newParams = fetchParams ? { ...state.lastParams, ...fetchParams } : state.lastParams;
-        if (fetchParams) {
-            setState(prev => ({...prev, lastParams: fetchParams, loading: true}))
+    const fetchData = useCallback(async (fetchParams, callback=(entity)=>null) => {
+        if (fetchPromise.current) {
+            await fetchPromise.current
         }
-        let actionResult= null
+
+        const mergedParams = fetchParams
+            ? { ...state.lastParams, ...fetchParams }
+            : state.lastParams;       
+
+        // 1) First setState call: check if we're already loading, otherwise set loading = true.
+        setState(prev => {
+            if (prev.loading) {
+                // Already loading, so bail out. We'll reflect this in `canFetch`.
+                return prev; // No changes to state
+            }           
+            
+            // Return the new state with loading = true.
+            return {
+                ...prev,
+                loading: true,
+                error: null,
+                dispatchResult: null,     // Clear any prior results
+            };
+        });
+
+        // console.log("useAsyncAction fetch start while mergedParams", mergedParams)
+
+        // 2) Now do the async part (the actual fetch/dispatch).
+        //    mergedParams was set inside the setState callback above.
         try {
-            // console.log("useAsyncAction.fetch with", newParams, fetchParams)
-            actionResult = await dispatch(AsyncAction(newParams));
-            setState(prev => ({...prev, loading: false, error: null, dispatchResult: actionResult }))
-        } catch (error) {
-            // console.log("useAsyncAction catch the error", error)
-            setState(prev => ({...prev, loading: false, error: error, dispatchResult: null }))
-        }
+            fetchPromise.current = dispatch(AsyncAction(mergedParams));
+            const actionResult = await fetchPromise.current;
+            fetchPromise.current = false
+            // 3) If the dispatch succeeds, update state again to clear loading and set the result.
+            setState(prev => ({
+                ...prev,
+                lastParams: mergedParams,
+                loading: false,
+                error: null,
+                dispatchResult: actionResult,
+            }));
+
+            // console.log("useAsyncAction fetch end while actionResult", actionResult)
+            // 4) Return the actual result of the dispatch, so the caller can await it or use it.
+            return actionResult;
+        } catch (err) {
+            fetchPromise.current = false
+            // console.log("useAsyncAction fetch failed err", err)
+            // 5) On error, update state accordingly and rethrow so the caller knows.
+            setState(prev => ({
+                ...prev,
+                lastParams: mergedParams,
+                loading: false,
+                error: err,
+                dispatchResult: null,
+            }));
+            // throw err;
+        }        
         // console.log("useAsyncAction fetch end while state", state)
-        return actionResult
-    };
+        // console.warn("trying to call fetch while still loading")
+    }, [AsyncAction]);
 
     const [state, setState] = useState({
         loading: !deferred,
@@ -88,23 +137,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         dispatchResult: null,
         fetch: fetchData,
         lastParams: queryVariables,
-        // id: crypto.randomUUID()
     })
-    // const setState = (what) => {
-    //     console.log("useAsyncAction settting state")
-    //     if (typeof what === "function") {
-    //         const wrap = (prev) => {
-    //             const next = what(prev)
-    //             console.log("useAsyncAction changed state from", prev)
-    //             console.log("useAsyncAction changed state into", next)
-    //             return next
-    //         }
-    //         _setState(wrap)
-    //     } else {
-    //         _setState(what)
-    //     }
-    // }
-    // console.log("useAsyncAction has state", state, params)
+
     useEffect(() => {
         if (network && !deferred) {
             fetchData()
