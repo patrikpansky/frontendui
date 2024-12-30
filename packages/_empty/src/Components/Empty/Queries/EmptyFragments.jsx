@@ -1,20 +1,6 @@
 import { createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared"
 
-const EmptyLargeFragment = 
-`
-fragment EmptyLarge on EmptyGQLModel {
-  ...EmptyMedium
-}
-`
-
-const EmptyMediumFragment = 
-`
-fragment EmptyMedium on EmptyGQLModel {
-  ...EmptyLink
-}
-`
-
-const EmptyLinkFragment = 
+export const EmptyLinkFragment = createQueryStrLazy(
 `
 fragment EmptyLink on EmptyGQLModel {
   __typename
@@ -23,8 +9,20 @@ fragment EmptyLink on EmptyGQLModel {
   name
   nameEn
 }
-`
+`)
 
-export const EmptyLinkFragmentLazy = createQueryStrLazy(EmptyLinkFragment)
-export const EmptyMediumFragmentLazy = createQueryStrLazy(EmptyMediumFragment, EmptyLinkFragmentLazy)
-export const EmptyLargeFragmentLazy = createQueryStrLazy(EmptyLargeFragment, EmptyMediumFragmentLazy)
+
+export const EmptyMediumFragment = createQueryStrLazy(
+`
+fragment EmptyMedium on EmptyGQLModel {
+  ...EmptyLink
+}
+`, EmptyLinkFragment)
+
+export const EmptyLargeFragment = createQueryStrLazy(
+`
+fragment EmptyLarge on EmptyGQLModel {
+  ...EmptyMedium
+}
+`, EmptyMediumFragment)
+  

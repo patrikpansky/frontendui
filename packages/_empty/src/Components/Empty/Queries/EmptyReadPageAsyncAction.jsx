@@ -1,14 +1,14 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
-import { EmptyLargeFragmentLazy } from "./EmptyFragments";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragment } from "./EmptyFragments";
 
-const EmptyReadPageQuery =
+const EmptyReadPageQuery = createQueryStrLazy(
 `
 query EmptyReadPageQuery($skip: Int, $limit: Int, $where: EmptyWhereInputFilter) {
   result: emptyPage(skip: $skip, limit: $limit, where: $where) {
     ...EmptyLarge
   }
 }
-`
+`, 
+    EmptyLargeFragment)
 
-const EmptyReadPageQueryLazy = createQueryStrLazy(EmptyReadPageQuery, EmptyLargeFragmentLazy)
-export const EmptyReadPageAsyncAction = createAsyncGraphQLAction(EmptyReadPageQueryLazy)
+export const EmptyReadPageAsyncAction = createAsyncGraphQLAction(EmptyReadPageQuery)

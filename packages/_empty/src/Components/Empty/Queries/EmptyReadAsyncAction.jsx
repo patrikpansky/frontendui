@@ -1,14 +1,14 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
-import { EmptyLargeFragmentLazy } from "./EmptyFragments";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragment, EmptyLargeFragmentLazy } from "./EmptyFragments";
 
-const EmptyReadQuery =
+const EmptyReadQuery = createQueryStrLazy(
 `
 query EmptyReadQuery($id: UUID!) {
   result: emptyById(id: $id) {
     ...EmptyLarge
   }
 }
-`
-const EmptyReadQueryLazy = createQueryStrLazy(EmptyReadQuery, EmptyLargeFragmentLazy)
+`, 
+    EmptyLargeFragment)
 
-export const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyReadQueryLazy)
+export const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyReadQuery)

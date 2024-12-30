@@ -1,7 +1,7 @@
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared";
-import { InsertEmptyButton } from "./InsertEmptyButton";
-import { UpdateEmptyButton } from "./UpdateEmptyButton";
-import { DeleteEmptyButton } from "./DeleteEmptyButton";
+import { InsertEmptyButton } from "./CUDButtons/InsertEmptyButton";
+import { UpdateEmptyButton } from "./CUDButtons/UpdateEmptyButton";
+import { DeleteEmptyButton } from "./CUDButtons/DeleteEmptyButton";
 
 /**
  * EmptyCUDButton Component
@@ -66,42 +66,79 @@ import { DeleteEmptyButton } from "./DeleteEmptyButton";
  *
  * @returns {JSX.Element} The dynamically selected button component for the specified operation.
  */
-export const EmptyCUDButton = ({ operation, children, empty, onDone, ...props }) => {
-    const operationMap = {
-        C: InsertEmptyButton,
-        U: UpdateEmptyButton,
-        D: DeleteEmptyButton,
+export const EmptyButton = ({ operation, children, empty, onDone = () => {}, ...props }) => {
+    const operationConfig = {
+        C: {
+            asyncAction: EmptyInsertAsyncAction,
+            dialogTitle: "Vložit novou empty",
+            loadingMsg: "Vkládám novou empty",
+            renderContent: () => <EmptyMediumEditableContent empty={empty} />,
+        },
+        U: {
+            asyncAction: EmptyUpdateAsyncAction,
+            dialogTitle: "Upravit empty",
+            loadingMsg: "Ukládám empty",
+            renderContent: () => <EmptyMediumEditableContent empty={empty} />,
+        },
+        D: {
+            asyncAction: EmptyDeleteAsyncAction,
+            dialogTitle: "Chcete odebrat empty?",
+            loadingMsg: "Odstraňuji empty",
+            renderContent: () => (
+                <h2>
+                    {empty?.name} ({empty?.name_en})
+                </h2>
+            ),
+        },
     };
 
-    if (!empty) {
-        return <ErrorHandler errors="The 'empty' parameter is required for EmptyCUDButton." />;
-    }
-
-    if ((operation === 'U' || operation === 'D') && !empty.id) {
-        return <ErrorHandler errors={`For '${operation}' operation, 'empty' must include an 'id' key.`} />;
-    }
-
-    const Component = operationMap[operation];
-    if (!Component) {
+    if (!operationConfig[operation]) {
         return <ErrorHandler errors={`Invalid operation value: '${operation}'. Must be one of 'C', 'U', or 'D'.`} />;
     }
 
-    return <Component children={children} empty={empty} onDone={onDone} {...props} />;
+    const { asyncAction, dialogTitle, loadingMsg, renderContent } = operationConfig[operation];
+
+    // Validate required fields for "U" and "D"
+    if ((operation === 'U' || operation === 'D') && !empty?.id) {
+        return <ErrorHandler errors={`For '${operation}' operation, 'empty' must include an 'id' key.`} />;
+    }
+
+    return (
+        <AsyncClickHandler
+            asyncAction={asyncAction}
+            defaultParams={empty}
+            loadingMsg={loadingMsg}
+            onClick={onDone}
+        >
+            <ButtonWithDialog
+                buttonLabel={children}
+                dialogTitle={dialogTitle}
+                {...props}
+                params={empty}
+            >
+                {renderContent()}
+            </ButtonWithDialog>
+        </AsyncClickHandler>
+    );
 };
 
-// Prop validation
+// Prop validation using PropTypes
 EmptyCUDButton.propTypes = {
-    operation: PropTypes.oneOf(['C', 'U', 'D']).isRequired, // Restrict to valid operations
+    /** The operation to perform: "C" for create, "U" for update, "D" for delete. */
+    operation: PropTypes.oneOf(['C', 'U', 'D']).isRequired,
+    /** The label or content for the button. */
     children: PropTypes.node,
+    /** The parameters for the operation. */
     empty: PropTypes.shape({
-        id: PropTypes.string, // Optional for 'C', required for 'U' and 'D'
+        id: PropTypes.string, // Required for "U" and "D" operations
         name: PropTypes.string,
         name_en: PropTypes.string,
     }).isRequired,
+    /** Callback executed after the operation completes. Receives the `empty` object. */
     onDone: PropTypes.func,
 };
 
-// Default callback
+// Default props
 EmptyCUDButton.defaultProps = {
     onDone: () => {},
 };
