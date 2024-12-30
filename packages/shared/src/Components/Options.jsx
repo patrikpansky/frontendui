@@ -15,16 +15,16 @@ import { SimpleCardCapsule } from './SimpleCardCapsule';
  */
 
 export const Options = ({ asyncAction, params = {} }) => {
-    const { error, loading, fetch, entity } = useAsyncAction(asyncAction, params);
+    const { error, loading, fetch, entity, dispatchResult } = useAsyncAction(asyncAction, params);
 
     let options = []
     if (entity?.id) {
         options = entity?.options || []
     } else {
-        const result = entity?.data?.result
+        const result = dispatchResult?.data?.result
         options = result?.options || []
     }
-
+    // console.log("Options", options, entity, dispatchResult)
     return (
         <>
             {loading && <LoadingSpinner />}

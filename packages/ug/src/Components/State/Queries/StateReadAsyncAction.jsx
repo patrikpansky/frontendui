@@ -1,53 +1,15 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateLargeFragment } from "./StateFragments";
 
-const StateReadQuery =
+const StateReadQuery = createQueryStrLazy(
 `
 query StateReadQuery($id: UUID!) {
   result: stateById(id: $id) {
+    __typename
     ...StateLarge
   }
 }
-
-
-fragment StateMachineLink on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn  
-}
-
-fragment StateLarge  on StateGQLModel {
-  ...StateLink
-  statemachine {
-    ...StateMachineLink
-  }
-  targets {
-    ...StateTransition
-  }
-  sources {
-    ...StateTransition
-  }
-}
-
-fragment StateLink on StateGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-
-fragment StateTransition on StateTransitionGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-	source { ...StateLink}
-  target { ...StateLink}
-}
-
-`
+  `,
+    StateLargeFragment)
 
 export const StateReadAsyncAction = createAsyncGraphQLAction(StateReadQuery)

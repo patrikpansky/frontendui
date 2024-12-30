@@ -8,6 +8,7 @@ export const Input = ({label, ...props}) => {
         if (!fired.current) {
             const e = {target:{id, value: (value || defaultValue)}}
             onChange(e)
+            console.log("Input.onChange", e)
             fired.current = true
         }
     })

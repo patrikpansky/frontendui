@@ -6,12 +6,12 @@ import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
 import { AsyncComponent, createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 
 import { RequestPageNavbar } from "./RequestPageNavbar"
-import { RequestTypeReadAsyncAction } from './Queries/RequestTypeReadAsyncAction'
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
 import { FormDesigner } from '../Components/Form/FormDesigner'
-import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
-import { RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries/RequestTypeUpdateAsyncAction'
+import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, InsertStateButton, InsertStateMachineButton, StateMachineLiveDesigner, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
+import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
 import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
+import { StateMachineDesigner } from '@hrbolek/uoisfrontend-ug'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
@@ -34,7 +34,7 @@ import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
  * <RequestTypePageContent requesttype={requesttypeEntity} />
  */
 const RequestTypePageContent = ({requesttype}) => {
-    const { group, templateFormId, templateForm } = requesttype
+    const { statemachine, group, templateFormId, templateForm } = requesttype
     const { fetch: updateRequestType, loading, error } = useAsyncAction(RequestTypeUpdateAsyncAction, {...requesttype}, {deferred: true})
     const {
         error: request_type_error, 
@@ -42,16 +42,29 @@ const RequestTypePageContent = ({requesttype}) => {
         // entity: request_type, 
         // dispatchResult: request_type_dispatch_result,
         fetch: request_type_refresh
-    } = useAsyncAction(RequestTypeReadAsyncAction, {}, {deferred: true})
+    } = useAsyncAction(RequestTypeReadAsyncAction, {...requesttype}, {deferred: true})
 
     const OnCreateGroupDone = async (group) => {
         console.log("OnCreateGroupDone", group)
-        const updatedGroup = await updateRequestType({...requesttype, group_id: group.id})
-        console.log("OnCreateGroupDone.Updated", updatedGroup)
+        const updatedRequestType = await updateRequestType({...requesttype, group_id: group.id})
+        console.log("OnCreateGroupDone.Updated", updatedRequestType)
+    }
+    const onCreateStatemachineDone = async (statemachine) => {
+        console.log("OnCreateGroupDone", statemachine)
+        const updatedRequestType = await updateRequestType({...requesttype, statemachine_id: statemachine.id})
+        console.log("OnCreateGroupDone.Updated", updatedRequestType)        
+    }
+    const onCreateStateDone = async (state) => {
+        console.log("onCreateStateDone", state)
+        const updatedRequestType = await request_type_refresh()
+        console.log("OnCreateGroupDone.Refreshed", updatedRequestType)        
     }
 
-    const onCreateForm = (form) => {
-        updateRequestType({...requesttype, template_form_id: form.id})
+    const onCreateForm = async (form) => {
+        console.log("onCreateForm", form)
+        console.log("onCreateForm", requesttype)
+        const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
+        console.log("onCreateForm.Updated", updatedRequestType)
     }
     const onUpdateForm = () => {
         request_type_refresh({...requesttype})
@@ -91,6 +104,29 @@ const RequestTypePageContent = ({requesttype}) => {
                     
                     {JSON.stringify(requesttype?.group)}
                 </>}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    {statemachine && <StateMachineDesigner statemachine={statemachine} >
+                            <InsertStateButton 
+                                params={{statemachine_id: statemachine.id}} 
+                                className="btn btn-outline-secondary"
+                                onDone={onCreateStateDone}
+                            >
+                                Nový stav {statemachine.id}
+                            </InsertStateButton>
+                        </StateMachineDesigner>
+                    }
+                    {statemachine && <StateMachineLiveDesigner statemachine={statemachine}/>}
+                    {!statemachine && <InsertStateMachineButton 
+                            className="btn btn-outline-secondary" 
+                            onDone={onCreateStatemachineDone}
+                            params={{L: 1}}
+                        >
+                            Vytvořit stavový automat
+                        </InsertStateMachineButton>
+                    }
                 </Col>
             </Row>
             <Row>

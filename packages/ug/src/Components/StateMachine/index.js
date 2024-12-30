@@ -7,6 +7,7 @@ export * from './StateMachineLargeCard'
 export * from './InsertStateMachineButton'
 export * from './UpdateStateMachineButton'
 export * from './DeleteStateMachineButton'
+export * from './StateMachineDesigner'
 
 export * from './Scalars'
 export * from './Vectors'

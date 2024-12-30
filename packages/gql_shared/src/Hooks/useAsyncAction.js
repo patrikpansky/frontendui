@@ -68,9 +68,10 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     // const [id] = useState(queryVariables?.id)
     const { id } = queryVariables
     const result = items[id];
-    // console.log("useAsyncAction", id, result)
+    console.log("useAsyncAction", id, result)
     
     const fetchData = useCallback(async (fetchParams, callback=(entity)=>null) => {
+        console.log("useAsyncAction.fetchData with", fetchParams)
         if (fetchPromise.current) {
             await fetchPromise.current
         }
@@ -120,11 +121,11 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
                 const {items} = getState()
                 itemFromStore = items[id]
                 // console.log("got it ", items)
-                // console.log("got it ", itemFromStore)
+                // console.log("got it ", id, itemFromStore)
             }
             dispatch(readit)
 
-            console.log("useAction", itemFromStore, result, actionResult)
+            // console.log("useAction", itemFromStore, result, actionResult)
             return itemFromStore || actionResult;
             // return state.entity
         } catch (err) {
@@ -161,6 +162,6 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     return {
         ...state,
         // read: resource.read, // Suspense-compatible `read` function
-        entity: result || state.dispatchResult,
+        entity: result,
     };
 };

@@ -3,7 +3,7 @@ import { RequestCategoryInsertAsyncAction } from './Queries/RequestCategoryInser
 import { RequestCategoryDeleteAsyncAction } from './Queries/RequestCategoryDeleteAsyncAction';
 
 /**
- * InsertRequestCategoryButton Component
+ * DeleteRequestCategoryButton Component
  *
  * A reusable button component for inserting a new "requestcategory" into the system. It uses a dialog
  * for collecting necessary inputs and executes an asynchronous action upon confirmation.
@@ -13,7 +13,7 @@ import { RequestCategoryDeleteAsyncAction } from './Queries/RequestCategoryDelet
  * component for rendering form fields dynamically based on the `params` prop.
  *
  * @component
- * @param {Object} props - The props for the InsertRequestCategoryButton component.
+ * @param {Object} props - The props for the DeleteRequestCategoryButton component.
  * @param {React.ReactNode} props.children - The content or label for the button.
  * @param {Object} [props.params={}] - The initial parameters for the requestcategory insertion action. 
  *                                      Contains default values for the dialog inputs.
@@ -31,12 +31,12 @@ import { RequestCategoryDeleteAsyncAction } from './Queries/RequestCategoryDelet
  *     };
  *
  *     return (
- *         <InsertRequestCategoryButton
+ *         <DeleteRequestCategoryButton
  *             params={{ name: "Default Name", name_en: "Default English Name" }}
  *             onDone={handleRequestCategoryInserted}
  *         >
  *             Add New RequestCategory
- *         </InsertRequestCategoryButton>
+ *         </DeleteRequestCategoryButton>
  *     );
  * };
  *

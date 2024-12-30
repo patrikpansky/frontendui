@@ -162,14 +162,17 @@ export const ButtonWithDialog = ({
     };
 
     const onChildChange = (e) => {
-        console.log("ButtonWithDialog.onChildChange", state, e)
+        // console.log("ButtonWithDialog.onChildChange", state, e)
         const { id, value } = e.target;
         // setFirstRender(false)
-        setState((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
-        
+        setState((prev) => {
+            console.log("ButtonWithDialog.onChildChange", prev, e)
+            if (!prev) return {[id]: value}
+            return {
+                ...prev,
+                [id]: value
+            }
+        });
     };
 
     return (

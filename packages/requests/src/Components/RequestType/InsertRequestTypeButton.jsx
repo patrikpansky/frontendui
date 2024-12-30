@@ -47,10 +47,10 @@ export const InsertRequestTypeButton = ({ children, params, onDone = (newRequest
         <AsyncClickHandler
             asyncAction={RequestTypeInsertAsyncAction}
             defaultParams={params}
-            loadingMsg={"Vkládám novou část"}
+            loadingMsg={"Vytvářím nový požadavek"}
             onClick={onDone}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vytvořit nový požadavek" {...props} params={params}>
                 <RequestTypeMediumEditableContent requesttype={params} />
             </ButtonWithDialog>
         </AsyncClickHandler>

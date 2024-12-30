@@ -1,6 +1,7 @@
-import { createAsyncGraphQLAction, updateItemsFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateMachineLargeFragment, StateMachineLinkFragment } from "@hrbolek/uoisfrontend-ug";
 
-const RequestTypeRead = `
+const RequestTypeRead = createQueryStrLazy(`
 query RequestTypeRead($id: UUID!) {
   result: requestTypeById(id: $id) {
     ...RequestType
@@ -22,7 +23,7 @@ fragment RequestType on RequestTypeGQLModel {
     ...FormLarge
   }
   statemachine {
-    
+    ...StateMachineLarge
   }
 }
 
@@ -69,7 +70,8 @@ fragment FormLarge on FormGQLModel {
     }
   }
 }
-`;
+`,
+    StateMachineLargeFragment);
 
 /**
  * An asynchronous action to execute a GraphQL query for reading request category entities.

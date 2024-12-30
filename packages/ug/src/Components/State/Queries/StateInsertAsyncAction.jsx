@@ -1,11 +1,13 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateLargeFragment } from "./StateFragments";
 
-const StateInsertMutation =
+const StateInsertMutation = createQueryStrLazy(
 `
-mutation StateInsertMutation($id: UUID, $name: String, $name_en: String) {
+mutation StateInsertMutation($id: UUID, $name: String!, $name_en: String, $statemachine_id: UUID!) {
   result: stateInsert(
-    state: {id: $id, name: $name, nameEn: $name_en}
+    state: {id: $id, name: $name, nameEn: $name_en, statemachineId: $statemachine_id}
   ) {
+    __typename
     ... on InsertError {
       failed
       msg
@@ -14,47 +16,7 @@ mutation StateInsertMutation($id: UUID, $name: String, $name_en: String) {
     ...StateLarge
   }
 }
-
-
-fragment StateMachineLink on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn  
-}
-
-fragment StateLarge  on StateGQLModel {
-  ...StateLink
-  statemachine {
-    ...StateMachineLink
-  }
-  targets {
-    ...StateTransition
-  }
-  sources {
-    ...StateTransition
-  }
-}
-
-fragment StateLink on StateGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-
-fragment StateTransition on StateTransitionGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-	source { ...StateLink}
-  target { ...StateLink}
-}
-
-`
+`,
+    StateLargeFragment)
 
 export const StateInsertAsyncAction = createAsyncGraphQLAction(StateInsertMutation)

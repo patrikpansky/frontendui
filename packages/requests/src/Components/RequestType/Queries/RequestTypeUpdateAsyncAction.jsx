@@ -1,9 +1,15 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared"
+import { StateMachineLargeFragment } from "@hrbolek/uoisfrontend-ug"
 
-const RequestTypeUpdateMutation = `
-mutation RequestTypeUpdate($id: UUID!, $lastchange: DateTime!, $name: String!, $name_en: String!) {
-  result: requestTypeUpdate(type: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en}) {
-    ...on RequestTypeGQLModelUpdateError {
+const RequestTypeUpdateMutation = createQueryStrLazy(`
+mutation RequestTypeUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, 
+  	$group_id: UUID, $template_form_id: UUID, $statemachine_id: UUID) {
+  result: requestTypeUpdate(
+    requestType: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en, 
+      groupId: $group_id, templateFormId: $template_form_id, statemachineId: $statemachine_id}
+  ) {
+      __typename
+    ... on RequestTypeGQLModelUpdateError {
       input
       failed
       msg
@@ -13,7 +19,6 @@ mutation RequestTypeUpdate($id: UUID!, $lastchange: DateTime!, $name: String!, $
   }
 }
 
-
 fragment RequestType on RequestTypeGQLModel {
   __typename
   id
@@ -21,13 +26,10 @@ fragment RequestType on RequestTypeGQLModel {
   name
   nameEn
   groupId
-  group {
-    ...GroupLink
-  }
+  group { ...GroupLink }
   templateFormId
-  templateForm {
-    ...FormLarge
-  }
+  templateForm { ...FormLarge }
+  statemachine { ...StateMachineLarge }
 }
 
 fragment GroupLink on GroupGQLModel {
@@ -73,6 +75,8 @@ fragment FormLarge on FormGQLModel {
     }
   }
 }
-`
+`,
+    StateMachineLargeFragment
+)
 
 export const RequestTypeUpdateAsyncAction = createAsyncGraphQLAction(RequestTypeUpdateMutation)

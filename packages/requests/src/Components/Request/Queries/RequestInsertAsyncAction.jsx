@@ -4,6 +4,7 @@ const RequestInsertMutation =
 `
 mutation RequestInsertMutation($id: UUID, $request_type_id: UUID!) {
   result: formRequestInsert(request: {id: $id, requestTypeId: $request_type_id}) {
+    __typename
     ...on InsertError {
       failed
       msg

@@ -47,10 +47,10 @@ export const InsertGroupButton = ({ children, params, onDone = (newGroup) => nul
         <AsyncClickHandler
             asyncAction={GroupInsertAsyncAction}
             defaultParams={params}
-            loadingMsg={"Vkládám novou část"}
+            loadingMsg={"Vkládám novou skupinu"}
             onClick={onDone}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou skupinu" {...props} params={params}>
                 <GroupMediumEditableContent group={params} />
             </ButtonWithDialog>
         </AsyncClickHandler>

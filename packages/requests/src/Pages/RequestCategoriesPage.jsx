@@ -46,7 +46,7 @@ const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
  * 
  * <RequestCategoryPageContent requestcategory={requestcategoryEntity} />
  */
-const RequestCategoriesPageContent = ({requestcategories = []}) => {
+const RequestCategoriesPageContent = ({requestcategories = [], onContentChange = ()=>null}) => {
     const items = useSelector(state => state.items)
     requestcategories = Object.values(items).filter(
         item => item?.__typename === "RequestCategoryGQLModel"
@@ -57,6 +57,10 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
     // }
 
     const addRow = () => null
+    const onNewRequestType = async (requestType) => {
+        console.log("onNewRequestType", requestType)
+        onContentChange(requestType)
+    }
     // useEffect(() => {
     //     if (requestcategories.length !== requestcategories.length) {
     //         setData(requestcategories)
@@ -83,9 +87,10 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
                                 <Row>
                                     <Col>
                                         <InsertRequestTypeButton 
-                                            requestcategory={requestcategory} 
+                                            // params={requestcategory} 
                                             className='btn btn-outline-primary form-control'
                                             params={{category_id: requestcategory.id}}
+                                            onDone={onNewRequestType}
                                         >
                                             Vložit nový typ
                                         </InsertRequestTypeButton>
@@ -133,8 +138,22 @@ const RequestCategoriesPageContent = ({requestcategories = []}) => {
  *
  * <RequestCategoriesPageContentLazy requestcategories={queryOptions} />
  */
-const RequestCategoriesPageContentLazy = createLazyComponent(RequestCategoriesPageContent, "requestcategories", RequestCategoryPageReadAsyncAction)
-
+const RequestCategoriesPageContentLazy_ = createLazyComponent(RequestCategoriesPageContent, "requestcategories", RequestCategoryPageReadAsyncAction)
+const RequestCategoriesPageContentLazy = ({where}) => {
+    const {fetch, error, loading, dispatchResult} = useAsyncAction(RequestCategoryPageReadAsyncAction, {where})
+    const onContentChange = async ()=> {
+        console.log("buble to RequestCategoriesPageContentLazy")
+        const refresh = await fetch()
+        console.log("refresh ", refresh)
+    }
+    if (error) return <ErrorHandler errors={error} />
+    if (loading) return <LoadingSpinner text={"Nahrávám kategorie požadavků"}/>
+    const requestcategories = dispatchResult?.data?.result
+    if (!requestcategories) <ErrorHandler errors="Neočekáváně selhal dotaz na server" />
+    return (
+        <RequestCategoriesPageContent requestcategories= {requestcategories} onContentChange={onContentChange}/>
+    )
+}
 /**
  * A page component for displaying lazy-loaded content of an requestcategory entity.
  *

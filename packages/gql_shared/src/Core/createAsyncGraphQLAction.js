@@ -222,12 +222,12 @@ export const createQueryStrLazy = (queryStr, ...nodes) => {
     return lazyResult;
 }
   
-const p = 'query p {...t ...q}'
-const q = 'fragment q {...t}'
-const t = 'fragment t {}'
-const ft = createQueryStrLazy(t)
-const fq = createQueryStrLazy(q, ft)
-const fp = createQueryStrLazy(p, ft, fq)
-console.log(fp.__metadata)
-const p_ = fp()
-console.log(p_)
+// const p = 'query p {...t ...q}'
+// const q = 'fragment q {...t}'
+// const t = 'fragment t {}'
+// const ft = createQueryStrLazy(t)
+// const fq = createQueryStrLazy(q, ft)
+// const fp = createQueryStrLazy(p, ft, fq)
+// console.log(fp.__metadata)
+// const p_ = fp()
+// console.log(p_)

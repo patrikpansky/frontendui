@@ -1,6 +1,7 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { GroupLargeFragment } from "./GroupFragments";
 
-const GroupInsertMutation =
+const GroupInsertMutation = createQueryStrLazy(
 `
 mutation GroupInsertMutation($id: UUID, $name: String!, $name_en: String, $grouptype_id: UUID!) {
   result: groupInsert(
@@ -15,14 +16,6 @@ mutation GroupInsertMutation($id: UUID, $name: String!, $name_en: String, $group
     ...GroupLarge
   }
 }
-
-fragment GroupLarge on GroupGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-`
+`, GroupLargeFragment)
 
 export const GroupInsertAsyncAction = createAsyncGraphQLAction(GroupInsertMutation)

@@ -49,8 +49,8 @@ export const FormCreateButtonDialog = ({onCreate=()=>null, ...props}) => {
     }
 
     const onConfirmCreate = async() => {
-        const fetchResult = await fetch({...inputValues})
-        const gotForm = fetchResult?.data?.result
+        const gotForm = await fetch({...inputValues})
+        // const gotForm = fetchResult?.data?.result
         console.log("new template form", gotForm)
         onCreate(gotForm)
     }

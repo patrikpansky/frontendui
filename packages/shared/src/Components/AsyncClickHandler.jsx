@@ -43,8 +43,9 @@ export const AsyncClickHandler = ({
 
     const handleClick = async (params = {}) => {
         const fetchParams = { ...defaultParams, ...params }
-        
+        console.log("AsyncClickHandler.fetch with ", fetchParams)
         const entity = await fetch(fetchParams);
+        console.log("AsyncClickHandler.fetch response ", entity)
         if (onClick) {
             onClick(entity);
         }

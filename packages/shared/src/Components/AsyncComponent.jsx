@@ -12,6 +12,7 @@ export const AsyncComponent  = ({children, asyncAction, queryVariables, property
     
     if (error) return <ErrorHandler errors={error} />
     if (loading) return <LoadingSpinner />
+    if (!entity) return <>No entity</>
     const childrenProps = {[propertyName]: entity}
     return (
         <ChildWrapper {...childrenProps} {...props}>

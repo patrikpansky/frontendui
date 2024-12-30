@@ -1,9 +1,8 @@
 import { AsyncClickHandler, ButtonWithDialog, Input } from '@hrbolek/uoisfrontend-shared';
-import { RequestTypeInsertAsyncAction } from './Queries/RequestTypeInsertAsyncAction';
 import { RequestTypeDeleteAsyncAction } from './Queries/RequestTypeDeleteAsyncAction';
 
 /**
- * InsertRequestTypeButton Component
+ * DeleteRequestTypeButton Component
  *
  * A reusable button component for inserting a new "requesttype" into the system. It uses a dialog
  * for collecting necessary inputs and executes an asynchronous action upon confirmation.
@@ -13,7 +12,7 @@ import { RequestTypeDeleteAsyncAction } from './Queries/RequestTypeDeleteAsyncAc
  * component for rendering form fields dynamically based on the `params` prop.
  *
  * @component
- * @param {Object} props - The props for the InsertRequestTypeButton component.
+ * @param {Object} props - The props for the DeleteRequestTypeButton component.
  * @param {React.ReactNode} props.children - The content or label for the button.
  * @param {Object} [props.params={}] - The initial parameters for the requesttype insertion action. 
  *                                      Contains default values for the dialog inputs.
@@ -31,12 +30,12 @@ import { RequestTypeDeleteAsyncAction } from './Queries/RequestTypeDeleteAsyncAc
  *     };
  *
  *     return (
- *         <InsertRequestTypeButton
+ *         <DeleteRequestTypeButton
  *             params={{ name: "Default Name", name_en: "Default English Name" }}
  *             onDone={handleRequestTypeInserted}
  *         >
  *             Add New RequestType
- *         </InsertRequestTypeButton>
+ *         </DeleteRequestTypeButton>
  *     );
  * };
  *

@@ -1,4 +1,4 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
+import { Input, Select } from "@hrbolek/uoisfrontend-shared"
 
 /**
  * A component that displays medium-level content for an statetransition entity.
@@ -28,6 +28,13 @@ export const StateTransitionMediumEditableContent = ({statetransition, onChange=
         <>           
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={statetransition?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={statetransition?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
+            <Select id={"target_id"} label={"Cílový stav"} className="form-control"  defaultValue={statetransition?.target_id} onChange={onChange} onBlur={onBlur} >
+                {statetransition?.statemachine?.states?.map(
+                    state => <option key={state.id} value={state.id}>
+                        {state.name}
+                    </option>
+                )}
+            </Select>
             {children}
         </>
     )

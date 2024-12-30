@@ -1,11 +1,13 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateMachineLargeFragment } from "./StateMachineFragments";
 
-const StateMachineInsertMutation =
+const StateMachineInsertMutation = createQueryStrLazy(
 `
-mutation StateMachineInsertMutation($id: UUID, $name: String, $name_en: String) {
+mutation StateMachineInsertMutation($id: UUID, $name: String!, $name_en: String) {
   result: statemachineInsert(
     statemachine: {id: $id, name: $name, nameEn: $name_en}
   ) {
+    __typename
     ... on InsertError {
       failed
       msg
@@ -14,53 +16,6 @@ mutation StateMachineInsertMutation($id: UUID, $name: String, $name_en: String) 
     ...StateMachineLarge
   }
 }
-
-fragment StateMachineLarge on StateMachineGQLModel {
-  ...StateMachineLink
-  states {
-    ...StateLarge
-  }
-  transitions {
-    ...StateTransition
-  }
-}
-
-fragment StateMachineLink on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn  
-}
-
-fragment StateLarge  on StateGQLModel {
-  ...StateLink
-  targets {
-    ...StateTransition
-  }
-  sources {
-    ...StateTransition
-  }
-}
-
-fragment StateLink on StateGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-
-fragment StateTransition on StateTransitionGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-	source { ...StateLink}
-  target { ...StateLink}
-}
-
-`
+`, StateMachineLargeFragment)
 
 export const StateMachineInsertAsyncAction = createAsyncGraphQLAction(StateMachineInsertMutation)

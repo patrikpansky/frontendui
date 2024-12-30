@@ -47,10 +47,10 @@ export const InsertStateButton = ({ children, params, onDone = (newState) => nul
         <AsyncClickHandler
             asyncAction={StateInsertAsyncAction}
             defaultParams={params}
-            loadingMsg={"Vkládám novou část"}
+            loadingMsg={"Vkládám nový stav"}
             onClick={onDone}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit nový stav" {...props} params={params}>
                 <StateMediumEditableContent state={params} />
             </ButtonWithDialog>
         </AsyncClickHandler>
