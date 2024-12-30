@@ -1,6 +1,7 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateTransitionLargeFragment } from "./StateTransitionFragments";
 
-const StateTransitionDeleteMutation =
+const StateTransitionDeleteMutation = createQueryStrLazy(
 `
 mutation StateTransitionDeleteMutation($id: UUID!, $lastchange: DateTime!) {
   result: statetransitionDelete(
@@ -16,53 +17,7 @@ mutation StateTransitionDeleteMutation($id: UUID!, $lastchange: DateTime!) {
     }
   }
 }
-
-
-fragment StateTransitionLarge on StateTransitionGQLModel {
-  ...StateTransition
-  statemachine {
-    ...StateMachineLink
-  }
-}
-
-fragment StateMachineLink on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn  
-}
-
-fragment StateLarge  on StateGQLModel {
-  ...StateLink
-  statemachine {
-    ...StateMachineLink
-  }
-  targets {
-    ...StateTransition
-  }
-  sources {
-    ...StateTransition
-  }
-}
-
-fragment StateLink on StateGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-
-fragment StateTransition on StateTransitionGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-	source { ...StateLink}
-  target { ...StateLink}
-}
-`
+`,
+    StateTransitionLargeFragment)
 
 export const StateTransitionDeleteAsyncAction = createAsyncGraphQLAction(StateTransitionDeleteMutation)

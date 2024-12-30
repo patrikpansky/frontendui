@@ -146,7 +146,9 @@ export const ButtonWithDialog = ({
     //     }
     // }, [params])
 
-    const handleButtonClick = () => {
+    const handleButtonClick = (e) => {
+        // e.stopPropagation()
+        // e.nativeEvent.stopImmediatePropagation()
         setShowDialog(true); // Show the dialog when the button is clicked
     };
 

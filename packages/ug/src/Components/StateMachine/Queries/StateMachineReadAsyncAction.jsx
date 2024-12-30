@@ -1,59 +1,18 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StateMachineLargeFragment, StateMachineLinkFragment, StateMediumFragment, StateTransitionMediumFragment } from "./StateMachineFragments";
 
-const StateMachineReadQuery =
+const StateMachineReadQuery = createQueryStrLazy(
 `
-query StateMachineReadQuery($id: UUID!) {
+query StateMachineReadQuery($id: UUID!, $limit: Int) {
   result: statemachineById(id: $id) {
-    ...StateMachineLarge
+    ...StateMachineLink
+    states(limit: $limit) { ...StateMedium }
+    transitions(limit: $limit) { ...StateTransitionMedium }
+
   }
 }
+`,
+    StateMachineLinkFragment, StateMediumFragment, StateTransitionMediumFragment)
 
-fragment StateMachineLarge on StateMachineGQLModel {
-  ...StateMachineLink
-  states {
-    ...StateLarge
-  }
-  transitions {
-    ...StateTransition
-  }
-}
-
-fragment StateMachineLink on StateMachineGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn  
-}
-
-fragment StateLarge  on StateGQLModel {
-  ...StateLink
-  targets {
-    ...StateTransition
-  }
-  sources {
-    ...StateTransition
-  }
-}
-
-fragment StateLink on StateGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-}
-
-fragment StateTransition on StateTransitionGQLModel {
-    __typename
-  id
-  lastchange
-  name
-  nameEn
-	source { ...StateLink}
-  target { ...StateLink}
-}
-
-`
 
 export const StateMachineReadAsyncAction = createAsyncGraphQLAction(StateMachineReadQuery)

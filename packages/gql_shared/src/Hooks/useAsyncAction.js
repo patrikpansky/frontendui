@@ -68,10 +68,10 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     // const [id] = useState(queryVariables?.id)
     const { id } = queryVariables
     const result = items[id];
-    console.log("useAsyncAction", id, result)
+    // console.log("useAsyncAction", id, result)
     
     const fetchData = useCallback(async (fetchParams, callback=(entity)=>null) => {
-        console.log("useAsyncAction.fetchData with", fetchParams)
+        // console.log("useAsyncAction.fetchData with", fetchParams)
         if (fetchPromise.current) {
             await fetchPromise.current
         }

@@ -100,7 +100,6 @@ const RequestTypePageContent = ({requesttype}) => {
                         </UpdateGroupButton>
 
                     </GroupCardCapsule>
-                    <span className='btn btn-outline-secondary'>ANO <br/> <span className='btn btn-outline-primary'>Ne</span></span>
                     
                     {JSON.stringify(requesttype?.group)}
                 </>}
@@ -108,7 +107,7 @@ const RequestTypePageContent = ({requesttype}) => {
             </Row>
             <Row>
                 <Col>
-                    {statemachine && <StateMachineDesigner statemachine={statemachine} >
+                    {/* {statemachine && <StateMachineDesigner statemachine={statemachine} >
                             <InsertStateButton 
                                 params={{statemachine_id: statemachine.id}} 
                                 className="btn btn-outline-secondary"
@@ -117,7 +116,7 @@ const RequestTypePageContent = ({requesttype}) => {
                                 Nový stav {statemachine.id}
                             </InsertStateButton>
                         </StateMachineDesigner>
-                    }
+                    } */}
                     {statemachine && <StateMachineLiveDesigner statemachine={statemachine}/>}
                     {!statemachine && <InsertStateMachineButton 
                             className="btn btn-outline-secondary" 

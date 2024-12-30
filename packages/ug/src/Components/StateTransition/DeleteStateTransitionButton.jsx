@@ -15,10 +15,10 @@ import { StateTransitionDeleteAsyncAction } from './Queries/StateTransitionDelet
  * @component
  * @param {Object} props - The props for the InsertStateTransitionButton component.
  * @param {React.ReactNode} props.children - The content or label for the button.
- * @param {Object} [props.params={}] - The initial parameters for the statetransition insertion action. 
+ * @param {Object} [props.statetransition={}] - The initial parameters for the statetransition insertion action. 
  *                                      Contains default values for the dialog inputs.
- * @param {string} [props.params.name] - The default value for the "Název" field.
- * @param {string} [props.params.name_en] - The default value for the "Anglický název" field.
+ * @param {string} [props.statetransition.name] - The default value for the "Název" field.
+ * @param {string} [props.statetransition.name_en] - The default value for the "Anglický název" field.
  * @param {Function} [props.onDone=(newStateTransition) => null] - Callback executed after the statetransition is successfully inserted.
  *                                                      Receives the new statetransition as an argument.
  * @param {...Object} props - Additional props passed to the `ButtonWithDialog` component.

@@ -15,10 +15,10 @@ import { StateDeleteAsyncAction } from './Queries/StateDeleteAsyncAction';
  * @component
  * @param {Object} props - The props for the InsertStateButton component.
  * @param {React.ReactNode} props.children - The content or label for the button.
- * @param {Object} [props.params={}] - The initial parameters for the state insertion action. 
+ * @param {Object} [props.state={}] - The initial parameters for the state insertion action. 
  *                                      Contains default values for the dialog inputs.
- * @param {string} [props.params.name] - The default value for the "Název" field.
- * @param {string} [props.params.name_en] - The default value for the "Anglický název" field.
+ * @param {string} [props.state.name] - The default value for the "Název" field.
+ * @param {string} [props.state.name_en] - The default value for the "Anglický název" field.
  * @param {Function} [props.onDone=(newState) => null] - Callback executed after the state is successfully inserted.
  *                                                      Receives the new state as an argument.
  * @param {...Object} props - Additional props passed to the `ButtonWithDialog` component.
@@ -47,11 +47,12 @@ export const DeleteStateButton = ({ children, state, onDone = (state) => null, .
         <AsyncClickHandler
             asyncAction={StateDeleteAsyncAction}
             defaultParams={state}
-            loadingMsg={"Odstraňuji část"}
+            loadingMsg={"Odstraňuji stav"}
             onClick={() => onDone(state)}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Chcete odebrat část?" {...props} params={state}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Chcete odebrat stav?" {...props} params={state}>
                 <h2>{state?.name} ({state?.nameEn})</h2>
+                <p>{JSON.stringify(state)}</p>
             </ButtonWithDialog>
         </AsyncClickHandler>
     );

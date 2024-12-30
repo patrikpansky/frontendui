@@ -15,10 +15,10 @@ import { EmptyMediumEditableContent } from './EmptyMediumEditableContent';
  * @component
  * @param {Object} props - The props for the UpdateEmptyButton component.
  * @param {React.ReactNode} props.children - The content or label for the button.
- * @param {Object} [props.params={}] - The initial parameters for the empty updateion action. 
+ * @param {Object} [props.empty={}] - The initial parameters for the empty updateion action. 
  *                                      Contains default values for the dialog inputs.
- * @param {string} [props.params.name] - The default value for the "Název" field.
- * @param {string} [props.params.name_en] - The default value for the "Anglický název" field.
+ * @param {string} [props.empty.name] - The default value for the "Název" field.
+ * @param {string} [props.empty.name_en] - The default value for the "Anglický název" field.
  * @param {Function} [props.onDone=(newEmpty) => null] - Callback executed after the empty is successfully updateed.
  *                                                      Receives the new empty as an argument.
  * @param {...Object} props - Additional props passed to the `ButtonWithDialog` component.
