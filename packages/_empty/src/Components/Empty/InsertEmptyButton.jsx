@@ -42,7 +42,7 @@ import { EmptyMediumEditableContent } from './EmptyMediumEditableContent';
  *
  * @returns {JSX.Element} A button that opens a dialog for inserting a new empty.
  */
-export const InsertEmptyButton = ({ children, params, onDone = (newEmpty) => null, ...props }) => {
+export const InsertEmptyButton = ({ children, empty, onDone = (newEmpty) => null, ...props }) => {
     return (
         <AsyncClickHandler
             asyncAction={EmptyInsertAsyncAction}
@@ -50,8 +50,8 @@ export const InsertEmptyButton = ({ children, params, onDone = (newEmpty) => nul
             loadingMsg={"Vkládám novou část"}
             onClick={onDone}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
-                <EmptyMediumEditableContent empty={params} />
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={empty}>
+                <EmptyMediumEditableContent empty={empty} />
             </ButtonWithDialog>
         </AsyncClickHandler>
     );
