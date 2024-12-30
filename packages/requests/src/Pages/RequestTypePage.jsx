@@ -34,7 +34,7 @@ import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
  * <RequestTypePageContent requesttype={requesttypeEntity} />
  */
 const RequestTypePageContent = ({requesttype}) => {
-    const { groupId, templateFormId, templateForm } = requesttype
+    const { group, templateFormId, templateForm } = requesttype
     const { fetch: updateRequestType, loading, error } = useAsyncAction(RequestTypeUpdateAsyncAction, {...requesttype}, {deferred: true})
     const {
         error: request_type_error, 
@@ -63,7 +63,7 @@ const RequestTypePageContent = ({requesttype}) => {
             {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}            
             <Row>
                 <Col>
-                {!groupId && <>
+                {!group && <>
                     <InsertGroupButton onDone={OnCreateGroupDone}
                         className="btn btn-outline-secondary"
                         params={{
@@ -74,7 +74,7 @@ const RequestTypePageContent = ({requesttype}) => {
                         Vytvořit skupinu
                     </InsertGroupButton>
                 </>}
-                {groupId && <>
+                {group && <>
                     <GroupCardCapsule group={requesttype?.group}>
                         <AsyncComponent asyncAction={GroupReadAsyncAction} propertyName={"group"} queryVariables={requesttype?.group}>
                             {/* <GroupMediumCard /> */}

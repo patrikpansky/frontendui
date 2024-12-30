@@ -55,7 +55,10 @@ import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
  * dispatch(getUserAndPostsAction({ id: "12345" }));
  */
 export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLResult, ...middlewares) => {
+    let queryStr = query
+    let nodes = []
     if (typeof query === "function") {
+        ({ queryStr, nodes }) = query
         query = query()
     }
 
@@ -135,3 +138,94 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
 };
 
 
+/**
+ * Creates a "GraphQL-like" function node that can be composed with sub-nodes,
+ * and ensures each node is included only once in the final output.
+ *
+ * @param {string} queryStr - A string representing a GraphQL query or fragment.
+ * @param  {...Function} nodes - Additional createQuery(...) nodes that should be included (once each).
+ * @returns {Function} A callable function. When invoked, returns the complete joined string.
+ *
+ * @example
+ * // Basic usage
+ * const userFragment = createQueryStrLazy(`
+ *   fragment UserFields on User {
+ *     id
+ *     name
+ *   }
+ * `);
+ *
+ * // Compose sub-fragments
+ * const postFragment = createQueryStrLazy(`
+ *   fragment PostFields on Post {
+ *     id
+ *     title
+ *   }
+ * `, userFragment);
+ *
+ * // Root query using sub-fragments
+ * const rootQuery = createQueryStrLazy(`
+ *   query getPosts {
+ *     posts {
+ *       ...PostFields
+ *       author {
+ *         ...UserFields
+ *       }
+ *     }
+ *   }
+ * `, postFragment);
+ *
+ * // Getting final string (with all unique fragments)
+ * console.log(rootQuery());
+ */
+export const createQueryStrLazy = (queryStr, ...nodes) => {
+    /**
+     * Internal helper that traverses the "gql tree" once, collecting all strings.
+     * @param {Function} node   - The gql node (i.e., a function) we want to traverse.
+     * @param {WeakSet} visited - A set of nodes already visited, to avoid duplicates.
+     * @returns {string} The compiled string for this node and all its descendants.
+     */
+    const visitor = (node, visited) => {
+        // If we have visited this node before, return an empty string (avoid duplicates).
+        if (visited.has(node)) {
+            return "";
+        }
+        visited.add(node);
+    
+        // Extract the node's "signature" (the string + sub-nodes).
+        const { queryStr, nodes } = node.__metadata;
+    
+        // Recursively compile each sub-node.
+        const subStrings = nodes.map((subNode) => visitor(subNode, visited));
+    
+        // Join this node’s string plus all its subfragments.
+        return [queryStr.trim(), ...subStrings].join("\n");
+    }
+  
+    /**
+     * This wrapper function, when called, compiles everything into one string.
+     * We create a fresh WeakSet on each top-level call, so sub-calls
+     * don’t repeat.
+     */
+    const lazyResult = () => {
+        const visited = new WeakSet();
+        return visitor(lazyResult, visited);
+    }
+  
+    // Store the node's own data in a property:
+    lazyResult.__metadata = {
+        queryStr: queryStr,
+        nodes: nodes,
+    };
+  
+    return lazyResult;
+}
+  
+const p = 'query p {...t ...q}'
+const q = 'fragment q {...t}'
+const t = 'fragment t {}'
+const ft = createQueryStrLazy(t)
+const fq = createQueryStrLazy(q, ft)
+const fp = createQueryStrLazy(p, ft, fq)
+const p_ = fp()
+console.log(p_)

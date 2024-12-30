@@ -39,6 +39,7 @@ const GroupMembershipsReadAsyncAction = createAsyncGraphQLAction(
 )
 
 const GroupMembershipsContent = ({group}) => {
+    if (!group?.id) return <>Chybí id skupiny {JSON.stringify(group)}</>
     const memberships=group?.memberships || []
     return (
         <MembershipsTable 
