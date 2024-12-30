@@ -1,4 +1,5 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragmentLazy } from "./EmptyFragments";
 
 const EmptyDeleteMutation =
 `
@@ -16,14 +17,7 @@ mutation EmptyDeleteMutation($id: UUID!, $lastchange: DateTime!) {
     }
   }
 }
-
-fragment EmptyLarge on EmptyGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
-}
 `
 
-export const EmptyDeleteAsyncAction = createAsyncGraphQLAction(EmptyDeleteMutation)
+const EmptyDeleteMutationLazy = createQueryStrLazy(EmptyDeleteMutation, EmptyLargeFragmentLazy)
+export const EmptyDeleteAsyncAction = createAsyncGraphQLAction(EmptyDeleteMutationLazy)

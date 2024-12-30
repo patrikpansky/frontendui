@@ -58,7 +58,8 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
     let queryStr = query
     let nodes = []
     if (typeof query === "function") {
-        ({ queryStr, nodes }) = query
+        queryStr = query?.__metadata?.queryStr
+        nodes = query?.__metadata?.nodes
         query = query()
     }
 
@@ -227,5 +228,6 @@ const t = 'fragment t {}'
 const ft = createQueryStrLazy(t)
 const fq = createQueryStrLazy(q, ft)
 const fp = createQueryStrLazy(p, ft, fq)
+console.log(fp.__metadata)
 const p_ = fp()
 console.log(p_)

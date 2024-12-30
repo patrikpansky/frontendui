@@ -1,4 +1,5 @@
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragmentLazy } from "./EmptyFragments";
 
 const EmptyReadPageQuery =
 `
@@ -7,14 +8,7 @@ query EmptyReadPageQuery($skip: Int, $limit: Int, $where: EmptyWhereInputFilter)
     ...EmptyLarge
   }
 }
-
-fragment EmptyLarge on EmptyGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
-}
 `
 
-export const EmptyReadPageAsyncAction = createAsyncGraphQLAction(EmptyReadPageQuery)
+const EmptyReadPageQueryLazy = createQueryStrLazy(EmptyReadPageQuery, EmptyLargeFragmentLazy)
+export const EmptyReadPageAsyncAction = createAsyncGraphQLAction(EmptyReadPageQueryLazy)

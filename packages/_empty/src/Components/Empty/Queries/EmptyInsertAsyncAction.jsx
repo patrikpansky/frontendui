@@ -1,4 +1,5 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragmentLazy } from "./EmptyFragments";
 
 const EmptyInsertMutation =
 `
@@ -14,14 +15,7 @@ mutation EmptyInsertMutation($id: UUID, $name: String, $name_en: String) {
     ...EmptyLarge
   }
 }
-
-fragment EmptyLarge on EmptyGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
-}
 `
 
+const EmptyInsertMutationLazy = createQueryStrLazy(EmptyInsertMutation, EmptyLargeFragmentLazy)
 export const EmptyInsertAsyncAction = createAsyncGraphQLAction(EmptyInsertMutation)

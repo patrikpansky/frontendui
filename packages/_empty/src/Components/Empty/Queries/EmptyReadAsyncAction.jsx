@@ -1,4 +1,5 @@
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { EmptyLargeFragmentLazy } from "./EmptyFragments";
 
 const EmptyReadQuery =
 `
@@ -7,14 +8,7 @@ query EmptyReadQuery($id: UUID!) {
     ...EmptyLarge
   }
 }
-
-fragment EmptyLarge on EmptyGQLModel {
-  __typename
-  id
-  lastchange
-  name
-  nameEn
-}
 `
+const EmptyReadQueryLazy = createQueryStrLazy(EmptyReadQuery, EmptyLargeFragmentLazy)
 
-export const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyReadQuery)
+export const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyReadQueryLazy)
