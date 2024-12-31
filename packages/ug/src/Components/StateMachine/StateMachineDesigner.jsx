@@ -172,6 +172,10 @@ export const StateMachineDesigner = ({statemachine, children, onChange=()=>null}
           setActiveIndex(prev => newIndex)
         }
     }
+    const handleStateSwitch = (state) => {
+        const index = states.findIndex(item => item.id === state.id)
+        setActiveIndex(prev => index)
+    }
     return (
         <Row>
             <LeftColumn>
@@ -185,42 +189,17 @@ export const StateMachineDesigner = ({statemachine, children, onChange=()=>null}
                     {JSON.stringify(statemachine?.transitions)}
                 </div> */}
                 
-                {states.map((state, index) => 
-                    <span key={state.id}
-                        className={"btn btn-light"}
-                    >
-                        <DeleteStateButton
-                            className="btn btn-sm btn-outline-danger"
-                            state={state}
-                        >
-                            <TrashFill />
-                        </DeleteStateButton>
-                        <UpdateStateButton
-                            className="btn btn-sm btn-outline-success"
-                            state={state}
-                        >
-                            <PencilFill />
-                        </UpdateStateButton>
-                        <span
-                            className={index===activeIndex?'btn btn-sm btn-primary':"btn btn-sm btn-outline-primary"}
-                            onClick={() => setActiveIndex(prev => index)}
-                        >
-                            {state?.name}
-                        </span>
-                        
-                    </span>
-
-                )}
+                <StateMachineSwitch states={states} onStateSwitch={handleStateSwitch} />
                 <span className='btn btn-light'>
-                  <InsertStateButton 
-                      className="btn btn-sm btn-outline-secondary" 
-                      params={{
-                          statemachine_id: statemachine.id
-                      }}
-                      onDone={onChange}
-                  >
-                      Nový stav
-                  </InsertStateButton>
+                    <InsertStateButton 
+                        className="btn btn-sm btn-outline-secondary" 
+                        params={{
+                            statemachine_id: statemachine.id
+                        }}
+                        onDone={onChange}
+                    >
+                        Nový stav
+                    </InsertStateButton>
                 </span>
                 {activeState && <StateDesigner state={activeState} statemachine={statemachine} onChange={onChange} onTransitionClick={handleFollowTransition}/>}
             </MiddleColumn>
@@ -265,6 +244,39 @@ export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
             </AsyncComponent>
         </>
     )
+}
+
+export const StateMachineSwitch = ({states, onStateSwitch=(state=>null), children}) => {
+    const [activeState, setActiveState] = useState(states[0] || {})
+    const handleStateClick = (state) => {
+        setActiveState(prev => state)
+        onStateSwitch(state)
+    }
+    return (<>
+        {states.map((state, index) => <span key={state.id}
+          className={"btn btn-light"}
+        >
+            <DeleteStateButton
+              className="btn btn-sm btn-outline-danger"
+              state={state}
+            >
+                <TrashFill />
+            </DeleteStateButton>
+            <UpdateStateButton
+              className="btn btn-sm btn-outline-success"
+              state={state}
+            >
+                <PencilFill />
+            </UpdateStateButton>
+            <span
+              className={state === activeState ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
+              onClick={() => handleStateClick(state)}
+            >
+              {state?.name}
+            </span>
+        </span>
+        )}
+    </>)
 }
 
 /**

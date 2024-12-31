@@ -7,7 +7,7 @@ import { AsyncComponent, createLazyComponent, ErrorHandler, LoadingSpinner } fro
 
 import { RequestPageNavbar } from "./RequestPageNavbar"
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
-import { FormDesigner } from '../Components/Form/FormDesigner'
+import { RequestTypeDesigner } from '../Components/Form/FormDesigner'
 import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, InsertStateButton, InsertStateMachineButton, StateMachineLiveDesigner, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
 import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
 import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
@@ -132,7 +132,7 @@ const RequestTypePageContent = ({requesttype}) => {
                         </FormCreateButtonDialog>
                     </>}
                     {/* {templateFormId && <FormSectionAttribute form={templateForm} />} */}
-                    {/* {templateFormId && <FormDesigner form={templateForm} onUpdate={onUpdateForm}/>} */}
+                    {templateFormId && <RequestTypeDesigner requesttype={requesttype} onUpdate={onUpdateForm}/>}
                     <br />
                     
                     
