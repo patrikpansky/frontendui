@@ -12,6 +12,7 @@ import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButt
 import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
 import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
 import { StateMachineDesigner } from '@hrbolek/uoisfrontend-ug'
+import { RequestTypePageNavbar } from './RequestTypePageNavbar'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
@@ -71,7 +72,8 @@ const RequestTypePageContent = ({requesttype}) => {
     }
     return (
         <>
-            <RequestPageNavbar />
+            <RequestTypePageNavbar requesttype={requesttype} />
+            
             {(loading || request_type_loading) && <LoadingSpinner text='Ukládám' />}
             {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}            
             <Row>
@@ -87,11 +89,9 @@ const RequestTypePageContent = ({requesttype}) => {
                         Vytvořit skupinu
                     </InsertGroupButton>
                 </>}
-                {group && <>
+                {/* {group && <>
                     <GroupCardCapsule group={requesttype?.group}>
                         <AsyncComponent asyncAction={GroupReadAsyncAction} propertyName={"group"} queryVariables={requesttype?.group}>
-                            {/* <GroupMediumCard /> */}
-                            {/* <GroupLargeCard /> */}
                             <GroupMediumContent />
                             <GroupMemberships />
                         </AsyncComponent>
@@ -102,21 +102,11 @@ const RequestTypePageContent = ({requesttype}) => {
                     </GroupCardCapsule>
                     
                     {JSON.stringify(requesttype?.group)}
-                </>}
+                </>} */}
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    {/* {statemachine && <StateMachineDesigner statemachine={statemachine} >
-                            <InsertStateButton 
-                                params={{statemachine_id: statemachine.id}} 
-                                className="btn btn-outline-secondary"
-                                onDone={onCreateStateDone}
-                            >
-                                Nový stav {statemachine.id}
-                            </InsertStateButton>
-                        </StateMachineDesigner>
-                    } */}
                     {statemachine && <StateMachineLiveDesigner statemachine={statemachine}/>}
                     {!statemachine && <InsertStateMachineButton 
                             className="btn btn-outline-secondary" 

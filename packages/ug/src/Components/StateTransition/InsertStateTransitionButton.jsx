@@ -49,11 +49,11 @@ export const InsertStateTransitionButton = ({ children, params, onDone = (newSta
         <AsyncClickHandler
             asyncAction={StateTransitionInsertAsyncAction}
             defaultParams={params}
-            loadingMsg={"Vkládám novou část"}
+            loadingMsg={"Vkládám novou změnu stavu"}
             onClick={onDone}
         >
             {/* <div>{JSON.stringify(ref)}</div>            */}
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou změnu stavu" {...props} params={params}>
                 <StateTransitionMediumEditableContent statetransition={params} />
             </ButtonWithDialog>
             {/* <div>{JSON.stringify(params)}</div> */}

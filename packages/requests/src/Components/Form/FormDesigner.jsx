@@ -41,7 +41,7 @@ const getListStyleDefault = (provided, snapshot) => {
 }
 
 
-export const FormDesigner = ({ form, onUpdate=()=>null }) => {
+export const FormDesigner = ({ form, onUpdate=()=>null, section }) => {
     const {
         error: item_error, 
         loading: item_loading, 
@@ -205,98 +205,99 @@ export const FormDesigner = ({ form, onUpdate=()=>null }) => {
                 <MiddleColumn>
                 <SimpleCardCapsule title={form.name}>
                     <div type="DroppableContainer" droppableId={form.id} isDropDisabled={formDisabled} getListStyle={getListStyleDefault}>
-                            {formCopy?.sections.map((section, i) => (
-                                <div type="DragableEnvelop" draggableId={section.id} index={i}>
-                                    <SimpleCardCapsule title={
-                                            <>
-                                            {section.name}{'\u00A0'}{'\u00A0'}
-                                            <UpdateSectionButton section={{...section, parts: null}} className="btn btn-sm btn-outline-secondary" onDone={onUpdate} >
-                                                <PencilFill />
-                                            </UpdateSectionButton>
-                                            <DeleteSectionButton section={section} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
-                                                <TrashFill />
-                                            </DeleteSectionButton>
-                                            </>}
-                                    >
-                                        <div type="DroppableContainer" key={section.id} droppableId={section.id} isDropDisabled={sectionDisabled} getListStyle={getListStyleDefault}>
-                                        
-                                            {section?.parts.map((part, j) => (
-                                                <div type="DragableEnvelop" draggableId={part.id} index={j}>
-                                                    <SimpleCardCapsule 
-                                                        title={
-                                                            <>
-                                                            {part.name}{'\u00A0'}{'\u00A0'}
-                                                            <UpdatePartButton part={{...part, items: null}} className="btn btn-sm btn-outline-secondary" onDone={onUpdate} >
-                                                                <PencilFill />
-                                                            </UpdatePartButton>
-                                                            <DeletePartButton part={part} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
-                                                                <TrashFill /> 
-                                                            </DeletePartButton>
-                                                            </>
-                                                        }
-                                                    >
-                                                        <DroppableContainer key={part.id} droppableId={part.id} isDropDisabled={partDisabled} getListStyle={getListStyleDefault}>
-                                                            {part?.items.map((item, k) => (
-                                                                <DragableEnvelop
-                                                                    key={item.id}
-                                                                    draggableId={item.id}
-                                                                    index={k}
-                                                                >
-                                                                    <Item item={item} title={
-                                                                        <>{item.name}{'\u00A0'}{'\u00A0'}
-                                                                        <UpdateItemButton item={item} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
-                                                                            <PencilFill />
-                                                                        </UpdateItemButton>
-                                                                        <DeleteItemButton item={item} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
-                                                                            <TrashFill />
-                                                                        </DeleteItemButton>
-                                                                        {/* <DeleteButton className="btn btn-sm btn-outline-secondary"><TrashFill /></DeleteButton> */}
-                                                                        </>
-                                                                    }>
-                                                                        
-                                                                    </Item>
-                                                                </DragableEnvelop>
-                                                            ))}
-                                                            {/* <DeleteButton className="btn btn-sm btn-warning"><TrashFill /> Odstranit část</DeleteButton> */}
-                                                            
-                                                        </DroppableContainer>
-                                                    </SimpleCardCapsule>
-                                                </div>
-                                            ))}
-                                            <HorizontalLine>
-                                                <InsertPartButton 
-                                                    className="btn btn-sm btn-outline-secondary" 
-                                                    params={{
-                                                        section_id: section.id,
-                                                        name: 'Nová část',
-                                                        name_en: 'New part',
-                                                        order: (section?.parts || []).length + 1
-                                                    }} 
-                                                    onDone={onUpdate}
-                                                >
-                                                    <PlusLg /> Vložit část
-                                                </InsertPartButton>
-                                            </HorizontalLine>
-                                            
-                                        </div>
-                                    </SimpleCardCapsule>
-                                    
-                                </div>
-                            ))}
-                            <HorizontalLine>
-                                <InsertSectionButton 
-                                    className="btn btn-sm btn-outline-secondary" 
-                                    params={{
-                                        form_id: form.id,
-                                        order: (formCopy?.sections || []).length + 1
-                                    }} 
-                                    confirmationDialog={true} 
-                                    onDone={onUpdate}
+                        
+                        {formCopy?.sections.map((section, i) => (
+                            <div type="DragableEnvelop" draggableId={section.id} index={i}>
+                                <SimpleCardCapsule title={
+                                        <>
+                                        {section.name}{'\u00A0'}{'\u00A0'}
+                                        <UpdateSectionButton section={{...section, parts: null}} className="btn btn-sm btn-outline-secondary" onDone={onUpdate} >
+                                            <PencilFill />
+                                        </UpdateSectionButton>
+                                        <DeleteSectionButton section={section} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
+                                            <TrashFill />
+                                        </DeleteSectionButton>
+                                        </>}
                                 >
-                                    <PlusLg /> Vložit sekci
-                                </InsertSectionButton>
-                            </HorizontalLine>
-                        </div>
+                                    <div type="DroppableContainer" key={section.id} droppableId={section.id} isDropDisabled={sectionDisabled} getListStyle={getListStyleDefault}>
+                                    
+                                        {section?.parts.map((part, j) => (
+                                            <div type="DragableEnvelop" draggableId={part.id} index={j}>
+                                                <SimpleCardCapsule 
+                                                    title={
+                                                        <>
+                                                        {part.name}{'\u00A0'}{'\u00A0'}
+                                                        <UpdatePartButton part={{...part, items: null}} className="btn btn-sm btn-outline-secondary" onDone={onUpdate} >
+                                                            <PencilFill />
+                                                        </UpdatePartButton>
+                                                        <DeletePartButton part={part} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
+                                                            <TrashFill /> 
+                                                        </DeletePartButton>
+                                                        </>
+                                                    }
+                                                >
+                                                    <DroppableContainer key={part.id} droppableId={part.id} isDropDisabled={partDisabled} getListStyle={getListStyleDefault}>
+                                                        {part?.items.map((item, k) => (
+                                                            <DragableEnvelop
+                                                                key={item.id}
+                                                                draggableId={item.id}
+                                                                index={k}
+                                                            >
+                                                                <Item item={item} title={
+                                                                    <>{item.name}{'\u00A0'}{'\u00A0'}
+                                                                    <UpdateItemButton item={item} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
+                                                                        <PencilFill />
+                                                                    </UpdateItemButton>
+                                                                    <DeleteItemButton item={item} className="btn btn-sm btn-outline-secondary" onDone={onUpdate}>
+                                                                        <TrashFill />
+                                                                    </DeleteItemButton>
+                                                                    {/* <DeleteButton className="btn btn-sm btn-outline-secondary"><TrashFill /></DeleteButton> */}
+                                                                    </>
+                                                                }>
+                                                                    
+                                                                </Item>
+                                                            </DragableEnvelop>
+                                                        ))}
+                                                        {/* <DeleteButton className="btn btn-sm btn-warning"><TrashFill /> Odstranit část</DeleteButton> */}
+                                                        
+                                                    </DroppableContainer>
+                                                </SimpleCardCapsule>
+                                            </div>
+                                        ))}
+                                        <HorizontalLine>
+                                            <InsertPartButton 
+                                                className="btn btn-sm btn-outline-secondary" 
+                                                params={{
+                                                    section_id: section.id,
+                                                    name: 'Nová část',
+                                                    name_en: 'New part',
+                                                    order: (section?.parts || []).length + 1
+                                                }} 
+                                                onDone={onUpdate}
+                                            >
+                                                <PlusLg /> Vložit část
+                                            </InsertPartButton>
+                                        </HorizontalLine>
+                                        
+                                    </div>
+                                </SimpleCardCapsule>
+                                
+                            </div>
+                        ))}
+                        <HorizontalLine>
+                            <InsertSectionButton 
+                                className="btn btn-sm btn-outline-secondary" 
+                                params={{
+                                    form_id: form.id,
+                                    order: (formCopy?.sections || []).length + 1
+                                }} 
+                                confirmationDialog={true} 
+                                onDone={onUpdate}
+                            >
+                                <PlusLg /> Vložit sekci
+                            </InsertSectionButton>
+                        </HorizontalLine>
+                    </div>
                     </SimpleCardCapsule>
                 </MiddleColumn>
             </div>

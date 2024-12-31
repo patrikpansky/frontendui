@@ -47,10 +47,10 @@ export const DeleteStateTransitionButton = ({ children, statetransition, onDone 
         <AsyncClickHandler
             asyncAction={StateTransitionDeleteAsyncAction}
             defaultParams={statetransition}
-            loadingMsg={"Odstraňuji část"}
+            loadingMsg={"Odstraňuji změnu stavu"}
             onClick={() => onDone(statetransition)}
         >
-            <ButtonWithDialog buttonLabel={children} dialogTitle="Chcete odebrat část?" {...props} params={statetransition}>
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Chcete odebrat změnu stavu?" {...props} params={statetransition}>
                 <h2>{statetransition?.name} ({statetransition?.nameEn})</h2>
             </ButtonWithDialog>
         </AsyncClickHandler>
