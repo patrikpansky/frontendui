@@ -18,8 +18,9 @@ import { InsertPartButton } from '../Part/InsertPartButton'
 import { InsertSectionButton } from '../Section/InsertSectionButton'
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
 import { ItemIndex } from '../Item/Visualisers'
-import { GroupCardCapsule, InsertGroupButton, InsertStateMachineButton, StateMachineSwitch, VerticalArcGraph } from '@hrbolek/uoisfrontend-ug'
-import { RequestTypeUpdateAsyncAction } from '../RequestType/Queries'
+import { GroupCardCapsule, InsertGroupButton, InsertStateMachineButton, StateMachineSwitch, StateTransitionsDesigner, VerticalArcGraph } from '@hrbolek/uoisfrontend-ug'
+import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../RequestType/Queries'
+import { FormCreateButtonDialog } from './FormCreateButtonDialog'
 
 const grid = 8
 const getListStyleDefault = (provided, snapshot) => {
@@ -69,23 +70,12 @@ const CreateFormCopy = (form) => {
     return formCopy
 }
 
-export const RequestTypeDesigner = ({ requesttype, onUpdate=()=>null, section }) => {
+export const RequestTypeDesigner = ({ requesttype, section }) => {
     const { statemachine, group, templateFormId, templateForm: form } = requesttype
-    const { fetch: updateRequestType, loading, error } = useAsyncAction(RequestTypeUpdateAsyncAction, {...requesttype}, {deferred: true})
 
-    const {
-        error: item_error, 
-        loading: item_loading, 
-        entity: item, 
-        dispatchResult: item_dispatch_result,
-        fetch: item_insert
-    } = useAsyncAction(ItemInsertAsyncAction, {}, {deferred: true})
-    
-    const createItem = async (newItem) => {
-        const item_from_server = await item_insert(newItem)
-        onUpdate()
-    }
-
+    const {states=[]} = statemachine || {}
+    const [activeIndex, setActiveIndex] = useState(0)
+    const [activeState, setActiveState] = useState(states[activeIndex])
     const [{ 
         formDisabled, 
         sectionDisabled, 
@@ -96,9 +86,47 @@ export const RequestTypeDesigner = ({ requesttype, onUpdate=()=>null, section })
         partDisabled: true
     });
 
-    const {states=[]} = statemachine
-    const [activeIndex, setActiveIndex] = useState(0)
-    const activeState = states[activeIndex]
+    const formCopy = useMemo(() => CreateFormCopy(form), [form])
+    const index = useMemo(() => CreateFormIndex(formCopy), [form]);
+
+    const onDragStart = useCallback(
+        createDragStartHandler(index, setDropAllowed),
+        [index, setDropAllowed]
+    );
+
+    const createItem = async (newItem) => {
+        const item_from_server = await item_insert(newItem)
+        onUpdate()
+    }
+
+    // console.log("allowedSetup", { formDisabled, sectionDisabled, partDisabled });
+    const onDragEnd = useCallback(
+        createDragEndHandler(setDropAllowed, createItem, index),
+        [setDropAllowed, createItem, index]
+    );
+
+
+    const { fetch: updateRequestType, loading, error } = useAsyncAction(RequestTypeUpdateAsyncAction, {...requesttype}, {deferred: true})
+    const {
+        error: request_type_error, 
+        loading: request_type_loading, 
+        // entity: request_type, 
+        // dispatchResult: request_type_dispatch_result,
+        fetch: request_type_refresh
+    } = useAsyncAction(RequestTypeReadAsyncAction, {...requesttype}, {deferred: true})
+
+    const {
+        error: item_error, 
+        loading: item_loading, 
+        entity: item, 
+        dispatchResult: item_dispatch_result,
+        fetch: item_insert
+    } = useAsyncAction(ItemInsertAsyncAction, {}, {deferred: true})
+
+    const onUpdate = () => {
+        request_type_refresh({...requesttype})
+    }
+
     const handleFollowTransition = (transition) => {
         console.log("handleFollowTransition", transition)
         const targetId = transition.target.id
@@ -109,24 +137,11 @@ export const RequestTypeDesigner = ({ requesttype, onUpdate=()=>null, section })
         }
     }
 
-    const formCopy = useMemo(() => CreateFormCopy(form), [form])
-    const index = useMemo(() => CreateFormIndex(formCopy), [form]);
-
-    const onDragStart = useCallback(
-        createDragStartHandler(index, setDropAllowed),
-        [index, setDropAllowed]
-    );
-
-    // console.log("allowedSetup", { formDisabled, sectionDisabled, partDisabled });
-    const onDragEnd = useCallback(
-        createDragEndHandler(setDropAllowed, createItem, index),
-        [setDropAllowed, createItem, index]
-    );
-    
-
     const handleStateSwitch = (state) => {
         console.log("active state changed")
+        setActiveState(prev => state)
     }
+    
     if (!group) {
         const OnCreateGroupDone = async (group) => {
             console.log("OnCreateGroupDone", group)
@@ -188,6 +203,7 @@ export const RequestTypeDesigner = ({ requesttype, onUpdate=()=>null, section })
             </InsertStateMachineButton>
         </>)
     }
+    console.log("statemachine", statemachine)
     return (
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <Row>
@@ -198,21 +214,33 @@ export const RequestTypeDesigner = ({ requesttype, onUpdate=()=>null, section })
                         <SimpleCardCapsule title={"proces"} id="graph">
                             <VerticalArcGraph statemachine={statemachine} activeNodeId={activeState?.id}/>
                         </SimpleCardCapsule>
+                        <SimpleCardCapsule id="roles" title={`Role pro stav "${activeState?.name}"`}>
+                            Role
+                        </SimpleCardCapsule>
                     </HashContainer>
                 </LeftColumn>
                 
                 <MiddleColumn>
                     
-                    <FormDesignerBody 
-                        form={form} 
+                    <FormDesignerHeader formDisabled={formDisabled} 
+                        section={section} 
+                        onUpdate={onUpdate} 
+                        sectionDisabled={sectionDisabled} partDisabled={partDisabled} 
+                        formCopy={formCopy} 
+                    />
+                    <FormDesignerBody
                         formDisabled={formDisabled} 
                         section={section} 
                         onUpdate={onUpdate} 
                         sectionDisabled={sectionDisabled} partDisabled={partDisabled} 
                         formCopy={formCopy} 
                     >
-                    <StateMachineSwitch states={statemachine.states} onStateSwitch={handleStateSwitch} />
+                    
                     </FormDesignerBody>
+                    <HorizontalLine>Přechody</HorizontalLine>
+                    <StateTransitionsDesigner state={activeState} statemachine={statemachine} onStateSwitch={handleStateSwitch} onChange={onUpdate}/>
+                    <HorizontalLine>Stavy</HorizontalLine>
+                    <StateMachineSwitch state={activeState} statemachine={statemachine} onStateSwitch={handleStateSwitch} onChange={onUpdate}/>
                 </MiddleColumn>
             </Row>
         </DragDropContext>
@@ -292,18 +320,58 @@ const SectionDesigner = ({section, i, onUpdate, sectionDisabled, partDisabled}) 
     </div>)
 }
 
-export const FormDesignerBody = ({form, formDisabled, section, onUpdate, sectionDisabled, partDisabled, formCopy, children}) => {
-    return (
-        <SimpleCardCapsule title={form.name}>
-            <div type="DroppableContainer" droppableId={form.id} isDropDisabled={formDisabled} getListStyle={getListStyleDefault}>
+export const FormDesignerHeader = ({formDisabled, section, onUpdate, sectionDisabled, partDisabled, formCopy, children}) => {
+    const [_section, setSection] = useState(section || formCopy?.sections[0])
+    return (<>
+        <div type="DroppableContainer" droppableId={formCopy.id} isDropDisabled={formDisabled} getListStyle={getListStyleDefault}>
+            {formCopy?.sections.map((section, i) => (
+                <span className='btn btn-light'>
+                    <span className='btn btn-sm btn-outline-primary'>
+                        {section?.name}&nbsp;
+                    </span>
+                    <UpdateSectionButton 
+                        className="btn btn-sm btn-outline-success"
+                        section={section}
+                        onDone={onUpdate}
+                    >
+                        <PencilFill />
+                    </UpdateSectionButton>
+                    <DeleteSectionButton 
+                        className="btn btn-sm btn-outline-danger"
+                        section={section}
+                        onDone={onUpdate}
+                    >
+                        <TrashFill />
+                    </DeleteSectionButton>
+                </span>
+                
+            ))}
+            <span className='btn btn-outline-secondary'>
+                <InsertSectionButton
+                    className='btn btn-sm btn-light'
+                    params={{form_id: formCopy.id}}
+                    onDone={onUpdate}
+                >
+                    <PlusLg /> Nová sekce
+                </InsertSectionButton>
+            </span>
+            {children}
+        </div>
+    </>)
+}
+
+export const FormDesignerBody = ({formDisabled, section, onUpdate, sectionDisabled, partDisabled, formCopy, children}) => {
+    return (<>
+        {/* <SimpleCardCapsule title={formCopy.name}> */}
+            <div type="DroppableContainer" droppableId={formCopy.id} isDropDisabled={formDisabled} getListStyle={getListStyleDefault}>
                 {section && <SectionDesigner section={section} i={0} onUpdate={onUpdate} sectionDisabled={sectionDisabled} partDisabled={partDisabled} />}
                 {!section && formCopy?.sections.map((section, i) => (
                     <SectionDesigner section={section} i={i} onUpdate={onUpdate} sectionDisabled={sectionDisabled} partDisabled={partDisabled} />
                 ))}
                 {children}
             </div>
-        </SimpleCardCapsule>
-    )
+        {/* </SimpleCardCapsule> */}
+    </>)
 }
 
 export const ItemsLibrary = ({}) => {

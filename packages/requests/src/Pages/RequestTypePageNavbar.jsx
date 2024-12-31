@@ -49,6 +49,7 @@ export const RequestTypePageNavbar = ({ requesttype, onSearchChange }) => {
 
     const segments = [
         { segment: 'permissions', label: 'Práva' },
+        { segment: 'roles', label: 'Role' },
         { segment: 'library', label: 'Knihovna' },
         { segment: 'graph', label: 'Stavy' },
     ]

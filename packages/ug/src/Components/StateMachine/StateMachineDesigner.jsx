@@ -54,15 +54,50 @@ const TransitionList = ({statemachine, transitions, children, onTransitionClick,
                 onChange={onChange}
             />
         )}
-        {/* {transitions.map(transition => 
-            <div key={transition.id}     >
-              {JSON.stringify(transition)}
-            </div>
-                
-            
-        )} */}
         {children}
     </>)
+}
+
+
+export const StateTransitionsDesigner = ({state={}, statemachine, onTransitionClick, onStateSwitch=(state)=>null, onChange=()=>null}) => {
+    const {sources=[], targets=[]} = state
+    const handleNewTransition = (transition) => {
+        onChange()
+    }
+
+    const handleTransitionClick = (transition) => {
+        const state = transition.target
+        onStateSwitch(state)
+    }
+
+    const outcomming = statemachine?.transitions?.filter(
+        transition => transition?.source?.id === state?.id
+    ) 
+    if (statemachine.states.length === 0) {
+        return null
+    }
+    return (<>
+        
+        <TransitionList 
+            statemachine={statemachine} 
+            transitions={outcomming} 
+            className="btn btn-sm btn-outline-secondary" 
+            onTransitionClick={handleTransitionClick}
+            onChange={onChange}
+        />
+        <InsertStateTransitionButton  
+            className="btn btn-sm btn-outline-secondary" 
+            params={{
+                statemachine_id: statemachine.id,
+                source_id: state.id,
+                statemachine: statemachine
+            }}
+            onDone={handleNewTransition}
+        >
+            <PlusLg /> Nový přechod
+        </InsertStateTransitionButton>
+        {/* {state.id} */}
+  </>)
 }
 
 export const StateDesigner = ({state, statemachine, onTransitionClick, onChange=()=>null}) => {
@@ -246,8 +281,9 @@ export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
     )
 }
 
-export const StateMachineSwitch = ({states, onStateSwitch=(state=>null), children}) => {
-    const [activeState, setActiveState] = useState(states[0] || {})
+export const StateMachineSwitch = ({state={}, statemachine, onStateSwitch=(state=>null), onChange, children}) => {
+    const {states} = statemachine
+    const [activeState, setActiveState] = useState(state)
     const handleStateClick = (state) => {
         setActiveState(prev => state)
         onStateSwitch(state)
@@ -257,25 +293,33 @@ export const StateMachineSwitch = ({states, onStateSwitch=(state=>null), childre
           className={"btn btn-light"}
         >
             <DeleteStateButton
-              className="btn btn-sm btn-outline-danger"
-              state={state}
+                className="btn btn-sm btn-outline-danger"
+                state={state}
             >
                 <TrashFill />
             </DeleteStateButton>
             <UpdateStateButton
-              className="btn btn-sm btn-outline-success"
-              state={state}
+                className="btn btn-sm btn-outline-success"
+                state={state}
             >
                 <PencilFill />
             </UpdateStateButton>
             <span
-              className={state === activeState ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
-              onClick={() => handleStateClick(state)}
+                className={state === activeState ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
+                onClick={() => handleStateClick(state)}
             >
-              {state?.name}
+                {state?.name}
             </span>
         </span>
         )}
+        <InsertStateButton
+            className={"btn btn-sm btn-outline-secondary"}
+            params={{statemachine_id: statemachine.id}}
+            onDone={onChange}
+        >
+            <PlusLg/> Nový stav
+        </InsertStateButton>
+        
     </>)
 }
 
@@ -377,7 +421,8 @@ export function VerticalArcGraph({ statemachine, activeNodeId }) {
     // 4) Now compute svgWidth based on largestDistance (multiply by some factor).
     //    Also ensure a minimum width of 400 so it's not too small.
     // const svgWidth = Math.max(400, 100 + largestDistance * 1.5);
-    const svgWidth = largestDistance;
+    // const svgWidth = Math.sqrt(largestDistance * largestDistance - 100 * largestDistance);
+    const svgWidth = Math.max(largestDistance, 400);
 
     // 5) Update each node's x position to be at the center horizontally
     nodes.forEach((node) => {
@@ -399,9 +444,16 @@ export function VerticalArcGraph({ statemachine, activeNodeId }) {
 
     return (
         <svg
-            width={svgWidth}
-            height={svgHeight}
-            style={{ border: "1px solid #ccc", background: "#f9f9f9" }}
+            // width={svgWidth}
+            // height={svgHeight}
+            style={{ 
+                border: "1px solid #ccc", 
+                background: "#f9f9f9",
+                maxWidth: "100%",
+                // height: "auto",
+                display: "block"
+            }}
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         >
             {/*
                 (1) Draw edges:
@@ -418,11 +470,11 @@ export function VerticalArcGraph({ statemachine, activeNodeId }) {
 
                 let startY, endY;
                 if (sIndex < tIndex) {
-                    startY = sourcePos.y - NODE_HEIGHT / 2;
-                    endY = targetPos.y + NODE_HEIGHT / 2;
+                    startY = sourcePos.y - NODE_HEIGHT / 2.5;
+                    endY = targetPos.y + NODE_HEIGHT / 2.5;
                 } else {
-                    startY = sourcePos.y + NODE_HEIGHT / 2;
-                    endY = targetPos.y - NODE_HEIGHT / 2;
+                    startY = sourcePos.y + NODE_HEIGHT / 2.5;
+                    endY = targetPos.y - NODE_HEIGHT / 2.5;
                 }
 
                 const d = cubicArcLeft(sourcePos.x, startY, endY);

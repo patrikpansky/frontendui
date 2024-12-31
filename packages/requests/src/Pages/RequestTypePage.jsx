@@ -76,68 +76,8 @@ const RequestTypePageContent = ({requesttype}) => {
             
             {(loading || request_type_loading) && <LoadingSpinner text='Ukládám' />}
             {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}            
-            <Row>
-                <Col>
-                {!group && <>
-                    <InsertGroupButton onDone={OnCreateGroupDone}
-                        className="btn btn-outline-secondary"
-                        params={{
-                            name: `Oprávnění pro požadavky (${requesttype.name})`,
-                            name_en: `Permissions for requests (${requesttype.nameEn})`
-                        }}
-                    >
-                        Vytvořit skupinu
-                    </InsertGroupButton>
-                </>}
-                {/* {group && <>
-                    <GroupCardCapsule group={requesttype?.group}>
-                        <AsyncComponent asyncAction={GroupReadAsyncAction} propertyName={"group"} queryVariables={requesttype?.group}>
-                            <GroupMediumContent />
-                            <GroupMemberships />
-                        </AsyncComponent>
-                        <UpdateGroupButton group={requesttype?.group} className="btn btn-outline-secondary">
-                            Změnit
-                        </UpdateGroupButton>
 
-                    </GroupCardCapsule>
-                    
-                    {JSON.stringify(requesttype?.group)}
-                </>} */}
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {statemachine && <StateMachineLiveDesigner statemachine={statemachine}/>}
-                    {!statemachine && <InsertStateMachineButton 
-                            className="btn btn-outline-secondary" 
-                            onDone={onCreateStatemachineDone}
-                            params={{L: 1}}
-                        >
-                            Vytvořit stavový automat
-                        </InsertStateMachineButton>
-                    }
-                </Col>
-            </Row>
-            <Row>
-                {/* <LeftColumn></LeftColumn> */}
-                <Col>
-                    {/* RequestType {JSON.stringify(requesttype)}<br /> */}
-                    {!templateFormId && <>
-                        "Není nastaven formulář"
-                        <FormCreateButtonDialog 
-                            className="btn btn-outline-primary"
-                            onCreate={onCreateForm}
-                        >
-                            Vytvořit formulář
-                        </FormCreateButtonDialog>
-                    </>}
-                    {/* {templateFormId && <FormSectionAttribute form={templateForm} />} */}
-                    {templateFormId && <RequestTypeDesigner requesttype={requesttype} onUpdate={onUpdateForm}/>}
-                    <br />
-                    
-                    
-                </Col>
-            </Row>
+            <RequestTypeDesigner requesttype={requesttype} onUpdate={onUpdateForm}/>
         </>
     )
 }

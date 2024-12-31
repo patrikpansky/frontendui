@@ -5,7 +5,7 @@ import { SectionInsertAsyncAction } from './Queries/SectionInsertAsyncAction';
 
 export const InsertSectionButton = ({ 
     params, 
-    confirmationDialog=false, 
+    confirmationDialog=true, 
     onDone = () => null, 
     dialogTitle="Nová sekce",
     className='btn btn-outline-primary form-control',
@@ -36,7 +36,7 @@ export const InsertSectionButton = ({
         <>
             {loading && <LoadingSpinner text='Vytvářím' />}
             {error && <ErrorHandler errors={error} />}
-            {!confirmationDialog && <span {...props} onClick={onClick}>{children}</span>}
+            {!confirmationDialog && <span {...props} onClick={onConfirmCreate}>{children}</span>}
             {confirmationDialog &&
                 <ButtonWithDialog
                     dialogTitle={dialogTitle}
