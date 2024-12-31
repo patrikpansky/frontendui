@@ -87,12 +87,13 @@ fragment StateLarge on StateGQLModel {
 export const StateTransitionLargeFragment = createQueryStrLazy(
 `
 fragment StateTransitionLarge on StateTransitionGQLModel {
+    ...StateTransitionLink
     source { ...StateMedium }
     target { ...StateMedium }
     statemachine { ...StateMachineMedium }
 }
 `, 
-    StateMediumFragment, StateMachineMediumFragment
+    StateMediumFragment, StateMachineMediumFragment, StateTransitionLinkFragment
 )
     
 

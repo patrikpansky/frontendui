@@ -137,7 +137,7 @@ export const ButtonWithDialog = ({
      * params and thus state must be also allowed to adapt the change
      * this is guarder by firstRender
      */
-    const [state, setState] = useState({...params});
+    const [state, setState] = useState({});
     // const [firstRender, setFirstRender] = useState(true)
     // useEffect(() => {
     //     if (!firstRender) {
@@ -153,7 +153,7 @@ export const ButtonWithDialog = ({
     };
 
     const handleDialogOk = () => {
-        const updatedState = {...state}
+        const updatedState = {...params, ...state}
         if (injectId) updatedState.id = updatedState.id?updatedState.id:crypto.randomUUID()
         if (onClick) onClick(updatedState); // Pass the state to the callback
         setShowDialog(false); // Close the dialog
@@ -167,8 +167,10 @@ export const ButtonWithDialog = ({
         // console.log("ButtonWithDialog.onChildChange", state, e)
         const { id, value } = e.target;
         // setFirstRender(false)
+        // console.log("ButtonWithDialog.onChildChange", state, id, value)
         setState((prev) => {
-            console.log("ButtonWithDialog.onChildChange", prev, e)
+            // console.log("ButtonWithDialog.onChildChange", prev, e)
+            console.log("ButtonWithDialog.onChildChange", state, id, value)
             if (!prev) return {[id]: value}
             return {
                 ...prev,
@@ -182,6 +184,7 @@ export const ButtonWithDialog = ({
             <span {...props} onClick={handleButtonClick}>
                 {buttonLabel}
             </span>
+            
             {showDialog && (
                 <Dialog
                     title={dialogTitle}
@@ -193,6 +196,12 @@ export const ButtonWithDialog = ({
                     <ChildWrapper onChange={onChildChange} onBlur={onChildChange}>
                         {children}
                     </ChildWrapper>
+                    {/* <div>
+                        params{JSON.stringify(params)}
+                    </div>
+                    <div>
+                        state{JSON.stringify(state?.source?.id)}
+                    </div> */}
                 </Dialog>
             )}
         </>

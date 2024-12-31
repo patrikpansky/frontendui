@@ -58,6 +58,9 @@ export const UpdateStateTransitionButton = ({ children, statetransition, onDone 
         >
             <ButtonWithDialog buttonLabel={children} dialogTitle="Upravit část" {...props} params={statetransition}>
                 <StateTransitionMediumEditableContent statetransition={statetransition} />
+                {/* <div>
+                    {JSON.stringify(statetransition)}
+                </div> */}
             </ButtonWithDialog>
         </AsyncClickHandler>
     );

@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { AsyncClickHandler, ButtonWithDialog } from '@hrbolek/uoisfrontend-shared';
 import { StateTransitionInsertAsyncAction } from './Queries/StateTransitionInsertAsyncAction';
 import { StateTransitionMediumEditableContent } from './StateTransitionMediumEditableContent';
@@ -43,6 +44,7 @@ import { StateTransitionMediumEditableContent } from './StateTransitionMediumEdi
  * @returns {JSX.Element} A button that opens a dialog for inserting a new statetransition.
  */
 export const InsertStateTransitionButton = ({ children, params, onDone = (newStateTransition) => null, ...props }) => {
+    const ref = useRef(crypto.randomUUID())
     return (
         <AsyncClickHandler
             asyncAction={StateTransitionInsertAsyncAction}
@@ -50,9 +52,11 @@ export const InsertStateTransitionButton = ({ children, params, onDone = (newSta
             loadingMsg={"Vkládám novou část"}
             onClick={onDone}
         >
+            {/* <div>{JSON.stringify(ref)}</div>            */}
             <ButtonWithDialog buttonLabel={children} dialogTitle="Vložit novou část" {...props} params={params}>
                 <StateTransitionMediumEditableContent statetransition={params} />
             </ButtonWithDialog>
+            {/* <div>{JSON.stringify(params)}</div> */}
         </AsyncClickHandler>
     );
 };

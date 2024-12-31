@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Input, Select } from "@hrbolek/uoisfrontend-shared"
 
 /**
@@ -24,17 +25,38 @@ import { Input, Select } from "@hrbolek/uoisfrontend-shared"
  * </StateTransitionMediumContent>
  */
 export const StateTransitionMediumEditableContent = ({statetransition, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
+    const ref = useRef(true)
+    const states = statetransition?.statemachine?.states || []
+    const firstState = states[0]
+    if (firstState) {
+        if (ref.current) {
+            ref.current = false
+            const event = { target: { id: "target_id", value: firstState.id } };
+            console.log("StateTransitionMediumEditableContent firing an event", event)
+            onChange(event);
+            // const event2 = { target: { id: "source_id", value: firstState.id } };
+            // console.log("StateTransitionMediumEditableContent firing an event", event2)
+            // onChange(event2);
+        }
+        // console.log("backfire from StateTransitionMediumEditableContent")
+    }
     return (
         <>           
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={statetransition?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={statetransition?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
             <Select id={"target_id"} label={"Cílový stav"} className="form-control"  defaultValue={statetransition?.target_id} onChange={onChange} onBlur={onBlur} >
-                {statetransition?.statemachine?.states?.map(
+                {states.map(
                     state => <option key={state.id} value={state.id}>
                         {state.name}
                     </option>
                 )}
             </Select>
+            <div>
+                T{JSON.stringify(statetransition?.target_id)}
+            </div>
+            <div>
+                S{JSON.stringify(statetransition?.source_id)}
+            </div>
             {children}
         </>
     )

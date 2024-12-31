@@ -4,12 +4,15 @@ import Col from 'react-bootstrap/Col'
 import { InsertStateButton } from '../State/InsertStateButton'
 import { DeleteStateTransitionButton, InsertStateTransitionButton, StateMachineReadAsyncAction, UpdateStateTransitionButton } from '../StateTransition'
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { AsyncClickHandler, AsyncComponent } from '@hrbolek/uoisfrontend-shared'
+import { AsyncClickHandler, AsyncComponent, LeftColumn, MiddleColumn, SimpleCardCapsule } from '@hrbolek/uoisfrontend-shared'
 import { PencilFill, PlusLg, TrashFill } from 'react-bootstrap-icons'
 import { UpdateStateButton } from '../State/UpdateStateButton'
 import { DeleteStateButton } from '../State/DeleteStateButton'
 
-const Transition = ({statemachine, transition, onChange, ...props}) => {
+const Transition = ({statemachine, transition, onChange, onTransitionClick=()=>null, ...props}) => {
+    transition = statemachine?.transitions.find(
+        t => t.id === transition.id
+    )
     return (
         <span className="btn btn-sm btn-light">
             <DeleteStateTransitionButton 
@@ -21,17 +24,25 @@ const Transition = ({statemachine, transition, onChange, ...props}) => {
             </DeleteStateTransitionButton>
             <UpdateStateTransitionButton 
                 className="btn btn-sm btn-outline-success"
-                statetransition={transition}
+                statetransition={{
+                    ...transition, 
+                    statemachine: statemachine, 
+                    target_id: transition.target.id, 
+                    source_id: transition.source.id
+                }}
                 onDone={onChange}
             >
                 <PencilFill />
             </UpdateStateTransitionButton>
-        &nbsp;{transition.name}&nbsp;
+            &nbsp;
+            <span className="btn btn-sm btn-outline-primary" onClick={()=>onTransitionClick(transition)}>
+                {transition.name}&nbsp;({transition?.target?.name})
+            </span>&nbsp;
         </span>
     )
 }
 
-const TransitionList = ({statemachine, transitions, children, ...props}) => {
+const TransitionList = ({statemachine, transitions, children, onTransitionClick, onChange, ...props}) => {
     return (<>
         {transitions.map(transition => 
             <Transition 
@@ -39,87 +50,187 @@ const TransitionList = ({statemachine, transitions, children, ...props}) => {
                 statemachine={statemachine} 
                 {...props} 
                 transition={transition}
+                onTransitionClick={onTransitionClick}
+                onChange={onChange}
             />
         )}
+        {/* {transitions.map(transition => 
+            <div key={transition.id}     >
+              {JSON.stringify(transition)}
+            </div>
+                
+            
+        )} */}
         {children}
     </>)
 }
 
-export const StateDesigner = ({state, statemachine, onChange=()=>null}) => {
+export const StateDesigner = ({state, statemachine, onTransitionClick, onChange=()=>null}) => {
     const {sources=[], targets=[]} = state
     const handleNewTransition = (transition) => {
         onChange()
     }
-
+    const incomming = statemachine?.transitions?.filter(
+        transition => transition?.target?.id === state?.id
+    )
+    const outcomming = statemachine?.transitions?.filter(
+        transition => transition?.source?.id === state?.id
+    ) 
     return (
-    <Row>
-        <Col xs={5} className='text-end'>
-            <TransitionList 
-                statemachine={statemachine} 
-                transitions={sources} 
-                className="btn btn-sm btn-outline-secondary" 
-                onChange={onChange}
-            />
-        </Col>
-        <Col  className='text-center'>
-            <span className="btn btn-sm btn-light">
-                <DeleteStateButton 
-                    className="btn btn-sm btn-outline-danger"
-                    state={state}
-                    onDone={onChange}
-                >
-                    <TrashFill />
-                </DeleteStateButton>
-                <UpdateStateButton 
-                    className="btn btn-sm btn-outline-success"
-                    state={state}
-                    onDone={onChange}
-                >
-                    <PencilFill />
-                </UpdateStateButton>
-                &nbsp;{state?.name}
-            </span>
+        <Row>
+            <Col>
+                <SimpleCardCapsule title={"Vstupy"}>
+                    <TransitionList 
+                        statemachine={statemachine} 
+                        transitions={incomming} 
+                        className="btn btn-sm btn-outline-secondary" 
+                        onChange={onChange}
+                        // onTransitionClick={onTransitionClick}
+                    />
+                </SimpleCardCapsule>
             </Col>
-        <Col xs={5} className='text-start'>
-            <InsertStateTransitionButton  
-                className="btn btn-sm btn-outline-secondary" 
-                params={{
-                    statemachine_id: statemachine.id,
-                    source_id: state.id,
-                    statemachine: statemachine
-                }}
-                onDone={handleNewTransition}
-            >
-                <PlusLg />
-            </InsertStateTransitionButton>
-            <TransitionList statemachine={statemachine} transitions={targets} className="btn btn-sm btn-outline-secondary" />
-        </Col>
-    </Row>
+            <Col>
+                <SimpleCardCapsule title="Výstupy">
+                    <InsertStateTransitionButton  
+                        className="btn btn-sm btn-outline-secondary" 
+                        params={{
+                            statemachine_id: statemachine.id,
+                            source_id: state.id,
+                            statemachine: statemachine
+                        }}
+                        onDone={handleNewTransition}
+                    >
+                        <PlusLg />
+                    </InsertStateTransitionButton>
+                    <TransitionList 
+                        statemachine={statemachine} 
+                        transitions={outcomming} 
+                        className="btn btn-sm btn-outline-secondary" 
+                        onTransitionClick={onTransitionClick}
+                        onChange={onChange}
+                    />
+                    {/* {state.id} */}
+                </SimpleCardCapsule>
+            </Col>
+        </Row>
+    // <Row>
+    //     <Col xs={5} className='text-end'>
+    //         <TransitionList 
+    //             statemachine={statemachine} 
+    //             transitions={sources} 
+    //             className="btn btn-sm btn-outline-secondary" 
+    //             onChange={onChange}
+    //         />
+    //     </Col>
+    //     <Col  className='text-center'>
+    //         <span className="btn btn-sm btn-light">
+    //             <DeleteStateButton 
+    //                 className="btn btn-sm btn-outline-danger"
+    //                 state={state}
+    //                 onDone={onChange}
+    //             >
+    //                 <TrashFill />
+    //             </DeleteStateButton>
+    //             <UpdateStateButton 
+    //                 className="btn btn-sm btn-outline-success"
+    //                 state={state}
+    //                 onDone={onChange}
+    //             >
+    //                 <PencilFill />
+    //             </UpdateStateButton>
+    //             &nbsp;{state?.name}
+    //         </span>
+    //         </Col>
+    //     <Col xs={5} className='text-start'>
+    //         <InsertStateTransitionButton  
+    //             className="btn btn-sm btn-outline-secondary" 
+    //             params={{
+    //                 statemachine_id: statemachine.id,
+    //                 source_id: state.id,
+    //                 statemachine: statemachine
+    //             }}
+    //             onDone={handleNewTransition}
+    //         >
+    //             <PlusLg />
+    //         </InsertStateTransitionButton>
+    //         <TransitionList statemachine={statemachine} transitions={targets} className="btn btn-sm btn-outline-secondary" />
+    //     </Col>
+    // </Row>
     )
 }
 
 export const StateMachineDesigner = ({statemachine, children, onChange=()=>null}) => {
     const {states=[]} = statemachine
-    return (<>
-        {states.map(
-            state => <StateDesigner key={state.id} state={state} statemachine={statemachine} onChange={onChange}/>
-        )}
-        <InsertStateButton 
-            className="btn btn-sm btn-outline-secondary" 
-            params={{
-                statemachine_id: statemachine.id
-            }}
-            onDone={onChange}
-        >
-            Nový stav
-        </InsertStateButton>
-        {children}
-    </>)
+    const [activeIndex, setActiveIndex] = useState(0)
+    const activeState = states[activeIndex]
+    const handleFollowTransition = (transition) => {
+        console.log("handleFollowTransition", transition)
+        const targetId = transition.target.id
+        const target = states.find(state => state.id === targetId)
+        const newIndex = states.indexOf(target)
+        if ((newIndex === 0) | (newIndex)) {
+          setActiveIndex(prev => newIndex)
+        }
+    }
+    return (
+        <Row>
+            <LeftColumn>
+                <VerticalArcGraph statemachine={statemachine} activeNodeId={activeState?.id}/>
+            </LeftColumn>
+            <MiddleColumn>
+                {/* <div>
+                    {JSON.stringify(statemachine?.states)}
+                </div>
+                <div>
+                    {JSON.stringify(statemachine?.transitions)}
+                </div> */}
+                
+                {states.map((state, index) => 
+                    <span key={state.id}
+                        className={"btn btn-light"}
+                    >
+                        <DeleteStateButton
+                            className="btn btn-sm btn-outline-danger"
+                            state={state}
+                        >
+                            <TrashFill />
+                        </DeleteStateButton>
+                        <UpdateStateButton
+                            className="btn btn-sm btn-outline-success"
+                            state={state}
+                        >
+                            <PencilFill />
+                        </UpdateStateButton>
+                        <span
+                            className={index===activeIndex?'btn btn-sm btn-primary':"btn btn-sm btn-outline-primary"}
+                            onClick={() => setActiveIndex(prev => index)}
+                        >
+                            {state?.name}
+                        </span>
+                        
+                    </span>
+
+                )}
+                <InsertStateButton 
+                    className="btn btn-outline-secondary" 
+                    params={{
+                        statemachine_id: statemachine.id
+                    }}
+                    onDone={onChange}
+                >
+                    Nový stav
+                </InsertStateButton>
+                {activeState && <StateDesigner state={activeState} statemachine={statemachine} onChange={onChange} onTransitionClick={handleFollowTransition}/>}
+            </MiddleColumn>
+          </Row>
+
+    )
 }
 
 export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
     const [state, setState] = useState(statemachine)
     const [fetch, setFetch] = useState(0)
+    console.log("StateMachineLiveDesigner", statemachine)
     const handleChange = async () => {
         onChange(statemachine)
         if (fetch) {
@@ -135,7 +246,8 @@ export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
     const handleFetch = (fetch) => {
         setFetch(prev => fetch)
     }
-    const activeNode = statemachine.states[0]
+    // const activeNode = statemachine.states[0]
+    
     return (
         <>
             {/* <VerticalArcGraph statemachine={statemachine} activeNodeId={activeNode?.id}/> */}
@@ -166,7 +278,7 @@ export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
  */
 function cubicArcLeft(x, startY, endY) {
   const dy = endY - startY;
-  const r = Math.abs(dy) / 2; // radius is half the vertical distance
+  const r = -(dy) / 2; // radius is half the vertical distance
 
   // We always arc left, so the control points are offset by -r in the X direction.
   // M (x, startY) C (x - r, startY) -> (x - r, endY) -> (x, endY)
@@ -286,7 +398,7 @@ export function VerticalArcGraph({ statemachine, activeNodeId }) {
             {edge.name && (
               <text
                 // approximate the midpoint in Y
-                x={sourcePos.x - Math.abs(endY - startY) / 4}
+                x={sourcePos.x + (endY - startY) / 3}
                 y={(startY + endY) / 2}
                 textAnchor="middle"
                 fontSize="12"

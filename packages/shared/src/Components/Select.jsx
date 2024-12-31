@@ -13,9 +13,9 @@ import { SimpleCardCapsule } from "./SimpleCardCapsule"
  * @returns {JSX.Element} A styled select input component.
  */
 export const Select = ({label, children, ...props}) => {
-    const {id, value, defaultValue, onChange} = props
+    const {id, value, defaultValue, onChange, onBlur} = props
     const selectRef = useRef(null);
-    const fired = useRef(false)
+    // const fired = useRef(false)
     // useEffect(() => {
     //     if (!children) return
     //     console.log("got children")
@@ -31,8 +31,10 @@ export const Select = ({label, children, ...props}) => {
     useEffect(() => {
         const observer = new MutationObserver(() => {
             if (selectRef.current) {
+                
                 const selectedValue = selectRef.current.value;
                 const event = { target: { id: selectRef.current.id, value: selectedValue } };
+                console.log("Select firing an event", event)
                 onChange(event);
             }
         });
@@ -51,11 +53,18 @@ export const Select = ({label, children, ...props}) => {
     // if (ReactChildren.lenght > 0) {
     //     const firstChild = ReactChildren[0]
     // }
+    // const handleOnChange = (e) => {
+    //     onChange(e)
+    // }
+
+    // const handleOnBlur = (e) => {
+    //     console.log("Select onChange", e)
+    //     onBlur(e)
+    // }
 
     return (
         <SimpleCardCapsule title={label}>
-            <select ref={selectRef} {...changedprops}>
-                
+            <select ref={selectRef} {...changedprops} >
                 {children} 
             </select>
         </SimpleCardCapsule>
