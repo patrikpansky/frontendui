@@ -14,9 +14,15 @@ import { SimpleCardCapsule } from './SimpleCardCapsule';
  * @returns {JSX.Element} A collection of `<option>` elements or loading/error states.
  */
 
-export const Options = ({ asyncAction, params = {} }) => {
-    const { error, loading, fetch, entity, dispatchResult } = useAsyncAction(asyncAction, params);
+export const Options = ({ asyncAction, params = {}, shouldFetch }) => {
+    const { error, loading, fetch, entity, dispatchResult } = useAsyncAction(asyncAction, params, {deferred: true});
+    
+    useEffect(() => {
+        fetch(params)
+    }, [shouldFetch, asyncAction]
+    )
 
+    console.log("Options.params", params)
     let options = []
     if (entity?.id) {
         options = entity?.options || []

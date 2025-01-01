@@ -15,13 +15,10 @@ const Transition = ({statemachine, transition, onChange, onTransitionClick=()=>n
     )
     return (
         <span className="btn btn-sm btn-light">
-            <DeleteStateTransitionButton 
-                className="btn btn-sm btn-outline-danger"
-                statetransition={transition}
-                onDone={onChange}
-            >
-                <TrashFill /> 
-            </DeleteStateTransitionButton>
+            <span className="btn btn-sm btn-outline-primary" onClick={()=>onTransitionClick(transition)}>
+                {transition.name}&nbsp;({transition?.target?.name})
+            </span>
+            
             <UpdateStateTransitionButton 
                 className="btn btn-sm btn-outline-success"
                 statetransition={{
@@ -34,10 +31,15 @@ const Transition = ({statemachine, transition, onChange, onTransitionClick=()=>n
             >
                 <PencilFill />
             </UpdateStateTransitionButton>
-            &nbsp;
-            <span className="btn btn-sm btn-outline-primary" onClick={()=>onTransitionClick(transition)}>
-                {transition.name}&nbsp;({transition?.target?.name})
-            </span>&nbsp;
+            
+            <DeleteStateTransitionButton 
+                className="btn btn-sm btn-outline-danger"
+                statetransition={transition}
+                onDone={onChange}
+            >
+                <TrashFill /> 
+            </DeleteStateTransitionButton>
+            
         </span>
     )
 }
@@ -292,24 +294,25 @@ export const StateMachineSwitch = ({state={}, statemachine, onStateSwitch=(state
         {states.map((state, index) => <span key={state.id}
           className={"btn btn-light"}
         >
-            <DeleteStateButton
-                className="btn btn-sm btn-outline-danger"
-                state={state}
-            >
-                <TrashFill />
-            </DeleteStateButton>
-            <UpdateStateButton
-                className="btn btn-sm btn-outline-success"
-                state={state}
-            >
-                <PencilFill />
-            </UpdateStateButton>
             <span
                 className={state === activeState ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
                 onClick={() => handleStateClick(state)}
             >
                 {state?.name}
             </span>
+            <UpdateStateButton
+                className="btn btn-sm btn-outline-success"
+                state={state}
+            >
+                <PencilFill />
+            </UpdateStateButton>
+            <DeleteStateButton
+                className="btn btn-sm btn-outline-danger"
+                state={state}
+            >
+                <TrashFill />
+            </DeleteStateButton>
+            
         </span>
         )}
         <InsertStateButton

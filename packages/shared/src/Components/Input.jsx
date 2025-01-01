@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { SimpleCardCapsule } from "./SimpleCardCapsule"
 
-export const Input = ({label, ...props}) => {
+export const Input = ({label,  ariaHidden=false , ...props}) => {
     const {id, value, defaultValue, onChange} = props
     const fired = useRef(false)
     useEffect(() => {
@@ -13,6 +13,8 @@ export const Input = ({label, ...props}) => {
         }
     })
 
+    if (ariaHidden)
+        return null
     return (
         <SimpleCardCapsule title={label}>
             <input {...props} />

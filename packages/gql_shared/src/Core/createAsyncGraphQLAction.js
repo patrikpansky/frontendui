@@ -187,14 +187,18 @@ export const createQueryStrLazy = (queryStr, ...nodes) => {
      * @returns {string} The compiled string for this node and all its descendants.
      */
     const visitor = (node, visited) => {
+        // Extract the node's "signature" (the string + sub-nodes).
+        const { queryStr, nodes } = node.__metadata;
+        // TODO
+        // compute hash from query
+        // and use that hash for judging if visited
+        // compare with check if node visited
+
         // If we have visited this node before, return an empty string (avoid duplicates).
         if (visited.has(node)) {
             return "";
         }
         visited.add(node);
-    
-        // Extract the node's "signature" (the string + sub-nodes).
-        const { queryStr, nodes } = node.__metadata;
     
         // Recursively compile each sub-node.
         const subStrings = nodes.map((subNode) => visitor(subNode, visited));

@@ -30,7 +30,7 @@ export const GroupMediumEditableContent = ({group, onChange=(e)=>null, onBlur=(e
         <>           
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={group?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={group?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
-            <Select  id={"grouptype_id"} label={"Typ skupiny"} className="form-control" defaultValue={group?.grouptypeId} onChange={onChange} onBlur={onBlur}  >
+            <Select id={"grouptype_id"} label={"Typ skupiny"} className="form-control" defaultValue={group?.grouptypeId} onChange={onChange} onBlur={onBlur}  >
                 <Options asyncAction={GroupTypeReadPageAsyncAction} /> 
             </Select>
             {children}

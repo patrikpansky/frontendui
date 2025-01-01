@@ -7,3 +7,6 @@ export * from './Role'
 export * from './StateMachine'
 export * from './State'
 export * from './StateTransition'
+
+export * from './RoleType'
+export * from './RoleTypeList'

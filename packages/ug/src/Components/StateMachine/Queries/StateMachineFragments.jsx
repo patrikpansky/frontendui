@@ -52,6 +52,8 @@ export const StateMediumFragment = createQueryStrLazy(
 `
 fragment StateMedium on StateGQLModel {
     ...StateLink
+    readerslistId
+  	writerslistId
     statemachine { ...StateMachineLink }
     targets { ...StateTransitionLink }
     sources { ...StateTransitionLink }

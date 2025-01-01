@@ -7,12 +7,12 @@ import { AsyncComponent, createLazyComponent, ErrorHandler, LoadingSpinner } fro
 
 import { RequestPageNavbar } from "./RequestPageNavbar"
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
-import { RequestTypeDesigner } from '../Components/Form/FormDesigner'
 import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, InsertStateButton, InsertStateMachineButton, StateMachineLiveDesigner, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
 import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
 import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
 import { StateMachineDesigner } from '@hrbolek/uoisfrontend-ug'
 import { RequestTypePageNavbar } from './RequestTypePageNavbar'
+import { RequestTypeDesigner } from '../Components/RequestType/RequestTypeDesigner'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
