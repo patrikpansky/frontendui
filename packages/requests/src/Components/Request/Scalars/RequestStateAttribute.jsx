@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useSelector } from "react-redux";
 
 import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { ButtonWithDialog, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { AsyncClickHandler, AsyncComponent, ButtonWithDialog, Input, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
 import { useEffect } from "react";
 
@@ -13,6 +13,7 @@ query StateReadQuery($id: UUID!) {
   	__typename
     id  
     name
+    order
     targets {
       __typename
       id
@@ -20,6 +21,7 @@ query StateReadQuery($id: UUID!) {
       target {
         id
         name
+        order
       }
     }
   } 
@@ -102,7 +104,7 @@ fragment RequestLarge on RequestGQLModel {
     lastchange
 
   }
-  state { id name }
+  state { id name targets {id name target { id name }}}
   createdby { ...UserLink }
   changedby { ...UserLink }  
 }
@@ -146,10 +148,15 @@ const RequestUseTransitionAsyncAction = createAsyncGraphQLAction(
  */
 export const RequestStateAttribute = ({request}) => {
     const {state = {id: "bdf5169a-c2f1-4bc2-923b-1eefd941e261"}} = request
+    const state_id = state.id
     if (typeof state === 'undefined') return null
     
     // const [_state] = useFreshItem(state, StateReadAsyncAction)
-    const { entity: _state, error, loading } = useAsyncAction(StateReadAsyncAction, state)
+    const { entity: _state, error, loading, fetch } = useAsyncAction(StateReadAsyncAction, state, {deferred: true})
+    useEffect(() => {
+        fetch(state)
+    }, [state_id])
+
     if (error) return <ErrorHandler errors={error} />
     if (loading) return <LoadingSpinner text="Nahrávám stavy"/>
     if (_state?.targets?.length === 0) {
@@ -161,15 +168,22 @@ export const RequestStateAttribute = ({request}) => {
     }
     return (
         <>
-            
+            {/* <AsyncComponent>
+
+            </AsyncComponent> */}
             {(_state?.targets || []).map(
                 transition => {
+                    const className = ((transition?.target?.order || 0) > (_state?.order || -1))?"btn btn-lg btn-outline-success" :"btn btn-lg btn-outline-danger" 
                     return (
                         <RequestTransitionButton 
                             key={transition.id} 
-                            className="btn btn-lg btn-outline-success" 
-                            request={request} 
-                            transition={transition}
+                            className={className}
+                            params={{
+                                id: request.id,
+                                lastchange: request.lastchange,
+                                history_message: "",
+                                transition_id: transition.id
+                            }}
                         >
                             {transition?.name} ({transition?.target?.name})
                         </RequestTransitionButton>
@@ -184,7 +198,7 @@ export const RequestStateAttribute = ({request}) => {
 }
 
 
-export const RequestTransitionButton = ({request, transition, ...props}) => {
+export const RequestTransitionButton_ = ({request, transition, ...props}) => {
     const [mutationParams, setMutationParams] = useState({
         id: request.id,
         lastchange: request.lastchange,
@@ -229,6 +243,28 @@ export const RequestTransitionButton = ({request, transition, ...props}) => {
             </ButtonWithDialog>
         </>
     )
+}
+
+export const RequestTransitionButton = ({children, params, onDone=()=>null, ...props}) => {
+    return (
+        <AsyncClickHandler
+            asyncAction={RequestUseTransitionAsyncAction}
+            defaultParams={params}
+            loadingMsg={"Posílám ke zpracování"}
+            onClick={onDone}
+        >
+            <ButtonWithDialog 
+                buttonLabel={children} 
+                dialogTitle="Vložit zprávu" 
+                {...props} 
+                params={params}
+              >
+                  <Input id="history_message" label="Veřejná zpráva" className="form-control" defaultValue={""} />
+                  {/* <input id="history_message" className="form-control" defaultValue={""} /> */}
+
+            </ButtonWithDialog>
+        </AsyncClickHandler>
+    );
 }
 
 export const RequestCurrentState = ({request}) => {

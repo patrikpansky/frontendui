@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { InsertStateButton } from '../State/InsertStateButton'
@@ -245,70 +245,72 @@ export const StateMachineDesigner = ({statemachine, children, onChange=()=>null}
     )
 }
 
-export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
-    const [state, setState] = useState(statemachine)
-    const [fetch, setFetch] = useState(0)
-    console.log("StateMachineLiveDesigner", statemachine)
-    const handleChange = async () => {
-        onChange(statemachine)
-        if (fetch) {
-            console.log("have fetch and going to use it")
-            const fetchResult = await fetch()
-            setState(prev => {
-                onChange(fetchResult)
-                return fetchResult
-            })
-            console.log("fetchResult", fetchResult)
-        }
-    }
-    const handleFetch = (fetch) => {
-        setFetch(prev => fetch)
-    }
-    // const activeNode = statemachine.states[0]
+// export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
+//     const [state, setState] = useState(statemachine)
+//     const [shouldFetch, setShouldFetch] = useState(0)
+//     const [fetch, setFetch] = useState(0)
+//     console.log("StateMachineLiveDesigner", statemachine)
+//     const handleChange = async () => {
+//         setShouldFetch(prev => {
+//             onChange(statemachine)  
+//             return prev + 1  
+//         })
+//         // onChange(statemachine)
+//         // if (fetch) {
+//         //     console.log("have fetch and going to use it")
+//         //     const fetchResult = await fetch()
+//         //     setState(prev => {
+//         //         onChange(fetchResult)
+//         //         return fetchResult
+//         //     })
+//         //     console.log("fetchResult", fetchResult)
+//         // }
+//     }
+//     const handleFetch = (fetch) => {
+//         setFetch(prev => fetch)
+//     }
+//     // const activeNode = statemachine.states[0]
     
-    return (
-        <>
-            {/* <VerticalArcGraph statemachine={statemachine} activeNodeId={activeNode?.id}/> */}
-            <AsyncComponent 
-                asyncAction={StateMachineReadAsyncAction} 
-                queryVariables={{...statemachine, limit: 30}} 
-                propertyName={"statemachine"}
-                onChange={handleChange}
-                // hook={click}
-                onGotFetch={handleFetch}
-            >
-                <StateMachineDesigner />
-            </AsyncComponent>
-        </>
-    )
-}
+//     return (
+//         <>
+//             {/* <VerticalArcGraph statemachine={statemachine} activeNodeId={activeNode?.id}/> */}
+//             <AsyncComponent 
+//                 asyncAction={StateMachineReadAsyncAction} 
+//                 queryVariables={{...statemachine, limit: 30}} 
+//                 propertyName={"statemachine"}
+//                 onChange={handleChange}
+//                 // hook={click}
+//                 onGotFetch={handleFetch}
+//                 shouldFetch={shouldFetch}
+//             >
+//                 <StateMachineDesigner />
+//             </AsyncComponent>
+//         </>
+//     )
+// }
 
 export const StateMachineSwitch = ({state={}, statemachine, onStateSwitch=(state=>null), onChange, children}) => {
     const {states} = statemachine
-    const [activeState, setActiveState] = useState(state)
-    const handleStateClick = (state) => {
-        setActiveState(prev => state)
-        onStateSwitch(state)
-    }
+
     return (<>
-        {states.map((state, index) => <span key={state.id}
+        {states.map((currentState, index) => <span key={currentState.id}
           className={"btn btn-light"}
         >
             <span
-                className={state === activeState ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
-                onClick={() => handleStateClick(state)}
+                className={currentState === state ? 'btn btn-sm btn-primary' : "btn btn-sm btn-outline-primary"}
+                onClick={() => onStateSwitch(currentState)}
             >
-                {state?.name}
+                {currentState?.name}
             </span>
             <UpdateStateButton
                 className="btn btn-sm btn-outline-success"
-                state={state}
+                state={currentState}
             >
                 <PencilFill />
             </UpdateStateButton>
             <DeleteStateButton
                 className="btn btn-sm btn-outline-danger"
-                state={state}
+                state={currentState}
             >
                 <TrashFill />
             </DeleteStateButton>

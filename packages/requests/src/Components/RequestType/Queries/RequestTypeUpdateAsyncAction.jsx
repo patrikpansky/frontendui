@@ -3,10 +3,10 @@ import { StateMachineLargeFragment } from "@hrbolek/uoisfrontend-ug"
 
 const RequestTypeUpdateMutation = createQueryStrLazy(`
 mutation RequestTypeUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, 
-  	$group_id: UUID, $template_form_id: UUID, $statemachine_id: UUID) {
+  	$group_id: UUID, $template_form_id: UUID, $statemachine_id: UUID, $state_id: UUID) {
   result: requestTypeUpdate(
     requestType: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en, 
-      groupId: $group_id, templateFormId: $template_form_id, statemachineId: $statemachine_id}
+      groupId: $group_id, templateFormId: $template_form_id, statemachineId: $statemachine_id, stateId: $state_id}
   ) {
       __typename
     ... on RequestTypeGQLModelUpdateError {

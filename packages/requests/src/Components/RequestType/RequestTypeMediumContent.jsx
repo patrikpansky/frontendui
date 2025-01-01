@@ -5,6 +5,7 @@ import { InsertRequestButton } from "../Request/InsertRequestButton"
 export const RequestTypeMediumContent = ({requesttype, children}) => {
     const onAdd = (request) => {
         console.log("vztvo5en po6adavek", request)
+        window.open(`/requests/request/view/${request.id}`, '_blank'); // Opens in a new tab
     }
 
     return (<>

@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ItemInsertAsyncAction } from "../Item/Queries/ItemInsertAsyncAction"
 import { DragDropContext } from '@hello-pangea/dnd'
-import { HashContainer, LeftColumn, MiddleColumn, SimpleCardCapsule } from '@hrbolek/uoisfrontend-shared'
+import { HashContainer, LeftColumn, MiddleColumn, SimpleCardCapsule, TextArea } from '@hrbolek/uoisfrontend-shared'
 import { DragableEnvelop, DroppableContainer } from '../DragAndDrop/dad'
 import { PencilFill, PlusLg, TrashFill } from 'react-bootstrap-icons'
 import { UpdateSectionButton } from '../Section/UpdateSectionButton'
@@ -205,19 +205,26 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
         request_type_refresh({...requesttype})
     }
 
-    const handleFollowTransition = (transition) => {
-        console.log("handleFollowTransition", transition)
-        const targetId = transition.target.id
-        const target = states.find(state => state.id === targetId)
-        const newIndex = states.indexOf(target)
-        if ((newIndex === 0) | (newIndex)) {
-          setActiveIndex(prev => newIndex)
-        }
-    }
+    // const handleFollowTransition = (transition) => {
+    //     console.log("handleFollowTransition", transition)
+    //     const targetId = transition.target.id
+    //     const target = states.find(state => state.id === targetId)
+    //     const newIndex = states.indexOf(target)
+    //     if ((newIndex === 0) | (newIndex)) {
+    //         setActiveIndex(prev => newIndex)
+    //         setActiveState(prev => target)
+    //     }
+    // }
 
     const handleStateSwitch = (state) => {
         console.log("active state changed")
-        setActiveState(prev => state)
+        const targetId = state.id
+        const target = states.find(state => state.id === targetId)
+        const newIndex = states.indexOf(target)
+        if ((newIndex === 0) | (newIndex)) {
+            setActiveIndex(prev => newIndex)
+            setActiveState(prev => target)
+        }
     }
     
     if (!group) {
@@ -264,22 +271,13 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
     if (!statemachine) {
         const onCreateStatemachineDone = async (statemachine) => {
             console.log("OnCreateGroupDone", statemachine)
-            const updatedRequestType = await updateRequestType({...requesttype, statemachine_id: statemachine.id})
-            console.log("OnCreateGroupDone.Updated", updatedRequestType)        
+            const sortedstates = statemachine.states.toSorted((a, b)=> ((a?.order||0)-(b?.order||0)))
+            const firststate = sortedstates[0]
+            const updatedRequestType = await updateRequestType({ ...requesttype, statemachine_id: statemachine.id, state_id: firststate.id})
+            console.log("OnCreateGroupDone.Updated", updatedRequestType)
         }
     
-        return (<>
-            <span className='btn btn-light'>
-                Není popsán proces zpracování požadavku
-            </span>
-            <InsertStateMachineButton 
-                className="btn btn-outline-secondary" 
-                onDone={onCreateStatemachineDone}
-                params={{L: 1}}
-            >
-                Vytvořit popis zpracování požadavku
-            </InsertStateMachineButton>
-        </>)
+        return <StateMachineCreationWizard statemachine={{}} onDone={onCreateStatemachineDone} />
     }
     // console.log("statemachine", statemachine)
     return (
@@ -351,3 +349,104 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
         </DragDropContext>
     );
 };
+
+export const StateMachineCreationWizard = ({statemachine={}, onDone=(statemachine)=>null}) => {
+    const [_stateMachine, setStateMachine] = useState(statemachine)
+    
+    const changeStateWithText = (trimmedLines) => {
+        const newStatemachine = {
+            id: crypto.randomUUID(),
+            name: "Popis procesu",
+            nameEn: "Process description",
+            states: [],
+            ...statemachine
+        }
+        const myStates = trimmedLines.map((line, index) => {
+            const state = {
+                id: crypto.randomUUID(),
+                statemachineId: newStatemachine.id,
+                name: line,
+                order: index,
+                targets: []
+            }
+            return state
+        })
+
+        myStates.forEach((state, index) => {
+            if (index > 0) {
+                // Create a target relationship to the previous state
+                state.targets.push({
+                    id: crypto.randomUUID(),
+                    statemachineId: newStatemachine.id,
+                    name: "Vrátit",
+                    nameEn: "Return",
+                    sourceId: state.id,
+                    targetId: myStates[index - 1].id,
+                })
+            }
+
+            if (index < myStates.length - 1) {
+                state.targets.push({
+                    id: crypto.randomUUID(),
+                    statemachineId: newStatemachine.id,
+                    name: "Odeslat",
+                    nameEn: "Send",
+                    sourceId: state.id,
+                    targetId: myStates[index + 1].id,
+                })
+            }
+        })
+        newStatemachine.states.push(...myStates)
+
+        setStateMachine(newStatemachine)
+    }
+
+    useEffect(() => {
+        const value = "Žadatel\nPosouzení\nSchvalovatel"
+        const trimmedLines = value
+            .split('\n') // Split the string into lines
+            .map(line => line.trim()); // Remove whitespace from the start and end of each line
+        changeStateWithText(trimmedLines)
+
+    }, [statemachine])
+
+    const handleTextAreaChange = (e) => {
+        const value = e.target.value
+        if (!value) return
+        const trimmedLines = value
+            .split('\n') // Split the string into lines
+            .map(line => line.trim()); // Remove whitespace from the start and end of each line
+        
+        // Structure template
+        changeStateWithText(trimmedLines)
+    }
+    
+    return (<>
+        <SimpleCardCapsule title={
+            <span className='btn btn-light'>
+                Není popsán proces zpracování požadavku
+            </span>
+        }>
+            <TextArea 
+                label={"stavy"} 
+                className='form-control' 
+                defaultValue={"Žadatel\nPosouzení\nSchvalovatel"} 
+                placeHolder={"Napište do samostatných řádků požadované stavy"}
+                onChange={handleTextAreaChange}
+                onBlur={handleTextAreaChange}
+            />
+            <InsertStateMachineButton
+                className="btn btn-outline-primary form-control"
+                onDone={onDone}
+                params={_stateMachine}
+            >
+                Vytvořit popis zpracování požadavku
+            </InsertStateMachineButton>
+            <br />
+            <div>
+                {JSON.stringify(_stateMachine)}
+            </div>
+        </SimpleCardCapsule>
+    </>)
+}
+

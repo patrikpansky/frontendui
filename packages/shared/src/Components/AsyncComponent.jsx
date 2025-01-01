@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler } from "./ErrorHandler"
 import { LoadingSpinner } from "./LoadingSpinner"
@@ -40,13 +40,18 @@ import { ChildWrapper } from "../ComponentManagement"
  *
  * @returns {JSX.Element} A component that renders child components with the fetched data and handles loading, error, and data states.
  */
-export const AsyncComponent  = ({children, asyncAction, queryVariables, propertyName, onGotFetch=(fetch)=>null, ...props}) => {
+export const AsyncComponent = ({children, asyncAction, queryVariables, propertyName, shouldFetch=0, onGotFetch=(fetch)=>null, ...props}) => {
     const { 
         loading,
         error,
         entity,
         fetch
-    } = useAsyncAction(asyncAction, queryVariables)
+    } = useAsyncAction(asyncAction, queryVariables, {deferred: true})
+    
+    useEffect(()=>{
+        fetch(queryVariables)
+    }, [shouldFetch])
+
     const fetchPassedUp = useRef(false)
     if (!fetchPassedUp.current) {
         if (fetch) {

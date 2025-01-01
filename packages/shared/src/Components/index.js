@@ -10,9 +10,11 @@ export * from './EditableAttributeSelect'
 export * from './EditableAttributeText'
 export * from './EditableAttributeSelect'
 export * from './TextInput'
+
 export * from './Input'
 export * from './Select'
 export * from './Options'
+export * from './TextArea'
 
 export * from './Me'
 export * from './AsyncClickHandler'

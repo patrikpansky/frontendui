@@ -3,11 +3,10 @@ import Col from 'react-bootstrap/Col'
 import { useParams } from "react-router"
 
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { AsyncComponent, createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 
 import { RequestPageNavbar } from "./RequestPageNavbar"
 import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
-import { GroupCardCapsule, GroupMediumContent, GroupMemberships, InsertGroupButton, InsertStateButton, InsertStateMachineButton, StateMachineLiveDesigner, UpdateGroupButton } from '@hrbolek/uoisfrontend-ug'
 import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
 import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
 import { StateMachineDesigner } from '@hrbolek/uoisfrontend-ug'
@@ -45,28 +44,28 @@ const RequestTypePageContent = ({requesttype}) => {
         fetch: request_type_refresh
     } = useAsyncAction(RequestTypeReadAsyncAction, {...requesttype}, {deferred: true})
 
-    const OnCreateGroupDone = async (group) => {
-        console.log("OnCreateGroupDone", group)
-        const updatedRequestType = await updateRequestType({...requesttype, group_id: group.id})
-        console.log("OnCreateGroupDone.Updated", updatedRequestType)
-    }
-    const onCreateStatemachineDone = async (statemachine) => {
-        console.log("OnCreateGroupDone", statemachine)
-        const updatedRequestType = await updateRequestType({...requesttype, statemachine_id: statemachine.id})
-        console.log("OnCreateGroupDone.Updated", updatedRequestType)        
-    }
-    const onCreateStateDone = async (state) => {
-        console.log("onCreateStateDone", state)
-        const updatedRequestType = await request_type_refresh()
-        console.log("OnCreateGroupDone.Refreshed", updatedRequestType)        
-    }
+    // const OnCreateGroupDone = async (group) => {
+    //     console.log("OnCreateGroupDone", group)
+    //     const updatedRequestType = await updateRequestType({...requesttype, group_id: group.id})
+    //     console.log("OnCreateGroupDone.Updated", updatedRequestType)
+    // }
+    // const onCreateStatemachineDone = async (statemachine) => {
+    //     console.log("OnCreateGroupDone", statemachine)
+    //     const updatedRequestType = await updateRequestType({...requesttype, statemachine_id: statemachine.id})
+    //     console.log("OnCreateGroupDone.Updated", updatedRequestType)        
+    // }
+    // const onCreateStateDone = async (state) => {
+    //     console.log("onCreateStateDone", state)
+    //     const updatedRequestType = await request_type_refresh()
+    //     console.log("OnCreateGroupDone.Refreshed", updatedRequestType)        
+    // }
 
-    const onCreateForm = async (form) => {
-        console.log("onCreateForm", form)
-        console.log("onCreateForm", requesttype)
-        const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
-        console.log("onCreateForm.Updated", updatedRequestType)
-    }
+    // const onCreateForm = async (form) => {
+    //     console.log("onCreateForm", form)
+    //     console.log("onCreateForm", requesttype)
+    //     const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
+    //     console.log("onCreateForm.Updated", updatedRequestType)
+    // }
     const onUpdateForm = () => {
         request_type_refresh({...requesttype})
     }
