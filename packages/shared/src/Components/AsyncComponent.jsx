@@ -50,7 +50,6 @@ import { ChildWrapper } from "../ComponentManagement"
  */
 export const AsyncComponent = ({
     children, asyncAction, queryVariables, propertyName, shouldFetch=0, 
-    // onGotFetch=(fetch)=>null,
     ...props
 }) => {
     const { 
@@ -63,14 +62,6 @@ export const AsyncComponent = ({
     useEffect(()=>{
         fetch(queryVariables)
     }, [shouldFetch])
-
-    // const fetchPassedUp = useRef(false)
-    // if (!fetchPassedUp.current) {
-    //     if (fetch) {
-    //         onGotFetch(fetch)
-    //         fetchPassedUp.current = true
-    //     }
-    // }
     
     const childrenProps = {[propertyName]: entity}
     return (<>
