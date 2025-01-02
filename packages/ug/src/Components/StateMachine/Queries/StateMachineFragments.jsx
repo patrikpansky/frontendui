@@ -20,6 +20,7 @@ fragment StateLink on StateGQLModel {
     lastchange
     name
     nameEn
+    order
 }
 `
 )
@@ -32,6 +33,7 @@ fragment StateTransitionLink on StateTransitionGQLModel {
     lastchange
     name
     nameEn
+    
 }
 `
 )
@@ -73,32 +75,6 @@ fragment StateMachineMedium on StateMachineGQLModel {
     StateMachineLinkFragment, StateLinkFragment, StateTransitionLinkFragment
 )
 
-export const StateLargeFragment = createQueryStrLazy(
-`
-fragment StateLarge on StateGQLModel {
-    ...StateLink
-    statemachine { ...StateMachineMedium }
-    targets { ...StateTransitionMedium }
-    sources { ...StateTransitionMedium }
-}
-`, 
-    StateMachineMediumFragment, StateLinkFragment, StateTransitionMediumFragment
-)
-
-    
-export const StateTransitionLargeFragment = createQueryStrLazy(
-`
-fragment StateTransitionLarge on StateTransitionGQLModel {
-    ...StateTransitionLink
-    source { ...StateMedium }
-    target { ...StateMedium }
-    statemachine { ...StateMachineMedium }
-}
-`, 
-    StateMediumFragment, StateMachineMediumFragment, StateTransitionLinkFragment
-)
-    
-
 export const StateMachineLargeFragment = createQueryStrLazy(
 `
 fragment StateMachineLarge on StateMachineGQLModel {
@@ -111,3 +87,29 @@ fragment StateMachineLarge on StateMachineGQLModel {
 )
 
 
+export const StateLargeFragment = createQueryStrLazy(
+    `
+    fragment StateLarge on StateGQLModel {
+        ...StateLink
+        statemachine { ...StateMachineLarge }
+        targets { ...StateTransitionMedium }
+        sources { ...StateTransitionMedium }
+    }
+    `, 
+        StateMachineLargeFragment, StateLinkFragment, StateTransitionMediumFragment
+    )
+    
+        
+    export const StateTransitionLargeFragment = createQueryStrLazy(
+    `
+    fragment StateTransitionLarge on StateTransitionGQLModel {
+        ...StateTransitionLink
+        source { ...StateMedium }
+        target { ...StateMedium }
+        statemachine { ...StateMachineLarge }
+    }
+    `, 
+        StateMachineLargeFragment, StateMachineMediumFragment, StateTransitionLinkFragment
+    )
+        
+    

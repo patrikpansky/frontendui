@@ -186,7 +186,10 @@ const RequestPageContentLazy = ({request}) => {
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        <RequestPageContent request={entity} />
+        {!entity && <span>Nenalezeno</span>}
+        {/* <RequestPageContent request={entity} /> */}
+        {/* {JSON.stringify(entity)} */}
+        {entity && <RequestPageContent request={entity} />}
     </>)
 }
 /**
