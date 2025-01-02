@@ -33,6 +33,7 @@ export const RequestsPageContent = ({requests, ...props}) => {
 }
 
 export const RequestsPageContentLazy = createLazyComponent(RequestsPageContent, "requests", RequestsReadAsyncAction)
+
 export const RequestsPage = () => {
     const requests = {}
     return <RequestsPageContentLazy requests={requests}/>

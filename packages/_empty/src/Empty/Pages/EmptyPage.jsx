@@ -1,7 +1,7 @@
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { EmptyLargeCard } from "../Components/Empty/EmptyLargeCard"
+import { EmptyLargeCard } from "../EmptyLargeCard"
 
 const EmptyQueryRead = `
 query EmptyQueryRead($id: UUID!) {

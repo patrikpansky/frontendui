@@ -1,7 +1,8 @@
-import { ErrorHandler } from "@hrbolek/uoisfrontend-shared";
+import { ButtonWithDialog, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared";
 import { InsertEmptyButton } from "./CUDButtons/InsertEmptyButton";
 import { UpdateEmptyButton } from "./CUDButtons/UpdateEmptyButton";
 import { DeleteEmptyButton } from "./CUDButtons/DeleteEmptyButton";
+import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 /**
  * EmptyCUDButton Component
@@ -98,28 +99,31 @@ export const EmptyButton = ({ operation, children, empty, onDone = () => {}, ...
 
     const { asyncAction, dialogTitle, loadingMsg, renderContent } = operationConfig[operation];
 
+    const { error, loading, fetch, entity } = useAsyncAction(asyncAction, empty, { deferred: true });
+    const handleClick = async (params = {}) => {
+        const fetchParams = { ...empty, ...params };
+        const freshEmpty = await fetch(fetchParams);
+        onDone(freshEmpty); // Pass the result to the external callback
+    };
+
     // Validate required fields for "U" and "D"
     if ((operation === 'U' || operation === 'D') && !empty?.id) {
         return <ErrorHandler errors={`For '${operation}' operation, 'empty' must include an 'id' key.`} />;
     }
 
-    return (
-        <AsyncClickHandler
-            asyncAction={asyncAction}
-            defaultParams={empty}
-            loadingMsg={loadingMsg}
-            onClick={onDone}
+    return (<>
+        {error && <ErrorHandler errors={error} />}
+        {loading && <LoadingSpinner text={loadingMsg} />}
+        <ButtonWithDialog
+            buttonLabel={children}
+            dialogTitle={dialogTitle}
+            {...props}
+            params={empty}
+            onClick={handleClick}
         >
-            <ButtonWithDialog
-                buttonLabel={children}
-                dialogTitle={dialogTitle}
-                {...props}
-                params={empty}
-            >
-                {renderContent()}
-            </ButtonWithDialog>
-        </AsyncClickHandler>
-    );
+            {renderContent()}
+        </ButtonWithDialog>
+    </>);
 };
 
 // Prop validation using PropTypes

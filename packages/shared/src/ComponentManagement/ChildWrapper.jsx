@@ -46,3 +46,33 @@ export const ChildWrapper = ({ children, ...props }) => {
         </>
     );
 };
+
+/**
+ * EnhanceChildren
+ *
+ * A utility function for enhancing React children components by injecting additional props.
+ * It maps through the `children`, clones each child, and merges the provided props into them.
+ *
+ * @param {Object} props - The props object containing children and additional properties to inject.
+ * @param {React.ReactNode} props.children - The React children to be enhanced.
+ * @param {...Object} props - Additional props to inject into each child.
+ *
+ * @returns {React.ReactNode[]} An array of cloned React children with the injected props.
+ *
+ * @example
+ * // Example usage
+ * const ParentComponent = () => {
+ *   return (
+ *     <EnhanceChildren className="enhanced">
+ *       <ChildComponent1 />
+ *       <ChildComponent2 />
+ *     </EnhanceChildren>
+ *   );
+ * };
+ *
+ * // The children will receive the `className="enhanced"` prop automatically.
+ */
+export const EnhanceChildren = ({ children, ...props }) => 
+    React.Children.map(children, (child) =>
+        React.cloneElement(child, { ...props })
+    )

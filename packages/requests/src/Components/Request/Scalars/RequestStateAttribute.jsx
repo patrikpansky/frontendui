@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useSelector } from "react-redux";
 
-import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { createAsyncGraphQLAction, useAsyncAction, useAsyncClick } from "@hrbolek/uoisfrontend-gql-shared"
 import { AsyncClickHandler, ButtonWithDialog, Input, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
 import { useEffect } from "react";
@@ -246,25 +246,30 @@ export const RequestTransitionButton_ = ({request, transition, ...props}) => {
 }
 
 export const RequestTransitionButton = ({children, params, onDone=()=>null, ...props}) => {
-    return (
-        <AsyncClickHandler
-            asyncAction={RequestUseTransitionAsyncAction}
-            defaultParams={params}
-            loadingMsg={"Posílám ke zpracování"}
-            onClick={onDone}
-        >
-            <ButtonWithDialog 
-                buttonLabel={children} 
-                dialogTitle="Vložit zprávu" 
-                {...props} 
-                params={params}
-              >
-                  <Input id="history_message" label="Veřejná zpráva" className="form-control" defaultValue={""} />
-                  {/* <input id="history_message" className="form-control" defaultValue={""} /> */}
+    const { error, loading, fetch, entity } = useAsyncAction(RequestUseTransitionAsyncAction, params, { deferred: true });
+    const handleClick = async (_params = {}) => {
+        const fetchParams = { ...params, ..._params };
+        const freshEmpty = await fetch(fetchParams);
+        onDone(freshEmpty); // Pass the result to the external callback
+    };
 
-            </ButtonWithDialog>
-        </AsyncClickHandler>
-    );
+    //AsyncClickHandler
+    return (<>
+        {error && <ErrorHandler errors={error} />}
+        {loading && <LoadingSpinner text={"Ukládám"} />}
+
+        <ButtonWithDialog 
+            buttonLabel={children} 
+            dialogTitle="Vložit zprávu" 
+            onClick={handleClick}
+            {...props} 
+            params={params}
+        >
+            <Input id="history_message" label="Veřejná zpráva" className="form-control" defaultValue={""} />
+            {/* <input id="history_message" className="form-control" defaultValue={""} /> */}
+
+        </ButtonWithDialog>
+    </>);
 }
 
 export const RequestCurrentState = ({request}) => {

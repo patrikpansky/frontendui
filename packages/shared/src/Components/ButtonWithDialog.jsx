@@ -130,21 +130,7 @@ export const ButtonWithDialog = ({
     ...props
 }) => {
     const [showDialog, setShowDialog] = useState(false);
-
-    //this is potential bootleneck
-    /**
-     * when external data storage is changed as result of action in Dialog
-     * params and thus state must be also allowed to adapt the change
-     * this is guarder by firstRender
-     */
     const [state, setState] = useState({});
-    // const [firstRender, setFirstRender] = useState(true)
-    // useEffect(() => {
-    //     if (!firstRender) {
-    //         setFirstRender(false)
-    //         setState({...params})
-    //     }
-    // }, [params])
 
     const handleButtonClick = (e) => {
         // e.stopPropagation()
@@ -179,31 +165,24 @@ export const ButtonWithDialog = ({
         });
     };
 
-    return (
-        <>
-            <span {...props} onClick={handleButtonClick}>
-                {buttonLabel}
-            </span>
-            
-            {showDialog && (
-                <Dialog
-                    title={dialogTitle}
-                    oklabel={oklabel}
-                    cancellabel={cancellabel}
-                    onOk={handleDialogOk}
-                    onCancel={handleDialogCancel}
-                >
-                    <ChildWrapper onChange={onChildChange} onBlur={onChildChange}>
-                        {children}
-                    </ChildWrapper>
-                    {/* <div>
-                        params{JSON.stringify(params)}
-                    </div>
-                    <div>
-                        state{JSON.stringify(state?.source?.id)}
-                    </div> */}
-                </Dialog>
-            )}
-        </>
-    );
+    return (<>
+        <span {...props} onClick={handleButtonClick}>
+            {buttonLabel}
+        </span>
+        
+        {showDialog && <Dialog
+            title={dialogTitle}
+            oklabel={oklabel}
+            cancellabel={cancellabel}
+            onOk={handleDialogOk}
+            onCancel={handleDialogCancel}
+        >
+            <ChildWrapper 
+                onChange={onChildChange} 
+                onBlur={onChildChange}
+            >
+                {children}
+            </ChildWrapper>
+        </Dialog>}
+    </>);
 };
