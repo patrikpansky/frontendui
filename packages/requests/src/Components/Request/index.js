@@ -6,3 +6,4 @@ export * from './RequestLargeCard'
 
 export * from './Scalars'
 export * from './Vectors'
+export * from './Pages'

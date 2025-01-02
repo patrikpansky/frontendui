@@ -1,16 +1,18 @@
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
-import { AsyncComponent, createLazyComponent, HashContainer, LeftColumn, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
+import { AsyncComponent, createLazyComponent, ErrorHandler, HashContainer, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { FormSectionAttributeView } from "../Components/Form/Vectors/FormSectionsAttribute"
-import { RequestCurrentState, RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
-import { RequestPageNavbar } from "./RequestPageNavbar"
-import { RequestLink, RequestMediumCard, RequestMediumContent } from "../Components"
-import { RequestReadAsyncAction } from "./Queries/RequestReadAsyncAction"
-import { HorizontalLine } from "../Components/Part"
+import { RequestCurrentState, RequestStateAttribute } from "../Scalars/RequestStateAttribute"
 import { VerticalArcGraph } from "@hrbolek/uoisfrontend-ug"
-import { RequestStateMachine } from "../Components/Request/Scalars/RequestStateMachine"
+import { RequestMediumContent } from "../RequestMediumContent"
+import { HorizontalLine } from "../../Part"
+import { RequestPageNavbar } from "./RequestPageNavbar"
+import { RequestStateMachine } from "../Scalars/RequestStateMachine"
+import { RequestLink } from "../RequestLink"
+import { FormSectionAttributeView } from "../../Form/Vectors/FormSectionsAttribute"
+import { RequestReadAsyncAction } from "../Queries/RequestReadAsyncAction"
+import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 
 
 /**
@@ -155,7 +157,7 @@ const Divider = ({ type, text }) => {
 /**
  * A lazy-loading component for displaying content of an request entity.
  *
- * This component is created using `createLazyComponent` and wraps `RequestPageContent` to provide
+ * This component wraps `RequestPageContent` to provide
  * automatic data fetching for the `request` entity. It uses the `RequestReadAsyncAction` to fetch
  * the entity data and dynamically injects it into the wrapped component as the `request` prop.
  *
@@ -174,8 +176,19 @@ const Divider = ({ type, text }) => {
  *
  * <RequestPageContentLazy request={requestId} />
  */
-const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request", RequestReadAsyncAction)
+const RequestPageContentLazy = ({request}) => {
+    const {
+        loading,
+        error,
+        entity
+    } = useAsyncAction(RequestReadAsyncAction, request)
 
+    return (<>
+        {loading && <LoadingSpinner />}
+        {error && <ErrorHandler errors={error} />}
+        <RequestPageContent request={entity} />
+    </>)
+}
 /**
  * A page component for displaying lazy-loaded content of an request entity.
  *
@@ -192,7 +205,7 @@ const RequestPageContentLazy = createLazyComponent(RequestPageContent, "request"
  *
  * // Navigating to "/request/12345" will render the page for the request entity with ID 12345.
  */
-export const _RequestPage = () => {
+export const RequestPage = () => {
     const {id} = useParams()
     const request = {id}
     return <RequestPageContentLazy request={request} />
