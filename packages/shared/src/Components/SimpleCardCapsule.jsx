@@ -34,9 +34,9 @@ const styles = {
     },
 };
 
-export const SimpleCardCapsule = ({ title, children }) => {
+export const SimpleCardCapsule = ({ title, children, style, ...props }) => {
     return (
-        <div style={styles.capsuleContainer}>
+        <div style={{...styles.capsuleContainer, ...style}}>
             <span style={styles.capsuleTitle}>{title}</span>
             <div style={styles.childrenWrapper}>
                 {children}

@@ -1,7 +1,32 @@
 import { useState } from 'react'
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { ButtonWithDialog, ErrorHandler, LoadingSpinner, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
+import { AsyncClickHandler, ButtonWithDialog, ErrorHandler, Input, LoadingSpinner, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { FormInsertAsyncAction } from "./Queries/FormInsertAsyncAction"
+import { FormMediumEditableContent } from './FormMediumEditableContent';
+
+
+export const CreateFormButton = ({ children, form, onDone = (state) => null, ...props }) => {
+    // console.log(`UpdateStateButton.state`, state)
+    const handleClick = (newForm) => {
+        // console.log(`UpdateStateButton.state`, state)
+        onDone(newForm)
+    }
+    return (
+        <AsyncClickHandler
+            asyncAction={FormInsertAsyncAction}
+            defaultParams={form}
+            loadingMsg={"Ukládám data"}
+            // onClick={onDone}
+            onClick={handleClick}
+        >
+            <ButtonWithDialog buttonLabel={children} dialogTitle="Vytvořit formulář" {...props} params={form}>
+                <FormMediumEditableContent form={form} />
+            </ButtonWithDialog>
+        </AsyncClickHandler>
+    );
+};
+
+
 
 
 export const FormCreateButtonDialog = ({onCreate=()=>null, ...props}) => {

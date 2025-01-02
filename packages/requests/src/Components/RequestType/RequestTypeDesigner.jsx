@@ -23,6 +23,7 @@ import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from './Quer
 import { FormCreateButtonDialog } from '../Form/FormCreateButtonDialog'
 import { RoleTypeListDesigner } from '@hrbolek/uoisfrontend-ug'
 import { FormDesignerBody, FormDesignerHeader, ItemsLibrary } from '../Form/FormDesigner'
+import { FormCreationWizard } from '../Form/FormCreationWizard'
 
 const CreateFormCopy = (form) => {
     const formCopy = {
@@ -248,26 +249,6 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
             </InsertGroupButton>
         </>)
     }
-    if (!form) {
-        const onCreateForm = async (form) => {
-            console.log("onCreateForm", form)
-            console.log("onCreateForm", requesttype)
-            const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
-            console.log("onCreateForm.Updated", updatedRequestType)
-        }
-    
-        return (<>
-            <span className='btn btn-light'>
-                Není vytvořen vzorový formulář
-            </span>
-            <FormCreateButtonDialog 
-                className="btn btn-outline-primary"
-                onCreate={onCreateForm}
-            >
-                Vytvořit formulář
-            </FormCreateButtonDialog>
-        </>)
-    }
     if (!statemachine) {
         const onCreateStatemachineDone = async (statemachine) => {
             console.log("OnCreateGroupDone", statemachine)
@@ -278,6 +259,17 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
         }
     
         return <StateMachineCreationWizard statemachine={{}} onDone={onCreateStatemachineDone} />
+    }
+    if (!form) {
+        const onCreateForm = async (form) => {
+            console.log("onCreateForm", form)
+            console.log("onCreateForm", requesttype)
+            const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
+            console.log("onCreateForm.Updated", updatedRequestType)
+        }
+    
+        return <FormCreationWizard form={{name: "Nový formulář", name_en: "New form"}} onCreate={onCreateForm}/>
+        
     }
     // console.log("statemachine", statemachine)
     return (

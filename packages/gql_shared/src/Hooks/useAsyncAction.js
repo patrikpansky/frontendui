@@ -70,7 +70,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     const result = items[id];
     // console.log("useAsyncAction", id, result)
     
-    const fetchData = useCallback(async (fetchParams, callback=(entity)=>null) => {
+    const fetchData = useCallback(async (fetchParams) => {
         // console.log("useAsyncAction.fetchData with", fetchParams)
         if (fetchPromise.current) {
             await fetchPromise.current
@@ -117,13 +117,15 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
             // console.log("useAsyncAction fetch end while actionResult", actionResult)
             // 4) Return the actual result of the dispatch, so the caller can await it or use it.
             let itemFromStore
-            const readit = (dispatch, getState) => {
-                const {items} = getState()
-                itemFromStore = items[id]
-                // console.log("got it ", items)
-                // console.log("got it ", id, itemFromStore)
+            if (id) {
+                const readIt = (dispatch, getState) => {
+                    const {items} = getState()
+                    itemFromStore = items[id]
+                    // console.log("got it ", items)
+                    // console.log("got it ", id, itemFromStore)
+                }
+                dispatch(readIt)
             }
-            dispatch(readit)
 
             // console.log("useAction", itemFromStore, result, actionResult)
             return itemFromStore || actionResult;

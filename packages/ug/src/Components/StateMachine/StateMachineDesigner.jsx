@@ -245,50 +245,6 @@ export const StateMachineDesigner = ({statemachine, children, onChange=()=>null}
     )
 }
 
-// export const StateMachineLiveDesigner = ({statemachine, onChange=()=>null}) => {
-//     const [state, setState] = useState(statemachine)
-//     const [shouldFetch, setShouldFetch] = useState(0)
-//     const [fetch, setFetch] = useState(0)
-//     console.log("StateMachineLiveDesigner", statemachine)
-//     const handleChange = async () => {
-//         setShouldFetch(prev => {
-//             onChange(statemachine)  
-//             return prev + 1  
-//         })
-//         // onChange(statemachine)
-//         // if (fetch) {
-//         //     console.log("have fetch and going to use it")
-//         //     const fetchResult = await fetch()
-//         //     setState(prev => {
-//         //         onChange(fetchResult)
-//         //         return fetchResult
-//         //     })
-//         //     console.log("fetchResult", fetchResult)
-//         // }
-//     }
-//     const handleFetch = (fetch) => {
-//         setFetch(prev => fetch)
-//     }
-//     // const activeNode = statemachine.states[0]
-    
-//     return (
-//         <>
-//             {/* <VerticalArcGraph statemachine={statemachine} activeNodeId={activeNode?.id}/> */}
-//             <AsyncComponent 
-//                 asyncAction={StateMachineReadAsyncAction} 
-//                 queryVariables={{...statemachine, limit: 30}} 
-//                 propertyName={"statemachine"}
-//                 onChange={handleChange}
-//                 // hook={click}
-//                 onGotFetch={handleFetch}
-//                 shouldFetch={shouldFetch}
-//             >
-//                 <StateMachineDesigner />
-//             </AsyncComponent>
-//         </>
-//     )
-// }
-
 export const StateMachineSwitch = ({state={}, statemachine, onStateSwitch=(state=>null), onChange, children}) => {
     const {states} = statemachine
 
@@ -371,7 +327,7 @@ function cubicArcLeft(x, startY, endY) {
 *   }
 * @param {string} [activeNodeId] The ID of the active node (optional).
 */
-export function VerticalArcGraph({ statemachine, activeNodeId }) {
+export function VerticalArcGraph({ statemachine, activeNodeId=0 }) {
     const { states: nodes, transitions: edges } = statemachine;
 
     // Layout constants

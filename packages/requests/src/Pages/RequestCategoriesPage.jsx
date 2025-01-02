@@ -18,6 +18,7 @@ import { RequestCategoryCardCapsule } from '../Components/RequestCategory/Reques
 import { RequestTypeCardCapsule } from '../Components/RequestType/RequestTypeCardCapsule'
 import { InsertRequestTypeButton } from '../Components/RequestType/InsertRequestTypeButton'
 import { InsertRequestCategoryButton } from '../Components/RequestCategory/InsertRequestCategoryButton'
+import { InsertRequestButton } from '../Components/Request/InsertRequestButton'
 
 
 const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
@@ -28,6 +29,97 @@ const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
         </Col>
     )
 }
+
+
+export const TypeRow = ({ requesttype, onAddType }) => {
+    const onAdd = (request) => {
+        console.log("vztvo5en po6adavek", request)
+        window.open(`/requests/request/view/${request.id}`, '_blank'); // Opens in a new tab
+    }
+    return (
+        <li className="list-group-item d-flex justify-content-between align-items-center">
+            <span>{requesttype.name}</span>
+            <InsertRequestButton 
+                onAdd={onAdd} 
+                request={{
+                    request_type_id: requesttype.id,
+                    name: "Žádost " + requesttype.name,
+                    name_en: "Request " + (requesttype.nameEn || requesttype.name)
+                }}
+            >
+                Vytvořit požadavek
+            </InsertRequestButton>
+        </li>
+    );
+};
+export const CategoryCard = ({ requestcategory, onNewRequestType, onAddCategory, onAddType }) => {
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
+    const toggleCollapse = () => {
+        setIsCollapsed((prev) => !prev);
+    };
+
+    return (
+        <div className="card mb-3">
+            {/* Category Header */}
+            <div className="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{requestcategory.name}</strong>
+                    <button
+                        className="btn btn-link btn-sm ms-3"
+                        onClick={toggleCollapse}
+                    >
+                        {isCollapsed ? "Show Types" : "Hide Types"}
+                    </button>
+                </div>
+                <InsertRequestTypeButton 
+                    // params={requestcategory} 
+                    className='btn btn-outline-primary form-control'
+                    params={{category_id: requestcategory.id}}
+                    onDone={onNewRequestType}
+                >
+                    Vložit nový typ
+                </InsertRequestTypeButton>
+            </div>
+
+            {/* Collapsible Type Rows */}
+            {!isCollapsed && (
+                <div className="card-body">
+                    <ul className="list-group">
+                        {requestcategory.requestTypes.map((requesttype) => (
+                            <TypeRow
+                                key={requesttype.id}
+                                requesttype={requesttype}
+                                onAddType={(typeId) => onAddType(requestcategory.id, typeId)}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export const GroupedCategories = ({ requestcategories, onAddCategory, onAddType, addRow }) => {
+    return (
+        <div className="container">
+            {requestcategories.map((requestcategory) => (
+                <CategoryCard
+                    key={requestcategory.id}
+                    requestcategory={requestcategory}
+                    onAddCategory={onAddCategory}
+                    onAddType={onAddType}
+                />
+            ))}
+            <InsertRequestCategoryButton className='btn btn-outline-primary form-control' onDone={addRow}>
+                Vložit novou kategorii
+            </InsertRequestCategoryButton>
+        </div>
+    );
+};
+
+
+
 /**
  * A page content component for displaying detailed information about an requestcategory entity.
  *
@@ -70,37 +162,74 @@ const RequestCategoriesPageContent = ({requestcategories = [], onContentChange =
         <>
             <RequestPageNavbar />
             <Row>
-                <LeftColumn>
-                </LeftColumn>
+                <LeftColumn></LeftColumn>
                 <MiddleColumn>
-                    <Row>
-                    {requestcategories.map(requestcategory => 
-                        <Col key={requestcategory.id}>
-                            <RequestCategoryCardCapsule requestcategory={requestcategory}>
-                                <Row>
-                                    <RequestCategoryTypesAttribute requestcategory={requestcategory}>
-                                        <RequestTypeMediumCardCol>
+                    <div class="accordion" id="accordionExample">
+                        {requestcategories.map(requestcategory => 
+                            <div class="accordion-item">
+                                <h2 class="accordion-header"><button 
+                                    class="accordion-button" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target={`#${requestcategory.id}`} 
+                                    aria-expanded="true" ari
+                                    a-controls="collapseOne"
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ flex: '0 0 auto', marginRight: '20px'}}>
+                                            {requestcategory.name}
+                                        </div>
+                                        <div style={{ flex: '0 0 auto', marginRight: '20px'}}>
                                             
-                                        </RequestTypeMediumCardCol>
-                                    </RequestCategoryTypesAttribute>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <InsertRequestTypeButton 
-                                            // params={requestcategory} 
-                                            className='btn btn-outline-primary form-control'
-                                            params={{category_id: requestcategory.id}}
-                                            onDone={onNewRequestType}
-                                        >
-                                            Vložit nový typ
-                                        </InsertRequestTypeButton>
-                                    </Col>
-                                </Row>
-                            </RequestCategoryCardCapsule>
-                        </Col>
-                    )}   
-                    </Row>             
-                    <InsertRequestCategoryButton className='btn btn-outline-primary form-control' onDone={addRow}>
+                                            
+                                        </div>
+                                    </div>
+                                </button></h2>
+                                <div id={`${requestcategory.id}`}  class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        {requestcategory.requestTypes.map((requesttype) => {
+                                            return (
+                                                <Row className="align-items-center border-bottom pb-2 mb-2" key={requesttype.id}>
+                                                    <Col xs={1}></Col>
+                                                    <Col xs={3}>{requesttype.name}</Col>
+                                                    <Col xs={8}>
+                                                        <InsertRequestButton
+                                                                className='btn btn-outline-primary'
+                                                        >
+                                                                Založit nový požadavek
+                                                        </InsertRequestButton>
+                                                    </Col>
+                                                </Row>
+                                            )
+                                        })} 
+                                        <br />
+                                        <Row className="align-items-center border-bottom pb-2 mb-2" >
+                                            <Col xs={1}></Col>
+                                            <Col xs={3}>
+                                                <InsertRequestTypeButton 
+                                                    // params={requestcategory} 
+                                                    className='btn btn-outline-primary'
+                                                    params={{category_id: requestcategory.id}}
+                                                    onDone={onNewRequestType}
+                                                >
+                                                    Vytvořit nový typ
+                                                </InsertRequestTypeButton>                                       
+                                            </Col>
+                                            <Col xs={8}>
+                                                
+                                            </Col>
+                                        </Row>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                        )}
+                    </div>
+                    <InsertRequestCategoryButton 
+                        className='btn btn-outline-primary form-control' 
+                        // onDone={addRow}
+                    >
                         Vložit novou kategorii
                     </InsertRequestCategoryButton>
                 </MiddleColumn>

@@ -7,40 +7,52 @@ import { ChildWrapper } from "../ComponentManagement"
 /**
  * AsyncComponent
  *
- * A higher-order React component that handles asynchronous operations and passes the result
- * as a prop to its children. It manages loading states, errors, and fetched data, making
- * it easier to integrate asynchronous logic into UI components.
+ * A higher-order React component that handles asynchronous operations and provides the fetched data,
+ * loading states, and error handling to its children. It simplifies integrating asynchronous logic
+ * into UI components by managing the entire fetch lifecycle.
  *
  * @component
  * @param {Object} props - The properties for the AsyncComponent.
- * @param {React.ReactNode} props.children - The child components that will receive the fetched data.
- * @param {Function} props.asyncAction - The asynchronous function to be executed. Should return a promise.
+ * @param {React.ReactNode} props.children - The child components that will receive the fetched data as a prop.
+ * @param {Function} props.asyncAction - The asynchronous function to be executed. Should return a promise that resolves to the fetched data.
  * @param {Object} props.queryVariables - The variables passed to the asynchronous function for fetching data.
  * @param {string} props.propertyName - The name of the prop under which the fetched data (`entity`) is passed to the children.
- * @param {Function} [props.onGotFetch=(fetch) => null] - Callback invoked with the `fetch` function once it is available. 
- *                                                        Useful for performing additional actions like re-fetching.
+ * @param {number} [props.shouldFetch=0] - A numeric property that triggers re-fetching of data when incremented. 
+ *                                         Each change in `shouldFetch` counts as a unique request and re-executes the fetch action.
  * @param {...Object} props - Additional props that are passed down to the `ChildWrapper` component.
  *
  * @example
  * // Usage Example
  * const MyComponent = () => {
- *     const asyncAction = (variables) => fetch('/api/data', { method: 'POST', body: JSON.stringify(variables) });
+ *     const asyncAction = async (variables) => {
+ *         const response = await fetch('/api/data', { method: 'POST', body: JSON.stringify(variables) });
+ *         return response.json();
+ *     };
+ *
+ *     const [shouldFetch, setShouldFetch] = useState(0);
  *
  *     return (
- *         <AsyncComponent
- *             asyncAction={asyncAction}
- *             queryVariables={{ id: 1 }}
- *             propertyName="data"
- *             onGotFetch={(fetch) => console.log('Fetch function available:', fetch)}
- *         >
- *             {(props) => <div>Data: {props.data}</div>}
- *         </AsyncComponent>
+ *         <>
+ *             <button onClick={() => setShouldFetch(shouldFetch + 1)}>Reload Data</button>
+ *             <AsyncComponent
+ *                 asyncAction={asyncAction}
+ *                 queryVariables={{ id: 1 }}
+ *                 propertyName="data"
+ *                 shouldFetch={shouldFetch}
+ *             >
+ *                 {(props) => <div>Data: {props.data}</div>}
+ *             </AsyncComponent>
+ *         </>
  *     );
  * };
  *
- * @returns {JSX.Element} A component that renders child components with the fetched data and handles loading, error, and data states.
+ * @returns {JSX.Element} A component that renders child components with the fetched data, while handling loading, error, and re-fetch states.
  */
-export const AsyncComponent = ({children, asyncAction, queryVariables, propertyName, shouldFetch=0, onGotFetch=(fetch)=>null, ...props}) => {
+export const AsyncComponent = ({
+    children, asyncAction, queryVariables, propertyName, shouldFetch=0, 
+    // onGotFetch=(fetch)=>null,
+    ...props
+}) => {
     const { 
         loading,
         error,
@@ -52,13 +64,13 @@ export const AsyncComponent = ({children, asyncAction, queryVariables, propertyN
         fetch(queryVariables)
     }, [shouldFetch])
 
-    const fetchPassedUp = useRef(false)
-    if (!fetchPassedUp.current) {
-        if (fetch) {
-            onGotFetch(fetch)
-            fetchPassedUp.current = true
-        }
-    }
+    // const fetchPassedUp = useRef(false)
+    // if (!fetchPassedUp.current) {
+    //     if (fetch) {
+    //         onGotFetch(fetch)
+    //         fetchPassedUp.current = true
+    //     }
+    // }
     
     const childrenProps = {[propertyName]: entity}
     return (<>

@@ -1,7 +1,7 @@
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
-import { createLazyComponent, HashContainer, LeftColumn, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
+import { AsyncComponent, createLazyComponent, HashContainer, LeftColumn, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { FormSectionAttributeView } from "../Components/Form/Vectors/FormSectionsAttribute"
 import { RequestCurrentState, RequestStateAttribute } from "../Components/Request/Scalars/RequestStateAttribute"
@@ -9,6 +9,8 @@ import { RequestPageNavbar } from "./RequestPageNavbar"
 import { RequestLink, RequestMediumCard, RequestMediumContent } from "../Components"
 import { RequestReadAsyncAction } from "./Queries/RequestReadAsyncAction"
 import { HorizontalLine } from "../Components/Part"
+import { VerticalArcGraph } from "@hrbolek/uoisfrontend-ug"
+import { RequestStateMachine } from "../Components/Request/Scalars/RequestStateMachine"
 
 
 /**
@@ -41,19 +43,31 @@ const RequestPageContent = ({request}) => {
         <>
             <RequestPageNavbar request={request} />
             <Row>
+                
                 <LeftColumn>
-                    <div className="print-only">
-                        <HorizontalLine>{request?.id}</HorizontalLine>
-                    </div>
-                    <SimpleCardCapsule title={<><RequestLink request={request} /> (Historie) </>}>
-                        <RequestMediumContent request={request}>
+                    <HashContainer>
+                        <div id="history">
+                            <div className="print-only">
+                                <HorizontalLine>{request?.id}</HorizontalLine>
+                            </div>
+                            <SimpleCardCapsule title={<><RequestLink request={request} /> (Historie) </>}>
+                                <RequestMediumContent request={request}>
 
-                        </RequestMediumContent>
-                    </SimpleCardCapsule>
-                    {/* <RequestMediumCard request={request}>
-                      
-                    </RequestMediumCard> */}
+                                </RequestMediumContent>
+                            </SimpleCardCapsule>
+                            {/* <RequestMediumCard request={request}>
+                            
+                            </RequestMediumCard> */}
+                        </div>
+                        <div id="roles">
+                            Role
+                        </div>
+                        <div id="graph">
+                            <RequestStateMachine request={request} />
+                        </div>
+                    </HashContainer>
                 </LeftColumn>
+                
                 <div className="print-only page-break-after"></div>
                 <MiddleColumn>
                     <div className="print-only">

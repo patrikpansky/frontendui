@@ -48,15 +48,11 @@ export const RequestPageNavbar = ({ request, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
 
     const segments = [
-        { segment: 'granting', label: 'Garance' },
-        { segment: 'learning', label: 'Výuka' },
-        { segment: 'events', label: 'Rozvrh' },
+        { segment: 'history', label: 'Historie'},
+        { segment: 'permissions', label: 'Práva' },
         { segment: 'roles', label: 'Role' },
-        { segment: 'groups', label: 'Skupiny' },
-        { segment: 'memberships', label: 'Příslušnost'},
-        { segment: 'projects', label: 'Projekty' },
-        { segment: 'publications', label: 'Výsledky' },
-        { segment: 'requests', label: 'Požadavky' },
+        { segment: 'library', label: 'Knihovna' },
+        { segment: 'graph', label: 'Stavy' },
     ]
     return (
         <div className='screen-only'>
