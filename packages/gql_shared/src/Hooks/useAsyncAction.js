@@ -54,14 +54,15 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     // const items = useSelector((state) => state["items"]);
     const { id } = queryVariables
     // const result = items[id];
-    const result = useSelector((state) => {
-        if (!state.items) {
-            throw new Error(
-                "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
-            );
-        }
-        return state.items[id]
+    const items = useSelector((state) => {
+        // if (!state.items) {
+        //     throw new Error(
+        //         "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
+        //     );
+        // }
+        return state.items//[id]
     });
+    const result = items[id]
     // if (!items) {
     //     throw new Error(
     //         "Invalid store state: 'items' attribute is missing. Ensure the store state contains 'items' before using useAsyncAction."
@@ -191,3 +192,5 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         entity: result,
     };
 };
+
+

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useSelector } from "react-redux";
 
 import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { AsyncClickHandler, AsyncComponent, ButtonWithDialog, Input, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { AsyncClickHandler, ButtonWithDialog, Input, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { ErrorHandler } from "@hrbolek/uoisfrontend-shared"
 import { useEffect } from "react";
 

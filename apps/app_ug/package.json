@@ -16,6 +16,7 @@
     "react-router": "^7.0.2",
     "bootstrap": "^5.3.3",
     "@popperjs/core": "^2.11.8",
+    "@apollo/client": "^3.12.4",
 
     "@hrbolek/uoisfrontend-shared": "*",
     "@hrbolek/uoisfrontend-gql-shared": "*",

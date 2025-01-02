@@ -1,4 +1,4 @@
-import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { useAsyncAction, useAsyncClick } from "@hrbolek/uoisfrontend-gql-shared"
 import { ChildWrapper } from "../ComponentManagement"
 import { LoadingSpinner } from "./LoadingSpinner"
 import { ErrorHandler } from "./ErrorHandler"
@@ -42,28 +42,13 @@ export const AsyncClickHandler = ({
     loadingMsg = "Mahrávám...",
     onClick,
 }) => {
-    const { error, loading, fetch, entity } = useAsyncAction(asyncAction, defaultParams, { deferred: true });
-
-    const handleClick = async (params = {}) => {
-        const fetchParams = { ...defaultParams, ...params }
-        // console.log("AsyncClickHandler.fetch with ", fetchParams)
-        const entity = await fetch(fetchParams);
-        // console.log("AsyncClickHandler.fetch response ", entity)
-        if (onClick) {
-            onClick(entity);
-        }
-        // console.log("AsyncClickHandler.fetch with ", fetchParams)
-        // console.log("AsyncClickHandler.fetch got ", entity)
-    };
-    // console.log("AsyncClickHandler.render", loading, error, entity)
-    return (
-        <>
-            {loading && <LoadingSpinner text={loadingMsg} />}
-            {error && <ErrorHandler errors={error} />}
-            {/* {<ErrorHandler errors={error} />} */}
-            <ChildWrapper onClick={handleClick}>
-                {children}
-            </ChildWrapper>
-        </>
-    );
+    const { error, loading, fetch, handleClick } = useAsyncClick(asyncAction, defaultParams, onClick)
+    return (<>
+        {loading && <LoadingSpinner text={loadingMsg} />}
+        {error && <ErrorHandler errors={error} />}
+        {/* {<ErrorHandler errors={error} />} */}
+        <ChildWrapper onClick={handleClick}>
+            {children}
+        </ChildWrapper>
+    </>);
 };

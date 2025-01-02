@@ -82,7 +82,7 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
 
     const unparametrizedFetch = createFetchQuery(query, params);
 
-    return (queryParams) => {
+    const AsyncGraphQLAction = (queryParams) => {
         if (typeof queryParams !== "object" || queryParams === null) {
             throw new Error("createAsyncGraphQLAction: 'query_variables' must be a valid JSON object.");
         }
@@ -136,6 +136,8 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
             }
         };
     };
+    AsyncGraphQLAction.__metadata = {queryStr}
+    return AsyncGraphQLAction
 };
 
 
