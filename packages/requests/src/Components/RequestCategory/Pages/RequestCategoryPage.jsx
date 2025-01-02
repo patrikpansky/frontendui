@@ -1,21 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useParams } from "react-router"
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ButtonWithDialog, createLazyComponent, DeleteButton, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { useParams } from "react-router"
-import { RequestCategoryReadAsyncAction } from "./Queries/RequestCategoryReadAsyncAction"
-import { RequestCategoryPageReadAsyncAction } from "./Queries/RequestCategoryPageReadAsyncAction"
-import { RequestPageNavbar } from "./RequestPageNavbar"
-import { RequestCategoriesTable } from "../Components/RequestCategory"
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { RequestCategoryInsertAsyncAction } from './Queries/RequestCategoryInsertMutation'
-import { RequestTypeInsertAsyncAction } from './Queries/RequestTypeInsertMutation'
-import { RequestTypeMediumCard } from '../Components/RequestType/RequestTypeMediumCard'
-import { RequestCategoryTypesAttribute } from '../Components/RequestCategory/Vectors/RequestCategoryTypesAttribute'
-import { RequestCategoryMediumCard } from '../Components/RequestCategory/RequestCategoryMediumCard'
-import { RequestCategoryCardCapsule } from '../Components/RequestCategory/RequestCategoryCardCapsule'
-import { RequestTypeCardCapsule } from '../Components/RequestType/RequestTypeCardCapsule'
+import { RequestCategoryReadAsyncAction } from "../Queries/RequestCategoryReadAsyncAction"
+import { RequestCategoryPageReadAsyncAction } from "../Queries/RequestCategoryPageReadAsyncAction"
 
 /**
  * A page content component for displaying detailed information about an requestcategory entity.

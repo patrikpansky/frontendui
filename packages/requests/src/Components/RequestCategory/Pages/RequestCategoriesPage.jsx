@@ -4,21 +4,21 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { ButtonWithDialog, createLazyComponent, DeleteButton, ErrorHandler, LeftColumn, LoadingSpinner, MiddleColumn, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { RequestCategoryReadAsyncAction } from "./Queries/RequestCategoryReadAsyncAction"
-import { RequestCategoryPageReadAsyncAction } from "./Queries/RequestCategoryPageReadAsyncAction"
-import { RequestPageNavbar } from "./RequestPageNavbar"
-import { RequestCategoriesTable } from "../Components/RequestCategory"
+import { RequestCategoryReadAsyncAction } from "../Queries/RequestCategoryReadAsyncAction"
+import { RequestCategoryPageReadAsyncAction } from "../Queries/RequestCategoryPageReadAsyncAction"
+import { RequestPageNavbar } from "../../../Pages/RequestPageNavbar"
+import { RequestCategoriesTable } from ".."
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { RequestCategoryInsertAsyncAction } from './Queries/RequestCategoryInsertMutation'
-import { RequestTypeInsertAsyncAction } from './Queries/RequestTypeInsertMutation'
-import { RequestTypeMediumCard } from '../Components/RequestType/RequestTypeMediumCard'
-import { RequestCategoryTypesAttribute } from '../Components/RequestCategory/Vectors/RequestCategoryTypesAttribute'
-import { RequestCategoryMediumCard } from '../Components/RequestCategory/RequestCategoryMediumCard'
-import { RequestCategoryCardCapsule } from '../Components/RequestCategory/RequestCategoryCardCapsule'
-import { RequestTypeCardCapsule } from '../Components/RequestType/RequestTypeCardCapsule'
-import { InsertRequestTypeButton } from '../Components/RequestType/InsertRequestTypeButton'
-import { InsertRequestCategoryButton } from '../Components/RequestCategory/InsertRequestCategoryButton'
-import { InsertRequestButton } from '../Components/Request/InsertRequestButton'
+import { RequestCategoryInsertAsyncAction } from '../../../Pages/Queries/RequestCategoryInsertMutation'
+import { RequestTypeInsertAsyncAction } from '../../../Pages/Queries/RequestTypeInsertMutation'
+import { RequestTypeMediumCard } from '../../RequestType/RequestTypeMediumCard'
+import { RequestCategoryTypesAttribute } from '../Vectors/RequestCategoryTypesAttribute'
+import { RequestCategoryMediumCard } from '../RequestCategoryMediumCard'
+import { RequestCategoryCardCapsule } from '../RequestCategoryCardCapsule'
+import { RequestTypeCardCapsule } from '../../RequestType/RequestTypeCardCapsule'
+import { InsertRequestTypeButton } from '../../RequestType/InsertRequestTypeButton'
+import { InsertRequestCategoryButton } from '../InsertRequestCategoryButton'
+import { InsertRequestButton } from '../../Request/InsertRequestButton'
 
 
 const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {

@@ -1,4 +1,4 @@
 export * from './RequestDesignPage'
 export * from './RequestsPage'
 
-export * from './RequestCategoriesPage'
+export * from '../Components/RequestCategory/Pages/RequestCategoriesPage'

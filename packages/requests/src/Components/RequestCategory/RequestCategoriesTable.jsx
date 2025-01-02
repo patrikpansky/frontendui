@@ -1,5 +1,5 @@
 import { ChildWrapper, InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
-import { RequestCategoryPageReadAsyncAction } from "../../Pages/Queries/RequestCategoryPageReadAsyncAction"
+import { RequestCategoryPageReadAsyncAction } from "./Queries/RequestCategoryPageReadAsyncAction"
 import { RequestCategoryLink } from "./RequestCategoryLink"
 
 
