@@ -42,11 +42,12 @@ export const AsyncClickHandler = ({
     loadingMsg = "Mahrávám...",
     onClick,
 }) => {
-    const { error, loading, fetch, handleClick } = useAsyncClick(asyncAction, defaultParams, onClick)
+    const { error, loading, fetch, handleClick, entity } = useAsyncClick(asyncAction, defaultParams, onClick)
     return (<>
         {loading && <LoadingSpinner text={loadingMsg} />}
         {error && <ErrorHandler errors={error} />}
         {/* {<ErrorHandler errors={error} />} */}
+        {/* {!entity && <span>Nenalezeno</span>} */}
         <ChildWrapper onClick={handleClick}>
             {children}
         </ChildWrapper>

@@ -1,11 +1,23 @@
 import { createFetchQuery } from "./createFetchQuery";
 import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
 
+
+
+class GQLMutationError extends Error {
+    constructor(message, graphQLQuery, graphQLParameters, jsonResponse) {
+      super(message);
+      this.name = 'GQLMutationError';
+      this.jsonResponse = jsonResponse; // Custom property
+      this.graphQLQuery = graphQLQuery
+      this.graphQLParameters = graphQLParameters
+    }
+}
+
 /**
  * Creates an asynchronous GraphQL action with support for middleware chaining.
  * This function executes a GraphQL query, processes the result, and optionally chains additional middlewares.
  *
- * @param {string} query - The GraphQL query string to execute.
+ * @param {string} graphQLQuery - The GraphQL query string to execute.
  * @param {Function|object} [params=updateItemsFromGraphQLResult2] - A middleware function to process the GraphQL result
  * or an object containing default query parameters.
  * @param {...Function} middlewares - Additional middleware functions to chain.
@@ -54,16 +66,16 @@ import { updateItemsFromGraphQLResult } from './updateItemsFromGraphQLResult'
  * const getUserAndPostsAction = createAsyncGraphQLAction2(query, updateItemsFromGraphQLResult2, getPostsAction);
  * dispatch(getUserAndPostsAction({ id: "12345" }));
  */
-export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLResult, ...middlewares) => {
-    let queryStr = query
+export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromGraphQLResult, ...middlewares) => {
+    let graphQLQueryStr = graphQLQuery
     let nodes = []
-    if (typeof query === "function") {
-        queryStr = query?.__metadata?.queryStr
-        nodes = query?.__metadata?.nodes
-        query = query()
+    if (typeof graphQLQuery === "function") {
+        graphQLQueryStr = graphQLQuery?.__metadata?.queryStr
+        nodes = graphQLQuery?.__metadata?.nodes
+        graphQLQuery = graphQLQuery()
     }
 
-    if (typeof query !== "string") {
+    if (typeof graphQLQuery !== "string") {
         throw new Error("createAsyncGraphQLAction: 'query' must be a string.");
     }
 
@@ -80,17 +92,17 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
         params = {}; // Reset params to an empty object
     }
 
-    const unparametrizedFetch = createFetchQuery(query, params);
+    const unparametrizedFetch = createFetchQuery(graphQLQuery, params);
 
-    const AsyncGraphQLAction = (queryParams) => {
-        if (typeof queryParams !== "object" || queryParams === null) {
+    const AsyncGraphQLAction = (graphQLVariables) => {
+        if (typeof graphQLVariables !== "object" || graphQLVariables === null) {
             throw new Error("createAsyncGraphQLAction: 'query_variables' must be a valid JSON object.");
         }
 
         return async (dispatch, getState, next = (jsonResult) => jsonResult) => {
             try {
                 // Fetch the result from the GraphQL query
-                const jsonResult = await unparametrizedFetch(queryParams);
+                const jsonResult = await unparametrizedFetch(graphQLVariables);
 
                 // Check if the server response contains errors
                 if (jsonResult.errors && Array.isArray(jsonResult.errors)) {
@@ -109,7 +121,14 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
                 if (values.length > 0) {
                     const __typename = values[0]?.__typename
                     if (__typename?.includes("Error"))
-                        return Promise.reject(new Error(values[0].msg));
+                        // return Promise.reject(new Error(values[0].msg));
+                        return Promise.reject(
+                            new GQLMutationError(
+                                "Controlled fail from server ",
+                                graphQLQuery,
+                                graphQLVariables,
+                                jsonResult
+                            ));
                 }
                 
         
@@ -136,7 +155,7 @@ export const createAsyncGraphQLAction = (query, params = updateItemsFromGraphQLR
             }
         };
     };
-    AsyncGraphQLAction.__metadata = {queryStr}
+    AsyncGraphQLAction.__metadata = {queryStr: graphQLQueryStr}
     return AsyncGraphQLAction
 };
 

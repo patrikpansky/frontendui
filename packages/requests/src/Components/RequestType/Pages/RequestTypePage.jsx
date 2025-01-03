@@ -3,15 +3,11 @@ import Col from 'react-bootstrap/Col'
 import { useParams } from "react-router"
 
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
-import { createLazyComponent, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 
-import { RequestPageNavbar } from "./RequestPageNavbar"
-import { FormCreateButtonDialog } from '../Components/Form/FormCreateButtonDialog'
-import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from '../Components/RequestType/Queries'
-import { GroupReadAsyncAction } from '@hrbolek/uoisfrontend-ug'
-import { StateMachineDesigner } from '@hrbolek/uoisfrontend-ug'
+import { RequestTypeReadAsyncAction } from '../Queries'
 import { RequestTypePageNavbar } from './RequestTypePageNavbar'
-import { RequestTypeDesigner } from '../Components/RequestType/RequestTypeDesigner'
+import { RequestTypeDesigner } from '../RequestTypeDesigner'
 
 /**
  * A page content component for displaying detailed information about an requesttype entity.
@@ -34,49 +30,10 @@ import { RequestTypeDesigner } from '../Components/RequestType/RequestTypeDesign
  * <RequestTypePageContent requesttype={requesttypeEntity} />
  */
 const RequestTypePageContent = ({requesttype}) => {
-    const { statemachine, group, templateFormId, templateForm } = requesttype
-    const { fetch: updateRequestType, loading, error } = useAsyncAction(RequestTypeUpdateAsyncAction, {...requesttype}, {deferred: true})
-    const {
-        error: request_type_error, 
-        loading: request_type_loading, 
-        // entity: request_type, 
-        // dispatchResult: request_type_dispatch_result,
-        fetch: request_type_refresh
-    } = useAsyncAction(RequestTypeReadAsyncAction, {...requesttype}, {deferred: true})
-
-    // const OnCreateGroupDone = async (group) => {
-    //     console.log("OnCreateGroupDone", group)
-    //     const updatedRequestType = await updateRequestType({...requesttype, group_id: group.id})
-    //     console.log("OnCreateGroupDone.Updated", updatedRequestType)
-    // }
-    // const onCreateStatemachineDone = async (statemachine) => {
-    //     console.log("OnCreateGroupDone", statemachine)
-    //     const updatedRequestType = await updateRequestType({...requesttype, statemachine_id: statemachine.id})
-    //     console.log("OnCreateGroupDone.Updated", updatedRequestType)        
-    // }
-    // const onCreateStateDone = async (state) => {
-    //     console.log("onCreateStateDone", state)
-    //     const updatedRequestType = await request_type_refresh()
-    //     console.log("OnCreateGroupDone.Refreshed", updatedRequestType)        
-    // }
-
-    // const onCreateForm = async (form) => {
-    //     console.log("onCreateForm", form)
-    //     console.log("onCreateForm", requesttype)
-    //     const updatedRequestType = await updateRequestType({...requesttype, template_form_id: form.id})
-    //     console.log("onCreateForm.Updated", updatedRequestType)
-    // }
-    const onUpdateForm = () => {
-        request_type_refresh({...requesttype})
-    }
     return (
         <>
-            <RequestTypePageNavbar requesttype={requesttype} />
-            
-            {(loading || request_type_loading) && <LoadingSpinner text='Ukládám' />}
-            {(error || request_type_error) && <ErrorHandler errors={error || request_type_error} />}            
-
-            <RequestTypeDesigner requesttype={requesttype} onUpdate={onUpdateForm}/>
+            <RequestTypePageNavbar requesttype={requesttype} />            
+            <RequestTypeDesigner requesttype={requesttype} />
         </>
     )
 }
@@ -106,7 +63,21 @@ const RequestTypePageContent = ({requesttype}) => {
  *
  * <RequestTypePageContentLazy requesttype={{ id: requesttypeId }} />
  */
-const RequestTypePageContentLazy = createLazyComponent(RequestTypePageContent, "requesttype", RequestTypeReadAsyncAction)
+const RequestTypePageContentLazy = ({ requesttype }) => {
+    const {
+        loading,
+        error,
+        entity
+    } = useAsyncAction(RequestTypeReadAsyncAction, requesttype)
+    return (<>
+        {loading && <LoadingSpinner />}
+        {error && <ErrorHandler errors={error} />}
+        {!entity && <span>Nenalezeno</span>}
+        {entity && <>
+            <RequestTypePageContent requesttype={entity} />
+        </>}
+    </>)
+}
 
 /**
  * A page component for displaying lazy-loaded content of an requesttype entity.

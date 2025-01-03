@@ -75,6 +75,8 @@ const ErrorDisplay = ({ errors }) => {
 
     return (
         <div>
+            A"{JSON.stringify(errors)}"Z<br />
+            A"{JSON.stringify(errors[0].raw)}"Z
             {errors.map((error, index) => (
                 <div key={index} style={{ border: "1px solid red", marginBottom: "10px", padding: "10px" }}>
                     <h4>Error {index + 1}</h4>
