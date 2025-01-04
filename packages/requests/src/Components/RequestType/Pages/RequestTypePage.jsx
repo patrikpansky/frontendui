@@ -72,10 +72,8 @@ const RequestTypePageContentLazy = ({ requesttype }) => {
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {!entity && <span>Nenalezeno</span>}
-        {entity && <>
-            <RequestTypePageContent requesttype={entity} />
-        </>}
+        {!entity && !loading && <span>Nenalezeno</span>}
+        {entity && <RequestTypePageContent requesttype={entity} />}
     </>)
 }
 

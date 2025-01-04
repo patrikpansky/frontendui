@@ -14,3 +14,5 @@ export * from './Queries'
 export * from './InsertGroupButton'
 export * from './UpdateGroupButton'
 export * from './DeleteGroupButton'
+
+export * from './InputGroup'

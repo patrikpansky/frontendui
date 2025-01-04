@@ -119,13 +119,20 @@ const SectionDesigner = ({section, i, onUpdate, sectionDisabled, partDisabled}) 
     </div>)
 }
 
-export const FormDesignerHeader = ({formDisabled, section, onUpdate, sectionDisabled, partDisabled, formCopy, children}) => {
+export const FormDesigner = ({formDisabled, section, onUpdate, sectionDisabled, partDisabled, formCopy, children}) => {
     const [_section, setSection] = useState(section || formCopy?.sections[0])
+    const handleChangeSection = (section) => {
+        console.log("section change")
+        setSection(prev=> section)
+    }
     return (<>
         <div type="DroppableContainer" droppableId={formCopy.id} isDropDisabled={formDisabled} getListStyle={getListStyleDefault}>
             {formCopy?.sections.map((section, i) => (
                 <span className='btn btn-light'>
-                    <span className='btn btn-sm btn-outline-primary'>
+                    <span 
+                        className={(section === _section)?'btn btn-sm btn-primary':'btn btn-sm btn-outline-primary'}
+                        onClick={() => handleChangeSection(section)}
+                    >
                         {section?.name}&nbsp;
                     </span>
                     <UpdateSectionButton 
@@ -154,7 +161,15 @@ export const FormDesignerHeader = ({formDisabled, section, onUpdate, sectionDisa
                     <PlusLg /> Nová sekce
                 </InsertSectionButton>
             </span>
-            {children}
+            {/* {children} */}
+
+            <FormDesignerBody
+                formDisabled={formDisabled} 
+                section={_section} 
+                onUpdate={onUpdate} 
+                sectionDisabled={sectionDisabled} partDisabled={partDisabled} 
+                formCopy={formCopy} 
+            />
         </div>
     </>)
 }

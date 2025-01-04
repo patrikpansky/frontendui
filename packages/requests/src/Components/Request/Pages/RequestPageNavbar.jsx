@@ -49,9 +49,9 @@ export const RequestPageNavbar = ({ request, onSearchChange }) => {
 
     const segments = [
         { segment: 'history', label: 'Historie'},
-        { segment: 'permissions', label: 'Práva' },
+        // { segment: 'permissions', label: 'Práva' },
         { segment: 'roles', label: 'Role' },
-        { segment: 'library', label: 'Knihovna' },
+        // { segment: 'library', label: 'Knihovna' },
         { segment: 'graph', label: 'Stavy' },
     ]
     return (

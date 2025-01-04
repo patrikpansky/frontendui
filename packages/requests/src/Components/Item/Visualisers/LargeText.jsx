@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { CreateDelayer } from "@hrbolek/uoisfrontend-shared"
+import { CreateDelayer, ErrorHandler } from "@hrbolek/uoisfrontend-shared"
 import { ItemUpdateAsyncAction } from '../Queries/ItemUpdateAsyncAction'
 
 // const StudentWithRead = createLazyComponent(UserMediumCard, "user", StudentReadAsyncAction)
@@ -36,14 +36,16 @@ export const LargeText = ({ item, value }) => {
   const onChange = (e) => {
       const value = e.target.value;
       delayUpdate(() => fetch({ ...item, value }));
-      setValue(value);
+      setValue(prev => value);
   };
 
   return (
       <>
           {loading && <span>Ukládám</span>}
           {error && <span>Chyba {JSON.stringify(error)}</span>}
+          {error && <ErrorHandler errors={error} />}
           {/* {JSON.stringify(item)} */}
+          {/* "{error}" */}
           <textarea
               style={{
                   ...textareaStyles.base,

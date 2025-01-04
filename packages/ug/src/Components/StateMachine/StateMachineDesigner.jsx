@@ -261,12 +261,14 @@ export const StateMachineSwitch = ({state={}, statemachine, onStateSwitch=(state
             <UpdateStateButton
                 className="btn btn-sm btn-outline-success"
                 state={currentState}
+                onDone={onChange}
             >
                 <PencilFill />
             </UpdateStateButton>
             <DeleteStateButton
                 className="btn btn-sm btn-outline-danger"
                 state={currentState}
+                onDone={onChange}
             >
                 <TrashFill />
             </DeleteStateButton>

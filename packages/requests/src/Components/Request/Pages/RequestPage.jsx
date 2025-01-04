@@ -87,6 +87,8 @@ const RequestPageContent = ({request}) => {
                         </div>
                     </SimpleCardCapsule>
                     
+                    {JSON.stringify(request?.state)}
+                    {JSON.stringify(request?.createdby)}
                     {/* {JSON.stringify(request?.state)} */}
                     <HashContainer>
                         <Row id="">
@@ -186,12 +188,13 @@ const RequestPageContentLazy = ({request}) => {
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {!entity && <span>Nenalezeno</span>}
+        {!entity && !loading && <span>Nenalezeno</span>}
         {/* <RequestPageContent request={entity} /> */}
         {/* {JSON.stringify(entity)} */}
         {entity && <RequestPageContent request={entity} />}
     </>)
 }
+
 /**
  * A page component for displaying lazy-loaded content of an request entity.
  *

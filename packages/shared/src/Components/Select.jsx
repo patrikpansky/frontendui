@@ -3,14 +3,60 @@ import { useEffect, useRef } from 'react'
 import { SimpleCardCapsule } from "./SimpleCardCapsule"
 
 /**
- * A styled select input component wrapped in a `SimpleCardCapsule` for consistent layout and styling.
+ * A React component that renders a styled `<select>` dropdown with dynamic options and enhanced change detection.
  *
- * @param {Object} props - The props for the Select component.
- * @param {string} props.label - The label to display above the select input.
- * @param {React.ReactNode} props.children - The options or other children elements for the select input.
- * @param {Object} props - Additional props passed to the select element.
+ * This component integrates with the `Options` component to fetch and display dynamic `<option>` elements.
+ * It uses a `MutationObserver` to detect changes in the `<select>` element's children and triggers the `onChange`
+ * event accordingly. The dropdown is wrapped in a `SimpleCardCapsule` for a consistent UI layout.
  *
- * @returns {JSX.Element} A styled select input component.
+ * @function Select
+ * @param {Object} props - The properties for the Select component.
+ * @param {string} [props.label] - The label displayed as the title of the `SimpleCardCapsule`.
+ * @param {React.ReactNode} props.children - The `<option>` elements or an `Options` component to render dynamic options.
+ * @param {string} [props.id] - The unique identifier for the `<select>` element.
+ * @param {string|number} [props.value] - The current value of the `<select>` element, used for controlled components.
+ * @param {string|number} [props.defaultValue] - The default value of the `<select>` element, used for uncontrolled components.
+ * @param {Function} [props.onChange] - A callback function triggered when the `<select>` value changes. Receives an event object.
+ * @param {Function} [props.onBlur] - A callback function triggered when the `<select>` loses focus. Receives an event object.
+ * @param {Object} props.rest - Any additional props passed to the `<select>` element.
+ *
+ * @returns {JSX.Element} A styled dropdown wrapped in a `SimpleCardCapsule` with dynamic options and change detection.
+ *
+ * @example
+ * // Example usage with Options:
+ * const MyComponent = () => {
+ *   const fetchOptions = (params) => async (dispatch) => {
+ *     const response = await fetch('/api/data', {
+ *       method: 'POST',
+ *       body: JSON.stringify(params),
+ *     });
+ *     const json = await response.json();
+ *     return json;
+ *   };
+ *
+ *   const [selectedValue, setSelectedValue] = useState("");
+ *   const [fetchTrigger, setFetchTrigger] = useState(0);
+ *
+ *   const handleChange = (e) => {
+ *     setSelectedValue(e.target.value);
+ *   };
+ *
+ *   const refreshOptions = () => setFetchTrigger((prev) => prev + 1);
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={refreshOptions}>Refresh Options</button>
+ *       <Select
+ *         label="Dynamic Select"
+ *         id="dynamic-select"
+ *         value={selectedValue}
+ *         onChange={handleChange}
+ *       >
+ *         <Options asyncAction={fetchOptions} params={{ someParam: "value" }} shouldFetch={fetchTrigger} />
+ *       </Select>
+ *     </div>
+ *   );
+ * };
  */
 export const Select = ({label, children, ...props}) => {
     const {id, value, defaultValue, onChange, onBlur} = props

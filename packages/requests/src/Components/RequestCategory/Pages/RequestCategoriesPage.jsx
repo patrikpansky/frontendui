@@ -19,6 +19,8 @@ import { RequestTypeCardCapsule } from '../../RequestType/RequestTypeCardCapsule
 import { InsertRequestTypeButton } from '../../RequestType/InsertRequestTypeButton'
 import { InsertRequestCategoryButton } from '../InsertRequestCategoryButton'
 import { InsertRequestButton } from '../../Request/InsertRequestButton'
+import { RequestCategoryLink } from '../RequestCategoryLink'
+import { RequestTypeLink } from '../../RequestType/RequestTypeLink'
 
 
 const RequestTypeMediumCardCol = ({requestcategory, ...props}) => {
@@ -177,7 +179,8 @@ const RequestCategoriesPageContent = ({requestcategories = [], onContentChange =
                                 >
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div style={{ flex: '0 0 auto', marginRight: '20px'}}>
-                                            {requestcategory.name}
+                                            <RequestCategoryLink requestcategory={requestcategory} />
+                                            {/* {requestcategory.name} */}
                                         </div>
                                         <div style={{ flex: '0 0 auto', marginRight: '20px'}}>
                                             
@@ -191,7 +194,9 @@ const RequestCategoriesPageContent = ({requestcategories = [], onContentChange =
                                             return (
                                                 <Row className="align-items-center border-bottom pb-2 mb-2" key={requesttype.id}>
                                                     <Col xs={1}></Col>
-                                                    <Col xs={3}>{requesttype.name}</Col>
+                                                    <Col xs={3}>
+                                                        <RequestTypeLink requesttype={requesttype} />
+                                                    </Col>
                                                     <Col xs={8}>
                                                         <InsertRequestButton
                                                                 className='btn btn-outline-primary'

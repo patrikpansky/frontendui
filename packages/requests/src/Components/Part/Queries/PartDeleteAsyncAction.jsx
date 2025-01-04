@@ -6,6 +6,7 @@ mutation PartDeleteMutation($id: UUID!, $lastchange: DateTime!) {
   result: formPartDelete(
     part: {id: $id, lastchange: $lastchange}
   ) {
+    __typename
     ... on PartGQLModelDeleteError {
       failed
       msg

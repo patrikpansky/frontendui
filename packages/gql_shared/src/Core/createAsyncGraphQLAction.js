@@ -76,9 +76,13 @@ export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromG
     }
 
     if (typeof graphQLQuery !== "string") {
-        throw new Error("createAsyncGraphQLAction: 'query' must be a string.");
+        throw new Error(`createAsyncGraphQLAction: 'query' must be a string.`);
     }
 
+    if (!isTypenameCorrectlyPlaced(graphQLQuery)) {
+        console.error(`query does not have __typename this can lead to improper error catching`)
+        console.error(graphQLQuery)
+    }
     // Validate that all middlewares are functions
     middlewares.forEach((middleware, index) => {
         if (typeof middleware !== "function") {
@@ -96,7 +100,7 @@ export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromG
 
     const AsyncGraphQLAction = (graphQLVariables) => {
         if (typeof graphQLVariables !== "object" || graphQLVariables === null) {
-            throw new Error("createAsyncGraphQLAction: 'query_variables' must be a valid JSON object.");
+            throw new Error(`createAsyncGraphQLAction: 'graphQLVariables' must be a valid JSON object.\n${graphQLVariables}`);
         }
 
         return async (dispatch, getState, next = (jsonResult) => jsonResult) => {
@@ -159,6 +163,43 @@ export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromG
     return AsyncGraphQLAction
 };
 
+/**
+ * Checks if `__typename` is in the correct context for a GraphQL fragment.
+ * For fragments, ensures `__typename` is in the first level of braces `{}`.
+ * For queries/mutations, ensures it exists in the main body.
+ *
+ * @param {string} queryString - The GraphQL query string to check.
+ * @returns {boolean} - Returns `true` if `__typename` is correctly placed, otherwise `false`.
+ */
+const isTypenameCorrectlyPlaced = (queryString) => {
+    return queryString.includes("__typename")
+    const normalizedQuery = queryString.trim();
+
+    // Regex patterns for detecting query types
+    const fragmentRegex = /^fragment\s+\w+\s+on\s+\w+\s*\{([\s\S]*)\}$/s;
+    const queryOrMutationRegex = /^(query|mutation)\s+\w*\s*\(.*?\)\s*\{.*?__typename.*?\}/s;
+
+    if (fragmentRegex.test(normalizedQuery)) {
+        // Extract the first level of braces in the fragment
+        const firstLevelContent = normalizedQuery.match(fragmentRegex)?.[1] || '';
+        let level = 0;
+        let firstLevelOnly = '';
+
+        for (const char of firstLevelContent) {
+            if (char === '{') level++;
+            if (level === 1) firstLevelOnly += char;
+            if (char === '}') level--;
+        }
+
+        // Check if __typename exists in the extracted first-level content
+        return /\b__typename\b/.test(firstLevelOnly);
+    } else if (queryOrMutationRegex.test(normalizedQuery)) {
+        // For queries/mutations, just check if __typename exists in the main body
+        return /\b__typename\b/.test(normalizedQuery);
+    }
+
+    return false;
+};
 
 /**
  * Creates a "GraphQL-like" function node that can be composed with sub-nodes,
@@ -201,6 +242,13 @@ export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromG
  * console.log(rootQuery());
  */
 export const createQueryStrLazy = (queryStr, ...nodes) => {
+
+
+    // if (!isTypenameCorrectlyPlaced(queryStr)) {
+    //     console.error(`query does not have __typename this can lead to improper error catching`)
+    //     console.error(queryStr)
+    // }
+
     /**
      * Internal helper that traverses the "gql tree" once, collecting all strings.
      * @param {Function} node   - The gql node (i.e., a function) we want to traverse.

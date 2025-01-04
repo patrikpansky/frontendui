@@ -118,9 +118,23 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
                     dispatchResult: actionResult,
                 }));
 
-                const itemFromStore = items[id]; // Refetch the item from the store
+                //this is a hack,
+                //const itemFromStore = items[id] //does not work
+                const { id } = mergedParams
+                let itemFromStore = actionResult
+                if (id) {
+                    const reader = (dispatch, getState) => {
+                        const state = getState()
+                        const items = state.items
+                        itemFromStore = items[id]
+                    }
+                    await dispatch(reader)
+                }
+                // const itemFromStore = items[id]; // Refetch the item from the store
     
-                // console.log("useAction", itemFromStore, result, actionResult)
+                // console.log("useAction.itemFromStore.id", id)
+                // console.log("useAction.itemFromStore.mergedParams", mergedParams)
+                // console.log("useAction.itemFromStore", itemFromStore, result, actionResult)
                 return itemFromStore || actionResult;
             } catch (err) {
                 setState((prev) => ({

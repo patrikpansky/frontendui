@@ -74,8 +74,10 @@ const ItemReadQuery = `
 const ItemUpdateQuery = `
 mutation ItemUpdateQuery($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, $value: String) {
   result: formItemUpdate(item: {id: $id, lastchange: $lastchange, value: $value, name: $name, nameEn: $name_en}) {
+    __typename
     ...ItemWithRequest
     ... on FormItemGQLModelUpdateError {
+      __typename
       Entity {
         ...ItemWithRequest
       }
@@ -103,6 +105,9 @@ fragment ItemWithRequest on FormItemGQLModel {
         }
       }
     }
+  }
+  changedby {
+    id email
   }
 }
 `;

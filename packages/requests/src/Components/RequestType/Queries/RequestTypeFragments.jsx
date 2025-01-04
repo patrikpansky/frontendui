@@ -18,9 +18,26 @@ fragment GroupLink on GroupGQLModel {
 }
 `;
 
+const RequestTypeLinkFragment = createQueryStrLazy (
+`fragment RequestTypeLink on RequestTypeGQLModel {
+    __typename
+    id
+    name
+    nameEn
+}`  
+)
+
+export const RequestTypeReadPage = createQueryStrLazy(`
+query RequestTypeReadPage($skip: Int, $limit: Int, $orderby: String ="name", $where: RequestTypeInputFilter) {
+  result: requestTypePage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
+    ...RequestTypeLink
+  }
+}`,
+  RequestTypeLinkFragment);
+  
+
 export const RequestTypeLargeFragment = createQueryStrLazy(
-`
-fragment RequestTypeLargeFragment on RequestTypeGQLModel {
+`fragment RequestTypeLargeFragment on RequestTypeGQLModel {
   __typename
   id
   lastchange

@@ -18,12 +18,13 @@ import { InsertPartButton } from '../Part/InsertPartButton'
 import { InsertSectionButton } from '../Section/InsertSectionButton'
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared'
 import { ItemIndex } from '../Item/Visualisers'
-import { GroupCardCapsule, InsertGroupButton, InsertStateMachineButton, StateMachineSwitch, StateTransitionsDesigner, VerticalArcGraph } from '@hrbolek/uoisfrontend-ug'
+import { GroupCardCapsule, InsertGroupButton, InsertStateMachineButton, MembershipCUDButton, StateMachineSwitch, StateTransitionsDesigner, VerticalArcGraph } from '@hrbolek/uoisfrontend-ug'
 import { RequestTypeReadAsyncAction, RequestTypeUpdateAsyncAction } from './Queries'
 import { FormCreateButtonDialog } from '../Form/FormCreateButtonDialog'
 import { RoleTypeListDesigner } from '@hrbolek/uoisfrontend-ug'
-import { FormDesignerBody, FormDesignerHeader, ItemsLibrary } from '../Form/FormDesigner'
+import { FormDesignerBody, FormDesigner, ItemsLibrary } from '../Form/FormDesigner'
 import { FormCreationWizard } from '../Form/FormCreationWizard'
+import { InputUser } from '@hrbolek/uoisfrontend-ug'
 
 const CreateFormCopy = (form) => {
     const formCopy = {
@@ -278,7 +279,22 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
                 <LeftColumn>
                     <HashContainer>
                         <ItemsLibrary id="library"/>
-                        <GroupCardCapsule id="permissions" group={group} />
+                        <GroupCardCapsule id="permissions" group={group}>
+                            P
+                            <MembershipCUDButton 
+                                operation='C'
+                                className="btn btn-outline-primary"
+                                membership={{
+                                    startdate: "2025-01-01T01:01:59", 
+                                    enddate: "2025-01-01T01:01:59", 
+                                    // group
+                                }}
+                            >
+                                Add Mem
+                            </MembershipCUDButton>
+                            P
+                            <InputUser className="form-control" label="Přidat uživatele"/>
+                        </GroupCardCapsule> 
                         <SimpleCardCapsule title={"proces"} id="graph">
                             <VerticalArcGraph statemachine={statemachine} activeNodeId={activeState?.id}/>
                         </SimpleCardCapsule>
@@ -291,6 +307,7 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
                             {activeState?.writerslistId} */}
                             {activeState?.readerslistId && 
                             <SimpleCardCapsule title={"Čtení"}>
+                                
                                 <RoleTypeListDesigner 
                                     roletypelist={{id: activeState?.readerslistId}}
                                 >
@@ -317,13 +334,13 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
                 
                 <MiddleColumn>
                     
-                    <FormDesignerHeader formDisabled={formDisabled} 
+                    <FormDesigner formDisabled={formDisabled} 
                         section={section} 
                         onUpdate={onUpdate} 
                         sectionDisabled={sectionDisabled} partDisabled={partDisabled} 
                         formCopy={formCopy} 
                     />
-                    <FormDesignerBody
+                    {/* <FormDesignerBody
                         formDisabled={formDisabled} 
                         section={section} 
                         onUpdate={onUpdate} 
@@ -331,7 +348,7 @@ export const RequestTypeDesigner = ({ requesttype, section }) => {
                         formCopy={formCopy} 
                     >
                     
-                    </FormDesignerBody>
+                    </FormDesignerBody> */}
                     <HorizontalLine>Přechody</HorizontalLine>
                     <StateTransitionsDesigner state={activeState} statemachine={statemachine} onStateSwitch={handleStateSwitch} onChange={onUpdate}/>
                     <HorizontalLine>Stavy</HorizontalLine>

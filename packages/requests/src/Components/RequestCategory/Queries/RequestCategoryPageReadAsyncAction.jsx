@@ -1,6 +1,6 @@
 import { createAsyncGraphQLAction, updateItemsFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared";
 
-const RequestCategoryPageRead = `
+export const RequestCategoryPageRead = `
 query RequestCategoryPageRead($skip: Int, $limit: Int, $where: RequestCategoryInputFilter) {
   result: requestCategoryPage(skip: $skip, limit: $limit, where: $where) {
     ...RequestCategory
@@ -24,6 +24,7 @@ fragment RequestTypeLink on RequestTypeGQLModel {
   name
 }
 `;
+
 /**
  * An asynchronous action to execute a GraphQL query for reading request category entities.
  *

@@ -40,8 +40,11 @@ export const ChildWrapper = ({ children, ...props }) => {
     //   }, [children]);    
     return (
         <>
-            {React.Children.map(children, (child) =>
-                React.cloneElement(child, { ...props })
+            {children && React.Children.map(children, (child) =>
+                (React.isValidElement(child) 
+                    ? React.cloneElement(child, { ...child.props, ...props, ref: child.ref })
+                    : child
+                )
             )}
         </>
     );
@@ -74,5 +77,8 @@ export const ChildWrapper = ({ children, ...props }) => {
  */
 export const EnhanceChildren = ({ children, ...props }) => 
     React.Children.map(children, (child) =>
-        React.cloneElement(child, { ...props })
+        (React.isValidElement(child) 
+            ? React.cloneElement(child, { ...child.props, ...props, ref: child.ref })
+            : child
+        )
     )

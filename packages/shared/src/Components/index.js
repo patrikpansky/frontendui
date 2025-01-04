@@ -15,6 +15,7 @@ export * from './Input'
 export * from './Select'
 export * from './Options'
 export * from './TextArea'
+export * from './FormBody'
 
 export * from './Me'
 export * from './AsyncClickHandler'

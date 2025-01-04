@@ -2,17 +2,54 @@ import { useEffect, useCallback, useState } from 'react';
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 import { ErrorHandler } from "./ErrorHandler";
 import { LoadingSpinner } from "./LoadingSpinner";
-import { SimpleCardCapsule } from './SimpleCardCapsule';
 import { AsyncComponent } from './AsyncComponent';
 
 /**
- * A reusable component for loading and rendering `<option>` elements dynamically.
+ * A React component that renders a set of `<option>` elements based on fetched data.
  *
- * @param {Object} props - The props for the `Options` component.
- * @param {Function} props.asyncAction - An async action to fetch options data.
- * @param {Object} [props.params={}] - Parameters to pass to the async action.
+ * This component works with a parent `Select` component to dynamically update
+ * options whenever the fetched data changes or when the `shouldFetch` prop increments.
+ * It leverages `MutationObserver` to detect changes in the child elements and trigger
+ * the `onChange` event on the parent `Select` component.
  *
- * @returns {JSX.Element} A collection of `<option>` elements or loading/error states.
+ * @function Options
+ * @param {Object} props - The props for the Options component.
+ * @param {Function} props.asyncAction - A Redux asynchronous action (thunk) used to fetch data.
+ * @param {Object} [props.params={}] - Initial parameters for the fetch action.
+ * @param {number} [props.shouldFetch=0] - A numeric flag to trigger fetching; options are refetched when this value increments.
+ *
+ * @returns {JSX.Element} A set of `<option>` elements wrapped in React fragments, along with optional loading or error components.
+ *
+ * @example
+ * // Example usage with a Select component:
+ * const MyComponent = () => {
+ *   const fetchUserOptions = (params) => async (dispatch) => {
+ *     const response = await fetch('/api/users', {
+ *       method: 'POST',
+ *       body: JSON.stringify(params),
+ *     });
+ *     const json = await response.json();
+ *     return json;
+ *   };
+ *
+ *   const [fetchCount, setFetchCount] = useState(0);
+ *   const [selectedValue, setSelectedValue] = useState("");
+ *
+ *   const handleSelectChange = (e) => {
+ *     setSelectedValue(e.target.value);
+ *   };
+ *
+ *   const triggerFetch = () => setFetchCount((prev) => prev + 1);
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={triggerFetch}>Refresh Options</button>
+ *       <Select label="User Selection" id="user-select" value={selectedValue} onChange={handleSelectChange}>
+ *         <Options asyncAction={fetchUserOptions} params={{ role: 'admin' }} shouldFetch={fetchCount} />
+ *       </Select>
+ *     </div>
+ *   );
+ * };
  */
 export const Options = ({ asyncAction, params = {}, shouldFetch }) => {
     const { error, loading, fetch, entity, dispatchResult } = useAsyncAction(asyncAction, params, {deferred: true});

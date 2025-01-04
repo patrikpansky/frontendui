@@ -1,5 +1,7 @@
-import { Input, Select, Options } from "@hrbolek/uoisfrontend-shared"
+import { Input, Select, Options, FormBody } from "@hrbolek/uoisfrontend-shared"
 import { GroupTypeReadPageAsyncAction, GroupTypeReadPageAsyncActionCacheId } from "../GroupType/Queries/GroupTypeReadPageAsyncAction"
+import { GroupTypeOptions } from "../GroupType"
+import { UserUpdateAsyncAction } from "../User"
 
 
 /**
@@ -26,14 +28,27 @@ import { GroupTypeReadPageAsyncAction, GroupTypeReadPageAsyncActionCacheId } fro
  * </GroupMediumContent>
  */
 export const GroupMediumEditableContent = ({group, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
+    const handleChange = (e) => {
+        console.log("GroupMediumEditableContent.handleChange", e.target)
+    }
+    const formdata = [
+        {id: "34994cde-7337-4d59-ad9e-90af15de1a11", user: {id: "a0506cc4-5d53-4fdb-a989-c06a97e527fd", lastchange: "2025-01-04T21:40:51.551458", name: "Josef", surname: "Novák"}},
+        {id: "a9f68dc4-df5b-476c-bc4a-cb31acd0078a", user: {id: "3ca2c2cf-28bc-4855-8936-3bafe8c94b7c", lastchange: "2024-08-19T20:34:24.539770", name: "Anna", surname: "Dostálová"}}
+    ]
     return (
         <>           
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={group?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={group?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
-            <Select id={"grouptype_id"} label={"Typ skupiny"} className="form-control" defaultValue={group?.grouptypeId} onChange={onChange} onBlur={onBlur}  >
-                <Options asyncAction={GroupTypeReadPageAsyncAction} /> 
-            </Select>
+            <GroupTypeOptions id={"grouptype_id"} label={"Typ skupiny"} group={group} onChange={onChange} onBlur={onChange} />
             {children}
+            <FormBody defaultValue={formdata} onChange={handleChange} onBlur={handleChange} >
+                <FormBody id="user" label="Uživatel" asyncAction={UserUpdateAsyncAction} shouldFetch={0} >
+                    <Input id="name" label="Jméno" className="form-control" />
+                    <Input id="surname" label="Příjmení" className="form-control" />
+                </FormBody>
+            </FormBody>
         </>
     )
 }
+
+

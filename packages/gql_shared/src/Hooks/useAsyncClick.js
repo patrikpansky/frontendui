@@ -22,7 +22,7 @@ export const useAsyncClick = (asyncAction, defaultParams, onClick) => {
         try {
             const fetchParams = { ...defaultParams, ...params };
             const entity = await fetch(fetchParams);
-
+            console.log("useAsyncClick.handleClick.result", entity)
             if (onClick) {
                 onClick(entity); // Pass the result to the external callback
             }

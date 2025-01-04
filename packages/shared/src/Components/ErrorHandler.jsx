@@ -1,13 +1,24 @@
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Modal } from "react-bootstrap";
+import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { DeleteButton } from './DeleteButton';
+import { UserLink } from '@hrbolek/uoisfrontend-ug';
 
-export const ErrorHandler = ({ errors = "DEMO ERROR", show = true, onClose = () => {} }) => {
+
+export const ErrorHandler = ({ errors = "DEMO ERROR", show = true }) => {
+    const [visible, setVisible] = useState(show)
     let parsedErrors;
-
+    const onClose = () => {
+        setVisible(prev => false)
+    }
     try {
         parsedErrors = Array.isArray(errors) ? errors : JSON.parse(errors);
     } catch {
         parsedErrors = [{ message: "Unparsable error", raw: errors }];
     }
+
+    if (!visible) return null
 
     return (
         <Modal
@@ -19,19 +30,177 @@ export const ErrorHandler = ({ errors = "DEMO ERROR", show = true, onClose = () 
             aria-labelledby="error-handler-title"
         >
             <Modal.Header closeButton>
-                <Modal.Title id="error-handler-title">Error</Modal.Title>
+                <Modal.Title id="error-handler-title">Chyba</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ErrorDisplay errors={parsedErrors} />
+                {(errors?.name === "GQLMutationError") &&
+                    <GQLMutationErrorDetails error={errors} onClose={onClose} />
+                }
+                {(errors?.name !== "GQLMutationError") &&
+                    <ErrorDisplay errors={parsedErrors} onClose={onClose} />
+                }
             </Modal.Body>
             <Modal.Footer>
                 <button className="btn btn-primary" onClick={onClose}>
-                    Close
+                    Zavřít
                 </button>
             </Modal.Footer>
         </Modal>
     );
 };
+
+const GQLMutationErrorDetails = ({error, onClose}) => {
+    const {
+        jsonResponse,
+        graphQLQuery,
+        graphQLParameters
+    } = error
+    
+    // Extract the single key-value pair from jsonResponse.data
+    const jsonDataKey = Object.keys(jsonResponse?.data || {})[0];
+    const jsonDataValue = jsonResponse?.data?.[jsonDataKey];
+    const input = jsonDataValue?.input || {}
+    const entity = jsonDataValue?.Entity || {}
+
+    // Extract the matching keys and values from graphQLParameters
+    const extractedInputParameters = {};
+    const extractedOutputParameters = {};
+    const createdFields = {};
+    if (input && typeof input === 'object') {
+        Object.keys(input).forEach((key) => {
+            if (graphQLParameters?.hasOwnProperty(key)) {
+                extractedInputParameters[key] = graphQLParameters[key];
+            }
+            if (entity?.hasOwnProperty(key)) {
+                extractedOutputParameters[key] = entity[key];
+            }
+        });
+    }
+    Object.keys(entity).forEach((key) => {
+        if (key.startsWith('created')) {
+            // extractedInputParameters[key] = entity[key];
+            // extractedOutputParameters[key] = entity[key];
+            createdFields[key] = entity[key]
+        }
+        if (key.startsWith('changed')) {
+            createdFields[key] = entity[key]
+        }
+    })
+
+    if (error.name !== "GQLMutationError") return null;
+    if (!extractedInputParameters.lastchange) return (
+        <ErrorSimple 
+            error={error} 
+            messageToDisplay={"Chybí časové razítko, toto je chyba v programu."}
+            onClose={onClose}
+        >
+            <p><strong>Query:</strong></p>
+            <pre>{graphQLQuery}</pre>
+        </ErrorSimple>
+    )
+    if (extractedInputParameters.lastchange !== extractedOutputParameters.lastchange) return (
+        <ErrorLastChange 
+            error={error} 
+            extractedInputParameters={extractedInputParameters}
+            extractedOutputParameters={extractedOutputParameters}
+            createdFields={createdFields}
+            onClose={onClose}
+        />
+    )
+    return (
+        <div>
+            <h5>GraphQL Mutation Error</h5>
+            <p><strong>Query:</strong></p>
+            <pre>{JSON.stringify(extractedInputParameters, null, 2)}</pre>
+            <pre>{JSON.stringify(extractedOutputParameters, null, 2)}</pre>
+            <p><strong>Parameters:</strong></p>
+            <pre>{JSON.stringify(error.graphQLParameters, null, 2)}</pre>
+            <p><strong>Response:</strong></p>
+            <pre>{JSON.stringify(error.jsonResponse, null, 2)}</pre>
+        </div>
+    );
+};
+
+const ErrorSimple = ({error, messageToDisplay, children}) => {
+    return (
+        <div>
+            <h5>Chyba</h5>
+            <p><strong>{messageToDisplay}</strong></p>
+            {children}
+        </div>
+    );
+}
+
+const ErrorLastChange = ({
+    error, 
+    extractedInputParameters, 
+    extractedOutputParameters,
+    createdFields
+}) => {
+    const dispatch = useDispatch()
+    const changedby = createdFields?.changedby
+    const rewriteInput = {
+        ...extractedInputParameters,
+        lastchange: extractedOutputParameters.lastchange
+    }
+    const asyncAction = createAsyncGraphQLAction(
+        error.graphQLQuery
+    )
+    let rewriteError;
+    const handleForceWrite = async() => {
+        try {
+            await dispatch(asyncAction(rewriteInput))
+            rewriteError = ""
+        } catch (error) {
+            rewriteError = JSON.stringify(error, null, 2)
+        }
+    }
+
+    return (
+        <div>
+            <h5>Chyba časového razítka</h5>
+            <p>
+                Odeslané časové razítko 
+                neodpovídá časovému razítku na serveru.
+                Toto nastává v případě, když někdo jiný data změnil.
+            </p>
+            {!changedby && <p>
+                Není dostupná informace o tom, kdo změnu provedl, toto je chyba.
+                Poznamenejte si, jak jste k této chybě dospěli a nahlaste ji.
+            </p>}
+            {changedby && <div>
+                Změnu provedl uživatel &nbsp;
+                <span className='btn btn-sm btn-outline-secondary'>
+                    <UserLink user={changedby} target="_blank" rel="noopener noreferrer">{changedby?.email}</UserLink>
+                </span> (link do jiné záložky)
+            </div>}
+            <hr />
+            <p><strong>Odeslaná data:</strong></p>
+            <pre>{JSON.stringify(extractedInputParameters, null, 2)}</pre>
+            <p><strong>Data na serveru:</strong></p>
+            <pre>{JSON.stringify(extractedOutputParameters, null, 2)}</pre>
+            <hr />
+            {!rewriteError &&
+                <DeleteButton onClick={handleForceWrite}>
+                    Přepsat data na serveru hrubou silou
+                </DeleteButton>
+            }
+            {rewriteError === "" &&
+                <p>Přepsání se povedlo</p>
+            }
+            {rewriteError && rewriteError !== "" &&
+                <p>Při přepisu nastala další chyba 
+                   <pre>{rewriteError}</pre>
+                </p>
+            }
+            <hr />
+            {/* <p><strong>Parameters:</strong></p>
+            <pre>{JSON.stringify(error.graphQLParameters, null, 2)}</pre>
+            <p><strong>Response:</strong></p>
+            <pre>{JSON.stringify(error.jsonResponse, null, 2)}</pre> */}
+        </div>
+    )
+}
 
 const ErrorExtensionsDisplay = ({ extensions }) => {
     if (!extensions) {
