@@ -1,46 +1,8 @@
-import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { createLazyComponent } from "@hrbolek/uoisfrontend-shared"
+import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
 import { EmptyLargeCard } from "../EmptyLargeCard"
-
-const EmptyQueryRead = `
-query EmptyQueryRead($id: UUID!) {
-    result: emptyById(id: $id) {
-        __typename
-        id
-    }
-}
-`
-
-/**
- * An async action for executing a GraphQL query to read empty entities.
- *
- * This action is created using `createAsyncGraphQLAction` with a predefined `EmptyQueryRead` query.
- * It can be dispatched with query variables to fetch data related to empty entities from the GraphQL API.
- *
- * @constant
- * @type {Function}
- *
- * @param {Object} query_variables - The variables for the GraphQL query.
- * @param {string|number} query_variables.id - The unique identifier for the empty entity to fetch.
- *
- * @returns {Function} A dispatchable async action that performs the GraphQL query, applies middleware, and dispatches the result.
- *
- * @throws {Error} If `query_variables` is not a valid JSON object.
- *
- * @example
- * // Example usage:
- * const queryVariables = { id: "12345" };
- *
- * dispatch(EmptyReadAsyncAction(queryVariables))
- *   .then((result) => {
- *     console.log("Fetched data:", result);
- *   })
- *   .catch((error) => {
- *     console.error("Error fetching data:", error);
- *   });
- */
-const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyQueryRead)
+import { EmptyReadAsyncAction } from "../Queries/EmptyReadAsyncAction"
+import { EmptyPageNavbar } from "./EmptyPageNavbar"
 
 /**
  * A page content component for displaying detailed information about an empty entity.
@@ -63,11 +25,12 @@ const EmptyReadAsyncAction = createAsyncGraphQLAction(EmptyQueryRead)
  * <EmptyPageContent empty={emptyEntity} />
  */
 const EmptyPageContent = ({empty}) => {
-    return (
+    return (<>
+        <EmptyPageNavbar empty={empty} />
         <EmptyLargeCard empty={empty}>
             Empty {JSON.stringify(empty)}
         </EmptyLargeCard>
-    )
+    </>)
 }
 
 /**
@@ -92,7 +55,29 @@ const EmptyPageContent = ({empty}) => {
  *
  * <EmptyPageContentLazy empty={emptyId} />
  */
-const EmptyPageContentLazy = createLazyComponent(EmptyPageContent, "empty", EmptyReadAsyncAction)
+const EmptyPageContentLazy = ({empty}) => {
+    const { error, loading, entity, fetch } = useAsyncAction(EmptyReadAsyncAction, groupcategory)
+    const [delayer] = useState(() => CreateDelayer())
+
+    const handleChange = async(e) => {
+        // console.log("GroupCategoryPageContentLazy.handleChange.e", e)
+        const data = e.target.value
+        const serverResponse = await delayer(() => fetch(data))
+        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+    }
+    const handleBlur = async(e) => {
+        // console.log("GroupCategoryPageContentLazy.handleBlur.e", e)
+        const data = e.target.value
+        const serverResponse = await delayer(() => fetch(data))
+        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+    }
+
+    return (<>
+        {loading && <LoadingSpinner />}
+        {error && <ErrorEvent errors={error} />}
+        {entity && <EmptyPageContent empty={entity}  onChange={handleChange} onBlur={handleBlur} />}
+    </>)
+}
 
 /**
  * A page component for displaying lazy-loaded content of an empty entity.
