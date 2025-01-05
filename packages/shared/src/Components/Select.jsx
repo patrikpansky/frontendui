@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useRef } from 'react'
-import { SimpleCardCapsule } from "./SimpleCardCapsule"
+import { Label } from './Label'
 
 /**
  * A React component that renders a styled `<select>` dropdown with dynamic options and enhanced change detection.
@@ -109,11 +109,11 @@ export const Select = ({label, children, ...props}) => {
     // }
 
     return (
-        <SimpleCardCapsule title={label}>
+        <Label title={label}>
             <select ref={selectRef} {...changedprops} >
                 {children} 
             </select>
-        </SimpleCardCapsule>
+        </Label>
     )
 }
 

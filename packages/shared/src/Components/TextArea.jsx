@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { SimpleCardCapsule } from "./SimpleCardCapsule";
+import { Label } from './Label';
 
 export const TextArea = ({label, placeHolder, ariaHidden=false, autoHeight=true, onChange=(e)=>null, onBlur=(e)=>null, ...props}) => {
     const textareaRef = useRef(null);
@@ -26,11 +26,11 @@ export const TextArea = ({label, placeHolder, ariaHidden=false, autoHeight=true,
             <textarea {...props} ref={textareaRef} aria-hidden={true} onChange={handleChange}/>
         )
     return (
-        <SimpleCardCapsule title={label}>
+        <Label title={label}>
             {placeHolder && <p>
                 {placeHolder}
             </p>}
             <textarea {...props} ref={textareaRef} onChange={handleChange}/>
-        </SimpleCardCapsule>
+        </Label>
     )
 }

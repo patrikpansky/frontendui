@@ -1,36 +1,46 @@
 import React, { useEffect, useState } from 'react'
-import { SimpleCardCapsule } from "./SimpleCardCapsule";
+import { Label } from "./Label";
 import { CreateDelayer } from './CreateDelayer';
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
 
 /**
- * A unified React component for managing form data as either an object or a vector of objects.
+ * A flexible React component for managing form inputs, supporting both single-object forms and array-based forms.
+ * It also integrates optional asynchronous server updates for handling changes with delayed fetches.
  *
- * `FormBody` dynamically adapts based on the type of `defaultValue`. If `defaultValue` is an object, it operates
- * as a single form. If `defaultValue` is an array, it processes a vector of objects using a single reusable child
- * component. It injects event handlers (`onChange`, `onBlur`) and default values dynamically.
+ * `FormBody` dynamically adapts its behavior based on the type of `defaultValue`. 
+ * If `defaultValue` is an object, it operates as a single form. If it's an array, it processes a vector of objects 
+ * using a single reusable child component. The component also supports server updates using an `asyncAction`.
  *
  * @function FormBody
  * @param {Object} props - The properties for the FormBody component.
  * @param {string} [props.id="form"] - The unique identifier for the form or vector.
+ * @param {string} [props.label=""] - Optional label for the form section or card.
  * @param {Object|Array<Object>} [props.defaultValue={}] - The initial state of the form, as an object or array of objects.
  * @param {React.ReactNode} props.children - The child components to be managed. For arrays, only one child is allowed.
  * @param {Function} [props.onChange=(e) => null] - Callback invoked when any child element's value changes.
  * @param {Function} [props.onBlur=(e) => null] - Callback invoked when any child element loses focus.
- * @param {Object} props.rest - Additional props to pass to all child components.
+ * @param {Function|null} [props.asyncAction=null] - Optional async function for server updates triggered on change or blur.
+ * @param {Function} [props.transformToQuery=(e) => e.target.value] - Transformation function to shape data for the asyncAction.
+ * @param {any} [props.shouldFetch=null] - A condition that triggers server-side fetching if `asyncAction` is set.
+ * @param {Object} props.rest - Additional props passed to all child components.
  *
- * @throws {Error} If more than one child is passed for vector processing or if `defaultValue` is neither an object nor an array.
+ * @throws {Error} If `asyncAction` is used with an array-based `defaultValue`, or if `shouldFetch` is misconfigured.
+ * @throws {Error} If `defaultValue` is neither an object nor an array, or if multiple children are passed for array processing.
  *
- * @returns {JSX.Element} A wrapper for form inputs or a vector of inputs, dynamically managed based on `defaultValue`.
+ * @returns {JSX.Element} A dynamically managed wrapper for form inputs, adapting based on the type of `defaultValue`.
  *
  * @example
- * // Example usage as a single form:
+ * // Example usage as a single form with server update:
  * const MyForm = () => {
  *   const handleChange = (e) => console.log("Form updated:", e.target.value);
  *   const defaultValue = { name: "John", email: "john@example.com" };
  * 
  *   return (
- *     <FormBody defaultValue={defaultValue} onChange={handleChange}>
+ *     <FormBody
+ *       defaultValue={defaultValue}
+ *       asyncAction={myAsyncAction}
+ *       onChange={handleChange}
+ *     >
  *       <Input id="name" label="Name" />
  *       <Input id="email" label="Email" />
  *     </FormBody>
@@ -52,10 +62,33 @@ import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
  *     </FormBody>
  *   );
  * };
+ *
+ * @example
+ * // Example usage with server-side updates:
+ * const ServerForm = () => {
+ *   const handleAsyncAction = async (data) => {
+ *     console.log("Updating server with:", data);
+ *     return await apiCall(data); // Simulated API call
+ *   };
+ *
+ *   const defaultValue = { name: "Jane", age: 30 };
+ *
+ *   return (
+ *     <FormBody
+ *       defaultValue={defaultValue}
+ *       asyncAction={handleAsyncAction}
+ *       shouldFetch={true}
+ *       onChange={(e) => console.log("Updated value:", e.target.value)}
+ *     >
+ *       <Input id="name" label="Name" />
+ *       <Input id="age" label="Age" />
+ *     </FormBody>
+ *   );
+ * };
  */
 export const FormBody = ({
     id = "form",
-    label="",
+    label,
     defaultValue = {},
     children,
     onChange = (e) => null,
@@ -115,12 +148,15 @@ export const FormBody = ({
         const writeToServer = async(e) => {
             const newValue = transformToQuery(e)
             if (_asyncAction) console.log("preserver newValue", newValue)
+            
             const serverVersion = await fetch(newValue)
             if (serverVersion) setCurrentValue(prev => serverVersion)
             if (_asyncAction) console.log("postserver newValue", serverVersion)
+            
             return serverVersion
         }
         const serverResult = await delayer(() => writeToServer(result))
+        // console.log("postserver newValue", serverResult)
         if (serverResult) result.target.value = serverResult
         
         return result;
@@ -143,30 +179,49 @@ export const FormBody = ({
     };
 
     const handleChange = (index = null) => async(e) => {
-        const result = Array.isArray(defaultValue)
-            ? handleAllArray(index, e)
-            : handleAllObject(e);
-        
-        onChange(result);
+        if (Array.isArray(defaultValue)) {
+            const result = handleAllArray(index, e)
+            onChange(result);
+        } else {
+            const {id: name, value} = e.target
+            const updatedValueStr = JSON.stringify(value)
+            const defaultValueStr = JSON.stringify(defaultValue[name])
+            // console.log("formBody.handleChange.updatedValueStr", updatedValueStr)
+            // console.log("formBody.handleChange.defaultValueStr", defaultValueStr)
+            if (updatedValueStr === defaultValueStr)
+                return
+            else
+                handleAllObject(e).then(onChange)
+        }
     };
 
     const handleBlur = (index = null) => (e) => {
-        const result = Array.isArray(defaultValue)
-            ? handleAllArray(index, e)
-            : handleAllObject(e);
-
-        onBlur(result);
+        if (Array.isArray(defaultValue)) {
+            const result = handleAllArray(index, e)
+            onBlur(result);
+        } else {
+            const {id: name, value} = e.target
+            const updatedValueStr = JSON.stringify(value)
+            const defaultValueStr = JSON.stringify(defaultValue[name])
+            // console.log("formBody.handleBlur.updatedValueStr", name, value)
+            // console.log("formBody.handleBlur.updatedValueStr", updatedValueStr)
+            // console.log("formBody.handleBlur.defaultValueStr", defaultValueStr)
+            if (updatedValueStr === defaultValueStr)
+                return
+            else
+                handleAllObject(e).then(onBlur)
+        }
     };
-
+    const Visualiser = label?Label:"div"
     // Process children for Object (defaultValue is an object)
     if (!Array.isArray(defaultValue)) {
         return (
-            <SimpleCardCapsule title={label}>
+            <Visualiser title={label}>
                 {children &&
                     React.Children.map(children, (child) =>
                         cloneWithHandlers(child, defaultValue, props, handleChange(), handleBlur())
                     )}
-            </SimpleCardCapsule>
+            </Visualiser>
         );
     }
 
@@ -196,7 +251,7 @@ export const FormBody = ({
         </div>
         );
 
-        return <SimpleCardCapsule title={label}>{childrenArray}</SimpleCardCapsule>;
+        return <Visualiser title={label}>{childrenArray}</Visualiser>;
     }
 
     throw new Error("Invalid defaultValue: Must be either an object or an array.");

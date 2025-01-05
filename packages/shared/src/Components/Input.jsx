@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { SimpleCardCapsule } from "./SimpleCardCapsule"
+import { Label } from './Label'
 
 export const Input = ({label,  ariaHidden=false , ...props}) => {
     const {id, value, defaultValue, onChange} = props
@@ -16,8 +16,8 @@ export const Input = ({label,  ariaHidden=false , ...props}) => {
     if (ariaHidden)
         return null
     return (
-        <SimpleCardCapsule title={label}>
+        <Label title={label}>
             <input {...props} />
-        </SimpleCardCapsule>
+        </Label>
     )
 }

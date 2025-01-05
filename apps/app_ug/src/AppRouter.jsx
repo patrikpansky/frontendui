@@ -8,6 +8,7 @@ import { UserStudiesPage } from "@hrbolek/uoisfrontend-granting";
 import { GroupPage } from "@hrbolek/uoisfrontend-ug";
 import { AdmissionPage } from "../../../packages/admissions/src";
 import { RequestTypePage, RequestCategoriesPage, RequestCategoryPage, RequestDesignPage, RequestPage, RequestsPage, RequestCreatePage } from "../../../packages/requests/src";
+import { GroupCategoryEditPage } from "@hrbolek/uoisfrontend-ug/";
 
 const prefix = "/ug"
 export const Routes = [
@@ -18,7 +19,11 @@ export const Routes = [
     {
       path: `/${prefix}/group/view/:id`,
       element: <GroupPage />,
-    },  
+    },  //GroupCategoryEditPage
+    {
+        path: `/${prefix}/groupcategory/edit/:id`,
+        element: <GroupCategoryEditPage />,
+    },  //GroupCategoryEditPage
     {
         path: `/admissions/admission/view/:id`,
         element: <AdmissionPage />
