@@ -9,6 +9,7 @@ import { GroupPage } from "@hrbolek/uoisfrontend-ug";
 import { AdmissionPage } from "../../../packages/admissions/src";
 import { RequestTypePage, RequestCategoriesPage, RequestCategoryPage, RequestDesignPage, RequestPage, RequestsPage, RequestCreatePage } from "../../../packages/requests/src";
 import { GroupCategoryEditPage } from "@hrbolek/uoisfrontend-ug/";
+import { GroupEditPage } from "@hrbolek/uoisfrontend-ug";
 
 const prefix = "/ug"
 export const Routes = [
@@ -19,6 +20,10 @@ export const Routes = [
     {
       path: `/${prefix}/group/view/:id`,
       element: <GroupPage />,
+    },  //GroupCategoryEditPage
+    {
+        path: `/${prefix}/group/edit/:id`,
+        element: <GroupEditPage />,
     },  //GroupCategoryEditPage
     {
         path: `/${prefix}/groupcategory/edit/:id`,

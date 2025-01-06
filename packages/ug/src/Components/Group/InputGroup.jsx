@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { createAsyncGraphQLAction, createQueryStrLazy, transformAndCacheGraphQLVectorResult, updateItemsFromGraphQLResult, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { CreateDelayer, ErrorHandler, Input, LoadingSpinner, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
-import { PlusLg } from 'react-bootstrap-icons'
+import { CreateDelayer, ErrorHandler, Input, LoadingSpinner, Label } from "@hrbolek/uoisfrontend-shared"
 
 const GroupReadPageQuery = createQueryStrLazy(
 `query GroupQueryRead($skip: Int, $limit: Int, $orderby: String = "name", $where: GroupInputWhereFilter) {
@@ -21,11 +20,11 @@ const GroupPageReadAsyncAction = createAsyncGraphQLAction(
     transformAndCacheGraphQLVectorResult(CacheId)
 )
 
-export const InputGroup = ({onChange=(group)=>null, onBlur=(group)=>null, id, label="", className="", ...props}) => {
+export const InputGroup = ({onChange=(group)=>null, onBlur=(group)=>null, id, label="", defaultValue, className="", ...props}) => {
     const { loading, error, fetch } = useAsyncAction(GroupPageReadAsyncAction, {}, {deferred: true})
     const [searchStr, setSearchStr] = useState("")
     const [groups, setGroups] = useState([])
-    const [selected, setSelected] = useState(null)
+    const [selected, setSelected] = useState(defaultValue?.id?defaultValue:null)
     const [delayer] = useState(() => CreateDelayer())
     const loadGroups = async(searchStr) => {
         const where = {"_or":[
@@ -58,12 +57,12 @@ export const InputGroup = ({onChange=(group)=>null, onBlur=(group)=>null, id, la
     return (<div id="groupdynamicselect" style={{ position: "relative" }}>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {selected && (<SimpleCardCapsule title={label}>
+        {selected && (<Label title={label}>
             <span className={buttomclassname} onClick={() => setSelected(null)}>
                 {selected.name} {selected.surname}
             </span>
             {/* <span className='btn btn-outline-success' onClick={onChange}><PlusLg /></span> */}
-        </SimpleCardCapsule>)}
+        </Label>)}
         {!selected && <>
             <Input id={id} label={label} className={className} {...props} defaultValue={searchStr} onChange={handleChange} onBlur={handleChange} />
             <div id="grouphints" 

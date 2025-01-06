@@ -1,28 +1,28 @@
 import { Input } from "@hrbolek/uoisfrontend-shared"
 
 /**
- * A utility function that renders input fields for editing "Group Category" details.
+ * A utility function that renders input fields for editing "Group Type" details.
  *
  * This function returns an array of `<Input>` components for editing the `name` and `nameEn` fields
- * of a group category. It is specifically designed to be used within components like `GroupCategoryEditableCard`,
- * providing a consistent and reusable form structure for group category details.
+ * of a group type. It is specifically designed to be used within components like `GroupTypeEditableCard`,
+ * providing a consistent and reusable form structure for group type details.
  *
- * @function RenderGroupCategoryMediumEditableContent
- * @returns {JSX.Element[]} An array of `<Input>` components for editing "Group Category" fields.
+ * @function RenderGroupTypeMediumEditableContent
+ * @returns {JSX.Element[]} An array of `<Input>` components for editing "Group Type" fields.
  *
  * @example
- * // Usage within GroupCategoryEditableCard:
- * const GroupCategoryEditableCard = ({ groupcategory, onChange, onBlur }) => (
+ * // Usage within GroupTypeEditableCard:
+ * const GroupTypeEditableCard = ({ grouptype, onChange, onBlur }) => (
  *   <FormBody
- *     id="groupcategory"
+ *     id="grouptype"
  *     label="Kategorie typů skupin"
- *     defaultValue={groupcategory}
+ *     defaultValue={grouptype}
  *     onChange={onChange}
  *     onBlur={onBlur}
- *     asyncAction={GroupCategoryUpdateAsyncAction}
+ *     asyncAction={GroupTypeUpdateAsyncAction}
  *     shouldFetch={0}
  *   >
- *     {RenderGroupCategoryMediumEditableContent()}
+ *     {RenderGroupTypeMediumEditableContent()}
  *   </FormBody>
  * );
  *
@@ -32,11 +32,11 @@ import { Input } from "@hrbolek/uoisfrontend-shared"
  * - Designed to work seamlessly with `FormBody` to handle dynamic form operations and state management.
  * - It is not a React component; it is a utility function that must be invoked directly within JSX.
  *
- * @see GroupCategoryEditableCard - A component that uses this function to edit "Group Category" details.
+ * @see GroupTypeEditableCard - A component that uses this function to edit "Group Type" details.
  * @see FormBody - The reusable form wrapper component.
  * @see Input - The reusable input component used for rendering each field.
  */
-export const RenderGroupCategoryMediumEditableContent = () => [
+export const RenderGroupTypeMediumEditableContent = () => [
     <Input id="name" label="Název" className="form-control" />,
     <Input id="nameEn" label="Anglický název" className="form-control" />
 ]

@@ -5,6 +5,7 @@ query GroupQueryRead($id: UUID!) {
     result: groupById(id: $id) {
         __typename
         id
+        lastchange
         name
         mastergroup {
             __typename
