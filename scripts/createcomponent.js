@@ -77,10 +77,10 @@ async function prompt(question) {
       process.exit(1);
     }
     // Build full destination path; assuming current working directory is monorepo root.
-    const destDir = path.resolve(__dirname, 'packages', destRelative, 'src');
+    const destDir = path.resolve(__dirname, '..', 'packages', destRelative, 'src', newName);
     
     // Define source: in our _empty package the templates are under /packages/_empty/src/Empty
-    const srcDir = path.resolve(__dirname, 'packages', '_empty', 'src', 'Empty');
+    const srcDir = path.resolve(__dirname, '..', 'packages', '_empty', 'src', 'Empty');
 
     console.log(`Copying from: ${srcDir}`);
     console.log(`Destination: ${destDir}`);
