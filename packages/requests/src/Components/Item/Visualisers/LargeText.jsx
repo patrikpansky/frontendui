@@ -51,7 +51,7 @@ export const LargeText = ({ item, value }) => {
                   ...textareaStyles.base,
                   ...(isFocused ? textareaStyles.focus : {}),
               }}
-              value={_value}
+              value={_value || ""}
               onChange={onChange}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}

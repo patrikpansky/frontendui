@@ -56,7 +56,7 @@ const EmptyPageContent = ({empty}) => {
  * <EmptyPageContentLazy empty={emptyId} />
  */
 const EmptyPageContentLazy = ({empty}) => {
-    const { error, loading, entity, fetch } = useAsyncAction(EmptyReadAsyncAction, groupcategory)
+    const { error, loading, entity, fetch } = useAsyncAction(EmptyReadAsyncAction, empty)
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {

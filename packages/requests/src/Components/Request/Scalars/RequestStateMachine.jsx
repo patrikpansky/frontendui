@@ -2,15 +2,18 @@ import { AsyncComponent, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { StateReadAsyncAction, VerticalArcGraph } from "@hrbolek/uoisfrontend-ug"
 
 export const RequestStateMachine = ({request}) => {
-    return (<SimpleCardCapsule title={"Stavy"}>
-        <AsyncComponent 
-            asyncAction={StateReadAsyncAction} 
-            queryVariables={{id: request.state.id}}
-            propertyName="state"
-        > 
-            <State2StateMachine activeState={request?.state}/>
-        </AsyncComponent>
-    </SimpleCardCapsule>)
+    return (<>
+    {request?.state?.id && (
+        <SimpleCardCapsule title={"Stavy"}>
+            <AsyncComponent 
+                asyncAction={StateReadAsyncAction} 
+                queryVariables={{id: request?.state?.id}}
+                propertyName="state"
+            > 
+                <State2StateMachine activeState={request?.state}/>
+            </AsyncComponent>
+        </SimpleCardCapsule>
+    )}</>)
 }
 
 const State2StateMachine = ({state, activeState}) => {
