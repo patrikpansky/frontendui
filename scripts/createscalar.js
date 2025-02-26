@@ -2,6 +2,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const readline = require('readline');
+const crypto = require('crypto');
 
 // Helper: perform case-preserving replacement of target with replacement
 function preserveCaseReplace(text, target, replacement) {
@@ -20,7 +21,12 @@ function preserveCaseReplace(text, target, replacement) {
   });
 }
 
-// Prompt user with a question and return the answer
+// Helper: compute SHA256 checksum of given text
+function computeChecksum(text) {
+  return crypto.createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
+// Helper: prompt user for input
 async function prompt(question) {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -34,7 +40,59 @@ async function prompt(question) {
   });
 }
 
-// Main function
+// Function to process a single file copy with checksum checking
+async function processFile(sourceFilePath, destFilePath, newName) {
+  // Read the source file
+  const content = await fs.readFile(sourceFilePath, 'utf8');
+  // Replace "Scalar" with the provided newName preserving case
+  const newContent = preserveCaseReplace(content, "Scalar", newName);
+  // Compute checksum of new content
+  const newChecksum = computeChecksum(newContent);
+  // Define checksum file path
+  const checksumFilePath = destFilePath + '.checksum.txt';
+
+  let override = true;
+  try {
+    // Check if destination file exists
+    await fs.access(destFilePath);
+    // If exists, read the checksum file
+    const storedChecksum = await fs.readFile(checksumFilePath, 'utf8');
+    if (storedChecksum.trim() !== newChecksum) {
+      console.warn(`Checksum mismatch for file ${destFilePath}. File has been modified.`);
+      override = false;
+    }
+  } catch (err) {
+    // If file does not exist or checksum file not found, proceed to write file
+    override = true;
+  }
+
+  if (override) {
+    await fs.writeFile(destFilePath, newContent, 'utf8');
+    await fs.writeFile(checksumFilePath, newChecksum, 'utf8');
+    console.log(`Created/Updated file: ${destFilePath}`);
+  } else {
+    console.log(`Skipped file: ${destFilePath} due to checksum mismatch.`);
+  }
+}
+
+// Recursively copy a directory from srcDir to destDir, processing file names and content.
+async function copyDirectory(srcDir, destDir, newName) {
+  await fs.mkdir(destDir, { recursive: true });
+  const entries = await fs.readdir(srcDir, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcEntryPath = path.join(srcDir, entry.name);
+    // Replace "Empty" in file/directory names with newName
+    let newEntryName = preserveCaseReplace(entry.name, "Empty", newName);
+    const destEntryPath = path.join(destDir, newEntryName);
+
+    if (entry.isDirectory()) {
+      await copyDirectory(srcEntryPath, destEntryPath, newName);
+    } else if (entry.isFile()) {
+      await processFile(srcEntryPath, destEntryPath, newName);
+    }
+  }
+}
+
 (async () => {
   try {
     // Ask for the package name
@@ -69,14 +127,23 @@ async function prompt(question) {
       process.exit(1);
     }
 
-    // Ask for the Scalar name
-    const scalarName = await prompt("Enter the Scalar name (sname): ");
-    if (!scalarName) {
-      console.error("No scalar name provided. Exiting.");
+    // Ask for multiple Scalar names, comma separated.
+    const scalarNamesInput = await prompt("Enter one or more Scalar names (sname), separated by commas: ");
+    if (!scalarNamesInput) {
+      console.error("No scalar names provided. Exiting.");
+      process.exit(1);
+    }
+    // Split and trim the scalar names
+    const scalarNames = scalarNamesInput.split(',')
+                          .map(s => s.trim())
+                          .filter(s => s.length > 0);
+    if (scalarNames.length === 0) {
+      console.error("No valid scalar names provided. Exiting.");
       process.exit(1);
     }
 
-    // Build source file path: it should be in the component directory and named "{cname}ScalarAttribute.jsx"
+    // Define source file path: in the component directory under "Scalars" folder,
+    // the file name is expected to be "{cname}ScalarAttribute.jsx"
     const sourceFileName = `${componentName}ScalarAttribute.jsx`;
     const sourceFilePath = path.join(componentDir, "Scalars", sourceFileName);
     try {
@@ -86,16 +153,16 @@ async function prompt(question) {
       process.exit(1);
     }
 
-    // Build destination file path: "{cname}{sname}Attrbibute.jsx" inside the same directory.
-    const destFileName = `${componentName}${scalarName}Attrbibute.jsx`;
-    const destFilePath = path.join(componentDir, "Scalars", destFileName);
-
-    // Read the source file, replace "Scalar" with scalarName (preserving case), and write to the destination.
-    let content = await fs.readFile(sourceFilePath, 'utf8');
-    const newContent = preserveCaseReplace(content, "Scalar", scalarName);
-    await fs.writeFile(destFilePath, newContent, 'utf8');
-
-    console.log(`Created file ${destFilePath} with updated scalar name.`);
+    // Process each scalar name
+    for (const sname of scalarNames) {
+      // Build destination file path: "{cname}{sname}Attrbibute.jsx" inside the same directory.
+      const destFileName = `${componentName}${sname}Attrbibute.jsx`;
+      const destFilePath = path.join(componentDir, "Scalars", destFileName);
+      
+      await processFile(sourceFilePath, destFilePath, sname);
+    }
+    
+    console.log("Copy and replacement for all scalar names completed.");
   } catch (err) {
     console.error("Error:", err);
   }

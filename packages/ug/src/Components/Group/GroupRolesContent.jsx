@@ -45,4 +45,6 @@ export const GroupRolesContent = ({group}) => {
     )
 }
 
-export const GroupRolesContentLazy = createLazyComponent(GroupRolesContent, "group", QueryGroupRolesAsyncAction)
+// export const GroupRolesContentLazy = createLazyComponent(GroupRolesContent, "group", QueryGroupRolesAsyncAction)
+
+export const GroupRolesContentLazy = (props) => null

@@ -1,5 +1,7 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
+export const EmptyURI = '/empty/empty/view/';
+
 /**
  * A React component that renders a `ProxyLink` to an "empty" entity's view page.
  *
@@ -28,5 +30,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * @see ProxyLink - The base component used for rendering the link.
  */
 export const EmptyLink = ({empty}) => {
-    return <ProxyLink to={'/empty/empty/view/' + empty.id}>{empty.name}</ProxyLink>
+    return <ProxyLink to={EmptyURI + empty.id}>{empty.name}</ProxyLink>
 }

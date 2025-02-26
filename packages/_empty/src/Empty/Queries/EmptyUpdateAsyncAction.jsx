@@ -1,5 +1,5 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
-import { EmptyLargeFragment, EmptyLargeFragmentLazy } from "./EmptyFragments";
+import { EmptyLargeFragment } from "./EmptyFragments";
 
 const EmptyUpdateMutation = createQueryStrLazy(
 `

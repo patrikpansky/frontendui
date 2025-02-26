@@ -1,5 +1,5 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
-import { UserLargeFragment, UserLargeFragmentLazy } from "./UserFragments";
+import { UserLargeFragment } from "./UserFragments";
 
 const UserReadQuery = createQueryStrLazy(
 `

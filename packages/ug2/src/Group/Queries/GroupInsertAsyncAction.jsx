@@ -1,5 +1,5 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
-import { GroupLargeFragment, GroupLargeFragmentLazy } from "./GroupFragments";
+import { GroupLargeFragment } from "./GroupFragments";
 
 const GroupInsertMutation = createQueryStrLazy(
 `

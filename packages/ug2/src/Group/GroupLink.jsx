@@ -1,5 +1,7 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
+export const GroupURI = '/group/group/view/';
+
 /**
  * A React component that renders a `ProxyLink` to an "group" entity's view page.
  *
@@ -28,5 +30,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * @see ProxyLink - The base component used for rendering the link.
  */
 export const GroupLink = ({group}) => {
-    return <ProxyLink to={'/group/group/view/' + group.id}>{group.name}</ProxyLink>
+    return <ProxyLink to={GroupURI + group.id}>{group.name}</ProxyLink>
 }

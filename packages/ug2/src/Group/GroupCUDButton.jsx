@@ -1,7 +1,4 @@
 import { ButtonWithDialog, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared";
-import { InsertGroupButton } from "./CUDButtons/InsertGroupButton";
-import { UpdateGroupButton } from "./CUDButtons/UpdateGroupButton";
-import { DeleteGroupButton } from "./CUDButtons/DeleteGroupButton";
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 /**
