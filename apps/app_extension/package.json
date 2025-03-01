@@ -17,7 +17,9 @@
     "bootstrap": "^5.3.3",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.6.0",
-    "react-redux" : "^9.2.0"
+    "react-redux" : "^9.2.0",
+
+    "@hrbolek/uoisfrontend-ug": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

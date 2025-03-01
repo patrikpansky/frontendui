@@ -168,6 +168,7 @@ const extractTeacherInfo = (teacherCard) => {
     return {...userInfo, uco: userInfo.teacher.id, id: `USER(${userInfo.teacher.id})`};
   };
 
+  
 /**
  * Asynchronous Redux Thunk action that fetches user data from a remote endpoint,
  * extracts the user information from the returned HTML, and returns the parsed user info.
@@ -189,9 +190,15 @@ export const ReadUserAsyncAction = ({user}) => async (dispatch, getState) => {
     const baseUrl = UserURI
     const fetchParams = { method: "GET" }
     const fullUrl = buildUrlWithQueryParams(baseUrl, {uco: user?.uco})
+    console.log(`ReadUserAsyncAction: ${JSON.stringify(user)} = ${fullUrl}`)
     const response = await fetch(fullUrl, fetchParams)
     const responseHTML = await response.text()
-    const user = extractUserInfoFromHTML(responseHTML)
+    console.log(`ReadUserAsyncAction: ${responseHTML}`)
+    const newuser = extractUserInfoFromHTML(responseHTML)
+    console.log(`ReadUserAsyncAction: ${JSON.stringify(newuser)}`)
     // here dispatch to store
-    return user
+
+    newuser.name = newuser?.teacher?.name
+
+    return newuser
 }

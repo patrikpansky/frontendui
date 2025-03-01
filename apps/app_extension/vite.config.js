@@ -45,8 +45,12 @@ export default defineConfig({
     preserveSymlinks: true, // Prevents breaking symbolic links, useful for monorepos
     alias: {
       // Define aliases for modules, resolving them to specific paths
-      "@hrbolek/readers": path.resolve(__dirname, "../../packages/readers/src"),
-      "@hrbolek/visualisers": path.resolve(__dirname, "../../packages/visualisers/src"),
+      "@hrbolek/uoisfrontend-shared": path.resolve(__dirname, "../../packages/shared/src"),
+      "@hrbolek/uoisfrontend-gql-shared": path.resolve(__dirname, "../../packages/gql_shared/src"),
+      "@hrbolek/uoisfrontend-ug": path.resolve(__dirname, "../../packages/ug/src"),
+      "@hrbolek/uoisfrontend-granting": path.resolve(__dirname, "../../packages/granting/src"),
+      "@hrbolek/uoisfrontend-admissions": path.resolve(__dirname, "../../packages/admissions/src"),
+      "@hrbolek/uoisfrontend-requests": path.resolve(__dirname, "../../packages/requests/src"),
     },
   },
 
@@ -76,8 +80,12 @@ export default defineConfig({
       // Specify paths to watch for changes
       ignored: [
         // Ensure certain packages are not ignored during file watching
-        '!../../packages/readers/**',
-        '!../../packages/visualisers/**',
+        '!../../packages/shared/**',
+        '!../../packages/gql-shared/**',
+        '!../../packages/ug/**',
+        '!../../packages/granting/**',
+        '!../../packages/admissions/**',
+        '!../../packages/requests/**',
       ],
     },
     hmr: {
@@ -89,7 +97,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [
-        'shared', // Prevent specific libraries from being bundled into the output
+        // 'shared', // Prevent specific libraries from being bundled into the output
       ],
     },
   },

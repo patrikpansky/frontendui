@@ -12,7 +12,7 @@ const generateUUID = () => {
 // Vytvoříme nový div a nastavíme mu náhodné id
 const container = document.createElement('div');
 container.id = generateUUID();
-document.body.appendChild(container);
+document.body.prepend(container);
 
 // Vyrenderujeme aplikaci do vytvořeného divu
 const root = ReactDOM.createRoot(container);

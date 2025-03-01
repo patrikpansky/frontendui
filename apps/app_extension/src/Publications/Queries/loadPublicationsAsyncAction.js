@@ -1,5 +1,5 @@
 import { withResponseMiddleware } from '../../General';
-import { buildUrlWithQueryParams } from './buildUrlWithQueryParams';
+import { buildUrlWithQueryParams } from '../../General';
 
 const parsePublicationsFromHTML = (htmlText) => {
   const parser = new DOMParser();

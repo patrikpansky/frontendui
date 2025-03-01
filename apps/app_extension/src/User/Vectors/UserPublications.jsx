@@ -1,7 +1,7 @@
 import { PublicationMediumCard } from "../../Publications"
 import { UserCardCapsule } from "../Components"
 
-export const UserPublications = (user) => {
+export const UserPublications = ({user}) => {
     const { publications=[] } = user
 
     return (
