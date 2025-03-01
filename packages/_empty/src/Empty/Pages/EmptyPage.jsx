@@ -1,5 +1,8 @@
-import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { useState } from "react"
 import { useParams } from "react-router"
+
+import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { EmptyLargeCard } from "../Components"
 import { EmptyReadAsyncAction } from "../Queries"
 import { EmptyPageNavbar } from "./EmptyPageNavbar"
@@ -74,7 +77,7 @@ const EmptyPageContentLazy = ({empty}) => {
 
     return (<>
         {loading && <LoadingSpinner />}
-        {error && <ErrorEvent errors={error} />}
+        {error && <ErrorHandler errors={error} />}
         {entity && <EmptyPageContent empty={entity}  onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }

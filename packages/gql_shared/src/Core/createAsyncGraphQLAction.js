@@ -116,7 +116,12 @@ export const createAsyncGraphQLAction = (graphQLQuery, params = updateItemsFromG
                         type: "ASYNC_GRAPHQL_ACTION_SERVER_ERROR",
                         payload: jsonResult.errors,
                     });
-                    return Promise.reject(jsonResult.errors);
+                    // return Promise.reject(jsonResult.errors);
+                    
+                    // Create a new Error and attach the errors array as a property
+                    const error = new Error("Server returned errors in GraphQL response.");
+                    error.details = jsonResult.errors;
+                    return Promise.reject(error);
                 }
 
                 const jsonData = jsonResult?.data

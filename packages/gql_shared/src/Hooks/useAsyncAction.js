@@ -143,7 +143,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
                     error: err,
                     dispatchResult: null,
                 }));
-                throw err;
+                // throw err;
             } finally {
                 fetchPromise.current = null;
             }

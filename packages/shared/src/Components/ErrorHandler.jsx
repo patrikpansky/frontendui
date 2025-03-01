@@ -3,8 +3,6 @@ import { useDispatch } from 'react-redux'
 import { Modal } from "react-bootstrap";
 import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared";
 import { DeleteButton } from './DeleteButton';
-import { UserLink } from '@hrbolek/uoisfrontend-ug';
-
 
 export const ErrorHandler = ({ errors = "DEMO ERROR", show = true }) => {
     const [visible, setVisible] = useState(show)
@@ -12,6 +10,8 @@ export const ErrorHandler = ({ errors = "DEMO ERROR", show = true }) => {
     const onClose = () => {
         setVisible(prev => false)
     }
+    console.log("ErrorHandler", errors)
+    
     try {
         parsedErrors = Array.isArray(errors) ? errors : JSON.parse(errors);
     } catch {
@@ -171,7 +171,8 @@ const ErrorLastChange = ({
             {changedby && <div>
                 Změnu provedl uživatel &nbsp;
                 <span className='btn btn-sm btn-outline-secondary'>
-                    <UserLink user={changedby} target="_blank" rel="noopener noreferrer">{changedby?.email}</UserLink>
+                    {/* <UserLink user={changedby} target="_blank" rel="noopener noreferrer">{changedby?.email}</UserLink> */}
+                    <a href={`email:${changedby?.email}`}>{changedby?.email}</a>
                 </span> (link do jiné záložky)
             </div>}
             <hr />

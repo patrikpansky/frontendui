@@ -1,5 +1,8 @@
-import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { useState } from "react"
 import { useParams } from "react-router"
+
+import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { AdmissionLargeCard } from "../Components"
 import { AdmissionReadAsyncAction } from "../Queries"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
@@ -74,7 +77,7 @@ const AdmissionPageContentLazy = ({admission}) => {
 
     return (<>
         {loading && <LoadingSpinner />}
-        {error && <ErrorEvent errors={error} />}
+        {error && <ErrorHandler errors={error} />}
         {entity && <AdmissionPageContent admission={entity}  onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }
