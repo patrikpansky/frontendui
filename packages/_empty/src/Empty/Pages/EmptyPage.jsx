@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { EmptyLargeCard } from "../EmptyLargeCard"
-import { EmptyReadAsyncAction } from "../Queries/EmptyReadAsyncAction"
+import { EmptyLargeCard } from "../Components"
+import { EmptyReadAsyncAction } from "../Queries"
 import { EmptyPageNavbar } from "./EmptyPageNavbar"
 
 /**

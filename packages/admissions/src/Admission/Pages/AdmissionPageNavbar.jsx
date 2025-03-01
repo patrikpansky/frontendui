@@ -1,6 +1,7 @@
 import Nav from 'react-bootstrap/Nav'
 import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
 
+import { AdmissionURI } from '../Components'
 /**
  * A navigation button component that generates a URL based on the admission's ID and a specific segment.
  * The button uses a `ProxyLink` to navigate while preserving hash and query parameters.
@@ -35,7 +36,7 @@ import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
  */
 const TitleNavButton = ({ admission, segment, label, ...props }) => {
     // const urlbase = (segment) => `/admissions/admission/${segment}/${admission?.id}`;
-    const urlbase = (segment) => `/admissions/admission/view/${admission?.id}#${segment}`;
+    const urlbase = (segment) => `${AdmissionURI}${admission?.id}#${segment}`;
     return (
         <Nav.Link as={"span"} {...props}>
             <ProxyLink to={urlbase(segment)}>{label}</ProxyLink>
@@ -43,7 +44,28 @@ const TitleNavButton = ({ admission, segment, label, ...props }) => {
     );
 };
 
-
+/**
+ * Renders the navigation bar for an Admission page.
+ *
+ * This component uses a custom hook, `useHash()`, to determine the current hash
+ * and highlights the active segment. It displays a navigation bar (using MyNavbar)
+ * with several segments (e.g. "history", "roles", "graph"), each rendered as a 
+ * TitleNavButton. The segments are hardcoded in this component and only rendered 
+ * if an `admission` object is provided.
+ *
+ * @component
+ * @param {Object} props - The component properties.
+ * @param {Object} props.admission - The admission entity object that provides context for the page.
+ * @param {string|number} props.admission.id - The unique identifier for the admission.
+ * @param {Function} props.onSearchChange - Callback function to handle changes in the search input.
+ *
+ * @returns {JSX.Element} The rendered AdmissionPageNavbar component.
+ *
+ * @example
+ * // Example usage:
+ * const admission = { id: 123, ... };
+ * <AdmissionPageNavbar admission={admission} onSearchChange={handleSearchChange} />
+ */
 export const AdmissionPageNavbar = ({ admission, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
 

@@ -1,6 +1,7 @@
 import Nav from 'react-bootstrap/Nav'
 import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
 
+import { EmptyURI } from '../Components'
 /**
  * A navigation button component that generates a URL based on the empty's ID and a specific segment.
  * The button uses a `ProxyLink` to navigate while preserving hash and query parameters.
@@ -35,7 +36,7 @@ import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
  */
 const TitleNavButton = ({ empty, segment, label, ...props }) => {
     // const urlbase = (segment) => `/emptys/empty/${segment}/${empty?.id}`;
-    const urlbase = (segment) => `/emptys/empty/view/${empty?.id}#${segment}`;
+    const urlbase = (segment) => `${EmptyURI}${empty?.id}#${segment}`;
     return (
         <Nav.Link as={"span"} {...props}>
             <ProxyLink to={urlbase(segment)}>{label}</ProxyLink>
@@ -43,7 +44,28 @@ const TitleNavButton = ({ empty, segment, label, ...props }) => {
     );
 };
 
-
+/**
+ * Renders the navigation bar for an Empty page.
+ *
+ * This component uses a custom hook, `useHash()`, to determine the current hash
+ * and highlights the active segment. It displays a navigation bar (using MyNavbar)
+ * with several segments (e.g. "history", "roles", "graph"), each rendered as a 
+ * TitleNavButton. The segments are hardcoded in this component and only rendered 
+ * if an `empty` object is provided.
+ *
+ * @component
+ * @param {Object} props - The component properties.
+ * @param {Object} props.empty - The empty entity object that provides context for the page.
+ * @param {string|number} props.empty.id - The unique identifier for the empty.
+ * @param {Function} props.onSearchChange - Callback function to handle changes in the search input.
+ *
+ * @returns {JSX.Element} The rendered EmptyPageNavbar component.
+ *
+ * @example
+ * // Example usage:
+ * const empty = { id: 123, ... };
+ * <EmptyPageNavbar empty={empty} onSearchChange={handleSearchChange} />
+ */
 export const EmptyPageNavbar = ({ empty, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
 

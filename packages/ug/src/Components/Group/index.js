@@ -5,7 +5,7 @@ export * from './GroupMediumCard'
 export * from './GroupMediumContent'
 export * from './GroupRolesCard'
 export * from './GroupRolesContent'
-export * from './GroupSchema'
+// export * from './GroupSchema'
 
 export * from './Vectors'
 export * from './Scalars'

@@ -1,7 +1,7 @@
 import { LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useParams } from "react-router"
-import { AdmissionLargeCard } from "../AdmissionLargeCard"
-import { AdmissionReadAsyncAction } from "../Queries/AdmissionReadAsyncAction"
+import { AdmissionLargeCard } from "../Components"
+import { AdmissionReadAsyncAction } from "../Queries"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
 
 /**

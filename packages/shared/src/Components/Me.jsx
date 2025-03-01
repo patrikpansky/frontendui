@@ -335,7 +335,27 @@ export const useRoles = (entity, roletypenames) => {
 };
 
 
-
+/**
+ * MyNavbar renders the navigation bar for the application.
+ *
+ * This component displays a responsive navigation bar that includes:
+ * - A home button linking to the index page.
+ * - A search input field (if provided via `onSearchChange`).
+ * - A profile icon that links to the user's profile.
+ * - Custom children elements in the center of the navbar.
+ *
+ * Depending on the user state (loading, error, not logged), it displays appropriate content.
+ *
+ * @param {Object} props - The component properties.
+ * @param {string} [props.loginURL='/oauth/login2?redirect_uri=/'] - URL to redirect for login.
+ * @param {string} [props.logoutURL='/oauth/logout'] - URL to perform logout.
+ * @param {string} [props.showmeURL='/ug/user/view/'] - Base URL for viewing the user's profile.
+ * @param {string} [props.indexURL='/index'] - URL for the home page.
+ * @param {function} [props.onSearchChange=null] - Callback function invoked when the search input value changes.
+ * @param {React.ReactNode} props.children - Elements to be rendered as part of the navbar content.
+ *
+ * @returns {JSX.Element} The rendered navigation bar.
+ */
 export const MyNavbar = ({
     loginURL = '/oauth/login2?redirect_uri=/',
     logoutURL = '/oauth/logout',

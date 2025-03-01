@@ -1,6 +1,0 @@
-export * from './AdmissionprocessInsertAsyncAction'
-export * from './AdmissionprocessReadAsyncAction'
-export * from './AdmissionprocessReadPageAsyncAction'
-export * from './AdmissionprocessUpdateAsyncAction'
-export * from './AdmissionprocessDeleteAsyncAction'
-export * from './AdmissionprocessFragments'

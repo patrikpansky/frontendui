@@ -4,7 +4,6 @@ import { RoleTypeListReadAsyncAction } from "./Queries/RoleTypeListReadAsyncActi
 import { ErrorHandler, LoadingSpinner, SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared"
 import { RoleTypeListTypeCDButton } from "./RoleTypeListTypeCDButton"
 import { TrashFill } from "react-bootstrap-icons"
-import { HorizontalLine } from "../../../../requests/src/Components/Part"
 
 
 export const RoleTypeListDesigner = ({roletypelist, children}) => {

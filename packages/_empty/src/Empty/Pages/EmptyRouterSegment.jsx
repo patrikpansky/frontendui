@@ -1,4 +1,4 @@
-import { EmptyURI } from "../EmptyLink"
+import { EmptyURI } from "../Components/EmptyLink"
 import { EmptyPage } from "./EmptyPage"
 
 /**
@@ -10,7 +10,7 @@ import { EmptyPage } from "./EmptyPage"
  * component to render when the route matches.
  *
  * @constant {Object} EmptyRouterSegment
- * @property {string} path - The URL path pattern for the route, e.g., "/empty/:id".
+ * @property {string} path - The URL path pattern for the route, e.g., "/empty/empty/view/:id".
  * @property {JSX.Element} element - The React element (component) to render, in this case, <EmptyPage />.
  */
 export const EmptyRouterSegment = {
