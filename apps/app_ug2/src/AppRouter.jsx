@@ -6,7 +6,9 @@ import {
 import { UserRouterSegment } from "@hrbolek/uoisfrontend-ug2";
 
 export const Routes = [
-    UserRouterSegment
+  UserRouterSegment
+ // path: "hello/id",
+ // element: <ProgramPage />,
 ]
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});
