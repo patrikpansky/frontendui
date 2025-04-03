@@ -101,5 +101,7 @@ const ApplicantPageContentLazy = ({applicant}) => {
 export const ApplicantPage = () => {
     const {id} = useParams()
     const applicant = {id}
-    return <ApplicantPageContentLazy applicant={applicant} />
+
+    return<div>Hello World {id}</div>
+    //return <ApplicantPageContentLazy applicant={applicant} />
 }
