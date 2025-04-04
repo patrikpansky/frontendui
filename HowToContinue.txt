@@ -19,3 +19,14 @@ Zobrazení všech zkoušek a když se klikne na zkoušku můžu upravovat termí
 
 studijní programy < přihlášky < přihláška uživatel
 Správa podmínek zkoušek < Správa termínů
+
+demo data system-data.hk.json
+názvy tabulek<- key 
+value <- vektory 
+pokud chceme ukládat data tohle nejlepší
+
+
+generování dat 10 bodů za pomoci mutací queries 
+program insert... když se k němu dělají subject tak subject inserts
+
+
