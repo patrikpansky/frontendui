@@ -1,4 +1,7 @@
 import { ButtonWithDialog, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared";
+// import { InsertGroupButton } from "./CUDButtons/InsertGroupButton";
+// import { UpdateGroupButton } from "./CUDButtons/UpdateGroupButton";
+// import { DeleteGroupButton } from "./CUDButtons/DeleteGroupButton";
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 
 /**
@@ -123,23 +126,23 @@ export const GroupButton = ({ operation, children, group, onDone = () => {}, ...
     </>);
 };
 
-// Prop validation using PropTypes
-GroupCUDButton.propTypes = {
-    /** The operation to perform: "C" for create, "U" for update, "D" for delete. */
-    operation: PropTypes.oneOf(['C', 'U', 'D']).isRequired,
-    /** The label or content for the button. */
-    children: PropTypes.node,
-    /** The parameters for the operation. */
-    group: PropTypes.shape({
-        id: PropTypes.string, // Required for "U" and "D" operations
-        name: PropTypes.string,
-        name_en: PropTypes.string,
-    }).isRequired,
-    /** Callback executed after the operation completes. Receives the `group` object. */
-    onDone: PropTypes.func,
-};
+// // Prop validation using PropTypes
+// GroupCUDButton.propTypes = {
+//     /** The operation to perform: "C" for create, "U" for update, "D" for delete. */
+//     operation: PropTypes.oneOf(['C', 'U', 'D']).isRequired,
+//     /** The label or content for the button. */
+//     children: PropTypes.node,
+//     /** The parameters for the operation. */
+//     group: PropTypes.shape({
+//         id: PropTypes.string, // Required for "U" and "D" operations
+//         name: PropTypes.string,
+//         name_en: PropTypes.string,
+//     }).isRequired,
+//     /** Callback executed after the operation completes. Receives the `group` object. */
+//     onDone: PropTypes.func,
+// };
 
-// Default props
-GroupCUDButton.defaultProps = {
-    onDone: () => {},
-};
+// // Default props
+// GroupCUDButton.defaultProps = {
+//     onDone: () => {},
+// };
