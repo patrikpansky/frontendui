@@ -13,6 +13,9 @@ query MyQuery {
     name
   }
 }
+vygenerovat npm s atributy jako jsou přihlášky, progam, zkouška, 
+pack_bravo tam to uložit
+
 
 Zobrazí se studijni programy tam se klikne na studijní program kde se následně klikne na přihlášku pak Zobrazení prihlášky
 Zobrazení všech zkoušek a když se klikne na zkoušku můžu upravovat termín
