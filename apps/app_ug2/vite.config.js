@@ -49,7 +49,7 @@ export default defineConfig({
       "@hrbolek/uoisfrontend-admissions": path.resolve(__dirname, "../../packages/admissions/src"),
       "@hrbolek/uoisfrontend-requests": path.resolve(__dirname, "../../packages/requests/src"),
 
-      "@hrbolek/uoisfrontend-zp": path.resolve(__dirname, "../../packages/requests/src"),
+      "@hrbolek/uoisfrontend-zp": path.resolve(__dirname, "../../packages/z_pack/src"),
     },
   },
 
@@ -92,6 +92,7 @@ export default defineConfig({
         '!../../packages/requests/**',
 
         '!../../packages/pack_bravo/**',
+        '!../../packages/z_pack/**',
 
       ],
     },

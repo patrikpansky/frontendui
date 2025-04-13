@@ -6,7 +6,7 @@ import { AppRouter } from './AppRouter';
 export const App = () => {
     return (
         <AppCanvas>
-           <firstEntity />
+            <AppRouter />
         </AppCanvas>    
     )
 }
