@@ -1,35 +1,56 @@
-Zobrazení podaných přihlášek (stránka studijního programu / přijímacího řízení) 
+# Systém pro správu přijímacího řízení
 
-Podle studijního programu 
-Stav přihlášek 
-Správa podmínek zkoušek <-- Část write C.R.U.D.
-Správa termínů zkoušek 
+## Hlavní funkce:
+1. Zobrazení podaných přihlášek
+   - Stránka studijního programu
+   - Stránka přijímacího řízení
+2. Podle studijního programu
+3. Stav přihlášek
+4. Správa podmínek zkoušek (CRUD operace)
+5. Správa termínů zkoušek
 
-Zatím všechno Zobrazení (entity: program)
-do graphid
+## Aktuální implementace:
+- Pouze zobrazení (entity: program)
+- Ukázka GraphQL dotazu:
+```graphql
 query MyQuery {
   programPage {
     id
     name
   }
 }
-vygenerovat npm s atributy jako jsou přihlášky, progam, zkouška, 
-pack_bravo tam to uložit
+```
 
+## Další vývojové úkoly:
+- Vygenerovat npm balíček s atributy:
+  - Přihlášky
+  - Program
+  - Zkouška
+- Uložení do pack_bravo
+## Uživatelské rozhraní:
+1. Seznam studijních programů
+   → Detail programu
+   → Seznam přihlášek
+   → Detail přihlášky
+2. Seznam zkoušek
+   → Úprava termínu zkoušky
+## Datový model:
+- Hierarchie:
+  - Studijní programy → Přihlášky → Přihláška uživatele
+  - Správa podmínek zkoušek → Správa termínů
+- Demo data: system-data.hk.json
+- Struktura:
+  - Názvy tabulek = key
+  - Hodnoty = vektory (optimální pro ukládání)
+## Generování testovacích dat:
+- 10 datových bodů pomocí mutací queries
+- Příklad workflow:
+  - Vložení programu (program insert)
+  - Následné vkládání předmětů (subject inserts)
+## Termín dokončení:
+15.04.2025 (po prvoprezentačním updatu)
 
-Zobrazí se studijni programy tam se klikne na studijní program kde se následně klikne na přihlášku pak Zobrazení prihlášky
-Zobrazení všech zkoušek a když se klikne na zkoušku můžu upravovat termín
-
-studijní programy < přihlášky < přihláška uživatel
-Správa podmínek zkoušek < Správa termínů
-
-demo data system-data.hk.json
-názvy tabulek<- key 
-value <- vektory 
-pokud chceme ukládat data tohle nejlepší
-
-
-generování dat 10 bodů za pomoci mutací queries 
-program insert... když se k němu dělají subject tak subject inserts
-
-
+## Nové komponenty (feat):
+- ExamDateManager - správa termínů zkoušek
+- ExamConditionEditor - úprava podmínek zkoušek
+- Součástí jsou příslušné GraphQL queries a mutations
