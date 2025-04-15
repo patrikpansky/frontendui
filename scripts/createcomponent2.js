@@ -1,10 +1,31 @@
 #!/usr/bin/env node
 const fs = require('fs').promises;
+const fss = require('fs')
 const path = require('path');
 const readline = require('readline');
 const crypto = require('crypto');
 
-const introspection = JSON.parse(fs.readFileSync('introspectionresult.json', 'utf8')).data.__schema;
+const introspectionPath = path.resolve(process.cwd(), 'introspectionresult.json');
+const introspection = JSON.parse(fss.readFileSync(introspectionPath, 'utf8')).data.__schema;
+
+const typesByName = {};
+for (const type of introspection.types) {
+    if (!type.name.startsWith('__')) {
+        typesByName[type.name] = type;
+    }
+}
+
+/**
+ * Capitalizes the first character of a string.
+ *
+ * @param {string} str - The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  
 
 /**
  * Vrátí poslední (nejvnitřnější) typ z `ofType` řetězce.
@@ -32,6 +53,18 @@ function unwrapList(type) {
         type = type.ofType;
     }
     return null;
+}
+
+/**
+ * Checks if a field is of a trivial GraphQL type (SCALAR or ENUM).
+ * This excludes OBJECT, LIST, UNION, INTERFACE.
+ *
+ * @param {object} type - GraphQL type reference.
+ * @returns {boolean} True if field is SCALAR or ENUM.
+ */
+function isTrivialField(type) {
+    const named = getNamedType(type);
+    return named.kind === 'SCALAR' || named.kind === 'ENUM';
 }
 
 /**
@@ -72,7 +105,8 @@ function generateFragment(typeName, typesByName, kind = 'link') {
         return null;
     }
 
-    const lines = [`fragment ${typeName}${capitalize(kind)} on ${typeName} {`];
+    const fragmentShortName = `${typeName.replace(/GQLModel$/, '')}`
+    const lines = [`fragment ${fragmentShortName}${capitalize(kind)}Fragment on ${typeName} {`];
 
     if (kind === 'link') {
         lines.push('    __typename');
@@ -87,17 +121,49 @@ function generateFragment(typeName, typesByName, kind = 'link') {
     }
 
     if (kind === 'medium') {
+        lines.push(`    ...${fragmentShortName}LinkFragment`);
         for (const field of typeDef.fields) {
             if (isScalarField(field.type)) {
-                lines.push(`    ${field.name}`);
+                const nestedType = getNamedType(field.type);
+                const nestedDef = typesByName[nestedType.name];
+    
+                if (!nestedDef || !Array.isArray(nestedDef.fields)) continue;
+    
+                const subfields = nestedDef.fields
+                    .filter(f => isTrivialField(f.type))
+                    .map(f => `        ${f.name}`);
+    
+                if (subfields.length > 0) {
+                    lines.push(`    ${field.name} {`);
+                    lines.push('        __typename');
+                    
+                    lines.push(...subfields);
+                    lines.push('    }');
+                }
             }
         }
     }
 
     if (kind === 'large') {
+        lines.push(`    ...${fragmentShortName}MediumFragment`);
         for (const field of typeDef.fields) {
             if (isListOfObjects(field.type)) {
-                lines.push(`    ${field.name} { __typename id }`);
+                const nestedType = getNamedType(field.type);
+                const nestedDef = typesByName[nestedType.name];
+    
+                if (!nestedDef || !Array.isArray(nestedDef.fields)) continue;
+    
+                const subfields = nestedDef.fields
+                    .filter(f => isTrivialField(f.type))
+                    .map(f => `        ${f.name}`);
+    
+                if (subfields.length > 0) {
+                    lines.push(`    ${field.name} {`);
+                    lines.push('        __typename');
+                    
+                    lines.push(...subfields);
+                    lines.push('    }');
+                }
             }
         }
     }
@@ -133,7 +199,7 @@ function generateQueryOrMutation(operationName, typesByName, isMutation = false,
     });
 
     const callArgs = args.map(arg => `${arg.name}: $${arg.name}`);
-    const fragmentRef = `...${capitalize(resultType)}Large`;
+    const fragmentRef = `...${capitalize(resultType)}LargeFragment`;
 
     return `${isMutation ? 'mutation' : 'query'} ${capitalize(operationName)}(${varDefs.join(', ')}) {
     result: ${operationName}(${callArgs.join(', ')}) {
@@ -249,7 +315,7 @@ async function copyAndProcessFile(srcPath, destPath, newName) {
         if (gql) {
             newContent = newContent.replace(
                 /createQueryStrLazy\(\s*`[^`]+`\s*(?:,\s*[^\)]+)?\)/s,
-                `createQueryStrLazy(\`\n${gql}\n\`)`
+                `createQueryStrLazy(\`\n${gql}\n\`, ${newName}LargeFragment)`
             );
         }
     }
