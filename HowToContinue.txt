@@ -54,3 +54,12 @@ query MyQuery {
 - ExamDateManager - správa termínů zkoušek
 - ExamConditionEditor - úprava podmínek zkoušek
 - Součástí jsou příslušné GraphQL queries a mutations
+
+
+Update 16.4.2025
+
+feat(ApplicationStatus): add component to manage application status and notes
+
+Introduce a new component `ApplicationStatus` to handle the display and updating of application statuses. The component includes features such as status selection, tooltips for status descriptions, and a notes section for additional information. This enhances the user experience by providing a centralized and interactive way to manage application details.
+
+
