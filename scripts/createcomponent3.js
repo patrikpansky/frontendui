@@ -519,8 +519,8 @@ const main = async () => {
 
         // Process each new name separately
         for (const modelName of modelNames) {
-            const shortModelName = modelName.replace(/GQLModel$/, '');
-            const destDir = path.join(destRoot, shortModelName);
+            // const shortModelName = modelName.replace(/GQLModel$/, '');
+            const destDir = path.join(destRoot, modelName);
             console.log(`\nProcessing new component: ${modelName}`);
             console.log(`Destination: ${destDir}`);
             await copyDirectory(srcDir, destDir, modelName);
