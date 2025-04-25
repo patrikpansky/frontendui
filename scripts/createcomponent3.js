@@ -63,8 +63,13 @@ function unwrapList(type) {
  * @returns {boolean} True if field is SCALAR or ENUM.
  */
 function isTrivialField(type) {
-    const named = getNamedType(type);
-    return named.kind === 'SCALAR' || named.kind === 'ENUM';
+    console.log("isTrivialField", type.kind, type.name);
+    // const named = getNamedType(type);
+    // return named.kind === 'SCALAR' || named.kind === 'ENUM';
+    if (type.kind === 'NON_NULL') {
+        return isTrivialField(type.ofType);
+    }
+    return type.kind === 'SCALAR' || type.kind === 'ENUM';
 }
 
 /**
@@ -110,13 +115,10 @@ function generateFragment(typeName, typesByName, kind = 'link') {
 
     if (kind === 'link') {
         lines.push('    __typename');
-        lines.push('    id');
-        lines.push('    lastchange');
-        if (typeDef.fields.find(f => f.name === 'name')) {
-            lines.push('    name');
-        }
-        if (typeDef.fields.find(f => f.name === 'nameEn')) {
-            lines.push('    nameEn');
+        for (const field of typeDef.fields) {
+            if (isTrivialField(field.type)) {
+                lines.push(`    ${field.name}`);
+            }
         }
     }
 
@@ -285,8 +287,8 @@ function computeChecksum(text) {
 /**
  * Basic placeholder replacement middleware: replaces all "Empty" with shortModelName in content
  */
-async function replaceEmptyMiddleware(ctx) {
-    ctx.newContent = preserveCaseReplace(ctx.content, 'Empty', ctx.shortModelName);
+async function replaceTemplateMiddleware(ctx) {
+    ctx.newContent = preserveCaseReplace(ctx.content, 'Template', ctx.shortModelName);
 }
 
 /**
@@ -294,7 +296,7 @@ async function replaceEmptyMiddleware(ctx) {
  */
 async function fragmentsMiddleware(ctx) {
     if (path.basename(ctx.srcPath) === 'TemplateFragments.jsx') {
-        const { modelName, typesByName } = ctx;
+        const { modelName, typesByName, shortModelName } = ctx;
         const link    = generateFragment(modelName, typesByName, 'link');
         const medium  = generateFragment(modelName, typesByName, 'medium');
         const large   = generateFragment(modelName, typesByName, 'large');
@@ -302,9 +304,9 @@ async function fragmentsMiddleware(ctx) {
 
         ctx.newContent =
             `import { createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";\n\n` +
-            `export const ${modelName}LinkFragment = createQueryStrLazy(\`\n${link}\n\`);\n\n` +
-            `export const ${modelName}MediumFragment = createQueryStrLazy(\`\n${medium}\n\`, ${modelName}LinkFragment);\n\n` +
-            `export const ${modelName}LargeFragment = createQueryStrLazy(\`\n${large}\n\`, ${modelName}MediumFragment);\n`;
+            `export const ${shortModelName}LinkFragment = createQueryStrLazy(\`\n${link}\n\`);\n\n` +
+            `export const ${shortModelName}MediumFragment = createQueryStrLazy(\`\n${medium}\n\`, ${shortModelName}LinkFragment);\n\n` +
+            `export const ${shortModelName}LargeFragment = createQueryStrLazy(\`\n${large}\n\`, ${shortModelName}MediumFragment);\n`;
     }
 }
 
@@ -337,14 +339,14 @@ async function operationsMiddleware(ctx) {
         
         ctx.newContent = ctx.newContent.replace(
             /createQueryStrLazy\(\s*`[^`]+`\s*(?:,\s*[^\)]+)?\)/s,
-            `createQueryStrLazy(\`\n${gql}\n\`, ${modelName}LargeFragment)`
+            `createQueryStrLazy(\`\n${gql}\n\`, ${shortModelName}LargeFragment)`
         );
     }
 }
 
 // Default middleware chain
 const defaultMiddlewares = [
-    replaceEmptyMiddleware,
+    replaceTemplateMiddleware,
     fragmentsMiddleware,
     operationsMiddleware,
 ];
@@ -430,12 +432,16 @@ async function copyDirectory(srcDir, destDir, newName) {
         const srcEntryPath = path.join(srcDir, entry.name);
 
         // Replace "Template" in file/directory names
-        const newEntryName = preserveCaseReplace(entry.name, "Template", newName);
-        const destEntryPath = path.join(destDir, newEntryName);
 
         if (entry.isDirectory()) {
+            const newEntryName = preserveCaseReplace(entry.name, "Template", newName);
+            const destEntryPath = path.join(destDir, newEntryName);
             await copyDirectory(srcEntryPath, destEntryPath, newName);
         } else if (entry.isFile()) {
+            const shortModelName = newName.replace(/GQLModel$/, '');
+            const newEntryName = preserveCaseReplace(entry.name, "Template", shortModelName);
+            const destEntryPath = path.join(destDir, newEntryName);
+        
             await copyAndProcessFile(srcEntryPath, destEntryPath, newName);
         }
     }
@@ -513,7 +519,8 @@ const main = async () => {
 
         // Process each new name separately
         for (const modelName of modelNames) {
-            const destDir = path.join(destRoot, modelName);
+            const shortModelName = modelName.replace(/GQLModel$/, '');
+            const destDir = path.join(destRoot, shortModelName);
             console.log(`\nProcessing new component: ${modelName}`);
             console.log(`Destination: ${destDir}`);
             await copyDirectory(srcDir, destDir, modelName);
