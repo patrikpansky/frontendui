@@ -257,9 +257,14 @@ function preserveCaseReplace(text, target, replacement) {
     return text.replace(regex, (match) => {
         if (match === match.toUpperCase()) {
             return replacement.toUpperCase();
-        } else if (match === match.toLowerCase()) {
+        } 
+        if (match === match.toLowerCase()) {
             return replacement.toLowerCase();
-        } else if (
+        } 
+        if (match === target) {
+            return replacement; // exact match, no case change
+        }
+        if (
             match[0] === match[0].toUpperCase() &&
             match.slice(1) === match.slice(1).toLowerCase()
         ) {
@@ -276,95 +281,146 @@ function computeChecksum(text) {
   return crypto.createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
-/**
- * Copy file from srcPath to destPath, replacing all "Empty" occurrences with newName,
- * checking whether to overwrite based on checksum, and regenerating GraphQL fragments and queries if applicable.
- *
- * @param {string} srcPath - Path to the source template file.
- * @param {string} destPath - Target path where the processed file should be written.
- * @param {string} newName - Entity name used to replace "Empty" throughout the file.
- */
-async function copyAndProcessFile(srcPath, destPath, newName) {
-    let shouldWrite = true;
 
+/**
+ * Basic placeholder replacement middleware: replaces all "Empty" with shortModelName in content
+ */
+async function replaceEmptyMiddleware(ctx) {
+    ctx.newContent = preserveCaseReplace(ctx.content, 'Empty', ctx.shortModelName);
+}
+
+/**
+ * Fragments generator middleware: detects fragment templates and re-generates them
+ */
+async function fragmentsMiddleware(ctx) {
+    if (path.basename(ctx.srcPath) === 'TemplateFragments.jsx') {
+        const { modelName, typesByName } = ctx;
+        const link    = generateFragment(modelName, typesByName, 'link');
+        const medium  = generateFragment(modelName, typesByName, 'medium');
+        const large   = generateFragment(modelName, typesByName, 'large');
+
+
+        ctx.newContent =
+            `import { createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";\n\n` +
+            `export const ${modelName}LinkFragment = createQueryStrLazy(\`\n${link}\n\`);\n\n` +
+            `export const ${modelName}MediumFragment = createQueryStrLazy(\`\n${medium}\n\`, ${modelName}LinkFragment);\n\n` +
+            `export const ${modelName}LargeFragment = createQueryStrLazy(\`\n${large}\n\`, ${modelName}MediumFragment);\n`;
+    }
+}
+
+/**
+ * GraphQL operation middleware: replaces query/mutation in template if applicable
+ */
+async function operationsMiddleware(ctx) {
+    const { srcPath, shortModelName, modelName, typesByName } = ctx;
+    const basename = path.basename(srcPath);
+
+    let operationType = null;
+    if (basename.includes('Insert'))    operationType = 'insert';
+    if (basename.includes('Update'))    operationType = 'update';
+    if (basename.includes('Delete'))    operationType = 'delete';
+    if (basename.includes('ReadPage'))  operationType = 'page';
+    if (basename.includes('Read'))      operationType = 'byId';
+
+    if (!operationType) return;
+
+    const opName = shortModelName.toLowerCase() +
+        (operationType === 'byId'
+            ? 'ById'
+            : operationType[0].toUpperCase() + operationType.slice(1)
+        );
+
+    const isMutation = ['insert', 'update', 'delete'].includes(operationType);
+    const gql = generateQueryOrMutation(opName, typesByName, isMutation, modelName);
+
+    if (gql) {
+        
+        ctx.newContent = ctx.newContent.replace(
+            /createQueryStrLazy\(\s*`[^`]+`\s*(?:,\s*[^\)]+)?\)/s,
+            `createQueryStrLazy(\`\n${gql}\n\`, ${modelName}LargeFragment)`
+        );
+    }
+}
+
+// Default middleware chain
+const defaultMiddlewares = [
+    replaceEmptyMiddleware,
+    fragmentsMiddleware,
+    operationsMiddleware,
+];
+
+/**
+ * Copy file from srcPath to destPath, apply middleware transformations,
+ * check checksum, and write result if allowed.
+ *
+ * @param {string} srcPath      - Source template file
+ * @param {string} destPath     - Target output file
+ * @param {string} newName      - Replacement name for "Empty"
+ * @param {Middleware[]} middlewares - Array of processing steps
+ */
+async function copyAndProcessFile(
+    srcPath,
+    destPath,
+    newName,
+    middlewares = defaultMiddlewares
+) {
+    const modelName       = newName;
+    const shortModelName  = modelName.replace(/GQLModel$/, '');
+    let shouldWrite       = true;
+
+    // Check existing file and checksum
     try {
         await fs.access(destPath);
-
-        // Destination exists — compare checksums
         const existingContent = await fs.readFile(destPath, 'utf8');
         const existingChecksum = computeChecksum(existingContent);
-        const checksumFilePath = destPath + '.checksum.txt';
-        const storedChecksum = (await fs.readFile(checksumFilePath, 'utf8')).trim();
+        const checksumPath = destPath + '.checksum.txt';
+        const storedChecksum = (await fs.readFile(checksumPath, 'utf8')).trim();
 
         if (storedChecksum !== existingChecksum) {
             console.warn(`⚠️  File ${destPath} has been changed. Skipping overwrite.`);
             return;
         }
-    } catch (err) {
-        // File or checksum doesn't exist — proceed to write
+    } catch {
+        // Missing file or checksum — proceed
     }
 
-    let content = await fs.readFile(srcPath, 'utf8');
-    let newContent = preserveCaseReplace(content, "Empty", newName);
+    // Read and initialize context
+    const originalContent = await fs.readFile(srcPath, 'utf8');
+    /** @type {ProcessingContext} */
+    const ctx = {
+        srcPath,
+        destPath,
+        newName,
+        modelName,
+        shortModelName,
+        typesByName,            // assume imported or in scope
+        content: originalContent,
+        newContent: originalContent,
+        shouldWrite,
+    };
 
-    // Special case: fragments file — generate fresh content from schema
-    if (path.basename(srcPath) === 'EmptyFragments.jsx') {
-        const modelName = `${newName}GQLModel`;
-        const link = generateFragment(modelName, typesByName, 'link');
-        const medium = generateFragment(modelName, typesByName, 'medium');
-        const large = generateFragment(modelName, typesByName, 'large');
-
-        newContent =
-            `import { createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";\n\n` +
-            `export const ${newName}LinkFragment = createQueryStrLazy(\`\n${link}\n\`);\n\n` +
-            `export const ${newName}MediumFragment = createQueryStrLazy(\`\n${medium}\n\`, ${newName}LinkFragment);\n\n` +
-            `export const ${newName}LargeFragment = createQueryStrLazy(\`\n${large}\n\`, ${newName}MediumFragment);\n`;
+    // Run middlewares sequentially
+    for (const mw of middlewares) {
+        await mw(ctx);
     }
 
-    // Attempt GraphQL query mutation replacement (if type is recognized)
-    const operationType = srcPath.includes('Insert') ? 'insert' :
-                          srcPath.includes('Update') ? 'update' :
-                          srcPath.includes('Delete') ? 'delete' :
-                          srcPath.includes('ReadPage') ? 'page' :
-                          srcPath.includes('Read') ? 'byId' : null;
+    // Final write and checksum
+    const finalContent = ctx.newContent;
+    const newChecksum = computeChecksum(finalContent);
+    await fs.writeFile(destPath, finalContent, 'utf8');
+    await fs.writeFile(destPath + '.checksum.txt', newChecksum, 'utf8');
 
-    if (operationType) {
-        const gqlName = newName.toLowerCase() + (operationType === 'byId' ? 'ById' : capitalize(operationType));
-        const gql = generateQueryOrMutation(
-            gqlName,
-            typesByName,
-            ['insert', 'update', 'delete'].includes(operationType),
-            newName
-        );
-
-        if (gql) {
-            newContent = newContent.replace(
-                /createQueryStrLazy\(\s*`[^`]+`\s*(?:,\s*[^\)]+)?\)/s,
-                `createQueryStrLazy(\`\n${gql}\n\`, ${newName}LargeFragment)`
-            );
-        }
-    }
-
-    const newChecksum = computeChecksum(newContent);
-    const checksumFilePath = destPath + '.checksum.txt';
-
-    if (shouldWrite) {
-        await fs.writeFile(destPath, newContent, 'utf8');
-        await fs.writeFile(checksumFilePath, newChecksum, 'utf8');
-        console.log(`✅ Processed file: ${destPath}`);
-    } else {
-        console.log(`⏭️ Skipped file: ${destPath}`);
-    }
+    console.log(`✅ Processed file: ${destPath}`);
 }
 
 
 /**
  * Recursively copies a directory from srcDir to destDir,
- * replacing "Empty" in file and folder names and processing file content.
+ * replacing "Template" in file and folder names and processing file content.
  *
  * @param {string} srcDir - Source directory path.
  * @param {string} destDir - Destination directory path.
- * @param {string} newName - Replacement string for "Empty" in names and content.
+ * @param {string} newName - Replacement string for "Template" in names and content.
  */
 async function copyDirectory(srcDir, destDir, newName) {
     await fs.mkdir(destDir, { recursive: true });
@@ -373,8 +429,8 @@ async function copyDirectory(srcDir, destDir, newName) {
     for (const entry of entries) {
         const srcEntryPath = path.join(srcDir, entry.name);
 
-        // Replace "Empty" in file/directory names
-        const newEntryName = preserveCaseReplace(entry.name, "Empty", newName);
+        // Replace "Template" in file/directory names
+        const newEntryName = preserveCaseReplace(entry.name, "Template", newName);
         const destEntryPath = path.join(destDir, newEntryName);
 
         if (entry.isDirectory()) {
@@ -420,40 +476,47 @@ const main = async () => {
         // Define the root destination directory (under packages/{destRelative}/src)
         const destRoot = path.resolve(__dirname, '..', 'packages', destRelative, 'src');
 
+        const objectTypeNames = new Set(
+            introspection.types
+              .filter(type => type.kind === 'OBJECT')
+              .map(type => type.name)
+          );
+
         const entries = await fs.readdir(destRoot, { withFileTypes: true });
         // vyfiltrujeme jen adresáře a vrátíme jejich názvy
-        const models = entries
+        const modelNames = entries
             .filter(entry => entry.isDirectory())
-            .map(entry => entry.name);
+            .map(entry => entry.name)
+            .filter(name => objectTypeNames.has(name));
 
-        // Ask the user for the new names to replace "Empty" (comma-separated)
-        const newNamesInput = await prompt("Enter the new names to replace 'Empty' (comma-separated): ");
-        if (!newNamesInput) {
-            console.error("No new names provided. Exiting.");
-            process.exit(1);
-        }
+        // // Ask the user for the new names to replace "Empty" (comma-separated)
+        // const newNamesInput = await prompt("Enter the new names to replace 'Empty' (comma-separated): ");
+        // if (!newNamesInput) {
+        //     console.error("No new names provided. Exiting.");
+        //     process.exit(1);
+        // }
 
-        // Split and trim into an array of new names
-        const newNames = newNamesInput
-            .split(',')
-            .map(n => n.trim())
-            .filter(Boolean);
+        // // Split and trim into an array of new names
+        // const newNames = newNamesInput
+        //     .split(',')
+        //     .map(n => n.trim())
+        //     .filter(Boolean);
 
-        if (newNames.length === 0) {
-            console.error("No valid new names provided. Exiting.");
-            process.exit(1);
-        }
+        // if (newNames.length === 0) {
+        //     console.error("No valid new names provided. Exiting.");
+        //     process.exit(1);
+        // }
 
         // Define source directory: in our _empty package the templates are under packages/_empty/src/Empty
-        const srcDir = path.resolve(__dirname, '..', 'packages', '_empty', 'src', 'Empty');
+        const srcDir = path.resolve(__dirname, '..', 'packages', '_empty', 'src', 'Template');
         console.log(`Source directory: ${srcDir}`);
 
         // Process each new name separately
-        for (const newName of newNames) {
-            const destDir = path.join(destRoot, newName);
-            console.log(`\nProcessing new component: ${newName}`);
+        for (const modelName of modelNames) {
+            const destDir = path.join(destRoot, modelName);
+            console.log(`\nProcessing new component: ${modelName}`);
             console.log(`Destination: ${destDir}`);
-            await copyDirectory(srcDir, destDir, newName);
+            await copyDirectory(srcDir, destDir, modelName);
         }
 
         console.log("\n✅ Copy and replacement completed for all new names.");
