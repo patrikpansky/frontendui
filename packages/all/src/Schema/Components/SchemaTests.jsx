@@ -360,7 +360,7 @@ const TypeChainTest = ({schema, typename}) => {
 
     return (<>
         <Accordion.Item eventKey={typename}>
-            <Accordion.Header>{typename} - Summary</Accordion.Header>
+            <Accordion.Header style={{'--bs-accordion-btn-bg': 'var(--bs-danger)'}}><span className=''>{typename} - Summary ✔️❌</span></Accordion.Header>
             <Accordion.Body>
                 {insertQueries.length == 0 && "Missing insert ops"}<br />
                 {updateQueries.length == 0 && "Missing update ops"}<br />
@@ -368,9 +368,41 @@ const TypeChainTest = ({schema, typename}) => {
                 <pre>{JSON.stringify(insertQueries)}</pre>
                 <pre>{JSON.stringify(updateQueries)}</pre>
                 <pre>{JSON.stringify(deleteQueries)}</pre>
+                <Accordion>
+                    <Accordion.Item eventKey={`${typename} - vector reads`}>
+                        <Accordion.Header>{`${typename} - Vector reads`}</Accordion.Header>
+                        <Accordion.Body>
+                            <pre>{JSON.stringify(vectorResponses, null, 2)}</pre>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey={`${typename} - scalar reads`}>
+                        <Accordion.Header>{`${typename} - Scalar reads`}</Accordion.Header>
+                        <Accordion.Body>
+                            <pre>{JSON.stringify(scalarResponses, null, 2)}</pre>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey={`${typename} - inserts`}>
+                        <Accordion.Header>{`${typename} - Inserts`}</Accordion.Header>
+                        <Accordion.Body>
+                            <pre>{JSON.stringify(insertResponses, null, 2)}</pre>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey={`${typename} - updates`}>
+                        <Accordion.Header>{`${typename} - Updates`}</Accordion.Header>
+                        <Accordion.Body>
+                            <pre>{JSON.stringify(updateResponses, null, 2)}</pre>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item eventKey={`${typename} - deletes`}>
+                        <Accordion.Header>{`${typename} - Deletes`}</Accordion.Header>
+                        <Accordion.Body>
+                            <pre>{JSON.stringify(deleteResponses, null, 2)}</pre>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
             </Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey={`${typename} - vector reads`}>
+        {/* <Accordion.Item eventKey={`${typename} - vector reads`}>
             <Accordion.Header>{`${typename} - Vector reads`}</Accordion.Header>
             <Accordion.Body>
                 <pre>{JSON.stringify(vectorResponses, null, 2)}</pre>
@@ -399,7 +431,7 @@ const TypeChainTest = ({schema, typename}) => {
             <Accordion.Body>
                 <pre>{JSON.stringify(deleteResponses, null, 2)}</pre>
             </Accordion.Body>
-        </Accordion.Item>
+        </Accordion.Item> */}
     </>)
 }
 
