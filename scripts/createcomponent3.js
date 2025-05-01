@@ -292,6 +292,20 @@ async function replaceTemplateMiddleware(ctx) {
 }
 
 /**
+ * Basic placeholder replacement middleware: replaces all "Vector" with shortModelName in content
+ */
+async function replaceVectorMiddleware(ctx) {
+    ctx.newContent = preserveCaseReplace(ctx.content, 'Vector', ctx.attributeName);
+}
+
+/**
+ * Basic placeholder replacement middleware: replaces all "Scalar" with shortModelName in content
+ */
+async function replaceScalarMiddleware(ctx) {
+    ctx.newContent = preserveCaseReplace(ctx.content, 'Scalar', ctx.attributeName);
+}
+
+/**
  * Fragments generator middleware: detects fragment templates and re-generates them
  */
 async function fragmentsMiddleware(ctx) {

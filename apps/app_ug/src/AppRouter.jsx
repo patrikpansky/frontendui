@@ -3,6 +3,8 @@ import {
       RouterProvider
 } from "react-router-dom";
 import { GroupRouterSegment, UserRouterSegment } from "@hrbolek/uoisfrontend-ug2";
+import { SchemaRouterSegment } from "../../../packages/all/src/Schema";
+import { SchemaTypeRouterSegment } from "../../../packages/all/src/SchemaType/Pages/SchemaTypeRouterSegment";
   
 // import { UserPage } from "@hrbolek/uoisfrontend-ug";
 // import { UserStudiesPage } from "@hrbolek/uoisfrontend-granting";
@@ -74,7 +76,9 @@ import { GroupRouterSegment, UserRouterSegment } from "@hrbolek/uoisfrontend-ug2
 
 const Routes = [
     UserRouterSegment,
-    GroupRouterSegment
+    GroupRouterSegment,
+    SchemaRouterSegment,
+    SchemaTypeRouterSegment
 ]
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});
