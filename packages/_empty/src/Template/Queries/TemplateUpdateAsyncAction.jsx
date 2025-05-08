@@ -1,8 +1,7 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
 import { TemplateLargeFragment } from "./TemplateFragments";
 
-const TemplateUpdateMutation = createQueryStrLazy(
-`
+const TemplateUpdateMutationStr = `
 mutation TemplateUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String) {
   result: templateUpdate(
     template: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en}
@@ -18,6 +17,7 @@ mutation TemplateUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: Strin
     ...TemplateLarge
   }
 }
-`, TemplateLargeFragment)
+`
 
+const TemplateUpdateMutation = createQueryStrLazy(`${TemplateUpdateMutationStr}`, TemplateLargeFragment)
 export const TemplateUpdateAsyncAction = createAsyncGraphQLAction(TemplateUpdateMutation)

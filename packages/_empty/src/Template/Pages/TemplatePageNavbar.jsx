@@ -2,6 +2,26 @@ import Nav from 'react-bootstrap/Nav'
 import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
 
 import { TemplateURI } from '../Components'
+
+/**
+ * Allow to use HashContainer for determination which component at page will be rendered.
+ * That must be manually inserted at TemplatePageContent, usually this should be done 
+ * as children of TemplateLargeCard.
+ * <TemplateLargeCard>
+ *     <HashContainer>
+ *         <VectorA id="history"/>
+ *         <VectorB id="roles"/>
+ *         <VectorC id="graph"/>
+ *     </HashContainer>
+ * </TemplateLargeCard>
+ * it is usefull to define globally active "areas" like science, administration, teaching, ...
+ */
+const TemplatePageSegments = [
+    { segment: 'history', label: 'Historie'},
+    { segment: 'roles', label: 'Role' },
+    { segment: 'graph', label: 'Stavy' },
+]
+
 /**
  * A navigation button component that generates a URL based on the template's ID and a specific segment.
  * The button uses a `ProxyLink` to navigate while preserving hash and query parameters.
@@ -69,17 +89,11 @@ const TitleNavButton = ({ template, segment, label, ...props }) => {
 export const TemplatePageNavbar = ({ template, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
 
-    const segments = [
-        { segment: 'history', label: 'Historie'},
-        // { segment: 'permissions', label: 'Práva' },
-        { segment: 'roles', label: 'Role' },
-        // { segment: 'library', label: 'Knihovna' },
-        { segment: 'graph', label: 'Stavy' },
-    ]
+    
     return (
         <div className='screen-only'>
         <MyNavbar onSearchChange={onSearchChange} >
-            {template && segments.map(({ segment, label }) => (
+            {template && TemplatePageSegments.map(({ segment, label }) => (
                 <Nav.Item key={segment} >
                     <TitleNavButton
                         template={template}

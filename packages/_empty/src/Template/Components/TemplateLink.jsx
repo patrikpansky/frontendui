@@ -1,6 +1,7 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
+import { URIRoot } from "../../uriroot";
 
-export const TemplateURI = `/template/template/view/`;
+export const TemplateURI = `${URIRoot}/template/view/`;
 
 /**
  * A React component that renders a `ProxyLink` to an "template" entity's view page.

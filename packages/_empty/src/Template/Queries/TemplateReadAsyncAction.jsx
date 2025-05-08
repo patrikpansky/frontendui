@@ -1,17 +1,17 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
 import { TemplateLargeFragment } from "./TemplateFragments";
 
-const TemplateReadQuery = createQueryStrLazy(
-`
+const TemplateReadQueryStr = `
 query TemplateReadQuery($id: UUID!) {
   result: templateById(id: $id) {
     ...TemplateLarge
   }
 }
-`, 
-    TemplateLargeFragment)
+`
 
-    /**
+const TemplateReadQuery = createQueryStrLazy(`${TemplateReadQueryStr}`, TemplateLargeFragment)
+
+/**
  * An async action for executing a GraphQL query to read template entities.
  *
  * This action is created using `createAsyncGraphQLAction` with a predefined `TemplateQueryRead` query.

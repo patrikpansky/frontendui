@@ -4,6 +4,8 @@ import path from "path"; // Provides utilities for working with file and directo
 import compression from "vite-plugin-compression";
 import { VitePWA } from "vite-plugin-pwa";
 
+import { getPage, gqldevelopment } from './gqlmiddlewares.js'
+
 const PWA = () => {
   return VitePWA({
     manifest: {
@@ -34,6 +36,7 @@ export default defineConfig({
   plugins: [
     react(), // Adds React plugin for handling JSX/TSX and fast refresh
     compression(), // Add gzip compression
+    gqldevelopment('/api/gql/sdl')
   ],
 
   // Module resolution settings
@@ -78,6 +81,7 @@ export default defineConfig({
     proxy: {
       // Define proxy rules for API requests
       // Example: Requests to /api/gql are proxied to http://localhost:33001
+      
       '/api/gql': 'http://localhost:33001',
     },
     watch: {

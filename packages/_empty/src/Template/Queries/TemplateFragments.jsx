@@ -1,7 +1,6 @@
 import { createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared"
 
-export const TemplateLinkFragment = createQueryStrLazy(
-`
+const TemplateLinkFragmentStr = `
 fragment TemplateLink on TemplateGQLModel {
   __typename
   id
@@ -9,20 +8,21 @@ fragment TemplateLink on TemplateGQLModel {
   name
   nameEn
 }
-`)
-
-
-export const TemplateMediumFragment = createQueryStrLazy(
 `
+
+const TemplateMediumFragmentStr = `
 fragment TemplateMedium on TemplateGQLModel {
   ...TemplateLink
 }
-`, TemplateLinkFragment)
-
-export const TemplateLargeFragment = createQueryStrLazy(
 `
+
+const TemplateLargeFragmentStr = `
 fragment TemplateLarge on TemplateGQLModel {
   ...TemplateMedium
 }
-`, TemplateMediumFragment)
+`
+
+export const TemplateLinkFragment = createQueryStrLazy(`${TemplateLinkFragmentStr}`)
+export const TemplateMediumFragment = createQueryStrLazy(`${TemplateMediumFragmentStr}`, TemplateLinkFragment)
+export const TemplateLargeFragment = createQueryStrLazy(`${TemplateLargeFragmentStr}`, TemplateMediumFragment)
   

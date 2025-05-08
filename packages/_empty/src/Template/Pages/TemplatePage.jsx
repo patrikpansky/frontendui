@@ -27,7 +27,7 @@ import { TemplatePageNavbar } from "./TemplatePageNavbar"
  * 
  * <TemplatePageContent template={templateEntity} />
  */
-const TemplatePageContent = ({template}) => {
+const TemplatePageContent = ({template, onChange, onBlur}) => {
     return (<>
         <TemplatePageNavbar template={template} />
         <TemplateLargeCard template={template}>
@@ -63,22 +63,22 @@ const TemplatePageContentLazy = ({template}) => {
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleChange.e", e)
+        // console.log("TemplatePageContentLazy.handleChange.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+        // console.log("TemplatePageContentLazy.serverResponse", serverResponse)
     }
     const handleBlur = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleBlur.e", e)
+        // console.log("TemplatePageContentLazy.handleBlur.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+        // console.log("TemplatePageContentLazy.serverResponse", serverResponse)
     }
 
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {entity && <TemplatePageContent template={entity}  onChange={handleChange} onBlur={handleBlur} />}
+        {entity && <TemplatePageContent template={entity} onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }
 

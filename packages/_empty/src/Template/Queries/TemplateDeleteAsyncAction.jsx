@@ -1,8 +1,7 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
 import { TemplateLargeFragment } from "./TemplateFragments";
 
-const TemplateDeleteMutation = createQueryStrLazy(
-`
+const TemplateDeleteMutationStr = `
 mutation TemplateDeleteMutation($id: UUID!, $lastchange: DateTime!) {
   result: templateDelete(
     template: {id: $id, lastchange: $lastchange}
@@ -17,7 +16,6 @@ mutation TemplateDeleteMutation($id: UUID!, $lastchange: DateTime!) {
     }
   }
 }
-`,
-    TemplateLargeFragment)
-
+`
+const TemplateDeleteMutation = createQueryStrLazy(`${TemplateDeleteMutationStr}`, TemplateLargeFragment)
 export const TemplateDeleteAsyncAction = createAsyncGraphQLAction(TemplateDeleteMutation)

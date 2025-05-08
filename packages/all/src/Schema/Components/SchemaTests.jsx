@@ -193,174 +193,151 @@ const TypeChainTest = ({schema, typename}) => {
     const [insertResponses, setInsertResponses] = useState({});
     const [updateResponses, setUpdateResponses] = useState({});
     const [deleteResponses, setDeleteResponses]   = useState({});    
-    const [id, setId] = useState(null)
-    const [insertVariables, setInsertVariables] = useState(null)
-    const [mutationVariables, setMutationVariables] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [rerun, setRerun] = useState(0)
 
     useEffect(() => {
         let isMounted = true;
 
-        const runSequentialQueries = async () => {
-            const results = {};
-            for (const operationName of vectorQueries) {
+        const runAll = async () => {
+            // 1) Vector reads
+            const vResults = {};
+            for (const op of vectorQueries) {
                 try {
-                    const query = buildQueryPage(schema, operationName);
-                    const json = await gqlFetch(URI, query);
-                    results[operationName] = json;
+                    const json = await gqlFetch(URI, buildQueryPage(schema, op));
+                    vResults[op] = json;
                 } catch (err) {
-                    console.error(`Error in ${operationName}:`, err);
-                    results[operationName] = json;
-                }
-            }
-            if (isMounted) {
-                setVectorResponses(results);
-                // vezmeme první operation a jeho první prvek v poli, assume data[op] je pole objektů s id
-                const firstOp = vectorQueries[0];
-                const firstData = results[firstOp]?.data?.[firstOp];
-                const firstId = Array.isArray(firstData) ? firstData[0]?.id : null;
-                setId(firstId ?? null);
-            }
-        };
-
-        if (vectorQueries.length > 0) {
-            runSequentialQueries();
-        }
-
-        return () => {
-            isMounted = false;
-        };
-    }, [vectorQueries, schema])
-
-    // 2) Po získání id spustí scalar queries s proměnnou { id }
-    useEffect(() => {
-        let isMounted = true;
-
-        const runSequentialScalarQueries = async () => {
-            if (!id) return;
-            const results = {};
-            let entity = null;
-            for (const operationName of scalarQueries) {
-                try {
-                    const query = buildQueryScalar(schema, operationName);
-                    const json = await gqlFetch(URI, query, { id });
-                    results[operationName] = json;
-                    entity = json?.data[operationName]
-                    
-                } catch (err) {
-                    console.error(`Error in ${operationName}:`, err);
-                    results[operationName] = json;
-                }
-            }
-            if (isMounted) {
-                console.log(entity)
-                // Remove the 'id' field from the variables
-                delete entity.id;
-                // Remove the 'lastchange' field from the variables
-                delete entity.lastchange;
-
-                setInsertVariables(entity)
-                setScalarResponses(results);
-            }
-        };
-
-        runSequentialScalarQueries();
-
-        return () => {
-            isMounted = false;
-        };
-    }, [scalarQueries, schema, id]);
-
-    // 3) Insert → Update → Delete workflow
-    useEffect(() => {
-        if (!insertVariables) return;
-        let isMounted = true;
-        const runWorkflow = async () => {
-            // a) Inserts
-            const deleteMutation = buildExpandedMutation(schema, deleteQueries[0]);
-            const responses = {}
-            for (const op of insertQueries) {
-                try {
-                    const insertMutation = buildExpandedMutation(schema, op);
-                    const json = await gqlFetch(URI, insertMutation, insertVariables);
-                    const mutationVariables = json?.data?.[op];
-                    responses[op] = json;
-                    const deletejson = await gqlFetch(URI, deleteMutation, mutationVariables)
-                } catch (err) {
-                    responses[op] = json
-                    console.error(`Insert error ${op}:`, err);
+                    console.error(`Error in ${op}`, err);
+                    vResults[op] = {errors: [JSON.stringify(err)]};
+                    setError(err)
                 }
             }
             if (!isMounted) return;
-            setInsertResponses(responses);
-        }
-        runWorkflow()
-        return () => { isMounted = false; };
-    }, [insertQueries, insertVariables])
+            setVectorResponses(vResults);
 
-    useEffect(() => {
-        let isMounted = true;
-        const runWorkflow = async () => {
-            // b) Updates on first inserted entity
-            const insertMutation = buildExpandedMutation(schema, insertQueries[0]);
-            const deleteMutation = buildExpandedMutation(schema, deleteQueries[0]);
-            const json = await gqlFetch(URI, insertMutation, insertVariables);
-            const mutationVariables = json?.data?.[insertQueries[0]];
-            let entity = {...mutationVariables}
-            const updateRes = {};
-            for (const op of updateQueries) {
-                try {
-                    const m = buildExpandedMutation(schema, op);
-                    const json = await gqlFetch(URI, m, entity);
-                    const resp = json?.data?.[op];
-                    updateRes[op] = json;
-                    if (resp?.lastchange) {
-                        entity = { ...entity, lastchange: resp.lastchange };
+            const firstOp = vectorQueries[0];
+            const arr = vResults[firstOp]?.data?.[firstOp] || [];
+            const firstId = Array.isArray(arr) ? arr[0]?.id : null;
+            // setId(firstId);
+
+            // 2) Scalar reads
+            let baseEntity = null;
+            if (firstId) {
+                const sResults = {};
+                for (const op of scalarQueries) {
+                    try {
+                        const json = await gqlFetch(URI, buildQueryScalar(schema, op), { id: firstId });
+                        sResults[op] = json;
+                        baseEntity = json?.data?.[op];
+                    } catch (err) {
+                        console.error(`Error in ${op}`, err);
+                        sResults[op] = {errors: [JSON.stringify(err)]};
+                        setError(err)
                     }
-                    
-                } catch (err) {
-                    console.error(`Update error ${op}:`, err);
-                    updateRes[op] = err
+                }
+                if (!isMounted) return;
+                setScalarResponses(sResults);
+
+                if (baseEntity) {
+                    delete baseEntity.id;
+                    delete baseEntity.lastchange;
                 }
             }
-            const deletejson = await gqlFetch(URI, deleteMutation, entity)
-            if (!isMounted) return;
-            setUpdateResponses(updateRes);
-        }
-        if (insertQueries.length && updateQueries.length && deleteQueries.length) {
-            runWorkflow();
-        }
-        return () => { isMounted = false; };
-    }, [insertQueries, insertVariables, updateQueries, deleteQueries, schema])
 
-    useEffect(() => {
-        let isMounted = true;
-        const runWorkflow = async () => {
-            const insertMutation = buildExpandedMutation(schema, insertQueries[0]);
-            const deleteRes = {};
-            for (const delOp of deleteQueries) {
-                try {
-                    const insertJson = await gqlFetch(URI, insertMutation, insertVariables);
-                    const mutationVariables = insertJson?.data?.[op];
-                    const m = buildExpandedMutation(schema, delOp);
-                    const json = await gqlFetch(URI, m, mutationVariables);
-                    deleteRes[delOp] = json;
-                } catch (err) {
-                    console.error(`Delete error ${delOp}:`, err);
-                    deleteRes[delOp] = err;
+            // 3) Inserts
+            const deleteQuery = buildExpandedMutation(schema, deleteQueries[0])
+            if (baseEntity) {
+                const iResults = {};
+                for (const op of insertQueries) {
+                    try {
+                        const json = await gqlFetch(URI, buildExpandedMutation(schema, op), baseEntity);
+                        iResults[op] = json;
+                        const ent = json?.data?.[op];
+                        
+                        // delete it immediatelly
+                        await gqlFetch(URI, deleteQuery, ent)
+                    } catch (err) {
+                        console.error(`Insert error ${op}`, err);
+                        iResults[op] = {errors: [err?.message || JSON.stringify(err)]};
+                        setError(err)
+                    }
                 }
-            }           
-            if (isMounted) setDeleteResponses(deleteRes);
+                if (!isMounted) return;
+                setInsertResponses(iResults);
+            }
+
+            const insertOp = insertQueries[0]
+            const insertQuery = buildExpandedMutation(schema, insertOp)
+
+            // 4) Updates
+            if (baseEntity) {    
+                const uResults = {};
+                for (const op of updateQueries) {
+                    try {
+                        const insertedJson = await gqlFetch(URI, insertQuery, baseEntity);
+                        const updatedEntity = insertedJson?.data?.[insertOp]
+
+                        const json = await gqlFetch(URI, buildExpandedMutation(schema, op), updatedEntity);
+                        uResults[op] = json;
+                    } catch (err) {
+                        console.error(`Update error ${op}`, err);
+                        uResults[op] = {errors: [err?.message || JSON.stringify(err)]};
+                        setError(err)
+                    }
+                }
+                if (!isMounted) return;
+                setUpdateResponses(uResults);
+            }
+
+            // 5) Deletes
+            if (baseEntity) {
+                const dResults = {};
+                for (const op of deleteQueries) {
+                    try {
+                        const insertedJson = await gqlFetch(URI, insertQuery, baseEntity);
+                        const updatedEntity = insertedJson?.data?.[insertOp]
+                        const json = await gqlFetch(URI, buildExpandedMutation(schema, op), updatedEntity);
+                        dResults[op] = json;
+                    } catch (err) {
+                        console.error(`Delete error ${op}`, err);
+                        dResults[op] = {errors: [err?.message || JSON.stringify(err)]};
+                        setError(err)
+                    }
+                }
+                if (!isMounted) return;
+                setDeleteResponses(dResults);
+            }
+            setLoading(false);
         };
 
-        if (insertQueries.length && deleteQueries.length) {
-            runWorkflow();
-        }
-        return () => { isMounted = false; };
-    }, [insertVariables, insertQueries, deleteQueries, schema]);
+        runAll();
 
+        return () => {
+            isMounted = false;
+        };
+    }, [
+        schema,
+        vectorQueries,
+        scalarQueries,
+        insertQueries,
+        updateQueries,
+        deleteQueries,
+        rerun
+    ]);
+
+    const onClickRerun = (e) => {
+        setRerun(rerun+1)
+        e.preventDefault()
+    }
     return (<>
+        {/* {loading && "Loading"} */}
+        { (
         <Accordion.Item eventKey={typename}>
-            <Accordion.Header style={{'--bs-accordion-btn-bg': 'var(--bs-danger)'}}><span className=''>{typename} - Summary ✔️❌</span></Accordion.Header>
+            <Accordion.Header style={{'--bs-accordion-btn-bg': (error?'var(--bs-danger)':'var(--bs-success)')}}>
+                <span className=''>{typename} - Summary ✔️❌</span>
+                <button className='btn btn-primary' onClick={onClickRerun}>Rerun</button>
+            </Accordion.Header>
             <Accordion.Body>
                 {insertQueries.length == 0 && "Missing insert ops"}<br />
                 {updateQueries.length == 0 && "Missing update ops"}<br />
@@ -402,6 +379,7 @@ const TypeChainTest = ({schema, typename}) => {
                 </Accordion>
             </Accordion.Body>
         </Accordion.Item>
+        )}
         {/* <Accordion.Item eventKey={`${typename} - vector reads`}>
             <Accordion.Header>{`${typename} - Vector reads`}</Accordion.Header>
             <Accordion.Body>
