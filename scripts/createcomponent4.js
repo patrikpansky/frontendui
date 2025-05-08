@@ -18,6 +18,48 @@ for (const type of introspection.types) {
 }
 
 /**
+ * Replaces all occurrences of a target string within the input text with a replacement string,
+ * while preserving the case style of each match.
+ *
+ * Case preservation is based on the format of the matched word:
+ * - If the match is all UPPERCASE → replacement is uppercased
+ * - If the match is all lowercase → replacement is lowercased
+ * - If the match is Capitalized (first upper, rest lower) → replacement is capitalized
+ * - If the match is mixed case or other → replacement is used as-is
+ *
+ * @param {string} text - The original text in which to perform replacements.
+ * @param {string} target - The target word or phrase to be replaced (case-insensitive).
+ * @param {string} replacement - The word or phrase to replace with.
+ * @returns {string} The modified string with replacements applied and case preserved.
+ *
+ * @example
+ * preserveCaseReplace("Empty is EMPTY or empty.", "empty", "admission");
+ * // → "Admission is ADMISSION or admission."
+ */
+function preserveCaseReplace(text, target, replacement) {
+    const regex = new RegExp(target, 'gi');
+    return text.replace(regex, (match) => {
+        if (match === match.toUpperCase()) {
+            return replacement.toUpperCase();
+        } 
+        if (match === match.toLowerCase()) {
+            return replacement.toLowerCase();
+        } 
+        if (match === target) {
+            return replacement; // exact match, no case change
+        }
+        if (
+            match[0] === match[0].toUpperCase() &&
+            match.slice(1) === match.slice(1).toLowerCase()
+        ) {
+            return replacement.charAt(0).toUpperCase() + replacement.slice(1).toLowerCase();
+        } else {
+            return replacement;
+        }
+    });
+}
+
+/**
  * Capitalizes the first character of a string.
  *
  * @param {string} str - The string to capitalize.
@@ -706,20 +748,30 @@ async function main() {
     // ────────────────────────────────────────────────────────
     // 1) Read & validate CLI args
     // ────────────────────────────────────────────────────────
-    const [,, destRelative] = process.argv;
-  
-    if (!destRelative || destRelative.startsWith('-')) {
+    const [,, destRelative, ...modelNamesArg] = process.argv;
+    if (!destRelative || modelNamesArg.length === 0) {
       console.error(`
-  Usage: node ${path.basename(process.argv[1])} <destRelative>
+  Usage: ${path.basename(process.argv[1])} <destRelative> <modelName> [modelName2 ...]
   
-  <destRelative>  The directory under "packages/" you want to copy into,
-                  e.g. "myFaculty/templates"
+    <destRelative>    Directory under "packages/" to copy into,
+                      e.g. "myFaculty/templates"
+    <modelName...>    One or more GraphQL OBJECT type names to process
   `);
       process.exit(1);
     }
+   
+    // 3) Build set of valid OBJECT type names from AST
+    const validTypes = new Set(
+      (sdlJson.definitions || [])
+        .filter(def =>
+          def.kind === 'ObjectTypeDefinition' ||
+          def.kind === 'InterfaceTypeDefinition'
+        )
+        .map(def => def.name.value)
+    );
   
     // ────────────────────────────────────────────────────────
-    // 2) Compute the root paths
+    // 4) Compute the root paths
     // ────────────────────────────────────────────────────────
     const destRoot = path.resolve(
       __dirname, '..', 'packages', destRelative, 'src'
@@ -727,42 +779,34 @@ async function main() {
     const srcDir = path.resolve(
       __dirname, '..', 'packages', '_empty', 'src', 'Template'
     );
-  
     console.log(`Source directory:      ${srcDir}`);
     console.log(`Destination directory: ${destRoot}\n`);
   
     // ────────────────────────────────────────────────────────
-    // 3) Find all OBJECT types in your introspection
+    // 5) Filter & warn about invalid model names
     // ────────────────────────────────────────────────────────
-    const objectTypeNames = new Set(
-      introspection.types
-        .filter(type => type.kind === 'OBJECT')
-        .map(type => type.name)
-    );
-  
-    // ────────────────────────────────────────────────────────
-    // 4) Read the destRoot, pick only subfolders matching an OBJECT type
-    // ────────────────────────────────────────────────────────
-    let entries;
-    try {
-      entries = await fs.readdir(destRoot, { withFileTypes: true });
-    } catch (err) {
-      console.error(`❌ Could not read directory ${destRoot}:`, err.message);
+    const modelNames = [];
+    const invalid = [];
+    for (const name of modelNamesArg) {
+      if (validTypes.has(name)) {
+        modelNames.push(name);
+      } else {
+        invalid.push(name);
+      }
+    }
+    if (invalid.length) {
+      console.warn(
+        '⚠️  These model names are not found in your SDL and will be skipped:',
+        invalid.join(', ')
+      );
+    }
+    if (modelNames.length === 0) {
+      console.error('❌ No valid model names to process. Exiting.');
       process.exit(1);
     }
   
-    const modelNames = entries
-      .filter(e => e.isDirectory())
-      .map(e => e.name)
-      .filter(name => objectTypeNames.has(name));
-  
-    if (modelNames.length === 0) {
-      console.warn('⚠️  No matching model directories found in', destRoot);
-      process.exit(0);
-    }
-  
     // ────────────────────────────────────────────────────────
-    // 5) Copy the template into each matching model folder
+    // 6) Copy the template into each specified model folder
     // ────────────────────────────────────────────────────────
     for (const modelName of modelNames) {
       const destDir = path.join(destRoot, modelName);
@@ -770,18 +814,16 @@ async function main() {
       console.log(`  Copying template into: ${destDir}`);
       try {
         await copyDirectory(srcDir, destDir, modelName);
+        console.log('  ✔ Success');
       } catch (err) {
-        console.error(`❌ Failed on ${modelName}:`, err);
+        console.error(`  ❌ Failed on ${modelName}:`, err.message);
       }
     }
   
     console.log('\n✅ All done.');
   }
   
-  main().catch(err => {
+main().catch(err => {
     console.error('❌ Unexpected error:', err);
     process.exit(1);
-  });
-
-main();
-
+});

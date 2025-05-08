@@ -1,6 +1,6 @@
 import { parse, Kind } from 'https://cdn.skypack.dev/graphql';
 import { useReadyModels } from './useReadyModels';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Recursively peel off NON_NULL / LIST wrappers until NamedType
 function unwrap(type) {
@@ -42,6 +42,23 @@ function getZeroArgReturnTypes(doc) {
   ));
 }
 
+const CopyTempate = async (names) => {
+  const resp = await fetch("/debug/run", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        "script": "create:component4",
+        "args": ["all/src", ...names]
+      })
+  })
+  const { stdout, stderr } = await resp.json();
+  if (stderr !== "") {
+    throw new Error(stderr)
+  }
+  return stdout
+}
+
+
 const TriButton = ({state, onClick, children}) => {
     const [state_, setState] = useState(state)
     if (state_ === true) {
@@ -67,18 +84,27 @@ const TriButton = ({state, onClick, children}) => {
     )
 }
 
-const SingleType = ({typename, used}) => {
+const SingleType = ({typename, used, onChange=(t) => null}) => {
+    const onClick_ = () => {
+      CopyTempate([typename])
+      .then(stdout => onChange(typename))
+      .catch(stderr => console.error(stderr))
+    }
     return (
         <div>
             {/* {used &&<span>&#x2714; </span>}  */}
-            <TriButton state={used}>{typename}</TriButton>
+            <TriButton state={used} onClick={onClick_}>{typename}</TriButton>
         </div>
     )
 }
 
 export const MainTypes = ({doc}) => {
     const zeros = getZeroArgReturnTypes(doc)
-    const { models=[], error, loading } = useReadyModels()
+    
+    const { models=[], error, loading, refetch } = useReadyModels()
+    const onChange = () => {
+        refetch()
+    }
     // if (error || loading) {
     //     return (<>
     //         {error && <div>{JSON.stringify(error)}</div>}

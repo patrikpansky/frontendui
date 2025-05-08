@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useCallback } from "react";
 import { useEffect } from "react"
 import { useState } from "react"
 
@@ -27,10 +29,11 @@ export const useReadyModels = (url) => {
     const [models, setModels] = useState([])
     const [loading, setLoading] = useState(null)
     const [error, setError] = useState(null)
-    useEffect(() => {
+
+    const refetch = () => {
         setLoading(true);
-//7dfec7c3-0988-4446-b966-07ecf0564a50
-        readModels(url)
+        //7dfec7c3-0988-4446-b966-07ecf0564a50
+        readModels()
         .then(doc => {
             setModels(doc)
             setLoading(false)
@@ -38,11 +41,13 @@ export const useReadyModels = (url) => {
         .catch(err => setError(err))
 
         return () => setLoading(false)
-    }, [url])
+    }
+    useEffect(refetch, [url])
 
     return {
         models, 
         loading, 
-        error
+        error,
+        refetch
     }
 }
