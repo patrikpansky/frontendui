@@ -149,6 +149,7 @@ export const TemplateVectorsAttributeInfinite = ({template}) => {
  * @example
  * <TemplateVectorsAttributeLazy template={{ id: "abc123" }} />
  *
+ * 
  * @example
  * <TemplateVectorsAttributeLazy
  *   template={{ id: "abc123" }}
