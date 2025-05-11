@@ -32,7 +32,7 @@ export const GroupMediumContent = ({group, children}) => {
                 <b>Nadřízený</b>: <GroupLink group={mastergroup} />
             </>)}
             <br />
-            {/* <GroupRolesOnAttributeLazy group={group} /> */}
+            <GroupRolesOnAttributeLazy group={group} />
             <hr />
             $GroupMediumContent$ <br />
             {JSON.stringify(group)}

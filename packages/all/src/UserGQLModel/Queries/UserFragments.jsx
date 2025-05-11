@@ -5,6 +5,7 @@ fragment UserLinkFragment on UserGQLModel {
   __typename
   id
   fullname
+  email
   lastchange
   created
   createdbyId
@@ -99,7 +100,7 @@ fragment UserLargeFragment on UserGQLModel {
     startdate
     enddate
   }
-  roles {
+  r: roles {
     __typename
     id
     lastchange
@@ -113,7 +114,7 @@ fragment UserLargeFragment on UserGQLModel {
     userId
     groupId
   }
-  rolesOn {
+  rOn: rolesOn {
     __typename
     id
     lastchange

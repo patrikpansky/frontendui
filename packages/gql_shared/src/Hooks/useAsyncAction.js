@@ -51,7 +51,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     const dispatch = useDispatch();
     const fetchPromise = useRef(false)
     const lastMergedParams = useRef(queryVariables);
-    console.log("useAsyncAction", queryVariables, "=>", lastMergedParams.current)
+    // console.log("useAsyncAction QV", queryVariables, "=> REF", lastMergedParams.current)
     // const items = useSelector((state) => state["items"]);
     const { id } = queryVariables
     // const result = items[id];
@@ -77,7 +77,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         // console.log("useAsyncAction.fetchData with", fetchParams)
         const mergedParams = fetchParams
         ? { ...lastMergedParams.current, ...fetchParams }
-        : lastMergedParams.current;
+        : { ...lastMergedParams.current, id };
 
         if (
             lastMergedParams.current &&
@@ -110,10 +110,10 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
 
         const localFetcher = async (reference) => {
             try {
-                console.log("fetchParams", fetchParams, "going to fetch with ", mergedParams)
-                console.log("originally", queryVariables, "going to fetch with ", mergedParams)
+                // console.log("id", id, "fetchParams", fetchParams, "going to fetch with ", mergedParams)
+                // console.log(lastMergedParams.current, "originally", queryVariables, "going to fetch with ", mergedParams)
                 const actionResult = await dispatch(AsyncAction(mergedParams));
-                console.log("originally", queryVariables, "finished fetching with ", mergedParams, "got ", actionResult)
+                // console.log("originally", queryVariables, "finished fetching with ", mergedParams, "got ", actionResult)
                 setState((prev) => ({
                     ...prev,
                     loading: false,
@@ -123,13 +123,13 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
 
                 //this is a hack,
                 //const itemFromStore = items[id] //does not work
-                const { id } = mergedParams
+                const { id: id_ } = mergedParams
                 let itemFromStore = actionResult
-                if (id) {
+                if (id_) {
                     const reader = (dispatch, getState) => {
                         const state = getState()
                         const items = state.items
-                        itemFromStore = items[id]
+                        itemFromStore = items[id_]
                     }
                     await dispatch(reader)
                 }
@@ -173,7 +173,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
 
     useEffect(() => {
         if (network && !deferred) {
-            fetchData()
+            fetchData(queryVariables)
         }
     }, [id, AsyncAction]);
 
@@ -204,8 +204,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         [state.error, fetchData, result]
     );
 
-    if (state.loading) console.log("loading", queryVariables)
-    if (!state.loading) console.log("loaded", queryVariables, result)
+    // if (state.loading) console.log("loading", queryVariables)
+    // if (!state.loading) console.log("loaded", queryVariables, result)
     return {
         ...state,
         read,

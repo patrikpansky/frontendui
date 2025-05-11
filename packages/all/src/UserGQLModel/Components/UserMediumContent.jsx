@@ -1,3 +1,4 @@
+import { Col, Row } from "react-bootstrap"
 import { UserRolesOnAttributeLazy } from "../Vectors/UserRolesOnsAttribute"
 
 /**
@@ -26,10 +27,18 @@ import { UserRolesOnAttributeLazy } from "../Vectors/UserRolesOnsAttribute"
 export const UserMediumContent = ({user, children}) => {
     return (
         <>
-            {/* <UserRolesOnAttributeLazy user={user} /> */}
-            $UserMediumContent$ <br />
+            {user?.email && <Row>
+                <Col>E-mail</Col>
+                <Col>{user.email}</Col>
+            </Row>}
+            <hr />
+            <Row><Col>Nadřízení</Col></Row>
+            <Row><Col><UserRolesOnAttributeLazy user={user} /></Col></Row>
+            
+            <hr />
+            {/* $UserMediumContent$ <br />
             {JSON.stringify(user)}
-            $UserMediumContent$
+            $UserMediumContent$ */}
             {children}
         </>
     )

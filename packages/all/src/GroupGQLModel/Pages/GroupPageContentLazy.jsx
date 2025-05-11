@@ -34,14 +34,9 @@ import { GroupPageContent } from "./GroupPageContent"
  * </GroupPageContentLazy>
  */
 export const GroupPageContentLazy = ({ group, children }) => {
-    const { error, loading, entity, fetch, dispatchResult } = useAsyncAction(GroupReadAsyncAction, group, {deferred: true})
+    const { error, loading, entity, fetch, dispatchResult } = useAsyncAction(GroupReadAsyncAction, {id: group.id})
     const [delayer] = useState(() => CreateDelayer())
   
-    const {id} = group
-    useEffect(() => {
-      fetch({id})
-    }, [id])
-    
     const handleChange = async (e) => {
       const value = e?.target?.value ?? e
       await delayer(() => fetch(value))

@@ -128,3 +128,44 @@ export const TemplateVectorsAttributeInfinite = ({template}) => {
         />
     )
 }
+
+/**
+ * A lazy-loading component for displaying filtered `vectors` from a `template` entity.
+ *
+ * This component uses the `TemplateVectorsAttributeAsyncAction` to asynchronously fetch
+ * the `template.vectors` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each vector item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.template - The template entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `vectors` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered vectors or a loading/error placeholder.
+ *
+ * @example
+ * <TemplateVectorsAttributeLazy template={{ id: "abc123" }} />
+ *
+ * @example
+ * <TemplateVectorsAttributeLazy
+ *   template={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const TemplateVectorsAttributeLazy = ({template, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(TemplateVectorsAttributeAsyncAction, template)
+    const values = entity?.vectors || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
+            <pre>{JSON.stringify(value, null, 4)}</pre>
+        </div>)}
+    </>)
+}

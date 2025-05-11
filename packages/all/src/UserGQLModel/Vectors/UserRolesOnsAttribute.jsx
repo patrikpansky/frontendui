@@ -1,6 +1,8 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { UserLink } from "../Components";
+import { GroupLink } from "../../GroupGQLModel";
+import { Col, Row } from "react-bootstrap";
 
 
 /**
@@ -127,6 +129,10 @@ query UserQueryRead($id: UUID!) {
                 name
             }
             groupId
+            group {
+                id
+                name
+            }
         }
     }
 }
@@ -162,12 +168,18 @@ export const UserRolesOnAttributeLazy = ({user, filter=Boolean}) => {
         {valuesToDisplay.map(role => <div key={role.id}>
             {/* {JSON.stringify(role.user)} */}
             {role?.user && (<>
-                <b>{role?.roletype?.name}:</b> &nbsp;
-                <UserLink user={role?.user}>
-                    {/* {JSON.stringify(role)} */}
-                </UserLink>
+                 <Row>
+                    <Col>
+                        <UserLink user={role?.user}/>
+                    </Col>
+                    <Col>
+                        <b>{role?.roletype?.name}</b><br/>
+                        {role?.group && <>[<GroupLink group={role?.group} />]</>}
+                    </Col>
+                 </Row>
+
             </>)}
         </div>)}
-        {JSON.stringify(valuesToDisplay)}
+        {/* {JSON.stringify(valuesToDisplay)} */}
     </>)
 }
