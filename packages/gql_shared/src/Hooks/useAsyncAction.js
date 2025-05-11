@@ -51,6 +51,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     const dispatch = useDispatch();
     const fetchPromise = useRef(false)
     const lastMergedParams = useRef(queryVariables);
+    console.log("useAsyncAction", queryVariables, "=>", lastMergedParams.current)
     // const items = useSelector((state) => state["items"]);
     const { id } = queryVariables
     // const result = items[id];
@@ -107,10 +108,12 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
             };
         });
 
-        // console.log("useAsyncAction fetch start while mergedParams", mergedParams)
-        fetchPromise.current = (async () => {
+        const localFetcher = async (reference) => {
             try {
+                console.log("fetchParams", fetchParams, "going to fetch with ", mergedParams)
+                console.log("originally", queryVariables, "going to fetch with ", mergedParams)
                 const actionResult = await dispatch(AsyncAction(mergedParams));
+                console.log("originally", queryVariables, "finished fetching with ", mergedParams, "got ", actionResult)
                 setState((prev) => ({
                     ...prev,
                     loading: false,
@@ -145,10 +148,12 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
                 }));
                 // throw err;
             } finally {
-                fetchPromise.current = null;
+                reference.current = null;
             }
-        })();
-
+        }
+        fetchPromise.current = localFetcher(fetchPromise)
+        // console.log("useAsyncAction fetch start while mergedParams", mergedParams)
+        
         try {
             return await fetchPromise.current
         } catch {
@@ -199,6 +204,8 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         [state.error, fetchData, result]
     );
 
+    if (state.loading) console.log("loading", queryVariables)
+    if (!state.loading) console.log("loaded", queryVariables, result)
     return {
         ...state,
         read,

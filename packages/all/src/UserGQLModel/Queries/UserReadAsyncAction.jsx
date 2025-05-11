@@ -1,15 +1,23 @@
 import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
 import { UserLargeFragment } from "./UserFragments";
 
+const UserReadQueryStr = `
+query UserReadQuery($id: UUID!) {
+  result: userById(id: $id) {
+    ...UserLarge
+  }
+}
+`
+
 const UserReadQuery = createQueryStrLazy(`
 query UserById($id: UUID!) {
-    result: userById(id: $id) {
-        ...UserGQLModelLargeFragment
-    }
+  result: userById(id: $id) {
+    ...UserLargeFragment
+  }
 }
 `, UserLargeFragment)
 
-    /**
+/**
  * An async action for executing a GraphQL query to read user entities.
  *
  * This action is created using `createAsyncGraphQLAction` with a predefined `UserQueryRead` query.

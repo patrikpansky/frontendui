@@ -52,6 +52,7 @@ export default defineConfig({
       "@hrbolek/uoisfrontend-requests": path.resolve(__dirname, "../../packages/requests/src"),
 
       "@hrbolek/uoisfrontend-ug2": path.resolve(__dirname, "../../packages/ug2/src"),
+      "@hrbolek/uoisfrontend-all": path.resolve(__dirname, "../../packages/all/src"),
     },
   },
 
@@ -73,6 +74,7 @@ export default defineConfig({
       "@hrbolek/uoisfrontend-requests",
 
       "@hrbolek/uoisfrontend-ug2",
+      "@hrbolek/uoisfrontend-all",
     ],
   },
 
@@ -96,6 +98,7 @@ export default defineConfig({
         '!../../packages/requests/**',
 
         '!../../packages/ug2/**',
+        '!../../packages/all/**',
       ],
     },
     hmr: {

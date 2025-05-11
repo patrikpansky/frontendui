@@ -17,9 +17,10 @@ import { TemplateURI } from '../Components'
  * it is usefull to define globally active "areas" like science, administration, teaching, ...
  */
 const TemplatePageSegments = [
-    { segment: 'history', label: 'Historie'},
-    { segment: 'roles', label: 'Role' },
-    { segment: 'graph', label: 'Stavy' },
+    { segment: 'education', label: 'Výuka'},
+    { segment: 'reaserach', label: 'Tvůrčí činnost' },
+    { segment: 'administration', label: 'Organizační činnost' },
+    { segment: 'development', label: 'Rozvoj' },
 ]
 
 /**

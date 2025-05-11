@@ -2,18 +2,29 @@ import { UserURI } from "../Components/UserLink"
 import { UserPage } from "./UserPage"
 
 /**
- * A router segment definition for the User page.
+ * An array of route segment definitions for the User pages.
  *
- * This object defines a route path and its associated React element.
- * The `path` property is constructed using a base URI stored in `UserURI`
- * and expects an `id` parameter. The `element` property specifies the React
- * component to render when the route matches.
+ * Each route object in the array defines a `path` and its associated React `element`.
+ * The `path` includes a dynamic `:id` parameter, used to load and display a specific user entity.
+ * The `element` property specifies the React component to render when the route matches.
  *
- * @constant {Object} UserRouterSegment
- * @property {string} path - The URL path pattern for the route, e.g., "/user/user/view/:id".
- * @property {JSX.Element} element - The React element (component) to render, in this case, <UserPage />.
+ * Any React `children` elements passed through this route will be injected into the page and 
+ * receive `user`, `onChange`, and `onBlur` as props from the `UserPageContentLazy` component.
+ *
+ * @constant
+ * @type {Array<{ path: string, element: JSX.Element }>}
+ *
+ * @example
+ * // This route matches URLs like "/user/123":
+ * {
+ *   path: "/user/:id",
+ *   element: <UserPage />
+ * }
  */
-export const UserRouterSegment = {
-    path: `/${UserURI}:id`,
-    element: <UserPage />,
-}
+
+export const UserRouterSegments = [
+    {
+        path: `/${UserURI}:id`,
+        element: (<UserPage />),
+    }
+]

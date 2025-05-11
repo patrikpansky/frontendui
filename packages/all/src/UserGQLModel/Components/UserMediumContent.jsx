@@ -1,3 +1,5 @@
+import { UserRolesOnAttributeLazy } from "../Vectors/UserRolesOnsAttribute"
+
 /**
  * A component that displays medium-level content for an user entity.
  *
@@ -24,8 +26,10 @@
 export const UserMediumContent = ({user, children}) => {
     return (
         <>
-            UserMediumContent <br />
+            {/* <UserRolesOnAttributeLazy user={user} /> */}
+            $UserMediumContent$ <br />
             {JSON.stringify(user)}
+            $UserMediumContent$
             {children}
         </>
     )

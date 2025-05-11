@@ -1,6 +1,63 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 
+
+/**
+ * Inserts a VectorGQLModel item into a user’s vectors array and dispatches an update.
+ *
+ * @param {Object} user - The current user object containing a `vectors` array.
+ * @param {Object} vectorItem - The item to insert; must have `__typename === "VectorGQLModel"`.
+ * @param {Function} dispatch - Redux dispatch function (or similar) to call the update action.
+ */
+const followUpUserVectorItemInsert = (user, vectorItem, dispatch) => {
+    const { __typename } = vectorItem;
+    if (__typename === "VectorGQLModel") {
+        const { vectors, ...others } = user;
+        const newUserVectorItems = [...vectors, vectorItem];
+        const newUser = { ...others, vectors: newUserVectorItems };
+        dispatch(ItemActions.item_update(newUser));
+    }
+};
+
+/**
+ * Replaces an existing VectorGQLModel item in a user’s vectors array and dispatches an update.
+ *
+ * @param {Object} user - The current user object containing a `vectors` array.
+ * @param {Object} vectorItem - The updated item; must have `__typename === "VectorGQLModel"` and an `id` field matching an existing item.
+ * @param {Function} dispatch - Redux dispatch function (or similar) to call the update action.
+ */
+const followUpUserVectorItemUpdate = (user, vectorItem, dispatch) => {
+    const { __typename } = vectorItem;
+    if (__typename === "VectorGQLModel") {
+        const { vectors, ...others } = user;
+        const newUserVectorItems = vectors.map(item =>
+            item.id === vectorItem.id ? vectorItem : item
+        );
+        const newUser = { ...others, vectors: newUserVectorItems };
+        dispatch(ItemActions.item_update(newUser));
+    }
+};
+
+/**
+ * Removes a VectorGQLModel item from a user’s vectors array by its `id` and dispatches an update.
+ *
+ * @param {Object} user - The current user object containing a `vectors` array.
+ * @param {Object} vectorItem - The item to delete; must have `__typename === "VectorGQLModel"` and an `id` field.
+ * @param {Function} dispatch - Redux dispatch function (or similar) to call the update action.
+ */
+const followUpUserVectorItemDelete = (user, vectorItem, dispatch) => {
+    const { __typename } = vectorItem;
+    if (__typename === "VectorGQLModel") {
+        const { vectors, ...others } = user;
+        const newUserVectorItems = vectors.filter(
+            item => item.id !== vectorItem.id
+        );
+        const newUser = { ...others, vectors: newUserVectorItems };
+        dispatch(ItemActions.item_update(newUser));
+    }
+};
+
+
 /**
  * A component for displaying the `vectors` attribute of an user entity.
  *
@@ -35,7 +92,7 @@ export const UserVectorsAttribute = ({user}) => {
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
-                    {JSON.stringify(vector)}
+                    <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
         </>

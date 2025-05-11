@@ -48,7 +48,7 @@ const CopyTempate = async (names) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
         "script": "create:component4",
-        "args": ["all/src", ...names]
+        "args": ["all", ...names]
       })
   })
   const { stdout, stderr } = await resp.json();
@@ -58,9 +58,41 @@ const CopyTempate = async (names) => {
   return stdout
 }
 
+const CreateVectors = async (typename) => {
+  const resp = await fetch("/debug/run", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        "script": "create:vectors4",
+        "args": ["all", typename]
+      })
+  })
+  const { stdout, stderr } = await resp.json();
+  if (stderr !== "") {
+    throw new Error(stderr)
+  }
+  return stdout
+}
+
+const CreateScalars = async (typename) => {
+  const resp = await fetch("/debug/run", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        "script": "create:scalars4",
+        "args": ["all", typename]
+      })
+  })
+  const { stdout, stderr } = await resp.json();
+  if (stderr !== "") {
+    throw new Error(stderr)
+  }
+  return stdout
+}
 
 const TriButton = ({state, onClick, children}) => {
     const [state_, setState] = useState(state)
+    useEffect(()=>setState(state), [state])
     if (state_ === true) {
         return <button className='btn btn-sm btn-secondary' disabled>{children}</button>
     }
@@ -85,16 +117,76 @@ const TriButton = ({state, onClick, children}) => {
 }
 
 const SingleType = ({typename, used, onChange=(t) => null}) => {
-    const onClick_ = () => {
+    const [state, setState] = useState(null)
+    const onClickCopyTemplate = () => {
+      setState("loading")
       CopyTempate([typename])
-      .then(stdout => onChange(typename))
-      .catch(stderr => console.error(stderr))
+      .then(stdout => {
+        onChange(typename)
+        setState(null)
+        return stdout
+      })
+      .catch(stderr => {
+        console.error(stderr)
+        setState(stderr)
+      })
     }
+    const onClickCreateVectors = () => {
+      setState("loading")
+      CreateVectors(typename)
+      .then(stdout => {
+        // onChange(typename)
+        setState(null)
+        return stdout
+      })
+      .catch(stderr => {
+        console.error(stderr)
+        setState(stderr)
+      })
+    }
+    const onClickCreateScalars = () => {
+      setState("loading")
+      CreateScalars(typename)
+      .then(stdout => {
+        // onChange(typename)
+        setState(null)
+        return stdout
+      })
+      .catch(stderr => {
+        console.error(stderr)
+        setState(stderr)
+      })
+    }
+
     return (
-        <div>
+        <tr>
+            <td>{typename}</td>
+            <td><TriButton state={used} onClick={onClickCopyTemplate}>{typename}</TriButton></td>
+            <td>
+              <button className='btn btn-sm btn-danger' onClick={onClickCopyTemplate}>
+                {typename}
+              </button>
+            </td>
+            
+            <td>{used === true && (
+              <button className='btn btn-sm btn-outline-danger' onClick={onClickCreateScalars}>
+                Scalars
+              </button>)
+            }              
+            </td>
+            <td>{used === true && (
+              <button className='btn btn-sm btn-outline-danger' onClick={onClickCreateVectors}>
+                Vectors
+              </button>)
+            }
+            </td>
+            <td>
+              {state === "loading" && "Running"}
+              {state && state !== "loading" && JSON.stringify(state)}
+            </td>
             {/* {used &&<span>&#x2714; </span>}  */}
-            <TriButton state={used} onClick={onClick_}>{typename}</TriButton>
-        </div>
+            
+        </tr>
     )
 }
 
@@ -112,13 +204,26 @@ export const MainTypes = ({doc}) => {
     //     </>)
     // }
     return (<div>
-        <pre>{JSON.stringify(models, null, 4)}</pre>
-        <pre>{JSON.stringify(zeros?.filter(typename => models.includes(typename)), null, 4)}</pre>
-        
-        {zeros.map(typename => 
-            <SingleType key={typename} typename={typename} used={(models.includes(typename))}/>
-        )}
-        <pre>{JSON.stringify(doc, null, 4)}</pre>
+        {/* <pre>{JSON.stringify(models, null, 4)}</pre>
+        <pre>{JSON.stringify(zeros?.filter(typename => models.includes(typename)), null, 4)}</pre> */}
+        <table className='table'>
+          <thead>
+            <tr>
+              <th>Type Name</th>
+              <th>Create Type</th>
+              <th>Refresh Type</th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {zeros.map(typename => 
+                <SingleType key={typename} typename={typename} used={(models.includes(typename))} onChange={onChange}/>
+            )}
+          </tbody>
+        </table>
+        {/* <pre>{JSON.stringify(doc, null, 4)}</pre> */}
         {/* {zeros.map(typename => <SingleType key={typename} typename={typename} />)} */}
     </div>)
 }

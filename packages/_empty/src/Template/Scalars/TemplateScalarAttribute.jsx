@@ -24,7 +24,7 @@ export const TemplateScalarAttribute = ({template}) => {
     return (
         <>
             Probably {'<ScalarMediumCard scalar=\{scalar\} />'} <br />
-            {JSON.stringify(scalar)}
+            <pre>{JSON.stringify(scalar, null, 4)}</pre>
         </>
     )
 }

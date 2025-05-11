@@ -92,7 +92,7 @@ export const TemplateVectorsAttribute = ({template}) => {
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
-                    {JSON.stringify(vector)}
+                    <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
         </>

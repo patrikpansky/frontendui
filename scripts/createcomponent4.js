@@ -6,10 +6,11 @@ const readline = require('readline');
 const crypto = require('crypto');
 
 const introspectionPath = path.resolve(process.cwd(), 'introspectionresult.json');
-const sdlDocPath = path.resolve(process.cwd(), 'debug-sdl.json');
+
 const introspection = JSON.parse(fss.readFileSync(introspectionPath, 'utf8')).data.__schema;
 
 const typesByName = {};
+const sdlDocPath = path.resolve(process.cwd(), 'debug-sdl.json');
 const sdlJson = JSON.parse(fss.readFileSync(sdlDocPath, 'utf8'))
 for (const type of introspection.types) {
     if (!type.name.startsWith('__')) {
@@ -422,7 +423,9 @@ function generateQueryOrMutation(operationName, typesByName, isMutation = false,
 }
 
 /**
- * Generates a GraphQL query or mutation string from a parsed SDL AST.
+ * Generates a GraphQL query or mutation string from a parsed SDL AST,
+ * with full Union support—including inline expansion of any Union member
+ * whose name includes "Error".
  *
  * @param {string} operationName
  *   The name of the field under Query or Mutation, e.g. "userInsert".
@@ -446,11 +449,12 @@ function generateQueryOrMutation(operationName, ast, isMutation = false, resultT
   
     // 2) Grab the root type ("Query" or "Mutation")
     const rootName = isMutation ? 'Mutation' : 'Query';
-    const rootDef = defsByName[rootName];
+    const rootDef  = defsByName[rootName];
     if (!rootDef || rootDef.kind !== 'ObjectTypeDefinition') return null;
   
     // 3) Find our field under that root
-    const fieldDef = (rootDef.fields || []).find(f => f.name.value === operationName);
+    const fieldDef = (rootDef.fields || [])
+      .find(f => f.name.value === operationName);
     if (!fieldDef) return null;
   
     // 4) Helpers to unwrap & re‑stringify TypeNodes
@@ -471,30 +475,26 @@ function generateQueryOrMutation(operationName, ast, isMutation = false, resultT
     }
   
     // 5) Build variable definitions + call‑site args
-    const varDefs = [];
+    const varDefs  = [];
     const callArgs = [];
-    const args = fieldDef.arguments || [];
+    const args     = fieldDef.arguments || [];
   
     if (isMutation && args.length === 1) {
-      // single‑arg mutation with INPUT_OBJECT?
-      const inputArg = args[0];
-      const inputTypeName = getNamedTypeName(inputArg.type);
-      const inputDef = defsByName[inputTypeName];
+      const inputArg     = args[0];
+      const inputName    = getNamedTypeName(inputArg.type);
+      const inputDef     = defsByName[inputName];
       if (inputDef && inputDef.kind === 'InputObjectTypeDefinition') {
-        // expand each field of that input object
         for (const inputField of inputDef.fields || []) {
           const name = inputField.name.value;
           varDefs.push(`$${name}: ${typeNodeToString(inputField.type)}`);
           callArgs.push(`${name}: $${name}`);
         }
       } else {
-        // fallback: treat the single arg normally
         const name = inputArg.name.value;
         varDefs.push(`$${name}: ${typeNodeToString(inputArg.type)}`);
         callArgs.push(`${name}: $${name}`);
       }
     } else {
-      // standard multi‑arg or query
       for (const arg of args) {
         const name = arg.name.value;
         varDefs.push(`$${name}: ${typeNodeToString(arg.type)}`);
@@ -502,40 +502,72 @@ function generateQueryOrMutation(operationName, ast, isMutation = false, resultT
       }
     }
   
-    // 6) Should we inject __typename on the result?
+    // 6) Inspect the return type
     const returnBase = getNamedTypeName(fieldDef.type);
-    const returnDef = defsByName[returnBase];
-    const needsTypename =
-      returnDef &&
-      (returnDef.kind === 'UnionTypeDefinition' ||
-       returnDef.kind === 'InterfaceTypeDefinition');
+    const returnDef  = defsByName[returnBase];
   
     // 7) Build the operation string
-    const cap = s => s[0].toUpperCase() + s.slice(1);
-    const opNameCap = cap(operationName);
-    const fragRef = `...${cap(resultType)}LargeFragment`;
+    const cap     = s => s[0].toUpperCase() + s.slice(1);
+    const opName  = cap(operationName);
+    const fragRef = `...${cap(resultType.replace(/GQLModel$/, ''))}LargeFragment`;
   
     const lines = [];
     // header
     if (varDefs.length > 0) {
       lines.push(
-        `${isMutation ? 'mutation' : 'query'} ${opNameCap}(${varDefs.join(', ')}) {`
+        `${isMutation ? 'mutation' : 'query'} ${opName}(${varDefs.join(', ')}) {`
       );
     } else {
-      lines.push(`${isMutation ? 'mutation' : 'query'} ${opNameCap} {`);
+      lines.push(`${isMutation ? 'mutation' : 'query'} ${opName} {`);
     }
   
-    // body
-    lines.push(`  result: ${operationName}${callArgs.length ? `(${callArgs.join(', ')})` : ''} {`);
-    if (needsTypename) {
+    // body start
+    const argsSection = callArgs.length ? `(${callArgs.join(', ')})` : '';
+    lines.push(`  result: ${operationName}${argsSection} {`);
+  
+    // handle Union return
+    if (returnDef && returnDef.kind === 'UnionTypeDefinition') {
+      // always include __typename on union
       lines.push(`    __typename`);
+      for (const member of returnDef.types || []) {
+        const memberName = member.name.value;
+        // inline any Error* types
+        if (memberName.includes('Error')) {
+          const errDef = defsByName[memberName];
+          if (errDef && Array.isArray(errDef.fields)) {
+            lines.push(`    ... on ${memberName} {`);
+            for (const f of errDef.fields) {
+              lines.push(`      ${f.name.value}`);
+            }
+            lines.push(`    }`);
+          }
+        } else {
+          // normal fragment spread
+          const memberShort = memberName.replace(/GQLModel$/, '');
+          const memberFrag  = `...${memberShort.charAt(0).toUpperCase() + memberShort.slice(1)}LargeFragment`;
+          lines.push(`    ... on ${memberName} {`);
+          lines.push(`      ${memberFrag}`);
+          lines.push(`    }`);
+        }
+      }
+  
+    // handle Interface return
+    } else if (returnDef && returnDef.kind === 'InterfaceTypeDefinition') {
+      lines.push(`    __typename`);
+      lines.push(`    ${fragRef}`);
+  
+    // normal object or scalar
+    } else {
+      lines.push(`    ${fragRef}`);
     }
-    lines.push(`    ${fragRef}`);
+  
+    // close body & operation
     lines.push(`  }`);
     lines.push(`}`);
   
     return lines.join('\n');
   }
+  
   
 
 

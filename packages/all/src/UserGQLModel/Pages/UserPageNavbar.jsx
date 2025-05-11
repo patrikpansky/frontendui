@@ -2,6 +2,27 @@ import Nav from 'react-bootstrap/Nav'
 import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
 
 import { UserURI } from '../Components'
+
+/**
+ * Allow to use HashContainer for determination which component at page will be rendered.
+ * That must be manually inserted at UserPageContent, usually this should be done 
+ * as children of UserLargeCard.
+ * <UserLargeCard>
+ *     <HashContainer>
+ *         <VectorA id="history"/>
+ *         <VectorB id="roles"/>
+ *         <VectorC id="graph"/>
+ *     </HashContainer>
+ * </UserLargeCard>
+ * it is usefull to define globally active "areas" like science, administration, teaching, ...
+ */
+const UserPageSegments = [
+    { segment: 'education', label: 'Výuka'},
+    { segment: 'reaserach', label: 'Tvůrčí činnost' },
+    { segment: 'administration', label: 'Organizační činnost' },
+    { segment: 'development', label: 'Rozvoj' },
+]
+
 /**
  * A navigation button component that generates a URL based on the user's ID and a specific segment.
  * The button uses a `ProxyLink` to navigate while preserving hash and query parameters.
@@ -69,17 +90,11 @@ const TitleNavButton = ({ user, segment, label, ...props }) => {
 export const UserPageNavbar = ({ user, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
 
-    const segments = [
-        { segment: 'history', label: 'Historie'},
-        // { segment: 'permissions', label: 'Práva' },
-        { segment: 'roles', label: 'Role' },
-        // { segment: 'library', label: 'Knihovna' },
-        { segment: 'graph', label: 'Stavy' },
-    ]
+    
     return (
         <div className='screen-only'>
         <MyNavbar onSearchChange={onSearchChange} >
-            {user && segments.map(({ segment, label }) => (
+            {user && UserPageSegments.map(({ segment, label }) => (
                 <Nav.Item key={segment} >
                     <TitleNavButton
                         user={user}

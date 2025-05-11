@@ -24,8 +24,9 @@
 export const TemplateMediumContent = ({template, children}) => {
     return (
         <>
-            TemplateMediumContent <br />
+            $TemplateMediumContent$ <br />
             {JSON.stringify(template)}
+            $TemplateMediumContent$
             {children}
         </>
     )
