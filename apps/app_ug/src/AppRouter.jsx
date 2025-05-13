@@ -7,6 +7,8 @@ import { SchemaRouterSegment } from "@hrbolek/uoisfrontend-all";
 import { UserRouterSegments } from "@hrbolek/uoisfrontend-all";
 import { SchemaTypeRouterSegment } from "../../../packages/all/src/SchemaType/Pages/SchemaTypeRouterSegment";
 import { GroupRouterSegments } from "../../../packages/all/src/GroupGQLModel";
+import { ProgramRouterSegments } from "../../../packages/all/src/ProgramGQLModel";
+import { SubjectRouterSegments } from "../../../packages/all/src/SubjectGQLModel";
   
 const Routes = [
     UserRouterSegmentUG2,
@@ -15,7 +17,9 @@ const Routes = [
     SchemaTypeRouterSegment,
 
     ...UserRouterSegments,
-    ...GroupRouterSegments
+    ...GroupRouterSegments,
+    ...ProgramRouterSegments,
+    ...SubjectRouterSegments
 ]
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});

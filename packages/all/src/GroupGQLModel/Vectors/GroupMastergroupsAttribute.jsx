@@ -1,4 +1,4 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 
 
@@ -100,7 +100,7 @@ export const GroupMastergroupsAttribute = ({group}) => {
 }
 
 const GroupMastergroupsAttributeQuery = `
-query GroupQueryRead($id: id, $where: MastergroupInputFilter, $skip: Int, $limit: Int) {
+query GroupQueryRead($id: UUID!, $where: MastergroupInputFilter, $skip: Int, $limit: Int) {
     result: groupById(id: $id) {
         __typename
         id
@@ -136,4 +136,46 @@ export const GroupMastergroupsAttributeInfinite = ({group}) => {
             asyncAction={GroupMastergroupsAttributeAsyncAction}
         />
     )
+}
+
+/**
+ * A lazy-loading component for displaying filtered `mastergroups` from a `group` entity.
+ *
+ * This component uses the `GroupMastergroupsAttributeAsyncAction` to asynchronously fetch
+ * the `group.mastergroups` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each mastergroup item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.group - The group entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `mastergroups` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered mastergroups or a loading/error placeholder.
+ *
+ * @example
+ * <GroupMastergroupsAttributeLazy group={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <GroupMastergroupsAttributeLazy
+ *   group={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const GroupMastergroupsAttributeLazy = ({group, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(GroupMastergroupsAttributeAsyncAction, group)
+    const values = entity?.mastergroups || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
+            <pre>{JSON.stringify(value, null, 4)}</pre>
+        </div>)}
+    </>)
 }

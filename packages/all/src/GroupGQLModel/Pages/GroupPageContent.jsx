@@ -4,6 +4,7 @@ import { GroupPageNavbar } from "./GroupPageNavbar"
 import { GroupMembershipsAttribute } from "../Vectors/GroupMembershipsAttribute"
 import { GroupCardCapsule } from "../Components"
 import { GroupSubgroupsAttribute } from "../Vectors/GroupSubgroupsAttribute"
+import { GroupAccreditedprogramsAttribute } from "../Vectors/GroupAccreditedProgramsAttribute"
 
 /**
  * Renders a page layout for a single group entity, including navigation and detailed view.
@@ -35,7 +36,9 @@ export const GroupPageContent = ({group, children, ...props}) => {
                 <GroupCardCapsule id="administration" group={group} >
                     <GroupSubgroupsAttribute id="administration" group={group} />
                 </GroupCardCapsule>
-                
+                <GroupCardCapsule id="education" group={group} >
+                    <GroupAccreditedprogramsAttribute id="education" group={group} />
+                </GroupCardCapsule>
             </HashContainer>
             {JSON.stringify(group?.memberships)}
             {children}

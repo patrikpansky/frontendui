@@ -127,6 +127,7 @@ query GroupQueryRead($id: UUID!) {
         name
       }
       groupId
+      valid
     }
   }
 }
@@ -168,6 +169,6 @@ export const GroupRolesOnAttributeLazy = ({group, filter=Boolean}) => {
                 </UserLink>
             </>)}
         </div>)}
-        {JSON.stringify(valuesToDisplay)}
+        {/* {JSON.stringify(valuesToDisplay)} */}
     </>)
 }

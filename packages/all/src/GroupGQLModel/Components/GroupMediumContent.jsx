@@ -1,3 +1,4 @@
+import { GroupRolesAttributeLazy } from "../Vectors/GroupRolesAttribute"
 import { GroupRolesOnAttributeLazy } from "../Vectors/GroupRolesOnsAttribute"
 import { GroupLink } from "./GroupLink"
 
@@ -31,12 +32,15 @@ export const GroupMediumContent = ({group, children}) => {
             {mastergroup && (<>
                 <b>Nadřízený</b>: <GroupLink group={mastergroup} />
             </>)}
-            <br />
+            <hr />
             <GroupRolesOnAttributeLazy group={group} />
             <hr />
-            $GroupMediumContent$ <br />
+            <GroupRolesAttributeLazy group={group} filter={r=>r?.valid} />
+            <hr />
+            <GroupRolesAttributeLazy group={group} filter={r=>!r?.valid} />
+            {/* $GroupMediumContent$ <br />
             {JSON.stringify(group)}
-            $GroupMediumContent$
+            $GroupMediumContent$ */}
             {children}
         </>
     )

@@ -1,5 +1,5 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 
 
 /**
@@ -100,7 +100,7 @@ export const TemplateVectorsAttribute = ({template}) => {
 }
 
 const TemplateVectorsAttributeQuery = `
-query TemplateQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+query TemplateQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
     result: templateById(id: $id) {
         __typename
         id

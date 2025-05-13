@@ -7197,7 +7197,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "fa0c2f77-e1bd-4a91-8308-415a963a8ef5",
+            "value": "f39abccb-f61a-4c73-acb3-2546ad8b9d3f",
             "block": false
           },
           "directives": []
@@ -7867,11 +7867,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -7891,11 +7886,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -7915,11 +7905,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -7938,11 +7923,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -7992,11 +7972,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -8016,11 +7991,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -8040,11 +8010,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -8063,11 +8028,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -9782,11 +9742,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -9806,11 +9761,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -9830,11 +9780,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -9853,11 +9798,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -9907,11 +9847,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -9931,11 +9866,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -9955,11 +9885,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -9978,11 +9903,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -11513,7 +11433,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "0ad4380b-ae9c-43bb-8a83-8e3d9d8785dd",
+            "value": "afe36a45-f773-438e-b045-8cdbcaea359b",
             "block": false
           },
           "directives": []
@@ -11669,11 +11589,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -11693,11 +11608,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -11717,11 +11627,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -11740,11 +11645,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -14118,11 +14018,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -14142,11 +14037,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -14166,11 +14056,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -14189,11 +14074,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -14243,11 +14123,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -14267,11 +14142,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -14291,11 +14161,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -14314,11 +14179,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -15834,11 +15694,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -15858,11 +15713,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -15882,11 +15732,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -15905,11 +15750,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -16429,11 +16269,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -16453,11 +16288,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -16477,11 +16307,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -16500,11 +16325,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -19944,11 +19764,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -19968,11 +19783,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -19992,11 +19802,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -20015,11 +19820,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -21010,11 +20810,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -21034,11 +20829,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -21058,11 +20848,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -21081,11 +20866,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -22536,11 +22316,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -22560,11 +22335,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -22584,11 +22354,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -22607,11 +22372,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -28585,11 +28345,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -28609,11 +28364,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -28633,11 +28383,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -28656,11 +28401,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -28815,11 +28555,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -28839,11 +28574,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -28863,11 +28593,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -28886,11 +28611,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -29045,11 +28765,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -29069,11 +28784,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -29093,11 +28803,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -29116,11 +28821,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -32543,11 +32243,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -32567,11 +32262,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -32591,11 +32281,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -32614,11 +32299,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -33136,11 +32816,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -33160,11 +32835,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -33184,11 +32854,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -33207,11 +32872,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -33261,11 +32921,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -33285,11 +32940,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -33309,11 +32959,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -33332,11 +32977,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -38609,11 +38249,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -38633,11 +38268,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -38657,11 +38287,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -38680,11 +38305,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -39016,11 +38636,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -39040,11 +38655,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -39064,11 +38674,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -39087,11 +38692,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -40609,7 +40209,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "addee42c-500d-42f1-a4a5-ea0e74992062",
+            "value": "b94556c9-ab17-4610-8938-702886a95cb0",
             "block": false
           },
           "directives": []
@@ -40947,11 +40547,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -40971,11 +40566,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -40995,11 +40585,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -41018,11 +40603,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -41519,11 +41099,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -41543,11 +41118,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -41567,11 +41137,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -41590,11 +41155,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -42752,11 +42312,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -42776,11 +42331,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -42800,11 +42350,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -42823,11 +42368,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -43707,11 +43247,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -43731,11 +43266,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -43755,11 +43285,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -43778,11 +43303,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -45152,6 +44672,57 @@
           "kind": "FieldDefinition",
           "description": {
             "kind": "StringValue",
+            "value": "List of accredited study programs that are implemented (offered and delivered) by this organizational unit (typically a faculty).",
+            "block": true
+          },
+          "name": {
+            "kind": "Name",
+            "value": "accreditedPrograms"
+          },
+          "arguments": [],
+          "type": {
+            "kind": "NonNullType",
+            "type": {
+              "kind": "ListType",
+              "type": {
+                "kind": "NonNullType",
+                "type": {
+                  "kind": "NamedType",
+                  "name": {
+                    "kind": "Name",
+                    "value": "ProgramGQLModel"
+                  }
+                }
+              }
+            }
+          },
+          "directives": [
+            {
+              "kind": "Directive",
+              "name": {
+                "kind": "Name",
+                "value": "join__field"
+              },
+              "arguments": [
+                {
+                  "kind": "Argument",
+                  "name": {
+                    "kind": "Name",
+                    "value": "graph"
+                  },
+                  "value": {
+                    "kind": "EnumValue",
+                    "value": "GRANTING"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "FieldDefinition",
+          "description": {
+            "kind": "StringValue",
             "value": "Timestamp of the last change.\nČasové razítko poslední změny.",
             "block": true
           },
@@ -45834,11 +45405,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -45858,11 +45424,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -45882,11 +45443,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -45905,11 +45461,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -46106,11 +45657,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -46130,11 +45676,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -46154,11 +45695,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -46177,11 +45713,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -46252,11 +45783,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -46276,11 +45802,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -46300,11 +45821,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -46323,11 +45839,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -80402,7 +79913,7 @@
           "kind": "FieldDefinition",
           "description": {
             "kind": "StringValue",
-            "value": "Who has got license for programme",
+            "value": "Foreign key referencing the group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.",
             "block": true
           },
           "name": {
@@ -80444,7 +79955,7 @@
           "kind": "FieldDefinition",
           "description": {
             "kind": "StringValue",
-            "value": "Who has got license for programme",
+            "value": "The group (e.g., faculty or department) that is officially authorized to deliver this accredited study program.",
             "block": true
           },
           "name": {
@@ -95818,11 +95329,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -95842,11 +95348,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -95866,11 +95367,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -95889,11 +95385,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -96025,11 +95516,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -96049,11 +95535,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -96073,11 +95554,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -96096,11 +95572,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -96232,11 +95703,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -96256,11 +95722,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -96280,11 +95741,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -96303,11 +95759,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -96439,11 +95890,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -96463,11 +95909,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -96487,11 +95928,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -96510,11 +95946,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -96646,11 +96077,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -96670,11 +96096,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -96694,11 +96115,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -96717,11 +96133,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -96853,11 +96264,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -96877,11 +96283,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -96901,11 +96302,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -96924,11 +96320,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -97060,11 +96451,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -97084,11 +96470,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -97108,11 +96489,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -97131,11 +96507,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -97267,11 +96638,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -97291,11 +96657,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -97315,11 +96676,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -97338,11 +96694,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -97474,11 +96825,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -97498,11 +96844,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -97522,11 +96863,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -97545,11 +96881,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -97681,11 +97012,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -97705,11 +97031,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -97729,11 +97050,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -97752,11 +97068,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -97888,11 +97199,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -97912,11 +97218,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -97936,11 +97237,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -97959,11 +97255,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -98095,11 +97386,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -98119,11 +97405,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -98143,11 +97424,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -98166,11 +97442,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -98363,11 +97634,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -98387,11 +97653,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -98411,11 +97672,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -98434,11 +97690,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -98612,11 +97863,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -98636,11 +97882,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -98660,11 +97901,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -98683,11 +97919,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -98819,11 +98050,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -98843,11 +98069,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -98867,11 +98088,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -98890,11 +98106,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -99026,11 +98237,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -99050,11 +98256,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -99074,11 +98275,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -99097,11 +98293,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -99233,11 +98424,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -99257,11 +98443,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -99281,11 +98462,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -99304,11 +98480,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -99440,11 +98611,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -99464,11 +98630,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -99488,11 +98649,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -99511,11 +98667,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -99796,11 +98947,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -99820,11 +98966,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -99844,11 +98985,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -99867,11 +99003,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -100158,11 +99289,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -100182,11 +99308,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -100206,11 +99327,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -100229,11 +99345,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -100487,11 +99598,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -100511,11 +99617,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -100535,11 +99636,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -100558,11 +99654,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -100694,11 +99785,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -100718,11 +99804,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -100742,11 +99823,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -100765,11 +99841,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -100840,11 +99911,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -100864,11 +99930,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -100888,11 +99949,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -100911,11 +99967,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -101983,11 +101034,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -102007,11 +101053,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -102031,11 +101072,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -102054,11 +101090,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -105193,7 +104224,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "2025-05-11T04:30:13.559912",
+            "value": "2025-05-13T04:38:30.777319",
             "block": false
           },
           "directives": []
@@ -111442,11 +110473,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -111466,11 +110492,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -111490,11 +110511,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -111513,11 +110529,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -111588,11 +110599,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -111612,11 +110618,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -111636,11 +110637,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -111659,11 +110655,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -113022,11 +112013,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -113046,11 +112032,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -113070,11 +112051,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -113093,11 +112069,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -113147,11 +112118,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -113171,11 +112137,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -113195,11 +112156,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -113218,11 +112174,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -134502,11 +133453,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -134526,11 +133472,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -134550,11 +133491,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -134573,11 +133509,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -134648,11 +133579,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -134672,11 +133598,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -134696,11 +133617,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -134719,11 +133635,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"
@@ -134815,11 +133726,6 @@
           "arguments": [
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be ignored",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "skip"
@@ -134839,11 +133745,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "how many entities will be taken",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "limit"
@@ -134863,11 +133764,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "name of field which will determite the order",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "orderby"
@@ -134886,11 +133782,6 @@
             },
             {
               "kind": "InputValueDefinition",
-              "description": {
-                "kind": "StringValue",
-                "value": "filter",
-                "block": true
-              },
               "name": {
                 "kind": "Name",
                 "value": "where"

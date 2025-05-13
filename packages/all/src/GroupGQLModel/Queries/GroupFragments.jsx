@@ -106,7 +106,7 @@ fragment GroupLargeFragment on GroupGQLModel {
     startdate
     enddate
   }
-  roles {
+  r: roles {
     __typename
     id
     lastchange
@@ -133,7 +133,7 @@ fragment GroupLargeFragment on GroupGQLModel {
     grouptypeId
     mastergroupId
   }
-  rolesOn {
+  rOn: rolesOn {
     __typename
     id
     lastchange

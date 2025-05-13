@@ -1,5 +1,6 @@
 import { Col, Row } from "react-bootstrap"
 import { UserRolesOnAttributeLazy } from "../Vectors/UserRolesOnsAttribute"
+import { UserRolesAttributeLazy } from "../Vectors/UserRolesAttribute"
 
 /**
  * A component that displays medium-level content for an user entity.
@@ -32,8 +33,10 @@ export const UserMediumContent = ({user, children}) => {
                 <Col>{user.email}</Col>
             </Row>}
             <hr />
-            <Row><Col>Nadřízení</Col></Row>
-            <Row><Col><UserRolesOnAttributeLazy user={user} /></Col></Row>
+            <UserRolesAttributeLazy user={user} />
+            <hr />
+            Nadřízení <br/>
+            <UserRolesOnAttributeLazy user={user} />
             
             <hr />
             {/* $UserMediumContent$ <br />

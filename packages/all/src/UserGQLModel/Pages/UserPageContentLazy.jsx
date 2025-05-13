@@ -54,11 +54,11 @@ export const UserPageContentLazy = ({ user, children }) => {
         
         {entity && (
           <UserPageContent user={entity} onChange={handleChange} onBlur={handleBlur}>
-            {/* {React.Children.map(children, child =>
+            {React.Children.map(children, child =>
               typeof child === "function"
                 ? child({ user: entity, onChange: handleChange, onBlur: handleBlur })
                 : child
-            )} */}
+            )}
           </UserPageContent>
         )}
         <hr />

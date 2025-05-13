@@ -137,3 +137,45 @@ export const UserMemberofsAttributeInfinite = ({user}) => {
         />
     )
 }
+
+/**
+ * A lazy-loading component for displaying filtered `memberofs` from a `user` entity.
+ *
+ * This component uses the `UserMemberofsAttributeAsyncAction` to asynchronously fetch
+ * the `user.memberofs` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each memberof item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.user - The user entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `memberofs` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered memberofs or a loading/error placeholder.
+ *
+ * @example
+ * <UserMemberofsAttributeLazy user={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <UserMemberofsAttributeLazy
+ *   user={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const UserMemberofsAttributeLazy = ({user, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(UserMemberofsAttributeAsyncAction, user)
+    const values = entity?.memberofs || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
+            <pre>{JSON.stringify(value, null, 4)}</pre>
+        </div>)}
+    </>)
+}

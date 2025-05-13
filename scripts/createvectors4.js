@@ -181,7 +181,7 @@ const main = async () => {
 
     const defs         = sdlDoc.definitions;
     const typesByName  = {};
-    const trivialTypes = new Set();
+    const trivialTypes = new Set('String', 'Int', 'Float', 'Boolean', 'ID',);
   
     for (const def of defs) {
       if (

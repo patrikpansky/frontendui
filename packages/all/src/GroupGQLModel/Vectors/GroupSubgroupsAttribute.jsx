@@ -1,4 +1,4 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 import { GroupLink } from "../Components";
 
@@ -93,6 +93,8 @@ export const GroupSubgroupsAttribute = ({group}) => {
             {subgroups.map(
                 subgroup => <div id={subgroup.id} key={subgroup.id}>
                     <GroupLink group={subgroup} />
+                    {/* Probably {'<SubgroupMediumCard subgroup=\{subgroup\} />'} <br />
+                    <pre>{JSON.stringify(subgroup, null, 4)}</pre> */}
                 </div>
             )}
         </>
@@ -100,7 +102,7 @@ export const GroupSubgroupsAttribute = ({group}) => {
 }
 
 const GroupSubgroupsAttributeQuery = `
-query GroupQueryRead($id: id, $where: SubgroupInputFilter, $skip: Int, $limit: Int) {
+query GroupQueryRead($id: UUID!, $where: SubgroupInputFilter, $skip: Int, $limit: Int) {
     result: groupById(id: $id) {
         __typename
         id
@@ -136,4 +138,46 @@ export const GroupSubgroupsAttributeInfinite = ({group}) => {
             asyncAction={GroupSubgroupsAttributeAsyncAction}
         />
     )
+}
+
+/**
+ * A lazy-loading component for displaying filtered `subgroups` from a `group` entity.
+ *
+ * This component uses the `GroupSubgroupsAttributeAsyncAction` to asynchronously fetch
+ * the `group.subgroups` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each subgroup item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.group - The group entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `subgroups` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered subgroups or a loading/error placeholder.
+ *
+ * @example
+ * <GroupSubgroupsAttributeLazy group={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <GroupSubgroupsAttributeLazy
+ *   group={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const GroupSubgroupsAttributeLazy = ({group, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(GroupSubgroupsAttributeAsyncAction, group)
+    const values = entity?.subgroups || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
+            <pre>{JSON.stringify(value, null, 4)}</pre>
+        </div>)}
+    </>)
 }

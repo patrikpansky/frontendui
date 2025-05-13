@@ -26,8 +26,7 @@ export const UserPageContent = ({user, children, ...props}) => {
     return (<>
         <UserPageNavbar user={user} />
         <UserLargeCard user={user} {...props} >
-            FFFFFFFFFFF
-            <HashContainer firstAsDefault={false}>
+            <HashContainer firstAsDefault={true}>
                 <UserMembershipsAttribute id="administration" user={user} />
             </HashContainer>
             User {JSON.stringify(user)}

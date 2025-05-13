@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
 import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
@@ -53,9 +53,16 @@ export const TemplatePageContentLazy = ({ template, children }) => {
         {error && <ErrorHandler errors={error} />}
         {entity && (
           <TemplatePageContent template={entity} onChange={handleChange} onBlur={handleBlur}>
-            {typeof children === "function"
-              ? children({ template: entity, onChange: handleChange, onBlur: handleBlur })
-              : children}
+            {React.Children.map(children, child =>
+              React.isValidElement(child)
+                ? React.cloneElement(child, {
+                    ...child.props,
+                    template: entity,
+                    onChange: handleChange,
+                    onBlur: handleBlur
+                  })
+                : child
+            )}
           </TemplatePageContent>
         )}
       </>

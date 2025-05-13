@@ -137,3 +137,45 @@ export const UserStudiesAttributeInfinite = ({user}) => {
         />
     )
 }
+
+/**
+ * A lazy-loading component for displaying filtered `studies` from a `user` entity.
+ *
+ * This component uses the `UserStudiesAttributeAsyncAction` to asynchronously fetch
+ * the `user.studies` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each studie item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.user - The user entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `studies` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered studies or a loading/error placeholder.
+ *
+ * @example
+ * <UserStudiesAttributeLazy user={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <UserStudiesAttributeLazy
+ *   user={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const UserStudiesAttributeLazy = ({user, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(UserStudiesAttributeAsyncAction, user)
+    const values = entity?.studies || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
+            <pre>{JSON.stringify(value, null, 4)}</pre>
+        </div>)}
+    </>)
+}

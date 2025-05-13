@@ -231,7 +231,7 @@ function generateFragment(typeName, ast, kind = 'link') {
     // 1) Build lookup of all type defs
     const defs         = ast.definitions;
     const typesByName  = {};
-    const trivialTypes = new Set();
+    const trivialTypes = new Set(['String', 'Int', 'Float', 'Boolean', 'ID',]);
   
     for (const def of defs) {
       if (

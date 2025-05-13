@@ -1,5 +1,8 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { Col, Row } from "react-bootstrap";
+import { GroupLink } from "../Components";
+import { UserLink } from "../../UserGQLModel";
 
 
 /**
@@ -100,7 +103,7 @@ export const GroupRolesAttribute = ({group}) => {
 }
 
 const GroupRolesAttributeQuery = `
-query GroupQueryRead($id: id, $where: RoleInputFilter, $skip: Int, $limit: Int) {
+query GroupQueryRead($id: UUID!, $where: RoleInputWhereFilter, $skip: Int, $limit: Int) {
     result: groupById(id: $id) {
         __typename
         id
@@ -115,8 +118,22 @@ query GroupQueryRead($id: id, $where: RoleInputFilter, $skip: Int, $limit: Int) 
             startdate
             enddate
             roletypeId
+            roletype {
+                id
+                name
+            }
             userId
+            user {
+                id
+                fullname
+                email
+            }
             groupId
+            group {
+                id
+                name
+            }
+            valid
         }
     }
 }
@@ -137,4 +154,57 @@ export const GroupRolesAttributeInfinite = ({group}) => {
             asyncAction={GroupRolesAttributeAsyncAction}
         />
     )
+}
+
+/**
+ * A lazy-loading component for displaying filtered `roles` from a `group` entity.
+ *
+ * This component uses the `GroupRolesAttributeAsyncAction` to asynchronously fetch
+ * the `group.roles` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each role item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.group - The group entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `roles` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered roles or a loading/error placeholder.
+ *
+ * @example
+ * <GroupRolesAttributeLazy group={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <GroupRolesAttributeLazy
+ *   group={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const GroupRolesAttributeLazy = ({group, filter=Boolean}) => {
+    const {loading, error, entity} = useAsyncAction(GroupRolesAttributeAsyncAction, group)
+    const values = entity?.roles || []
+    
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    const valuesToDisplay = values.filter(filter)
+    return (<>
+        {valuesToDisplay.map(role => <div key={role.id} id={role.id}>
+            {role?.group && (<>
+                 <Row>
+                    <Col>
+                        <b>{role?.roletype?.name}</b>
+                    </Col>
+                    <Col>
+                        {role?.user && <UserLink user={role?.user} />}
+                    </Col>
+                 </Row>
+
+            </>)}            
+            {/* <pre>{JSON.stringify(role, null, 4)}</pre> */}
+        </div>)}
+    </>)
 }
