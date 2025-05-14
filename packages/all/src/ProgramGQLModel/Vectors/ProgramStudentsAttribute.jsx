@@ -188,9 +188,13 @@ export const ProgramStudentsAttributeLazy = ({program, filter=Boolean}) => {
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    return (<>
+    return <PSA byState={byState} />
+}
+
+function PSA({byState}) {
+    return <>
         {Object.entries(byState).map(([key, values]) => <div key={key} id={key}>
             {values.map(value => <pre key={value.id}>{JSON.stringify(value, null, 4)}</pre>)}
         </div>)}
-    </>)
+    </>;
 }

@@ -57,6 +57,23 @@ const followUpTemplateVectorItemDelete = (template, vectorItem, dispatch) => {
     }
 };
 
+const TemplateVectorsAttributeQuery = `
+query TemplateQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: templateById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const TemplateVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    TemplateVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an template entity.
@@ -84,13 +101,17 @@ const followUpTemplateVectorItemDelete = (template, vectorItem, dispatch) => {
  *
  * <TemplateVectorsAttribute template={templateEntity} />
  */
-export const TemplateVectorsAttribute = ({template}) => {
-    const { vectors } = template
-    if (typeof vectors === 'undefined') return null
+export const TemplateVectorsAttribute = ({template, filter=Boolean}) => {
+    const { vectors: unfiltered } = template
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +120,6 @@ export const TemplateVectorsAttribute = ({template}) => {
     )
 }
 
-const TemplateVectorsAttributeQuery = `
-query TemplateQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: templateById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const TemplateVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    TemplateVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const TemplateVectorsAttributeInfinite = ({template}) => { 
     const {vectors} = template
@@ -163,10 +167,5 @@ export const TemplateVectorsAttributeLazy = ({template, filter=Boolean}) => {
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <TemplateVectorsAttribute template={entity} filter={filter} />    
 }
