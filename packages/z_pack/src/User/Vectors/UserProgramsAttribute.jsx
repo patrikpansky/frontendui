@@ -1,6 +1,9 @@
 import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
-import { ProgramMediumCard } from "../../Program" 
+import { ProgramMediumCard } from "../../Program"
+import { AdmissionReadPageAsyncAction } from "../../Admission/Queries/AdmissionReadPageAsyncAction"
+import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
+
 
 /**
  * A component for displaying the `programs` attribute of an user entity.
@@ -28,15 +31,31 @@ import { ProgramMediumCard } from "../../Program"
  *
  * <UserProgramsAttribute user={userEntity} />
  */
-export const UserProgramsAttribute = ({programPage}) => {
+export const UserProgramsAttribute = ({ programPage }) => {
     // if (typeof programs === 'undefined') return null
     return (
         <>
             {programPage.map(
-                program => <div id={program.id} key={program.id}>
-                    <ProgramMediumCard program={program} /> <br />
-                    {JSON.stringify(program)}
-                </div>
+                program => {
+                    const { loading, dispatchResult } = useAsyncAction(AdmissionReadPageAsyncAction, {
+                        limit: 100, skip: 0, where: {
+                            program_id: { _eq: program.id }
+                        }
+                    });
+
+
+                    return <div id={program.id} key={program.id}>
+                        <ProgramMediumCard program={program}>
+
+                        <div>
+                            {JSON.stringify(dispatchResult)}
+                            {loading && <div>Loading...</div>}
+                        </div>
+
+                        </ProgramMediumCard> <br />
+                        {JSON.stringify(program)}
+                    </div>
+                }
             )}
         </>
     )
@@ -56,13 +75,13 @@ const UserProgramsAttributeAsyncAction = createAsyncGraphQLAction(
     processVectorAttributeFromGraphQLResult("result")
 )
 
-export const UserProgramsAttributeInfinite = ({user}) => { 
-    const {programs} = user
+export const UserProgramsAttributeInfinite = ({ user }) => {
+    const { programs } = user
 
     return (
-        <InfiniteScroll 
-            Visualiser={'ProgramMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+        <InfiniteScroll
+            Visualiser={'ProgramMediumCard'}
+            actionParams={{ skip: 0, limit: 10 }}
             asyncAction={UserProgramsAttributeAsyncAction}
         />
     )

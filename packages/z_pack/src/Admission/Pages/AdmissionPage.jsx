@@ -29,11 +29,10 @@ import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
  */
 const AdmissionPageContent = ({admission}) => {
     return (<>
-        {/* <AdmissionPageNavbar admission={admission} /> */}
-        {/* <AdmissionLargeCard admission={admission}> */}
-            {/* Admission {JSON.stringify(admission)} */}
-        {/* </AdmissionLargeCard> */}
-        Tohle je admission page, fakt
+        <AdmissionPageNavbar admission={admission} />
+        <AdmissionLargeCard admission={admission}>
+            Admission {JSON.stringify(admission)}
+        </AdmissionLargeCard>
     </>)
 }
 
