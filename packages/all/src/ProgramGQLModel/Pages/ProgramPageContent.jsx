@@ -3,7 +3,7 @@ import { ProgramCardCapsule, ProgramLargeCard, ProgramMediumEditableContent } fr
 import { ProgramPageNavbar } from "./ProgramPageNavbar"
 import { ProgramSubjectsAttributeLazy } from "../Vectors/ProgramSubjectsAttribute"
 import { ProgramStudentsAttributeLazy } from "../Vectors/ProgramStudentsAttribute"
-import { ProgramAdmissionsAttributeLazy } from "../Vectors/ProgramAdmissionsAttribute"
+import { Loader, ProgramAdmissionsAttributeInfinite, ProgramAdmissionsAttributeLazy, ProgramAdmissionsAttributeLazy2 } from "../Vectors/ProgramAdmissionsAttribute"
 import { AdmissionButton } from "../../AdmissionGQLModel"
 
 /**
@@ -46,7 +46,11 @@ export const ProgramPageContent = ({program, children, ...props}) => {
                 <ProgramStudentsAttributeLazy program={program} />    
             </ProgramCardCapsule> */}
             <ProgramCardCapsule program={program} title="Přijímací řízení">
-                <ProgramAdmissionsAttributeLazy program={program} />
+                {/* <ProgramAdmissionsAttributeLazy program={program} >
+                    <Loader mode="auto"/>
+                </ProgramAdmissionsAttributeLazy> */}
+                <ProgramAdmissionsAttributeInfinite program={program} />
+                {/* <ProgramAdmissionsAttributeLazy2 program={program} loaderMode="auto" /> */}
                 <AdmissionButton operation="C" className="btn btn-success" onDone={onBlur} admission={{programId: program.id}}>Vytvořit přijímací řízení</AdmissionButton>
             </ProgramCardCapsule>
             

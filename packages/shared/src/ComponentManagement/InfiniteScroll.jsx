@@ -125,9 +125,14 @@ export const InfiniteScroll = ({
         try {
             const params = _state.filter;
             // console.log("going to fetch more", JSON.stringify(params))
-            const fetchedResults = await dispatch(asyncAction(params));
-            // console.log("fetchedResults", params.skip, params.limit)
-            // console.log("fetchedResults", JSON.stringify(fetchedResults))
+            let fetchedResults = await dispatch(asyncAction(params));
+            console.log("fetchedResults", JSON.stringify(fetchedResults))
+            fetchedResults = Object.values(fetchedResults?.data)?.[0]
+            if (!Array.isArray(fetchedResults)) {
+                fetchedResults = Object.values(fetchedResults).find(v => Array.isArray(v)) || [];
+            }
+            console.log("fetchedResults", params.skip, params.limit)
+            console.log("fetchedResults", JSON.stringify(fetchedResults))
 
             if (fetchedResults.length == 0 ) {
                 onAll()
@@ -192,7 +197,8 @@ export const InfiniteScroll = ({
                 </Visualiser>
                 {/* {JSON.stringify(_state)} */}
                 {/* {!_state.hasMore && <div>Více toho není.</div>} */}
-                {_state.errors && <ErrorHandler errors={_state.errors} />}
+                {/* {_state.errors && <ErrorHandler errors={_state.errors} />} */}
+                {_state.errors && <>{JSON.stringify(_state.errors)}</>}
                 {_state.loading && <LoadingSpinner text="Nahrávám další..."/>}
                 {_state.hasMore && <div ref={containerRef} style={{ height: "50px" }} />}
             </>

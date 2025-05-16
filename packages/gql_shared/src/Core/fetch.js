@@ -49,44 +49,44 @@ function getBatchKey({ body, ast, operationName }) {
  * @returns {Promise<any>} A promise resolving to the batched fetch result.
  */
 function enqueueBatchedRequest(batchKey, url, fetchParams) {
-    console.log('enqueueBatchedRequest', batchKey)
-  return new Promise((resolve, reject) => {
-    if (!pendingBatches.has(batchKey)) {
-      pendingBatches.set(batchKey, {
-        requests: [],
-        timeout: setTimeout(async () => {
-          const batch = pendingBatches.get(batchKey);
-          pendingBatches.delete(batchKey);
-          let res;
-          try {
-            res = await fetch(url, fetchParams);
-            if (res.type === "opaqueredirect") {
-                // Handle opaque redirect
-                console.log("fetch got opaque redirect")
-                for (const { resolve } of batch.requests) {
-                  resolve({errors: [{stage: "redirect", msg: "Opaque redirect", status: 302, original: res}]})
-                }
+    // console.log('enqueueBatchedRequest', batchKey)
+    return new Promise((resolve, reject) => {
+      if (!pendingBatches.has(batchKey)) {
+        pendingBatches.set(batchKey, {
+          requests: [],
+          timeout: setTimeout(async () => {
+            const batch = pendingBatches.get(batchKey);
+            pendingBatches.delete(batchKey);
+            let res;
+            try {
+              res = await fetch(url, fetchParams);
+              if (res.type === "opaqueredirect") {
+                  // Handle opaque redirect
+                  console.log("fetch got opaque redirect")
+                  for (const { resolve } of batch.requests) {
+                    resolve({errors: [{stage: "redirect", msg: "Opaque redirect", status: 302, original: res}]})
+                  }
+              }
+              const json = await res.json();
+              for (const { resolve } of batch.requests) {
+                resolve(json);
+              }
+            } catch (err) {
+              for (const { resolve, reject } of batch.requests) {
+                // reject(err);
+                resolve({
+                  errors: [
+                    { stage: "fetch", msg: err.message, status: res.status, original: res },
+                  ],
+                  })
+              }
             }
-            const json = await res.json();
-            for (const { resolve } of batch.requests) {
-              resolve(json);
-            }
-          } catch (err) {
-            for (const { resolve, reject } of batch.requests) {
-              // reject(err);
-              resolve({
-                errors: [
-                  { stage: "fetch", msg: err.message, status: res.status, original: res },
-                ],
-                })
-            }
-          }
-        }, BATCH_DELAY_MS),
-      });
-    }
+          }, BATCH_DELAY_MS),
+        });
+      }
 
-    pendingBatches.get(batchKey).requests.push({ resolve, reject });
-  });
+      pendingBatches.get(batchKey).requests.push({ resolve, reject });
+    });
 }
 
 
@@ -152,7 +152,7 @@ export const authorizedFetch2 = async (path, params = {}, options = {}) => {
             fetchParams.body = fetchParams.body.replaceAll(': ID', ': UUID');
         }
     }
-    console.log("starting batching")
+    // console.log("starting batching")
     const batchKey = getBatchKey({ body: fetchParams.body, ast });
     if (batchKey) {
         return enqueueBatchedRequest(batchKey, overridenPath, fetchParams);
@@ -161,7 +161,7 @@ export const authorizedFetch2 = async (path, params = {}, options = {}) => {
     // Perform the fetch request
     let fetchResponse = null
     let jsonResponse = null
-    console.log("starting fetch")
+    // console.log("starting fetch")
     try {
         fetchResponse = await fetch(overridenPath, fetchParams)
         if (fetchResponse.type === "opaqueredirect") {
@@ -174,7 +174,7 @@ export const authorizedFetch2 = async (path, params = {}, options = {}) => {
         // throw error
         return {errors: [{stage: "fetch", msg: error.message, status: fetchResponse.status, original: fetchResponse}]}
     }
-    console.log("fetch got response ", fetchResponse)
+    // console.log("fetch got response ", fetchResponse)
     try {
         jsonResponse = await fetchResponse.json()
     } catch (error) {

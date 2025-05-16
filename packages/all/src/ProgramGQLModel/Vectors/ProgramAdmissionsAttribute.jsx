@@ -103,7 +103,8 @@ query ProgramQueryRead($id: UUID!, $where: AdmissionInputFilter, $skip: Int, $li
 
 const ProgramAdmissionsAttributeAsyncAction = createAsyncGraphQLAction(
     ProgramAdmissionsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("admissions")
+    processVectorAttributeFromGraphQLResult("admissions"),
+    // (jsonData) => async (dispatch, getState, next = (jsonResult) => jsonResult) => next(jsonData)
 )
 
 /**
@@ -154,17 +155,179 @@ export const ProgramAdmissionsAttribute = ({program, children, filter=Boolean}) 
 }
 
 
+const AdmissionsVisualiser1 = ({items, children, filter=Boolean}) => {
+    const unfiltered = items
+    if (typeof unfiltered === 'undefined') return null
+    const admissions = unfiltered.filter(filter)
+    if (admissions.length === 0) return null
+    return (
+        <>
+            {admissions.map(
+                admission => <div id={admission.id} key={admission.id}>
+                    <AdmissionMediumCard admission={admission} />
+                    {/* <AdmissionLink admission={admission} /> */}
+                    {/* Probably {'<AdmissionMediumCard admission=\{admission\} />'} <br />
+                    <pre>{JSON.stringify(admission, null, 4)}</pre> */}
+                </div>
+            )}
+            {children}
+            {/* <ButtonMore skip={0} limit={10} fetch={fetch} /> */}
+        </>
+    )
+}
+
+
 export const ProgramAdmissionsAttributeInfinite = ({program}) => { 
     const {admissions} = program
 
     return (
         <InfiniteScroll 
-            Visualiser={'AdmissionMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            preloadedItems={admissions}
+            Visualiser={AdmissionsVisualiser1} 
+            actionParams={{...program, skip: 0, limit: 10}}
             asyncAction={ProgramAdmissionsAttributeAsyncAction}
         />
     )
 }
+
+
+export const AdmissionsVisualiser = ({ items, children, filter = Boolean }) => {
+    if (!Array.isArray(items) || items.length === 0) return null;
+    const admissions = items.filter(filter);
+    if (admissions.length === 0) return null;
+    return (
+        <>
+            {admissions.map(admission => (
+                <div id={admission.id} key={admission.id}>
+                    <AdmissionMediumCard admission={admission} />
+                </div>
+            ))}
+            <hr />
+            {children}
+        </>
+    );
+};
+
+export function useInfiniteLoader({
+    asyncAction,
+    entity,
+    initialSkip = 0,
+    limit = 10,
+    filter = Boolean,
+    loaderMode = "button",
+    key = "admissions",
+}) {
+    const [skip, setSkip] = useState(initialSkip);
+    const [items, setItems] = useState(entity?.[key] || []);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [loadMoreEnabled, setLoadMoreEnabled] = useState(true);
+    const autoLoadRef = useRef(null);
+    const {loading: l, error: e, fetch} = useAsyncAction(asyncAction, entity);
+    // Fetch more
+    const loadMore = useCallback(async () => {
+        setLoading(true);
+        try {
+            // Předpokládám fetchAdmissions je tvoje async action/fetch
+            const res = await fetch({ ...entity, skip, limit });
+            console.log("res", res);
+            const newItems = res?.[key] || [];
+            setItems(prev => {
+                const mergedMap = new Map();
+
+                console.log("prev", prev.map(x => x.id));
+                console.log("newItems", newItems.map(x => x.id));
+
+                // Add items from the first array
+                prev.forEach((item) => {
+                    mergedMap.set(item.id, item);
+                });
+
+                // Add items from the second array (overwrites if id already exists)
+                newItems.forEach((item) => {
+                    mergedMap.set(item.id, item);
+                });
+
+                const result = Array.from(mergedMap.values());
+                console.log("result", result.map(x => x.id));
+                // Convert the Map back to an array
+                return result;
+            });
+            setSkip(prev => prev + limit);
+            setLoadMoreEnabled(newItems.length === limit);
+        } catch (err) {
+            setError(err);
+            setLoadMoreEnabled(false);
+        }
+        setLoading(false);
+    }, [entity, skip, limit, asyncAction, key]);
+
+    // Auto-load observer
+    useEffect(() => {
+        if (loaderMode !== "auto" || !autoLoadRef.current || !loadMoreEnabled) return;
+        const el = autoLoadRef.current;
+        const observer = new window.IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) loadMore();
+            },
+            { threshold: 0 }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [loaderMode, loadMoreEnabled, loadMore]);
+
+    // Reset na změnu programu
+    useEffect(() => {
+        setItems(entity?.[key] || []);
+        setSkip(initialSkip);
+        setError(null);
+        setLoadMoreEnabled(true);
+    }, [entity, initialSkip]);
+
+    return { loading, error, items, loadMoreEnabled, loadMore, autoLoadRef };
+}
+
+
+export const ProgramAdmissionsAttributeLazy2 = ({
+    program,
+    filter = Boolean,
+    initialSkip = 0,
+    limit = 10,
+    Visualiser = AdmissionsVisualiser,    // možnost nahradit, nebo použít defaultně
+    loaderMode = "button",      // "auto" pro intersection observer
+    ...props
+}) => {
+    const preloadedItems = program?.admissions || [];
+
+    // Nejlépe použít svůj hook InfiniteScroll/useLoadMore2, nebo si nechat komponentu níže
+    const {
+        loading, error, items, loadMoreEnabled, loadMore, autoLoadRef
+    } = useInfiniteLoader({
+        asyncAction: ProgramAdmissionsAttributeAsyncAction,
+        entity: program,
+        key: "admissions",
+        filter,
+        initialSkip,
+        limit,
+        loaderMode,
+    });
+
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorHandler errors={error} />;
+
+    // Tady renderuješ vše
+    return (
+        <Visualiser items={items} filter={filter} {...props}>
+            {loaderMode === "button" && loadMoreEnabled && (
+                <Loader mode="button" onClick={loadMore} />
+            )}
+            {loaderMode === "auto" && loadMoreEnabled && (
+                <Loader mode="auto" ref={autoLoadRef} />
+            )}
+        </Visualiser>
+    );
+};
+
 
 /**
  * A lazy-loading component for displaying filtered `admissions` from a `program` entity.
@@ -196,36 +359,30 @@ export const ProgramAdmissionsAttributeInfinite = ({program}) => {
 export const ProgramAdmissionsAttributeLazy = ({
     program,
     filter = Boolean,
-    children
+    children,
+    initialSkip = 0,
+    limit = 10,
 }) => {
     // ...fetch, skip, limit, loadMoreEnabled, loadMore, loadingNext, atd.
-    const {loading, error, entity, fetch} = useAsyncAction(ProgramAdmissionsAttributeAsyncAction, program, {deferred: true})
+    // const {loading, error, entity, fetch} = useAsyncAction(ProgramAdmissionsAttributeAsyncAction, program, {deferred: true})
+    const {loading, error, entity, fetch} = useAsyncAction(ProgramAdmissionsAttributeAsyncAction, program)
     useEffect(() => {
         fetch(program)
     }, [program])
 
-    const { skip, limit, loadMoreEnabled, loadMore, loadingNext } = useLoadMore({
-        initialSkip: 0,
-        limit: 10,
+    const { autoLoadRef, loadMoreEnabled, loadMore } = useLoadMore2({
+        initialSkip,
+        limit,
         fetch,
-        vectorKey: "admissions"
+        vectorKey: "admissions",
+        autoload: true
     });
-    const autoLoaderRef = useRef(null);
-
-    // Připojení observeru, pokud je auto-loader aktivní
-    useIntersectionAutoLoad({
-        targetRef: autoLoaderRef,
-        onLoadMore: () => {
-            if (loadMoreEnabled && !loadingNext) loadMore();
-        },
-        enabled: loadMoreEnabled
-    });
-
+    
     // Rozpoznání, zda mezi children je AutoLoader a/nebo LoadMore
     // (childrenSeparator můžeš použít nebo ručně):
     const { hasLoadMore, hasLoadAuto, otherChildren } = childrenSeparator(children);
     
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return null;
 
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
@@ -235,70 +392,11 @@ export const ProgramAdmissionsAttributeLazy = ({
             {otherChildren}
             {hasLoadMore && loadMoreEnabled && <Loader {...hasLoadMore.props} onClick={loadMore} />}
             {hasLoadAuto &&
-                React.cloneElement(hasLoadAuto, { ref: autoLoaderRef })
+                React.cloneElement(hasLoadAuto, { ref: autoLoadRef })
             }
         </ProgramAdmissionsAttribute>
     );
 };
-
-
-/**
- * Custom React hook for implementing lazy-loading (pagination) of vector-like data from async sources.
- * 
- * This hook manages `skip` and `limit` state, determines if more data can be loaded,
- * and provides a `loadMore` function to fetch the next page. 
- * Optionally, you can specify which array field in the result should be considered as the "vector"
- * (e.g. 'admissions', 'students', ...), or the hook will automatically use the first array field found.
- *
- * Includes a `reset` function, useful when switching to a new entity or reloading data.
- *
- * @param {Object} options - Hook options.
- * @param {number} [options.initialSkip=10] - The initial value of `skip` (first offset for pagination).
- * @param {number} [options.limit=10] - Number of items to fetch per page.
- * @param {Function} options.fetch - Async function to fetch data. Must accept an object with `{skip, limit}`.
- * @param {boolean} [options.enabled=true] - Whether loading more is initially enabled.
- * @param {string} [options.vectorKey] - (Optional) Name of the array property in the fetched object to use for pagination check.
- *
- * @returns {Object} Hook state and actions.
- * @returns {number} return.skip - Current skip (offset) value.
- * @returns {number} return.limit - Current limit (page size) value.
- * @returns {boolean} return.loadMoreEnabled - Whether "load more" is available (based on last fetch).
- * @returns {Function} return.loadMore - Async function to load the next batch/page.
- * @returns {Function} return.reset - Function to reset skip and enabled state (e.g. after entity change).
- *
- * @example
- * const { skip, loadMoreEnabled, loadMore, reset } = useLoadMore({
- *   initialSkip: 0,
- *   limit: 20,
- *   fetch: ({skip, limit}) => fetchAdmissions({skip, limit}),
- *   vectorKey: "admissions"
- * });
- *
- * // In your component:
- * <button onClick={loadMore} disabled={!loadMoreEnabled}>Load more</button>
- */
-export function useLoadMore({ initialSkip = 10, limit = 10, fetch, enabled = true, vectorKey }) {
-    const [skip, setSkip] = useState(initialSkip);
-    const [loadMoreEnabled, setLoadMoreEnabled] = useState(enabled);
-
-    const loadMore = useCallback(async () => {
-        const fresh = await fetch({ skip, limit });
-        const vector = vectorKey
-            ? fresh[vectorKey]
-            : Object.values(fresh).find(v => Array.isArray(v));
-        setSkip(prev => prev + limit);
-        setLoadMoreEnabled(vector && vector.length === limit);
-        return fresh;
-    }, [fetch, skip, limit, vectorKey]);
-
-    // Reset logiky, např. při změně entity/programu, můžeš vrátit z hooku také!
-    const reset = useCallback(() => {
-        setSkip(initialSkip);
-        setLoadMoreEnabled(enabled);
-    }, [initialSkip, enabled]);
-
-    return { skip, limit, loadMoreEnabled, loadMore, reset, childrenSeparator };
-}
 
 
 const childrenSeparator = (children) => {
@@ -333,7 +431,7 @@ const childrenSeparator = (children) => {
 export const Loader = React.forwardRef(
     ({ mode = "button", onClick, children, ...props }, ref) => {
         if (mode === "auto") {
-        return <div ref={ref} style={{ height: 20 }} {...props} />;
+        return <div ref={ref} style={{height: 100, background: "red"}} {...props} />;
         }
         // default je button
         return (
@@ -346,23 +444,87 @@ export const Loader = React.forwardRef(
 Loader.displayName = "Loader";
 
 /**
- * Triggers a callback when the target element enters the viewport.
- * @param {Object} params
- * @param {React.RefObject} params.targetRef - React ref to DOM node.
- * @param {Function} params.onLoadMore - Callback to invoke when the element is visible.
- * @param {boolean} [params.enabled=true] - Whether the observer is active.
+ * Hook for paginated lazy-loading with optional infinite scroll/autoloading.
+ * Interně spravuje ref pro autoload prvek.
+ *
+ * @param {Object} options
+ * @param {number} [options.initialSkip=10]
+ * @param {number} [options.limit=10]
+ * @param {Function} options.fetch
+ * @param {boolean} [options.enabled=true]
+ * @param {string} [options.vectorKey]
+ * @param {boolean} [options.autoload=false] - Enable auto-load on scroll.
+ *
+ * @returns {Object}
+ *   skip, limit, loadMoreEnabled, loadMore, reset, loadingNext, autoLoadRef
  */
-export function useIntersectionAutoLoad({ targetRef, onLoadMore, enabled = true }) {
+export function useLoadMore2({
+    initialSkip = 10,
+    limit = 10,
+    fetch,
+    enabled = true,
+    vectorKey,
+    autoload = false,
+}) {
+    const [skip, setSkip] = useState(initialSkip);
+    const [loadMoreEnabled, setLoadMoreEnabled] = useState(enabled);
+    const [loadingNext, setLoadingNext] = useState(false);
+
+    const autoLoadRef = useRef(null);
+
+    const loadMore = useCallback(async () => {
+        console.log("loadMore", skip, limit);
+        setLoadingNext(true);
+        const fresh = await fetch({ skip, limit });
+        const vector = vectorKey
+            ? fresh[vectorKey]
+            : Object.values(fresh).find(v => Array.isArray(v));
+        setSkip(prev => prev + limit);
+        setLoadMoreEnabled(vector && vector.length === limit);
+        setLoadingNext(false);
+        return fresh;
+    }, [fetch, skip, limit, vectorKey]);
+
+    const reset = useCallback(() => {
+        setSkip(initialSkip);
+        setLoadMoreEnabled(enabled);
+        setLoadingNext(false);
+    }, [initialSkip, enabled]);
+
     useEffect(() => {
-        if (!enabled || !targetRef?.current) return;
-        const el = targetRef.current;
-        const observer = new window.IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) onLoadMore();
-            },
-            { threshold: 1 }
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, [targetRef, onLoadMore, enabled]);
+        if (!autoload || !loadMoreEnabled || loadingNext) return;
+        if (typeof window === "undefined") return;
+
+        let observer = null;
+        let timeoutId = null;
+
+        function attach() {
+            const el = autoLoadRef.current;
+            if (!el) {
+                timeoutId = setTimeout(attach, 50);
+                return;
+            }
+
+            observer = new window.IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        loadMore();
+                    }
+                },
+                { threshold: 0 }
+            );
+            observer.observe(el);
+        }
+
+        attach();
+
+        return () => {
+            if (observer) observer.disconnect();
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [autoload, loadMoreEnabled, loadingNext, loadMore]);
+
+
+
+    return { skip, limit, loadMoreEnabled, loadMore, reset, loadingNext, autoLoadRef };
 }
