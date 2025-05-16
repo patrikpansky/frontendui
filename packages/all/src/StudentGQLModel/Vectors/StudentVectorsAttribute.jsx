@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,23 @@ const followUpStudentVectorItemDelete = (student, vectorItem, dispatch) => {
     }
 };
 
+const StudentVectorsAttributeQuery = `
+query StudentQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: studentById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const StudentVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    StudentVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an student entity.
@@ -84,13 +102,17 @@ const followUpStudentVectorItemDelete = (student, vectorItem, dispatch) => {
  *
  * <StudentVectorsAttribute student={studentEntity} />
  */
-export const StudentVectorsAttribute = ({student}) => {
-    const { vectors } = student
-    if (typeof vectors === 'undefined') return null
+export const StudentVectorsAttribute = ({student, filter=Boolean}) => {
+    const { vectors: unfiltered } = student
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +121,6 @@ export const StudentVectorsAttribute = ({student}) => {
     )
 }
 
-const StudentVectorsAttributeQuery = `
-query StudentQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: studentById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const StudentVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    StudentVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const StudentVectorsAttributeInfinite = ({student}) => { 
     const {vectors} = student
@@ -157,16 +162,13 @@ export const StudentVectorsAttributeInfinite = ({student}) => {
  * />
  */
 export const StudentVectorsAttributeLazy = ({student, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(StudentVectorsAttributeAsyncAction, student)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(StudentVectorsAttributeAsyncAction, student, {deferred: true})
+    useEffect(() => {
+        fetch(student)
+    }, [student])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <StudentVectorsAttribute student={entity} filter={filter} />    
 }

@@ -1,3 +1,5 @@
+import { Col, Row } from "react-bootstrap"
+
 /**
  * A component that displays medium-level content for an program entity.
  *
@@ -24,9 +26,13 @@
 export const ProgramMediumContent = ({program, children}) => {
     return (
         <>
-            $ProgramMediumContent$ <br />
+            <Row>
+                <Col>Název</Col>
+                <Col>{program?.name}</Col>
+            </Row>
+            {/* $ProgramMediumContent$ <br />
             {JSON.stringify(program)}
-            $ProgramMediumContent$
+            $ProgramMediumContent$ */}
             {children}
         </>
     )

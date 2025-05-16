@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -161,9 +162,11 @@ export const TemplateVectorsAttributeInfinite = ({template}) => {
  * />
  */
 export const TemplateVectorsAttributeLazy = ({template, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(TemplateVectorsAttributeAsyncAction, template)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(TemplateVectorsAttributeAsyncAction, template, {deferred: true})
+    useEffect(() => {
+        fetch(template)
+    }, [template])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 

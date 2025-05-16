@@ -1,6 +1,6 @@
 import { SubjectLargeCard } from "../Components"
 import { SubjectPageNavbar } from "./SubjectPageNavbar"
-
+import { SubjectSemestersAttribute } from "../Vectors/SubjectSemestersAttribute"
 /**
  * Renders a page layout for a single subject entity, including navigation and detailed view.
  *
@@ -24,7 +24,8 @@ export const SubjectPageContent = ({subject, children, ...props}) => {
     return (<>
         <SubjectPageNavbar subject={subject} />
         <SubjectLargeCard subject={subject} {...props} >
-            Subject {JSON.stringify(subject)}
+            {/* Subject {JSON.stringify(subject)} */}
+            <SubjectSemestersAttribute subject={subject} />
             {children}
         </SubjectLargeCard>
     </>)

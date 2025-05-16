@@ -168,7 +168,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
         loading: !deferred,
         error: null,
         dispatchResult: null,
-        fetch: fetchData,
+        // fetch: fetchData,
     })
 
     useEffect(() => {
@@ -208,6 +208,7 @@ export const useAsyncAction = (AsyncAction, queryVariables, params = { deferred:
     // if (!state.loading) console.log("loaded", queryVariables, result)
     return {
         ...state,
+        fetch: fetchData,
         read,
         // read: resource.read, // Suspense-compatible `read` function
         entity: result,

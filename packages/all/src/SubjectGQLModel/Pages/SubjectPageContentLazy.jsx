@@ -38,12 +38,12 @@ export const SubjectPageContentLazy = ({ subject, children }) => {
     const [delayer] = useState(() => CreateDelayer())
   
     const handleChange = async (e) => {
-      const value = e?.target?.value ?? e
+      const value = e?.target?.value && subject
       await delayer(() => fetch(value))
     }
   
     const handleBlur = async (e) => {
-      const value = e?.target?.value ?? e
+      const value = e?.target?.value && subject
       await delayer(() => fetch(value))
     }
   

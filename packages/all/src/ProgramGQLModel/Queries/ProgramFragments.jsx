@@ -116,5 +116,14 @@ fragment ProgramLargeFragment on ProgramGQLModel {
     programId
     stateId
   }
+  admissions {
+    __typename
+    id
+    name
+    stateId
+    state { id name }
+    applicationStartDate
+    applicationLastDate
+  }    
 }
 `, ProgramMediumFragment);

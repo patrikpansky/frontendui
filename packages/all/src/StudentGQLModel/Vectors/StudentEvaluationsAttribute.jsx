@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,48 +58,6 @@ const followUpStudentEvaluationItemDelete = (student, evaluationItem, dispatch) 
     }
 };
 
-
-/**
- * A component for displaying the `evaluations` attribute of an student entity.
- *
- * This component checks if the `evaluations` attribute exists on the `student` object. If `evaluations` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `evaluations` array and
- * displays a placeholder message and a JSON representation for each item in the `evaluations`.
- *
- * @component
- * @param {Object} props - The props for the StudentEvaluationsAttribute component.
- * @param {Object} props.student - The object representing the student entity.
- * @param {Array} [props.student.evaluations] - An array of evaluations items associated with the student entity.
- * Each item is expected to have a unique `id` property.
- *
- * @returns {JSX.Element|null} A JSX element displaying the `evaluations` items or `null` if the attribute is undefined.
- *
- * @example
- * // Example usage:
- * const studentEntity = { 
- *   evaluations: [
- *     { id: 1, name: "Evaluation Item 1" }, 
- *     { id: 2, name: "Evaluation Item 2" }
- *   ] 
- * };
- *
- * <StudentEvaluationsAttribute student={studentEntity} />
- */
-export const StudentEvaluationsAttribute = ({student}) => {
-    const { evaluations } = student
-    if (typeof evaluations === 'undefined') return null
-    return (
-        <>
-            {evaluations.map(
-                evaluation => <div id={evaluation.id} key={evaluation.id}>
-                    Probably {'<EvaluationMediumCard evaluation=\{evaluation\} />'} <br />
-                    <pre>{JSON.stringify(evaluation, null, 4)}</pre>
-                </div>
-            )}
-        </>
-    )
-}
-
 const StudentEvaluationsAttributeQuery = `
 query StudentQueryRead($id: UUID!, $where: EvaluationInputFilter, $skip: Int, $limit: Int) {
     result: studentById(id: $id) {
@@ -129,6 +88,52 @@ const StudentEvaluationsAttributeAsyncAction = createAsyncGraphQLAction(
     StudentEvaluationsAttributeQuery,
     processVectorAttributeFromGraphQLResult("evaluations")
 )
+
+/**
+ * A component for displaying the `evaluations` attribute of an student entity.
+ *
+ * This component checks if the `evaluations` attribute exists on the `student` object. If `evaluations` is undefined,
+ * the component returns `null` and renders nothing. Otherwise, it maps over the `evaluations` array and
+ * displays a placeholder message and a JSON representation for each item in the `evaluations`.
+ *
+ * @component
+ * @param {Object} props - The props for the StudentEvaluationsAttribute component.
+ * @param {Object} props.student - The object representing the student entity.
+ * @param {Array} [props.student.evaluations] - An array of evaluations items associated with the student entity.
+ * Each item is expected to have a unique `id` property.
+ *
+ * @returns {JSX.Element|null} A JSX element displaying the `evaluations` items or `null` if the attribute is undefined.
+ *
+ * @example
+ * // Example usage:
+ * const studentEntity = { 
+ *   evaluations: [
+ *     { id: 1, name: "Evaluation Item 1" }, 
+ *     { id: 2, name: "Evaluation Item 2" }
+ *   ] 
+ * };
+ *
+ * <StudentEvaluationsAttribute student={studentEntity} />
+ */
+export const StudentEvaluationsAttribute = ({student, filter=Boolean}) => {
+    const { evaluations: unfiltered } = student
+    if (typeof unfiltered === 'undefined') return null
+    const evaluations = unfiltered.filter(filter)
+    if (evaluations.length === 0) return null
+    return (
+        <>
+            {evaluations.map(
+                evaluation => <div id={evaluation.id} key={evaluation.id}>
+                    {/* <EvaluationMediumCard evaluation={evaluation} /> */}
+                    {/* <EvaluationLink evaluation={evaluation} /> */}
+                    Probably {'<EvaluationMediumCard evaluation=\{evaluation\} />'} <br />
+                    <pre>{JSON.stringify(evaluation, null, 4)}</pre>
+                </div>
+            )}
+        </>
+    )
+}
+
 
 export const StudentEvaluationsAttributeInfinite = ({student}) => { 
     const {evaluations} = student
@@ -170,16 +175,13 @@ export const StudentEvaluationsAttributeInfinite = ({student}) => {
  * />
  */
 export const StudentEvaluationsAttributeLazy = ({student, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(StudentEvaluationsAttributeAsyncAction, student)
-    const values = entity?.evaluations || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(StudentEvaluationsAttributeAsyncAction, student, {deferred: true})
+    useEffect(() => {
+        fetch(student)
+    }, [student])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <StudentEvaluationsAttribute student={entity} filter={filter} />    
 }

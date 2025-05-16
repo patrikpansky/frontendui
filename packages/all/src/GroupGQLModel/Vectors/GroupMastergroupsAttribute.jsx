@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,32 @@ const followUpGroupMastergroupItemDelete = (group, mastergroupItem, dispatch) =>
     }
 };
 
+const GroupMastergroupsAttributeQuery = `
+query GroupQueryRead($id: UUID!, $where: MastergroupInputFilter, $skip: Int, $limit: Int) {
+    result: groupById(id: $id) {
+        __typename
+        id
+        mastergroups(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            lastchange
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            startdate
+            enddate
+            grouptypeId
+            mastergroupId
+        }
+    }
+}
+`
+
+const GroupMastergroupsAttributeAsyncAction = createAsyncGraphQLAction(
+    GroupMastergroupsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("mastergroups")
+)
 
 /**
  * A component for displaying the `mastergroups` attribute of an group entity.
@@ -84,13 +111,17 @@ const followUpGroupMastergroupItemDelete = (group, mastergroupItem, dispatch) =>
  *
  * <GroupMastergroupsAttribute group={groupEntity} />
  */
-export const GroupMastergroupsAttribute = ({group}) => {
-    const { mastergroups } = group
-    if (typeof mastergroups === 'undefined') return null
+export const GroupMastergroupsAttribute = ({group, filter=Boolean}) => {
+    const { mastergroups: unfiltered } = group
+    if (typeof unfiltered === 'undefined') return null
+    const mastergroups = unfiltered.filter(filter)
+    if (mastergroups.length === 0) return null
     return (
         <>
             {mastergroups.map(
                 mastergroup => <div id={mastergroup.id} key={mastergroup.id}>
+                    {/* <MastergroupMediumCard mastergroup={mastergroup} /> */}
+                    {/* <MastergroupLink mastergroup={mastergroup} /> */}
                     Probably {'<MastergroupMediumCard mastergroup=\{mastergroup\} />'} <br />
                     <pre>{JSON.stringify(mastergroup, null, 4)}</pre>
                 </div>
@@ -99,32 +130,6 @@ export const GroupMastergroupsAttribute = ({group}) => {
     )
 }
 
-const GroupMastergroupsAttributeQuery = `
-query GroupQueryRead($id: UUID!, $where: MastergroupInputFilter, $skip: Int, $limit: Int) {
-    result: groupById(id: $id) {
-        __typename
-        id
-        mastergroups(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            startdate
-            enddate
-            grouptypeId
-            mastergroupId
-        }
-    }
-}
-`
-
-const GroupMastergroupsAttributeAsyncAction = createAsyncGraphQLAction(
-    GroupMastergroupsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("mastergroups")
-)
 
 export const GroupMastergroupsAttributeInfinite = ({group}) => { 
     const {mastergroups} = group
@@ -166,16 +171,13 @@ export const GroupMastergroupsAttributeInfinite = ({group}) => {
  * />
  */
 export const GroupMastergroupsAttributeLazy = ({group, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(GroupMastergroupsAttributeAsyncAction, group)
-    const values = entity?.mastergroups || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(GroupMastergroupsAttributeAsyncAction, group, {deferred: true})
+    useEffect(() => {
+        fetch(group)
+    }, [group])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <GroupMastergroupsAttribute group={entity} filter={filter} />    
 }

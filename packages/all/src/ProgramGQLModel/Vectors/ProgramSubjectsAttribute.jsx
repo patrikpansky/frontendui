@@ -1,6 +1,7 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
-import { SubjectLink } from "../../SubjectGQLModel";
+import { SubjectMediumCard } from "../../SubjectGQLModel";
+import { Col, Row } from "react-bootstrap";
 
 
 /**
@@ -58,6 +59,36 @@ const followUpProgramSubjectItemDelete = (program, subjectItem, dispatch) => {
     }
 };
 
+const ProgramSubjectsAttributeQuery = `
+query ProgramQueryRead($id: UUID!, $where: SubjectInputFilter, $skip: Int, $limit: Int) {
+    result: programById(id: $id) {
+        __typename
+        id
+        subjects(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            lastchange
+            name
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            programId
+            program {
+                __typename
+                id
+                name
+            }
+            groupId
+        }
+    }
+}
+`
+
+const ProgramSubjectsAttributeAsyncAction = createAsyncGraphQLAction(
+    ProgramSubjectsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("subjects")
+)
 
 /**
  * A component for displaying the `subjects` attribute of an program entity.
@@ -85,46 +116,25 @@ const followUpProgramSubjectItemDelete = (program, subjectItem, dispatch) => {
  *
  * <ProgramSubjectsAttribute program={programEntity} />
  */
-export const ProgramSubjectsAttribute = ({program}) => {
-    const { subjects } = program
-    if (typeof subjects === 'undefined') return null
+export const ProgramSubjectsAttribute = ({program, filter=Boolean}) => {
+    const { subjects: unfiltered } = program
+    if (typeof unfiltered === 'undefined') return null
+    const subjects = unfiltered.filter(filter)
+    if (subjects.length === 0) return null
     return (
-        <>
+        <Row>
             {subjects.map(
-                subject => <div id={subject.id} key={subject.id}>
-                    Probably {'<SubjectMediumCard subject=\{subject\} />'} <br />
-                    <pre>{JSON.stringify(subject, null, 4)}</pre>
-                </div>
+                subject => <Col id={subject.id} key={subject.id} md={6} lg={4} xl={3}>
+                    <SubjectMediumCard subject={subject} />
+                    {/* <SubjectLink subject={subject} /> */}
+                    {/* Probably {'<SubjectMediumCard subject=\{subject\} />'} <br />
+                    <pre>{JSON.stringify(subject, null, 4)}</pre> */}
+                </Col>
             )}
-        </>
+        </Row>
     )
 }
 
-const ProgramSubjectsAttributeQuery = `
-query ProgramQueryRead($id: UUID!, $where: SubjectInputFilter, $skip: Int, $limit: Int) {
-    result: programById(id: $id) {
-        __typename
-        id
-        subjects(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            name
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            programId
-            groupId
-        }
-    }
-}
-`
-
-const ProgramSubjectsAttributeAsyncAction = createAsyncGraphQLAction(
-    ProgramSubjectsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("subjects")
-)
 
 export const ProgramSubjectsAttributeInfinite = ({program}) => { 
     const {subjects} = program
@@ -172,11 +182,5 @@ export const ProgramSubjectsAttributeLazy = ({program, filter=Boolean}) => {
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <SubjectLink subject={value} />
-            {/* <pre>{JSON.stringify(value, null, 4)}</pre> */}
-        </div>)}
-    </>)
+    return <ProgramSubjectsAttribute program={entity} filter={filter} />    
 }

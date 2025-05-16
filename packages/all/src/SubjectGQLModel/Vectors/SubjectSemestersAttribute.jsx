@@ -1,6 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
-
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { SemesterMediumCard } from "../../SemesterGQLModel"
 
 /**
  * Inserts a SemesterGQLModel item into a subject’s semesters array and dispatches an update.
@@ -57,6 +57,30 @@ const followUpSubjectSemesterItemDelete = (subject, semesterItem, dispatch) => {
     }
 };
 
+const SubjectSemestersAttributeQuery = `
+query SubjectQueryRead($id: UUID!, $where: SemesterInputFilter, $skip: Int, $limit: Int) {
+    result: subjectById(id: $id) {
+        __typename
+        id
+        semesters(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            lastchange
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            classificationtypeId
+            subjectId
+        }
+    }
+}
+`
+
+const SubjectSemestersAttributeAsyncAction = createAsyncGraphQLAction(
+    SubjectSemestersAttributeQuery,
+    processVectorAttributeFromGraphQLResult("semesters")
+)
 
 /**
  * A component for displaying the `semesters` attribute of an subject entity.
@@ -84,45 +108,26 @@ const followUpSubjectSemesterItemDelete = (subject, semesterItem, dispatch) => {
  *
  * <SubjectSemestersAttribute subject={subjectEntity} />
  */
-export const SubjectSemestersAttribute = ({subject}) => {
-    const { semesters } = subject
-    if (typeof semesters === 'undefined') return null
+export const SubjectSemestersAttribute = ({subject, filter=Boolean}) => {
+    const { semesters: unfiltered } = subject
+    if (typeof unfiltered === 'undefined') return null
+    const semesters = unfiltered.filter(filter)
+    if (semesters.length === 0) return null
+    // const sorted = semesters.sort((a, b) => a.or
     return (
         <>
             {semesters.map(
                 semester => <div id={semester.id} key={semester.id}>
-                    Probably {'<SemesterMediumCard semester=\{semester\} />'} <br />
-                    <pre>{JSON.stringify(semester, null, 4)}</pre>
+                    <SemesterMediumCard semester={semester} />
+                    {/* <SemesterLink semester={semester} /> */}
+                    {/* Probably {'<SemesterMediumCard semester=\{semester\} />'} <br /> */}
+                    {/* <pre>{JSON.stringify(semester, null, 4)}</pre> */}
                 </div>
             )}
         </>
     )
 }
 
-const SubjectSemestersAttributeQuery = `
-query SubjectQueryRead($id: UUID!, $where: SemesterInputFilter, $skip: Int, $limit: Int) {
-    result: subjectById(id: $id) {
-        __typename
-        id
-        semesters(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            classificationtypeId
-            subjectId
-        }
-    }
-}
-`
-
-const SubjectSemestersAttributeAsyncAction = createAsyncGraphQLAction(
-    SubjectSemestersAttributeQuery,
-    processVectorAttributeFromGraphQLResult("semesters")
-)
 
 export const SubjectSemestersAttributeInfinite = ({subject}) => { 
     const {semesters} = subject
@@ -170,10 +175,5 @@ export const SubjectSemestersAttributeLazy = ({subject, filter=Boolean}) => {
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <SubjectSemestersAttribute subject={entity} filter={filter} />    
 }

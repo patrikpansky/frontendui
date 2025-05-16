@@ -1,5 +1,9 @@
+import { HashContainer } from "@hrbolek/uoisfrontend-shared"
 import { ProgramURI } from "../Components/ProgramLink"
+import { ProgramStudentsAttributeLazy } from "../Vectors/ProgramStudentsAttribute"
+import { ProgramSubjectsAttributeLazy } from "../Vectors/ProgramSubjectsAttribute"
 import { ProgramPage } from "./ProgramPage"
+import { ProgramCardCapsule } from "../Components"
 
 /**
  * An array of route segment definitions for the Program pages.
@@ -25,6 +29,24 @@ import { ProgramPage } from "./ProgramPage"
 export const ProgramRouterSegments = [
     {
         path: `/${ProgramURI}:id`,
-        element: (<ProgramPage />),
+        element: (<ProgramPage>
+
+        </ProgramPage>),
+    },
+    {
+        path: `/${ProgramURI.replace('view', 'subjects')}:id/`,
+        element: (<ProgramPage>
+            <ProgramSubjectsAttributeLazy />
+        </ProgramPage>)
+    },
+    {
+        path: `/${ProgramURI.replace('view', 'students')}:id/`,
+        element: (<ProgramPage>
+            <ProgramStudentsAttributeLazy />
+        </ProgramPage>)
     }
+
+
+
+
 ]

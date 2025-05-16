@@ -81,8 +81,6 @@ fragment StudentMediumFragment on StudentGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
   student {
     __typename
@@ -134,7 +132,7 @@ fragment StudentMediumFragment on StudentGQLModel {
     writerslistId
     readerslistId
     order
-    userCan
+
   }
 }
 `, StudentLinkFragment);

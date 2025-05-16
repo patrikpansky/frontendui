@@ -1,7 +1,8 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
-import { useMemo } from "react";
 
+import { UserLink } from "../../UserGQLModel/Components/UserLink"
+import { StudentLink } from "../../StudentGQLModel/Components/StudentLink"
 
 /**
  * Inserts a StudentGQLModel item into a program’s students array and dispatches an update.
@@ -58,6 +59,48 @@ const followUpProgramStudentItemDelete = (program, studentItem, dispatch) => {
     }
 };
 
+const ProgramStudentsAttributeQuery = `
+query ProgramQueryRead($id: UUID!, $where: StudentInputFilter, $skip: Int, $limit: Int) {
+    result: programById(id: $id) {
+        __typename
+        id
+        students(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            myId
+            lastchange
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            userId
+            student {
+                __typename
+                id
+                fullname
+                email
+            }
+            programId
+            program {
+                __typename
+                id
+                name
+            }
+            stateId
+            state {
+                __typename
+                id
+                name
+            }
+        }
+    }
+}
+`
+
+const ProgramStudentsAttributeAsyncAction = createAsyncGraphQLAction(
+    ProgramStudentsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("students")
+)
 
 /**
  * A component for displaying the `students` attribute of an program entity.
@@ -85,54 +128,29 @@ const followUpProgramStudentItemDelete = (program, studentItem, dispatch) => {
  *
  * <ProgramStudentsAttribute program={programEntity} />
  */
-export const ProgramStudentsAttribute = ({program}) => {
-    const { students } = program
-    if (typeof students === 'undefined') return null
+export const ProgramStudentsAttribute = ({program, filter=Boolean}) => {
+    const { students: unfiltered } = program
+    if (typeof unfiltered === 'undefined') return null
+    const students = unfiltered.filter(filter)
+    if (students.length === 0) return null
     return (
         <>
             {students.map(
                 student => <div id={student.id} key={student.id}>
-                    Probably {'<StudentMediumCard student=\{student\} />'} <br />
-                    <pre>{JSON.stringify(student, null, 4)}</pre>
+                    {/* <StudentMediumCard student={student} /> */}
+                    {student?.student && <><UserLink user={student?.student} /> / <StudentLink student={student} /></>}
+                    {!student?.student && <span><StudentLink student={student}>Student nenalezen {student?.id} / {student?.state?.name}</StudentLink></span>}
+                    {/* Probably {'<StudentMediumCard student=\{student\} />'} <br /> */}
+                    {/* <pre>{JSON.stringify(student, null, 4)}</pre> */}
                 </div>
             )}
         </>
     )
 }
 
-const ProgramStudentsAttributeQuery = `
-query ProgramQueryRead($id: UUID!, $where: StudentInputFilter, $skip: Int, $limit: Int) {
-    result: programById(id: $id) {
-        __typename
-        id
-        studentvect: students(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            myId
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            userId
-            programId
-            stateId
-            state {
-                id
-                name
-            }
-        }
-    }
-}
-`
-
-const ProgramStudentsAttributeAsyncAction = createAsyncGraphQLAction(
-    ProgramStudentsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("studentvect")
-)
 
 export const ProgramStudentsAttributeInfinite = ({program}) => { 
-    const {studentvect: students} = program
+    const {students} = program
 
     return (
         <InfiniteScroll 
@@ -172,29 +190,10 @@ export const ProgramStudentsAttributeInfinite = ({program}) => {
  */
 export const ProgramStudentsAttributeLazy = ({program, filter=Boolean}) => {
     const {loading, error, entity} = useAsyncAction(ProgramStudentsAttributeAsyncAction, program)
-    const values = entity?.studentvect || []
-
-    const valuesToDisplay = values.filter(filter)
-
-    const byState = useMemo(() => valuesToDisplay.reduce((acc, item) => {
-        const key = item.stateId;
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-        acc[key].push(item);
-        return acc;
-    }, {}), [values]);
+    const values = entity?.students || []
     
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    return <PSA byState={byState} />
-}
-
-function PSA({byState}) {
-    return <>
-        {Object.entries(byState).map(([key, values]) => <div key={key} id={key}>
-            {values.map(value => <pre key={value.id}>{JSON.stringify(value, null, 4)}</pre>)}
-        </div>)}
-    </>;
+    return <ProgramStudentsAttribute program={entity} filter={filter} />    
 }

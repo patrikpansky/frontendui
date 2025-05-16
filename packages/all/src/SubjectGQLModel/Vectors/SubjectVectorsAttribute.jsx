@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,23 @@ const followUpSubjectVectorItemDelete = (subject, vectorItem, dispatch) => {
     }
 };
 
+const SubjectVectorsAttributeQuery = `
+query SubjectQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: subjectById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const SubjectVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    SubjectVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an subject entity.
@@ -84,13 +102,17 @@ const followUpSubjectVectorItemDelete = (subject, vectorItem, dispatch) => {
  *
  * <SubjectVectorsAttribute subject={subjectEntity} />
  */
-export const SubjectVectorsAttribute = ({subject}) => {
-    const { vectors } = subject
-    if (typeof vectors === 'undefined') return null
+export const SubjectVectorsAttribute = ({subject, filter=Boolean}) => {
+    const { vectors: unfiltered } = subject
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +121,6 @@ export const SubjectVectorsAttribute = ({subject}) => {
     )
 }
 
-const SubjectVectorsAttributeQuery = `
-query SubjectQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: subjectById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const SubjectVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    SubjectVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const SubjectVectorsAttributeInfinite = ({subject}) => { 
     const {vectors} = subject
@@ -157,16 +162,13 @@ export const SubjectVectorsAttributeInfinite = ({subject}) => {
  * />
  */
 export const SubjectVectorsAttributeLazy = ({subject, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(SubjectVectorsAttributeAsyncAction, subject)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(SubjectVectorsAttributeAsyncAction, subject, {deferred: true})
+    useEffect(() => {
+        fetch(subject)
+    }, [subject])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <SubjectVectorsAttribute subject={entity} filter={filter} />    
 }

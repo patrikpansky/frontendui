@@ -33,6 +33,9 @@ export const ProgramLargeCard = ({program, children}) => {
             <Row>
                 <LeftColumn>
                     <ProgramMediumCard program={program}/>
+                    <ProgramCardCapsule program={program}>
+                        Další informace
+                    </ProgramCardCapsule>                
                 </LeftColumn>
                 <MiddleColumn>
                     {children}

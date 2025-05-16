@@ -29,7 +29,7 @@ import { ProgramLink } from "./ProgramLink"
  *   <Button variant="primary">Click Me</Button>
  * </ProgramCardCapsule>
  */
-export const ProgramCardCapsule = ({program, children, title=<><PersonFill /> <ProgramLink program={program} /></>}) => {
+export const ProgramCardCapsule = ({program, children, title=<>Program <ProgramLink program={program} /></>}) => {
     return (
         <CardCapsule title={title}>
             {children}

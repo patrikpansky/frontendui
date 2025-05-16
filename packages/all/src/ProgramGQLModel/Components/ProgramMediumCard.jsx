@@ -30,7 +30,7 @@ import { ProgramMediumContent } from "./ProgramMediumContent"
  */
 export const ProgramMediumCard = ({program, children}) => {
     return (
-        <ProgramCardCapsule title={<><PersonFill /> <ProgramLink program={program} /></>}>
+        <ProgramCardCapsule program={program}>
             <ProgramMediumContent program={program}>
                 {children}
             </ProgramMediumContent>

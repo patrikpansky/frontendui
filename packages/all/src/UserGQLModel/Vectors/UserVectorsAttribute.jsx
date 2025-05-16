@@ -1,5 +1,6 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,23 @@ const followUpUserVectorItemDelete = (user, vectorItem, dispatch) => {
     }
 };
 
+const UserVectorsAttributeQuery = `
+query UserQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: userById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const UserVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    UserVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an user entity.
@@ -84,13 +102,17 @@ const followUpUserVectorItemDelete = (user, vectorItem, dispatch) => {
  *
  * <UserVectorsAttribute user={userEntity} />
  */
-export const UserVectorsAttribute = ({user}) => {
-    const { vectors } = user
-    if (typeof vectors === 'undefined') return null
+export const UserVectorsAttribute = ({user, filter=Boolean}) => {
+    const { vectors: unfiltered } = user
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +121,6 @@ export const UserVectorsAttribute = ({user}) => {
     )
 }
 
-const UserVectorsAttributeQuery = `
-query UserQueryRead($id: id, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: userById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const UserVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    UserVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const UserVectorsAttributeInfinite = ({user}) => { 
     const {vectors} = user
@@ -157,16 +162,13 @@ export const UserVectorsAttributeInfinite = ({user}) => {
  * />
  */
 export const UserVectorsAttributeLazy = ({user, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(UserVectorsAttributeAsyncAction, user)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(UserVectorsAttributeAsyncAction, user, {deferred: true})
+    useEffect(() => {
+        fetch(user)
+    }, [user])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <UserVectorsAttribute user={entity} filter={filter} />    
 }

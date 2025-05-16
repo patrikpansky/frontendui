@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,23 @@ const followUpGroupVectorItemDelete = (group, vectorItem, dispatch) => {
     }
 };
 
+const GroupVectorsAttributeQuery = `
+query GroupQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: groupById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const GroupVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    GroupVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an group entity.
@@ -84,13 +102,17 @@ const followUpGroupVectorItemDelete = (group, vectorItem, dispatch) => {
  *
  * <GroupVectorsAttribute group={groupEntity} />
  */
-export const GroupVectorsAttribute = ({group}) => {
-    const { vectors } = group
-    if (typeof vectors === 'undefined') return null
+export const GroupVectorsAttribute = ({group, filter=Boolean}) => {
+    const { vectors: unfiltered } = group
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +121,6 @@ export const GroupVectorsAttribute = ({group}) => {
     )
 }
 
-const GroupVectorsAttributeQuery = `
-query GroupQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: groupById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const GroupVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    GroupVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const GroupVectorsAttributeInfinite = ({group}) => { 
     const {vectors} = group
@@ -157,16 +162,13 @@ export const GroupVectorsAttributeInfinite = ({group}) => {
  * />
  */
 export const GroupVectorsAttributeLazy = ({group, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(GroupVectorsAttributeAsyncAction, group)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(GroupVectorsAttributeAsyncAction, group, {deferred: true})
+    useEffect(() => {
+        fetch(group)
+    }, [group])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <GroupVectorsAttribute group={entity} filter={filter} />    
 }

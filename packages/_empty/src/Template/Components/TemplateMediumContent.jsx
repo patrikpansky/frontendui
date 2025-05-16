@@ -1,3 +1,4 @@
+import { Col, Row } from "react-bootstrap"
 /**
  * A component that displays medium-level content for an template entity.
  *
@@ -24,9 +25,14 @@
 export const TemplateMediumContent = ({template, children}) => {
     return (
         <>
-            $TemplateMediumContent$ <br />
-            {JSON.stringify(template)}
-            $TemplateMediumContent$
+            <Row>
+                <Col>Program</Col>
+                <Col><ProgramLink program={student?.program} /></Col>
+            </Row>
+            <Row>
+                <Col>JSON</Col>
+                <Col><pre>{JSON.stringify(template, null, 2)}</pre></Col>
+            </Row>
             {children}
         </>
     )

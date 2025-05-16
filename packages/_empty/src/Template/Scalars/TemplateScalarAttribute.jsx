@@ -23,6 +23,8 @@ export const TemplateScalarAttribute = ({template}) => {
     if (typeof scalar === 'undefined') return null
     return (
         <>
+            {/* <ScalarMediumCard scalar={scalar} /> */}
+            {/* <ScalarLink scalar={scalar} /> */}
             Probably {'<ScalarMediumCard scalar=\{scalar\} />'} <br />
             <pre>{JSON.stringify(scalar, null, 4)}</pre>
         </>

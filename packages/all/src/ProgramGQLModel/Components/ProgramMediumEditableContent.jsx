@@ -1,4 +1,5 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
+import { createAsyncGraphQLAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { Input, Options, Select } from "@hrbolek/uoisfrontend-shared"
 
 /**
  * A component that displays medium-level content for an program entity.
@@ -28,7 +29,19 @@ export const ProgramMediumEditableContent = ({program, onChange=(e)=>null, onBlu
         <>           
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={program?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={program?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
+            <Select id={"type"} label={"Typ"} className="form-control" defaultValue={program?.type|| "Typ"} onChange={onChange} onBlur={onBlur} >
+                {/* <Options asyncAction={ProgramTypeAsyncAction} /> */}
+            </Select>
             {children}
         </>
     )
 }
+
+const ProgramTypeAsyncAction = createAsyncGraphQLAction(`query programTypePage($skip: Int, $limit: Int, $where: ProgramTypeInputFilter) {
+  programTypePage(skip: $skip, limit: $limit, orderby: "name", where: $where) {
+    __typename
+    id
+    name
+    nameEn
+  }
+}`)

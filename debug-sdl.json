@@ -7197,7 +7197,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "41f7fba8-4394-4313-bc6a-72420be1f13d",
+            "value": "494e530d-8a8d-4e4e-8b18-7ba5054c7a7c",
             "block": false
           },
           "directives": []
@@ -11433,7 +11433,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "11eef9d9-75c6-40f7-a79a-1a8c9078953d",
+            "value": "033fdb36-bd47-40b9-b694-fe25e435ce66",
             "block": false
           },
           "directives": []
@@ -40209,7 +40209,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "b5953d54-1e31-4da9-804e-a21321dd44fb",
+            "value": "7f12e6da-3766-4c50-b6b8-340631123529",
             "block": false
           },
           "directives": []
@@ -79453,6 +79453,152 @@
           "kind": "FieldDefinition",
           "description": {
             "kind": "StringValue",
+            "value": "Admissions for this program",
+            "block": true
+          },
+          "name": {
+            "kind": "Name",
+            "value": "admissions"
+          },
+          "arguments": [
+            {
+              "kind": "InputValueDefinition",
+              "description": {
+                "kind": "StringValue",
+                "value": "how many entities will be ignored",
+                "block": true
+              },
+              "name": {
+                "kind": "Name",
+                "value": "skip"
+              },
+              "type": {
+                "kind": "NamedType",
+                "name": {
+                  "kind": "Name",
+                  "value": "Int"
+                }
+              },
+              "defaultValue": {
+                "kind": "IntValue",
+                "value": "0"
+              },
+              "directives": []
+            },
+            {
+              "kind": "InputValueDefinition",
+              "description": {
+                "kind": "StringValue",
+                "value": "how many entities will be taken",
+                "block": true
+              },
+              "name": {
+                "kind": "Name",
+                "value": "limit"
+              },
+              "type": {
+                "kind": "NamedType",
+                "name": {
+                  "kind": "Name",
+                  "value": "Int"
+                }
+              },
+              "defaultValue": {
+                "kind": "IntValue",
+                "value": "10"
+              },
+              "directives": []
+            },
+            {
+              "kind": "InputValueDefinition",
+              "description": {
+                "kind": "StringValue",
+                "value": "name of field which will determite the order",
+                "block": true
+              },
+              "name": {
+                "kind": "Name",
+                "value": "orderby"
+              },
+              "type": {
+                "kind": "NamedType",
+                "name": {
+                  "kind": "Name",
+                  "value": "String"
+                }
+              },
+              "defaultValue": {
+                "kind": "NullValue"
+              },
+              "directives": []
+            },
+            {
+              "kind": "InputValueDefinition",
+              "description": {
+                "kind": "StringValue",
+                "value": "filter",
+                "block": true
+              },
+              "name": {
+                "kind": "Name",
+                "value": "where"
+              },
+              "type": {
+                "kind": "NamedType",
+                "name": {
+                  "kind": "Name",
+                  "value": "AdmissionInputFilter"
+                }
+              },
+              "defaultValue": {
+                "kind": "NullValue"
+              },
+              "directives": []
+            }
+          ],
+          "type": {
+            "kind": "NonNullType",
+            "type": {
+              "kind": "ListType",
+              "type": {
+                "kind": "NonNullType",
+                "type": {
+                  "kind": "NamedType",
+                  "name": {
+                    "kind": "Name",
+                    "value": "AdmissionGQLModel"
+                  }
+                }
+              }
+            }
+          },
+          "directives": [
+            {
+              "kind": "Directive",
+              "name": {
+                "kind": "Name",
+                "value": "join__field"
+              },
+              "arguments": [
+                {
+                  "kind": "Argument",
+                  "name": {
+                    "kind": "Name",
+                    "value": "graph"
+                  },
+                  "value": {
+                    "kind": "EnumValue",
+                    "value": "ADMISSIONS"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "FieldDefinition",
+          "description": {
+            "kind": "StringValue",
             "value": "Name of program",
             "block": true
           },
@@ -104224,7 +104370,7 @@
           },
           "defaultValue": {
             "kind": "StringValue",
-            "value": "2025-05-14T13:41:10.142273",
+            "value": "2025-05-16T13:50:51.612000",
             "block": false
           },
           "directives": []

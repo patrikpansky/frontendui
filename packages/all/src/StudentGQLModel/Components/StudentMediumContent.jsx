@@ -1,3 +1,7 @@
+import { Col, Row } from "react-bootstrap"
+import { ProgramLink } from "../../ProgramGQLModel"
+import { UserLink } from "../../UserGQLModel"
+
 /**
  * A component that displays medium-level content for an student entity.
  *
@@ -24,9 +28,25 @@
 export const StudentMediumContent = ({student, children}) => {
     return (
         <>
-            $StudentMediumContent$ <br />
+            <Row>
+                <Col>Program</Col>
+                <Col><ProgramLink program={student?.program} /></Col>
+            </Row>
+            <Row>
+                <Col>Osoba</Col>
+                <Col>{student?.student && <UserLink user={student?.student} />}</Col>
+            </Row>
+            <Row>
+                <Col>Stav</Col>
+                <Col>{student?.state?.name || student?.stateId}</Col>
+            </Row>
+            <Row>
+                <Col>Semestr</Col>
+                <Col>{student?.semesterNumber || "?"}</Col>
+            </Row>
+            {/* $StudentMediumContent$ <br />
             {JSON.stringify(student)}
-            $StudentMediumContent$
+            $StudentMediumContent$ */}
             {children}
         </>
     )

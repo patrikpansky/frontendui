@@ -30,7 +30,7 @@ import { SubjectMediumContent } from "./SubjectMediumContent"
  */
 export const SubjectMediumCard = ({subject, children}) => {
     return (
-        <SubjectCardCapsule title={<><PersonFill /> <SubjectLink subject={subject} /></>}>
+        <SubjectCardCapsule title={<>Předmět <SubjectLink subject={subject} /></>}>
             <SubjectMediumContent subject={subject}>
                 {children}
             </SubjectMediumContent>

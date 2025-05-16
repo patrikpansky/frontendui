@@ -7,9 +7,20 @@ import { SchemaRouterSegment } from "@hrbolek/uoisfrontend-all";
 import { UserRouterSegments } from "@hrbolek/uoisfrontend-all";
 import { SchemaTypeRouterSegment } from "../../../packages/all/src/SchemaType/Pages/SchemaTypeRouterSegment";
 import { GroupRouterSegments } from "../../../packages/all/src/GroupGQLModel";
+
 import { ProgramRouterSegments } from "../../../packages/all/src/ProgramGQLModel";
 import { SubjectRouterSegments } from "../../../packages/all/src/SubjectGQLModel";
-  
+import { SemesterRouterSegments } from "../../../packages/all/src/SemesterGQLModel";
+import { StudentRouterSegments } from "../../../packages/all/src/StudentGQLModel";
+
+import { AdmissionRouterSegments } from "../../../packages/all/src/AdmissionGQLModel";
+import { PaymentInfoRouterSegments } from "../../../packages/all/src/PaymentInfoGQLModel";
+import { PaymentRouterSegments } from "../../../packages/all/src/PaymentGQLModel";
+
+import { StudyPlanRouterSegments } from "../../../packages/all/src/StudyPlanGQLModel";
+import { StudyPlanLessonRouterSegments } from "../../../packages/all/src/StudyPlanLessonGQLModel";
+
+
 const Routes = [
     UserRouterSegmentUG2,
     GroupRouterSegmentUG2,
@@ -19,7 +30,17 @@ const Routes = [
     ...UserRouterSegments,
     ...GroupRouterSegments,
     ...ProgramRouterSegments,
-    ...SubjectRouterSegments
+    ...SubjectRouterSegments,
+    ...SemesterRouterSegments,
+    
+    ...StudentRouterSegments,
+
+    ...AdmissionRouterSegments,
+    ...PaymentInfoRouterSegments,
+    ...PaymentRouterSegments,
+
+    ...StudyPlanRouterSegments,
+    ...StudyPlanLessonRouterSegments
 ]
 
 // const router = createBrowserRouter(Routes, {basename: "/ug"});

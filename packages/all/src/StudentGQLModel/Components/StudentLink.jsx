@@ -30,6 +30,6 @@ export const StudentURI = `${URIRoot}/student/view/`;
  *
  * @see ProxyLink - The base component used for rendering the link.
  */
-export const StudentLink = ({student, ...props}) => {
-    return <ProxyLink to={StudentURI + student.id} {...props}>{student.name}</ProxyLink>
+export const StudentLink = ({student, children, ...props}) => {
+    return <ProxyLink to={StudentURI + student.id} {...props}>{student.name || children}</ProxyLink>
 }

@@ -1,5 +1,6 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,32 @@ const followUpUserStudieItemDelete = (user, studieItem, dispatch) => {
     }
 };
 
+const UserStudiesAttributeQuery = `
+query UserQueryRead($id: UUID!, $where: StudieInputFilter, $skip: Int, $limit: Int) {
+    result: userById(id: $id) {
+        __typename
+        id
+        studies(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            myId
+            lastchange
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            userId
+            programId
+            stateId
+        }
+    }
+}
+`
+
+const UserStudiesAttributeAsyncAction = createAsyncGraphQLAction(
+    UserStudiesAttributeQuery,
+    processVectorAttributeFromGraphQLResult("studies")
+)
 
 /**
  * A component for displaying the `studies` attribute of an user entity.
@@ -84,13 +111,17 @@ const followUpUserStudieItemDelete = (user, studieItem, dispatch) => {
  *
  * <UserStudiesAttribute user={userEntity} />
  */
-export const UserStudiesAttribute = ({user}) => {
-    const { studies } = user
-    if (typeof studies === 'undefined') return null
+export const UserStudiesAttribute = ({user, filter=Boolean}) => {
+    const { studies: unfiltered } = user
+    if (typeof unfiltered === 'undefined') return null
+    const studies = unfiltered.filter(filter)
+    if (studies.length === 0) return null
     return (
         <>
             {studies.map(
                 studie => <div id={studie.id} key={studie.id}>
+                    {/* <StudieMediumCard studie={studie} /> */}
+                    {/* <StudieLink studie={studie} /> */}
                     Probably {'<StudieMediumCard studie=\{studie\} />'} <br />
                     <pre>{JSON.stringify(studie, null, 4)}</pre>
                 </div>
@@ -99,32 +130,6 @@ export const UserStudiesAttribute = ({user}) => {
     )
 }
 
-const UserStudiesAttributeQuery = `
-query UserQueryRead($id: id, $where: StudieInputFilter, $skip: Int, $limit: Int) {
-    result: userById(id: $id) {
-        __typename
-        id
-        studies(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            myId
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            userId
-            programId
-            stateId
-        }
-    }
-}
-`
-
-const UserStudiesAttributeAsyncAction = createAsyncGraphQLAction(
-    UserStudiesAttributeQuery,
-    processVectorAttributeFromGraphQLResult("studies")
-)
 
 export const UserStudiesAttributeInfinite = ({user}) => { 
     const {studies} = user
@@ -166,16 +171,13 @@ export const UserStudiesAttributeInfinite = ({user}) => {
  * />
  */
 export const UserStudiesAttributeLazy = ({user, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(UserStudiesAttributeAsyncAction, user)
-    const values = entity?.studies || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(UserStudiesAttributeAsyncAction, user, {deferred: true})
+    useEffect(() => {
+        fetch(user)
+    }, [user])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <UserStudiesAttribute user={entity} filter={filter} />    
 }

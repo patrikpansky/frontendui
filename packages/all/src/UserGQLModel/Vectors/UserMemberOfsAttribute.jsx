@@ -1,5 +1,6 @@
-import { createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
-import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,32 @@ const followUpUserMemberofItemDelete = (user, memberofItem, dispatch) => {
     }
 };
 
+const UserMemberofsAttributeQuery = `
+query UserQueryRead($id: UUID!, $where: MemberofInputFilter, $skip: Int, $limit: Int) {
+    result: userById(id: $id) {
+        __typename
+        id
+        memberofs(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+            lastchange
+            created
+            createdbyId
+            changedbyId
+            rbacobjectId
+            startdate
+            enddate
+            grouptypeId
+            mastergroupId
+        }
+    }
+}
+`
+
+const UserMemberofsAttributeAsyncAction = createAsyncGraphQLAction(
+    UserMemberofsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("memberofs")
+)
 
 /**
  * A component for displaying the `memberofs` attribute of an user entity.
@@ -84,13 +111,17 @@ const followUpUserMemberofItemDelete = (user, memberofItem, dispatch) => {
  *
  * <UserMemberofsAttribute user={userEntity} />
  */
-export const UserMemberofsAttribute = ({user}) => {
-    const { memberofs } = user
-    if (typeof memberofs === 'undefined') return null
+export const UserMemberofsAttribute = ({user, filter=Boolean}) => {
+    const { memberofs: unfiltered } = user
+    if (typeof unfiltered === 'undefined') return null
+    const memberofs = unfiltered.filter(filter)
+    if (memberofs.length === 0) return null
     return (
         <>
             {memberofs.map(
                 memberof => <div id={memberof.id} key={memberof.id}>
+                    {/* <MemberofMediumCard memberof={memberof} /> */}
+                    {/* <MemberofLink memberof={memberof} /> */}
                     Probably {'<MemberofMediumCard memberof=\{memberof\} />'} <br />
                     <pre>{JSON.stringify(memberof, null, 4)}</pre>
                 </div>
@@ -99,32 +130,6 @@ export const UserMemberofsAttribute = ({user}) => {
     )
 }
 
-const UserMemberofsAttributeQuery = `
-query UserQueryRead($id: id, $where: MemberofInputFilter, $skip: Int, $limit: Int) {
-    result: userById(id: $id) {
-        __typename
-        id
-        memberofs(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-            lastchange
-            created
-            createdbyId
-            changedbyId
-            rbacobjectId
-            startdate
-            enddate
-            grouptypeId
-            mastergroupId
-        }
-    }
-}
-`
-
-const UserMemberofsAttributeAsyncAction = createAsyncGraphQLAction(
-    UserMemberofsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("memberofs")
-)
 
 export const UserMemberofsAttributeInfinite = ({user}) => { 
     const {memberofs} = user
@@ -166,16 +171,13 @@ export const UserMemberofsAttributeInfinite = ({user}) => {
  * />
  */
 export const UserMemberofsAttributeLazy = ({user, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(UserMemberofsAttributeAsyncAction, user)
-    const values = entity?.memberofs || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(UserMemberofsAttributeAsyncAction, user, {deferred: true})
+    useEffect(() => {
+        fetch(user)
+    }, [user])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <UserMemberofsAttribute user={entity} filter={filter} />    
 }

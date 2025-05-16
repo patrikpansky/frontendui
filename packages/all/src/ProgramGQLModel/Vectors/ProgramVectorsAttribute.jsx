@@ -1,5 +1,6 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { use, useEffect } from "react";
 
 
 /**
@@ -57,6 +58,23 @@ const followUpProgramVectorItemDelete = (program, vectorItem, dispatch) => {
     }
 };
 
+const ProgramVectorsAttributeQuery = `
+query ProgramQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
+    result: programById(id: $id) {
+        __typename
+        id
+        vectors(skip: $skip, limit: $limit, where: $where) {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const ProgramVectorsAttributeAsyncAction = createAsyncGraphQLAction(
+    ProgramVectorsAttributeQuery,
+    processVectorAttributeFromGraphQLResult("vectors")
+)
 
 /**
  * A component for displaying the `vectors` attribute of an program entity.
@@ -84,13 +102,17 @@ const followUpProgramVectorItemDelete = (program, vectorItem, dispatch) => {
  *
  * <ProgramVectorsAttribute program={programEntity} />
  */
-export const ProgramVectorsAttribute = ({program}) => {
-    const { vectors } = program
-    if (typeof vectors === 'undefined') return null
+export const ProgramVectorsAttribute = ({program, filter=Boolean}) => {
+    const { vectors: unfiltered } = program
+    if (typeof unfiltered === 'undefined') return null
+    const vectors = unfiltered.filter(filter)
+    if (vectors.length === 0) return null
     return (
         <>
             {vectors.map(
                 vector => <div id={vector.id} key={vector.id}>
+                    {/* <VectorMediumCard vector={vector} /> */}
+                    {/* <VectorLink vector={vector} /> */}
                     Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
@@ -99,23 +121,6 @@ export const ProgramVectorsAttribute = ({program}) => {
     )
 }
 
-const ProgramVectorsAttributeQuery = `
-query ProgramQueryRead($id: UUID!, $where: VectorInputFilter, $skip: Int, $limit: Int) {
-    result: programById(id: $id) {
-        __typename
-        id
-        vectors(skip: $skip, limit: $limit, where: $where) {
-            __typename
-            id
-        }
-    }
-}
-`
-
-const ProgramVectorsAttributeAsyncAction = createAsyncGraphQLAction(
-    ProgramVectorsAttributeQuery,
-    processVectorAttributeFromGraphQLResult("vectors")
-)
 
 export const ProgramVectorsAttributeInfinite = ({program}) => { 
     const {vectors} = program
@@ -157,16 +162,13 @@ export const ProgramVectorsAttributeInfinite = ({program}) => {
  * />
  */
 export const ProgramVectorsAttributeLazy = ({program, filter=Boolean}) => {
-    const {loading, error, entity} = useAsyncAction(ProgramVectorsAttributeAsyncAction, program)
-    const values = entity?.vectors || []
-    
+    const {loading, error, entity, fetch} = useAsyncAction(ProgramVectorsAttributeAsyncAction, program, {deferred: true})
+    useEffect(() => {
+        fetch(program)
+    }, [program])
+
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
 
-    const valuesToDisplay = values.filter(filter)
-    return (<>
-        {valuesToDisplay.map(value => <div key={value.id} id={value.id}>
-            <pre>{JSON.stringify(value, null, 4)}</pre>
-        </div>)}
-    </>)
+    return <ProgramVectorsAttribute program={entity} filter={filter} />    
 }

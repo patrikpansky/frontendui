@@ -30,12 +30,12 @@ export const SubjectMediumContent = ({subject, children}) => {
         <>
             <Row>
                 <Col>Program</Col>
-                <Col><ProgramLink program={program} /></Col>
+                <Col>{program && <ProgramLink program={program} />}</Col>
             </Row>
-             <br />
+             {/* <br />
             $SubjectMediumContent$$ <br />
             {JSON.stringify(subject)}
-            $SubjectMediumContent$
+            $SubjectMediumContent$ */}
             {children}
         </>
     )
