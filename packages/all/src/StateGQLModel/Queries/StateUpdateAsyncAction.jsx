@@ -21,13 +21,15 @@ mutation StateUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, 
 
 const StateUpdateMutation = createQueryStrLazy(`
 mutation StateUpdate($lastchange: DateTime!, $id: UUID!, $name: String, $nameEn: String, $order: Int) {
-  result: stateUpdate(lastchange: $lastchange, id: $id, name: $name, nameEn: $nameEn, order: $order) {
+  result: stateUpdate(state: { lastchange: $lastchange, id: $id, name: $name, nameEn: $nameEn, order: $order }) {
     __typename
     ... on StateGQLModel {
       ...StateLargeFragment
     }
     ... on StateGQLModelUpdateError {
-      Entity
+      Entity {
+        ...StateLargeFragment
+      }
       msg
       failed
       input

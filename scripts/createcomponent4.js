@@ -305,6 +305,7 @@ function generateFragment(typeName, ast, kind = 'link') {
     if (kind === 'link') {
       lines.push('  __typename');
       for (const f of typeDef.fields) {
+        if (f.arguments && f.arguments.length > 0) continue;        
         if (isTrivialField(f.type)) {
           lines.push(`  ${f.name.value}`);
         }
@@ -315,6 +316,7 @@ function generateFragment(typeName, ast, kind = 'link') {
     if (kind === 'medium') {
       lines.push(`  ...${shortName}LinkFragment`);
       for (const f of typeDef.fields) {
+        if (f.arguments && f.arguments.length > 0) continue;        
         if (isMediumField(f.type)) {
           const nested = typesByName[
             f.type.kind === 'NonNullType' ? f.type.type.name.value : f.type.name.value
@@ -336,6 +338,7 @@ function generateFragment(typeName, ast, kind = 'link') {
     if (kind === 'large') {
       lines.push(`  ...${shortName}MediumFragment`);
       for (const f of typeDef.fields) {
+        if (f.arguments && f.arguments.length > 0) continue;        
         if (isLargeField(f.type)) {
           // unwrap to get the NamedType name
           let inner = f.type;
@@ -480,26 +483,30 @@ function generateQueryOrMutation(operationName, ast, isMutation = false, resultT
     const args     = fieldDef.arguments || [];
   
     if (isMutation && args.length === 1) {
-      const inputArg     = args[0];
-      const inputName    = getNamedTypeName(inputArg.type);
-      const inputDef     = defsByName[inputName];
-      if (inputDef && inputDef.kind === 'InputObjectTypeDefinition') {
-        for (const inputField of inputDef.fields || []) {
-          const name = inputField.name.value;
-          varDefs.push(`$${name}: ${typeNodeToString(inputField.type)}`);
-          callArgs.push(`${name}: $${name}`);
+        const inputArg = args[0];
+        const inputTypeName = getNamedTypeName(inputArg.type);
+        const inputDef = defsByName[inputTypeName];
+        if (inputDef && inputDef.kind === 'InputObjectTypeDefinition') {
+            const inputFields = inputDef.fields || [];
+            for (const inputField of inputFields) {
+                const name = inputField.name.value;
+                varDefs.push(`$${name}: ${typeNodeToString(inputField.type)}`);
+            }
+            const argName = inputArg.name.value;
+            callArgs.push(
+                `${argName}: { ${inputFields.map(f => `${f.name.value}: $${f.name.value}`).join(', ')} }`
+            );
+        } else {
+            const name = inputArg.name.value;
+            varDefs.push(`$${name}: ${typeNodeToString(inputArg.type)}`);
+            callArgs.push(`${name}: $${name}`);
         }
-      } else {
-        const name = inputArg.name.value;
-        varDefs.push(`$${name}: ${typeNodeToString(inputArg.type)}`);
-        callArgs.push(`${name}: $${name}`);
-      }
     } else {
-      for (const arg of args) {
-        const name = arg.name.value;
-        varDefs.push(`$${name}: ${typeNodeToString(arg.type)}`);
-        callArgs.push(`${name}: $${name}`);
-      }
+        for (const arg of args) {
+            const name = arg.name.value;
+            varDefs.push(`$${name}: ${typeNodeToString(arg.type)}`);
+            callArgs.push(`${name}: $${name}`);
+        }
     }
   
     // 6) Inspect the return type
@@ -537,6 +544,30 @@ function generateQueryOrMutation(operationName, ast, isMutation = false, resultT
           if (errDef && Array.isArray(errDef.fields)) {
             lines.push(`    ... on ${memberName} {`);
             for (const f of errDef.fields) {
+
+              if (f.arguments && f.arguments.length > 0) {
+                // pokud má argumenty, vynech (nebo případně generuj jen volitelné, ale to není zvykem)
+                continue;
+              }              
+              // Zjisti, jestli f.type je OBJECT
+              let namedType = f.type;
+              while (namedType.kind === 'NonNullType' || namedType.kind === 'ListType') {
+                namedType = namedType.type;
+              }
+              // Pokud je OBJECT (a má jméno např. "UserGQLModel"), vlož fragment
+              if (namedType.kind === 'NamedType') {
+                const typeName = namedType.name.value;
+                const nestedDef = defsByName[typeName];
+                if (nestedDef && nestedDef.kind === 'ObjectTypeDefinition') {
+                  // Pro ENTITY pole
+                  const shortName = typeName.replace(/GQLModel$/, '');
+                  lines.push(`      ${f.name.value} {`);
+                  lines.push(`        ...${shortName.charAt(0).toUpperCase() + shortName.slice(1)}LargeFragment`);
+                  lines.push(`      }`);
+                  continue;
+                }
+              }
+              // Jinak jen název pole
               lines.push(`      ${f.name.value}`);
             }
             lines.push(`    }`);
@@ -628,8 +659,8 @@ async function operationsMiddleware(ctx) {
     if (basename.includes('Insert'))    operationType = 'insert';
     if (basename.includes('Update'))    operationType = 'update';
     if (basename.includes('Delete'))    operationType = 'delete';
-    if (basename.includes('ReadPage'))  operationType = 'page';
     if (basename.includes('Read'))      operationType = 'byId';
+    if (basename.includes('ReadPage'))  operationType = 'page';
 
     if (!operationType) return;
 

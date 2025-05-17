@@ -87,30 +87,37 @@ const StudyPlanLessonFacilitiesAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `facilities` attribute of an studyplanlesson entity.
+ * A component for displaying the `facilities` attribute of a studyplanlesson entity.
  *
  * This component checks if the `facilities` attribute exists on the `studyplanlesson` object. If `facilities` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `facilities` array and
- * displays a placeholder message and a JSON representation for each item in the `facilities`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `facilities` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StudyPlanLessonFacilitiesAttribute component.
  * @param {Object} props.studyplanlesson - The object representing the studyplanlesson entity.
- * @param {Array} [props.studyplanlesson.facilities] - An array of facilities items associated with the studyplanlesson entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.studyplanlesson.facilities] - An array of facilitie items associated with the studyplanlesson entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the facilities array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `facilities` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `facilities` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const studyplanlessonEntity = { 
  *   facilities: [
  *     { id: 1, name: "Facilitie Item 1" }, 
  *     { id: 2, name: "Facilitie Item 2" }
  *   ] 
  * };
- *
  * <StudyPlanLessonFacilitiesAttribute studyplanlesson={studyplanlessonEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StudyPlanLessonFacilitiesAttribute 
+ *   studyplanlesson={studyplanlessonEntity}
+ *   filter={facilitie => facilitie.name.includes("1")}
+ * />
  */
 export const StudyPlanLessonFacilitiesAttribute = ({studyplanlesson, filter=Boolean}) => {
     const { facilities: unfiltered } = studyplanlesson
@@ -123,7 +130,7 @@ export const StudyPlanLessonFacilitiesAttribute = ({studyplanlesson, filter=Bool
                 facilitie => <div id={facilitie.id} key={facilitie.id}>
                     {/* <FacilitieMediumCard facilitie={facilitie} /> */}
                     {/* <FacilitieLink facilitie={facilitie} /> */}
-                    Probably {'<FacilitieMediumCard facilitie=\{facilitie\} />'} <br />
+                    Probably {'<FacilitieMediumCard facilitie={facilitie} />'} <br />
                     <pre>{JSON.stringify(facilitie, null, 4)}</pre>
                 </div>
             )}
@@ -131,14 +138,66 @@ export const StudyPlanLessonFacilitiesAttribute = ({studyplanlesson, filter=Bool
     )
 }
 
+/**
+ * Visualiser component for displaying a list of facilitie items using `StudyPlanLessonFacilitiesAttribute`.
+ *
+ * Wraps the `StudyPlanLessonFacilitiesAttribute` component, passing the given `items` as the `facilities` attribute
+ * on a synthetic `studyplanlesson` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of facilitie items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StudyPlanLessonFacilitiesAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of facilities or `null` if none are provided.
+ *
+ * @example
+ * <FacilitiesVisualiser
+ *   items={[
+ *     { id: 1, name: "Facilitie 1" },
+ *     { id: 2, name: "Facilitie 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const FacilitiesVisualiser = ({ items, ...props }) => 
+    <StudyPlanLessonFacilitiesAttribute {...props} studyplanlesson={{ facilities: items }} />
 
-export const StudyPlanLessonFacilitiesAttributeInfinite = ({studyplanlesson}) => { 
+/**
+ * Infinite-scrolling component for the `facilities` attribute of a studyplanlesson entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `facilities` array
+ * associated with the provided `studyplanlesson` object. It utilizes `FacilitiesVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.studyplanlesson - The studyplanlesson entity containing the `facilities` array.
+ * @param {Array<Object>} [props.studyplanlesson.facilities] - (Optional) Preloaded facilitie items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `FacilitiesVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of facilities.
+ *
+ * @example
+ * <StudyPlanLessonFacilitiesAttributeInfinite
+ *   studyplanlesson={{
+ *     facilities: [
+ *       { id: 1, name: "Facilitie 1" },
+ *       { id: 2, name: "Facilitie 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StudyPlanLessonFacilitiesAttributeInfinite = ({studyplanlesson, actionParams={}, ...props}) => { 
     const {facilities} = studyplanlesson
 
     return (
         <InfiniteScroll 
-            Visualiser={'FacilitieMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={FacilitiesVisualiser} 
+            preloadedItems={facilities}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StudyPlanLessonFacilitiesAttributeAsyncAction}
         />
     )

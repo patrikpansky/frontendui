@@ -85,30 +85,37 @@ const StateSourcesAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `sources` attribute of an state entity.
+ * A component for displaying the `sources` attribute of a state entity.
  *
  * This component checks if the `sources` attribute exists on the `state` object. If `sources` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `sources` array and
- * displays a placeholder message and a JSON representation for each item in the `sources`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `sources` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StateSourcesAttribute component.
  * @param {Object} props.state - The object representing the state entity.
- * @param {Array} [props.state.sources] - An array of sources items associated with the state entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.state.sources] - An array of source items associated with the state entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the sources array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `sources` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `sources` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const stateEntity = { 
  *   sources: [
  *     { id: 1, name: "Source Item 1" }, 
  *     { id: 2, name: "Source Item 2" }
  *   ] 
  * };
- *
  * <StateSourcesAttribute state={stateEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StateSourcesAttribute 
+ *   state={stateEntity}
+ *   filter={source => source.name.includes("1")}
+ * />
  */
 export const StateSourcesAttribute = ({state, filter=Boolean}) => {
     const { sources: unfiltered } = state
@@ -121,7 +128,7 @@ export const StateSourcesAttribute = ({state, filter=Boolean}) => {
                 source => <div id={source.id} key={source.id}>
                     {/* <SourceMediumCard source={source} /> */}
                     {/* <SourceLink source={source} /> */}
-                    Probably {'<SourceMediumCard source=\{source\} />'} <br />
+                    Probably {'<SourceMediumCard source={source} />'} <br />
                     <pre>{JSON.stringify(source, null, 4)}</pre>
                 </div>
             )}
@@ -129,14 +136,66 @@ export const StateSourcesAttribute = ({state, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of source items using `StateSourcesAttribute`.
+ *
+ * Wraps the `StateSourcesAttribute` component, passing the given `items` as the `sources` attribute
+ * on a synthetic `state` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of source items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StateSourcesAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of sources or `null` if none are provided.
+ *
+ * @example
+ * <SourcesVisualiser
+ *   items={[
+ *     { id: 1, name: "Source 1" },
+ *     { id: 2, name: "Source 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const SourcesVisualiser = ({ items, ...props }) => 
+    <StateSourcesAttribute {...props} state={{ sources: items }} />
 
-export const StateSourcesAttributeInfinite = ({state}) => { 
+/**
+ * Infinite-scrolling component for the `sources` attribute of a state entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `sources` array
+ * associated with the provided `state` object. It utilizes `SourcesVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.state - The state entity containing the `sources` array.
+ * @param {Array<Object>} [props.state.sources] - (Optional) Preloaded source items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `SourcesVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of sources.
+ *
+ * @example
+ * <StateSourcesAttributeInfinite
+ *   state={{
+ *     sources: [
+ *       { id: 1, name: "Source 1" },
+ *       { id: 2, name: "Source 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StateSourcesAttributeInfinite = ({state, actionParams={}, ...props}) => { 
     const {sources} = state
 
     return (
         <InfiniteScroll 
-            Visualiser={'SourceMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={SourcesVisualiser} 
+            preloadedItems={sources}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StateSourcesAttributeAsyncAction}
         />
     )

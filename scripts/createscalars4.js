@@ -25,19 +25,19 @@ function computeChecksum(text) {
 async function processFile(sourceFilePath, destFilePath, newName) {
   const content = await fs.readFile(sourceFilePath, 'utf8');
   const newContent = preserveCaseReplace(content, "Scalar", newName);
+  const oldChecksum = computeChecksum(content);
   const newChecksum = computeChecksum(newContent);
   const checksumFilePath = destFilePath + '.checksum.txt';
 
-  let override = true;
+  let override = false;
   try {
     await fs.access(destFilePath);
     const storedChecksum = await fs.readFile(checksumFilePath, 'utf8');
-    if (storedChecksum.trim() !== newChecksum) {
-      console.warn(`Checksum mismatch for file ${destFilePath}. File has been modified.`);
-      override = false;
+    if (storedChecksum.trim() === oldChecksum) {
+      override = true;
     }
   } catch {
-    override = true;
+    override = true; // soubor neexistuje nebo checksum neexistuje – zapisuj
   }
 
   if (override) {

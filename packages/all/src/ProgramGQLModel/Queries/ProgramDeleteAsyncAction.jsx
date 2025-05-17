@@ -19,7 +19,7 @@ mutation ProgramDeleteMutation($id: UUID!, $lastchange: DateTime!) {
 `
 const ProgramDeleteMutation = createQueryStrLazy(`
 mutation ProgramDelete($id: UUID!, $lastchange: DateTime!) {
-  result: programDelete(id: $id, lastchange: $lastchange) {
+  result: programDelete(program: { id: $id, lastchange: $lastchange }) {
     ...ProgramLargeFragment
   }
 }

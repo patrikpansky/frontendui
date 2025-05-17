@@ -5,6 +5,7 @@ import { ProgramSubjectsAttributeLazy } from "../Vectors/ProgramSubjectsAttribut
 import { ProgramStudentsAttributeLazy } from "../Vectors/ProgramStudentsAttribute"
 import { Loader, ProgramAdmissionsAttributeInfinite, ProgramAdmissionsAttributeLazy, ProgramAdmissionsAttributeLazy2 } from "../Vectors/ProgramAdmissionsAttribute"
 import { AdmissionButton } from "../../AdmissionGQLModel"
+import { Row } from "react-bootstrap"
 
 /**
  * Renders a page layout for a single program entity, including navigation and detailed view.
@@ -49,9 +50,12 @@ export const ProgramPageContent = ({program, children, ...props}) => {
                 {/* <ProgramAdmissionsAttributeLazy program={program} >
                     <Loader mode="auto"/>
                 </ProgramAdmissionsAttributeLazy> */}
-                <ProgramAdmissionsAttributeInfinite program={program} />
+                <Row>
+                    <ProgramAdmissionsAttributeInfinite program={program} />
+                </Row>
+                
                 {/* <ProgramAdmissionsAttributeLazy2 program={program} loaderMode="auto" /> */}
-                <AdmissionButton operation="C" className="btn btn-success" onDone={onBlur} admission={{programId: program.id}}>Vytvořit přijímací řízení</AdmissionButton>
+                <AdmissionButton operation="C" className="btn btn-success form-control" onDone={onBlur} admission={{programId: program.id}}>Vytvořit přijímací řízení</AdmissionButton>
             </ProgramCardCapsule>
             
             

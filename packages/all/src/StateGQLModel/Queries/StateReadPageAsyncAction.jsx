@@ -9,8 +9,8 @@ query StateReadPageQuery($skip: Int, $limit: Int, $where: StateWhereInputFilter)
 }
 `
 const StateReadPageQuery = createQueryStrLazy(`
-query StateById($id: UUID!) {
-  result: stateById(id: $id) {
+query StatePage($skip: Int, $limit: Int, $orderby: String, $where: StateWhereFilter) {
+  result: statePage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...StateLargeFragment
   }
 }

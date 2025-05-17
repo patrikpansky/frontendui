@@ -68,8 +68,6 @@ fragment PaymentInfoMediumFragment on PaymentInfoGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
   admission {
     __typename

@@ -19,7 +19,7 @@ mutation StateDeleteMutation($id: UUID!, $lastchange: DateTime!) {
 `
 const StateDeleteMutation = createQueryStrLazy(`
 mutation StateDelete($lastchange: DateTime!, $id: UUID!) {
-  result: stateDelete(lastchange: $lastchange, id: $id) {
+  result: stateDelete(state: { lastchange: $lastchange, id: $id }) {
     ...StateLargeFragment
   }
 }

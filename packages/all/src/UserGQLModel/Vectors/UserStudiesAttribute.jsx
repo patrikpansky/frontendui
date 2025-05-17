@@ -86,30 +86,37 @@ const UserStudiesAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `studies` attribute of an user entity.
+ * A component for displaying the `studies` attribute of a user entity.
  *
  * This component checks if the `studies` attribute exists on the `user` object. If `studies` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `studies` array and
- * displays a placeholder message and a JSON representation for each item in the `studies`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `studies` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the UserStudiesAttribute component.
  * @param {Object} props.user - The object representing the user entity.
- * @param {Array} [props.user.studies] - An array of studies items associated with the user entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.user.studies] - An array of studie items associated with the user entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the studies array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `studies` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `studies` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const userEntity = { 
  *   studies: [
  *     { id: 1, name: "Studie Item 1" }, 
  *     { id: 2, name: "Studie Item 2" }
  *   ] 
  * };
- *
  * <UserStudiesAttribute user={userEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <UserStudiesAttribute 
+ *   user={userEntity}
+ *   filter={studie => studie.name.includes("1")}
+ * />
  */
 export const UserStudiesAttribute = ({user, filter=Boolean}) => {
     const { studies: unfiltered } = user
@@ -122,7 +129,7 @@ export const UserStudiesAttribute = ({user, filter=Boolean}) => {
                 studie => <div id={studie.id} key={studie.id}>
                     {/* <StudieMediumCard studie={studie} /> */}
                     {/* <StudieLink studie={studie} /> */}
-                    Probably {'<StudieMediumCard studie=\{studie\} />'} <br />
+                    Probably {'<StudieMediumCard studie={studie} />'} <br />
                     <pre>{JSON.stringify(studie, null, 4)}</pre>
                 </div>
             )}
@@ -130,14 +137,66 @@ export const UserStudiesAttribute = ({user, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of studie items using `UserStudiesAttribute`.
+ *
+ * Wraps the `UserStudiesAttribute` component, passing the given `items` as the `studies` attribute
+ * on a synthetic `user` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of studie items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `UserStudiesAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of studies or `null` if none are provided.
+ *
+ * @example
+ * <StudiesVisualiser
+ *   items={[
+ *     { id: 1, name: "Studie 1" },
+ *     { id: 2, name: "Studie 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const StudiesVisualiser = ({ items, ...props }) => 
+    <UserStudiesAttribute {...props} user={{ studies: items }} />
 
-export const UserStudiesAttributeInfinite = ({user}) => { 
+/**
+ * Infinite-scrolling component for the `studies` attribute of a user entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `studies` array
+ * associated with the provided `user` object. It utilizes `StudiesVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.user - The user entity containing the `studies` array.
+ * @param {Array<Object>} [props.user.studies] - (Optional) Preloaded studie items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `StudiesVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of studies.
+ *
+ * @example
+ * <UserStudiesAttributeInfinite
+ *   user={{
+ *     studies: [
+ *       { id: 1, name: "Studie 1" },
+ *       { id: 2, name: "Studie 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const UserStudiesAttributeInfinite = ({user, actionParams={}, ...props}) => { 
     const {studies} = user
 
     return (
         <InfiniteScroll 
-            Visualiser={'StudieMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={StudiesVisualiser} 
+            preloadedItems={studies}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={UserStudiesAttributeAsyncAction}
         />
     )

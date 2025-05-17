@@ -77,30 +77,37 @@ const GroupVectorsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `vectors` attribute of an group entity.
+ * A component for displaying the `vectors` attribute of a group entity.
  *
  * This component checks if the `vectors` attribute exists on the `group` object. If `vectors` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `vectors` array and
- * displays a placeholder message and a JSON representation for each item in the `vectors`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `vectors` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the GroupVectorsAttribute component.
  * @param {Object} props.group - The object representing the group entity.
- * @param {Array} [props.group.vectors] - An array of vectors items associated with the group entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.group.vectors] - An array of vector items associated with the group entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the vectors array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `vectors` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `vectors` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const groupEntity = { 
  *   vectors: [
  *     { id: 1, name: "Vector Item 1" }, 
  *     { id: 2, name: "Vector Item 2" }
  *   ] 
  * };
- *
  * <GroupVectorsAttribute group={groupEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <GroupVectorsAttribute 
+ *   group={groupEntity}
+ *   filter={vector => vector.name.includes("1")}
+ * />
  */
 export const GroupVectorsAttribute = ({group, filter=Boolean}) => {
     const { vectors: unfiltered } = group
@@ -113,7 +120,7 @@ export const GroupVectorsAttribute = ({group, filter=Boolean}) => {
                 vector => <div id={vector.id} key={vector.id}>
                     {/* <VectorMediumCard vector={vector} /> */}
                     {/* <VectorLink vector={vector} /> */}
-                    Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
+                    Probably {'<VectorMediumCard vector={vector} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
@@ -121,14 +128,66 @@ export const GroupVectorsAttribute = ({group, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of vector items using `GroupVectorsAttribute`.
+ *
+ * Wraps the `GroupVectorsAttribute` component, passing the given `items` as the `vectors` attribute
+ * on a synthetic `group` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of vector items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `GroupVectorsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of vectors or `null` if none are provided.
+ *
+ * @example
+ * <VectorsVisualiser
+ *   items={[
+ *     { id: 1, name: "Vector 1" },
+ *     { id: 2, name: "Vector 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const VectorsVisualiser = ({ items, ...props }) => 
+    <GroupVectorsAttribute {...props} group={{ vectors: items }} />
 
-export const GroupVectorsAttributeInfinite = ({group}) => { 
+/**
+ * Infinite-scrolling component for the `vectors` attribute of a group entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `vectors` array
+ * associated with the provided `group` object. It utilizes `VectorsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.group - The group entity containing the `vectors` array.
+ * @param {Array<Object>} [props.group.vectors] - (Optional) Preloaded vector items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `VectorsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of vectors.
+ *
+ * @example
+ * <GroupVectorsAttributeInfinite
+ *   group={{
+ *     vectors: [
+ *       { id: 1, name: "Vector 1" },
+ *       { id: 2, name: "Vector 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const GroupVectorsAttributeInfinite = ({group, actionParams={}, ...props}) => { 
     const {vectors} = group
 
     return (
         <InfiniteScroll 
-            Visualiser={'VectorMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={VectorsVisualiser} 
+            preloadedItems={vectors}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={GroupVectorsAttributeAsyncAction}
         />
     )

@@ -85,30 +85,37 @@ const StateMachineTransitionsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `transitions` attribute of an statemachine entity.
+ * A component for displaying the `transitions` attribute of a statemachine entity.
  *
  * This component checks if the `transitions` attribute exists on the `statemachine` object. If `transitions` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `transitions` array and
- * displays a placeholder message and a JSON representation for each item in the `transitions`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `transitions` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StateMachineTransitionsAttribute component.
  * @param {Object} props.statemachine - The object representing the statemachine entity.
- * @param {Array} [props.statemachine.transitions] - An array of transitions items associated with the statemachine entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.statemachine.transitions] - An array of transition items associated with the statemachine entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the transitions array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `transitions` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `transitions` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const statemachineEntity = { 
  *   transitions: [
  *     { id: 1, name: "Transition Item 1" }, 
  *     { id: 2, name: "Transition Item 2" }
  *   ] 
  * };
- *
  * <StateMachineTransitionsAttribute statemachine={statemachineEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StateMachineTransitionsAttribute 
+ *   statemachine={statemachineEntity}
+ *   filter={transition => transition.name.includes("1")}
+ * />
  */
 export const StateMachineTransitionsAttribute = ({statemachine, filter=Boolean}) => {
     const { transitions: unfiltered } = statemachine
@@ -121,7 +128,7 @@ export const StateMachineTransitionsAttribute = ({statemachine, filter=Boolean})
                 transition => <div id={transition.id} key={transition.id}>
                     {/* <TransitionMediumCard transition={transition} /> */}
                     {/* <TransitionLink transition={transition} /> */}
-                    Probably {'<TransitionMediumCard transition=\{transition\} />'} <br />
+                    Probably {'<TransitionMediumCard transition={transition} />'} <br />
                     <pre>{JSON.stringify(transition, null, 4)}</pre>
                 </div>
             )}
@@ -129,14 +136,66 @@ export const StateMachineTransitionsAttribute = ({statemachine, filter=Boolean})
     )
 }
 
+/**
+ * Visualiser component for displaying a list of transition items using `StateMachineTransitionsAttribute`.
+ *
+ * Wraps the `StateMachineTransitionsAttribute` component, passing the given `items` as the `transitions` attribute
+ * on a synthetic `statemachine` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of transition items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StateMachineTransitionsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of transitions or `null` if none are provided.
+ *
+ * @example
+ * <TransitionsVisualiser
+ *   items={[
+ *     { id: 1, name: "Transition 1" },
+ *     { id: 2, name: "Transition 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const TransitionsVisualiser = ({ items, ...props }) => 
+    <StateMachineTransitionsAttribute {...props} statemachine={{ transitions: items }} />
 
-export const StateMachineTransitionsAttributeInfinite = ({statemachine}) => { 
+/**
+ * Infinite-scrolling component for the `transitions` attribute of a statemachine entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `transitions` array
+ * associated with the provided `statemachine` object. It utilizes `TransitionsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.statemachine - The statemachine entity containing the `transitions` array.
+ * @param {Array<Object>} [props.statemachine.transitions] - (Optional) Preloaded transition items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `TransitionsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of transitions.
+ *
+ * @example
+ * <StateMachineTransitionsAttributeInfinite
+ *   statemachine={{
+ *     transitions: [
+ *       { id: 1, name: "Transition 1" },
+ *       { id: 2, name: "Transition 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StateMachineTransitionsAttributeInfinite = ({statemachine, actionParams={}, ...props}) => { 
     const {transitions} = statemachine
 
     return (
         <InfiniteScroll 
-            Visualiser={'TransitionMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={TransitionsVisualiser} 
+            preloadedItems={transitions}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StateMachineTransitionsAttributeAsyncAction}
         />
     )

@@ -84,30 +84,37 @@ const SemesterPrerequisitesAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `prerequisites` attribute of an semester entity.
+ * A component for displaying the `prerequisites` attribute of a semester entity.
  *
  * This component checks if the `prerequisites` attribute exists on the `semester` object. If `prerequisites` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `prerequisites` array and
- * displays a placeholder message and a JSON representation for each item in the `prerequisites`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `prerequisites` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the SemesterPrerequisitesAttribute component.
  * @param {Object} props.semester - The object representing the semester entity.
- * @param {Array} [props.semester.prerequisites] - An array of prerequisites items associated with the semester entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.semester.prerequisites] - An array of prerequisite items associated with the semester entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the prerequisites array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `prerequisites` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `prerequisites` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const semesterEntity = { 
  *   prerequisites: [
  *     { id: 1, name: "Prerequisite Item 1" }, 
  *     { id: 2, name: "Prerequisite Item 2" }
  *   ] 
  * };
- *
  * <SemesterPrerequisitesAttribute semester={semesterEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <SemesterPrerequisitesAttribute 
+ *   semester={semesterEntity}
+ *   filter={prerequisite => prerequisite.name.includes("1")}
+ * />
  */
 export const SemesterPrerequisitesAttribute = ({semester, filter=Boolean}) => {
     const { prerequisites: unfiltered } = semester
@@ -120,7 +127,7 @@ export const SemesterPrerequisitesAttribute = ({semester, filter=Boolean}) => {
                 prerequisite => <div id={prerequisite.id} key={prerequisite.id}>
                     {/* <PrerequisiteMediumCard prerequisite={prerequisite} /> */}
                     {/* <PrerequisiteLink prerequisite={prerequisite} /> */}
-                    Probably {'<PrerequisiteMediumCard prerequisite=\{prerequisite\} />'} <br />
+                    Probably {'<PrerequisiteMediumCard prerequisite={prerequisite} />'} <br />
                     <pre>{JSON.stringify(prerequisite, null, 4)}</pre>
                 </div>
             )}
@@ -128,14 +135,66 @@ export const SemesterPrerequisitesAttribute = ({semester, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of prerequisite items using `SemesterPrerequisitesAttribute`.
+ *
+ * Wraps the `SemesterPrerequisitesAttribute` component, passing the given `items` as the `prerequisites` attribute
+ * on a synthetic `semester` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of prerequisite items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `SemesterPrerequisitesAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of prerequisites or `null` if none are provided.
+ *
+ * @example
+ * <PrerequisitesVisualiser
+ *   items={[
+ *     { id: 1, name: "Prerequisite 1" },
+ *     { id: 2, name: "Prerequisite 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const PrerequisitesVisualiser = ({ items, ...props }) => 
+    <SemesterPrerequisitesAttribute {...props} semester={{ prerequisites: items }} />
 
-export const SemesterPrerequisitesAttributeInfinite = ({semester}) => { 
+/**
+ * Infinite-scrolling component for the `prerequisites` attribute of a semester entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `prerequisites` array
+ * associated with the provided `semester` object. It utilizes `PrerequisitesVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.semester - The semester entity containing the `prerequisites` array.
+ * @param {Array<Object>} [props.semester.prerequisites] - (Optional) Preloaded prerequisite items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `PrerequisitesVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of prerequisites.
+ *
+ * @example
+ * <SemesterPrerequisitesAttributeInfinite
+ *   semester={{
+ *     prerequisites: [
+ *       { id: 1, name: "Prerequisite 1" },
+ *       { id: 2, name: "Prerequisite 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const SemesterPrerequisitesAttributeInfinite = ({semester, actionParams={}, ...props}) => { 
     const {prerequisites} = semester
 
     return (
         <InfiniteScroll 
-            Visualiser={'PrerequisiteMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={PrerequisitesVisualiser} 
+            preloadedItems={prerequisites}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={SemesterPrerequisitesAttributeAsyncAction}
         />
     )

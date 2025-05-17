@@ -83,30 +83,37 @@ const SemesterTopicsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `topics` attribute of an semester entity.
+ * A component for displaying the `topics` attribute of a semester entity.
  *
  * This component checks if the `topics` attribute exists on the `semester` object. If `topics` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `topics` array and
- * displays a placeholder message and a JSON representation for each item in the `topics`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `topics` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the SemesterTopicsAttribute component.
  * @param {Object} props.semester - The object representing the semester entity.
- * @param {Array} [props.semester.topics] - An array of topics items associated with the semester entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.semester.topics] - An array of topic items associated with the semester entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the topics array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `topics` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `topics` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const semesterEntity = { 
  *   topics: [
  *     { id: 1, name: "Topic Item 1" }, 
  *     { id: 2, name: "Topic Item 2" }
  *   ] 
  * };
- *
  * <SemesterTopicsAttribute semester={semesterEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <SemesterTopicsAttribute 
+ *   semester={semesterEntity}
+ *   filter={topic => topic.name.includes("1")}
+ * />
  */
 export const SemesterTopicsAttribute = ({semester, filter=Boolean}) => {
     const { topics: unfiltered } = semester
@@ -119,7 +126,7 @@ export const SemesterTopicsAttribute = ({semester, filter=Boolean}) => {
                 topic => <div id={topic.id} key={topic.id}>
                     {/* <TopicMediumCard topic={topic} /> */}
                     {/* <TopicLink topic={topic} /> */}
-                    Probably {'<TopicMediumCard topic=\{topic\} />'} <br />
+                    Probably {'<TopicMediumCard topic={topic} />'} <br />
                     <pre>{JSON.stringify(topic, null, 4)}</pre>
                 </div>
             )}
@@ -127,14 +134,66 @@ export const SemesterTopicsAttribute = ({semester, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of topic items using `SemesterTopicsAttribute`.
+ *
+ * Wraps the `SemesterTopicsAttribute` component, passing the given `items` as the `topics` attribute
+ * on a synthetic `semester` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of topic items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `SemesterTopicsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of topics or `null` if none are provided.
+ *
+ * @example
+ * <TopicsVisualiser
+ *   items={[
+ *     { id: 1, name: "Topic 1" },
+ *     { id: 2, name: "Topic 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const TopicsVisualiser = ({ items, ...props }) => 
+    <SemesterTopicsAttribute {...props} semester={{ topics: items }} />
 
-export const SemesterTopicsAttributeInfinite = ({semester}) => { 
+/**
+ * Infinite-scrolling component for the `topics` attribute of a semester entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `topics` array
+ * associated with the provided `semester` object. It utilizes `TopicsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.semester - The semester entity containing the `topics` array.
+ * @param {Array<Object>} [props.semester.topics] - (Optional) Preloaded topic items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `TopicsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of topics.
+ *
+ * @example
+ * <SemesterTopicsAttributeInfinite
+ *   semester={{
+ *     topics: [
+ *       { id: 1, name: "Topic 1" },
+ *       { id: 2, name: "Topic 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const SemesterTopicsAttributeInfinite = ({semester, actionParams={}, ...props}) => { 
     const {topics} = semester
 
     return (
         <InfiniteScroll 
-            Visualiser={'TopicMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={TopicsVisualiser} 
+            preloadedItems={topics}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={SemesterTopicsAttributeAsyncAction}
         />
     )

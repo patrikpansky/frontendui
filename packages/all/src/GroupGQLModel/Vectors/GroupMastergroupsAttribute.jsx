@@ -86,30 +86,37 @@ const GroupMastergroupsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `mastergroups` attribute of an group entity.
+ * A component for displaying the `mastergroups` attribute of a group entity.
  *
  * This component checks if the `mastergroups` attribute exists on the `group` object. If `mastergroups` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `mastergroups` array and
- * displays a placeholder message and a JSON representation for each item in the `mastergroups`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `mastergroups` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the GroupMastergroupsAttribute component.
  * @param {Object} props.group - The object representing the group entity.
- * @param {Array} [props.group.mastergroups] - An array of mastergroups items associated with the group entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.group.mastergroups] - An array of mastergroup items associated with the group entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the mastergroups array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `mastergroups` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `mastergroups` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const groupEntity = { 
  *   mastergroups: [
  *     { id: 1, name: "Mastergroup Item 1" }, 
  *     { id: 2, name: "Mastergroup Item 2" }
  *   ] 
  * };
- *
  * <GroupMastergroupsAttribute group={groupEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <GroupMastergroupsAttribute 
+ *   group={groupEntity}
+ *   filter={mastergroup => mastergroup.name.includes("1")}
+ * />
  */
 export const GroupMastergroupsAttribute = ({group, filter=Boolean}) => {
     const { mastergroups: unfiltered } = group
@@ -122,7 +129,7 @@ export const GroupMastergroupsAttribute = ({group, filter=Boolean}) => {
                 mastergroup => <div id={mastergroup.id} key={mastergroup.id}>
                     {/* <MastergroupMediumCard mastergroup={mastergroup} /> */}
                     {/* <MastergroupLink mastergroup={mastergroup} /> */}
-                    Probably {'<MastergroupMediumCard mastergroup=\{mastergroup\} />'} <br />
+                    Probably {'<MastergroupMediumCard mastergroup={mastergroup} />'} <br />
                     <pre>{JSON.stringify(mastergroup, null, 4)}</pre>
                 </div>
             )}
@@ -130,14 +137,66 @@ export const GroupMastergroupsAttribute = ({group, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of mastergroup items using `GroupMastergroupsAttribute`.
+ *
+ * Wraps the `GroupMastergroupsAttribute` component, passing the given `items` as the `mastergroups` attribute
+ * on a synthetic `group` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of mastergroup items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `GroupMastergroupsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of mastergroups or `null` if none are provided.
+ *
+ * @example
+ * <MastergroupsVisualiser
+ *   items={[
+ *     { id: 1, name: "Mastergroup 1" },
+ *     { id: 2, name: "Mastergroup 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const MastergroupsVisualiser = ({ items, ...props }) => 
+    <GroupMastergroupsAttribute {...props} group={{ mastergroups: items }} />
 
-export const GroupMastergroupsAttributeInfinite = ({group}) => { 
+/**
+ * Infinite-scrolling component for the `mastergroups` attribute of a group entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `mastergroups` array
+ * associated with the provided `group` object. It utilizes `MastergroupsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.group - The group entity containing the `mastergroups` array.
+ * @param {Array<Object>} [props.group.mastergroups] - (Optional) Preloaded mastergroup items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `MastergroupsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of mastergroups.
+ *
+ * @example
+ * <GroupMastergroupsAttributeInfinite
+ *   group={{
+ *     mastergroups: [
+ *       { id: 1, name: "Mastergroup 1" },
+ *       { id: 2, name: "Mastergroup 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const GroupMastergroupsAttributeInfinite = ({group, actionParams={}, ...props}) => { 
     const {mastergroups} = group
 
     return (
         <InfiniteScroll 
-            Visualiser={'MastergroupMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={MastergroupsVisualiser} 
+            preloadedItems={mastergroups}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={GroupMastergroupsAttributeAsyncAction}
         />
     )

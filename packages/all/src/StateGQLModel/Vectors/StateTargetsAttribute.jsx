@@ -85,30 +85,37 @@ const StateTargetsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `targets` attribute of an state entity.
+ * A component for displaying the `targets` attribute of a state entity.
  *
  * This component checks if the `targets` attribute exists on the `state` object. If `targets` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `targets` array and
- * displays a placeholder message and a JSON representation for each item in the `targets`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `targets` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StateTargetsAttribute component.
  * @param {Object} props.state - The object representing the state entity.
- * @param {Array} [props.state.targets] - An array of targets items associated with the state entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.state.targets] - An array of target items associated with the state entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the targets array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `targets` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `targets` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const stateEntity = { 
  *   targets: [
  *     { id: 1, name: "Target Item 1" }, 
  *     { id: 2, name: "Target Item 2" }
  *   ] 
  * };
- *
  * <StateTargetsAttribute state={stateEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StateTargetsAttribute 
+ *   state={stateEntity}
+ *   filter={target => target.name.includes("1")}
+ * />
  */
 export const StateTargetsAttribute = ({state, filter=Boolean}) => {
     const { targets: unfiltered } = state
@@ -121,7 +128,7 @@ export const StateTargetsAttribute = ({state, filter=Boolean}) => {
                 target => <div id={target.id} key={target.id}>
                     {/* <TargetMediumCard target={target} /> */}
                     {/* <TargetLink target={target} /> */}
-                    Probably {'<TargetMediumCard target=\{target\} />'} <br />
+                    Probably {'<TargetMediumCard target={target} />'} <br />
                     <pre>{JSON.stringify(target, null, 4)}</pre>
                 </div>
             )}
@@ -129,14 +136,66 @@ export const StateTargetsAttribute = ({state, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of target items using `StateTargetsAttribute`.
+ *
+ * Wraps the `StateTargetsAttribute` component, passing the given `items` as the `targets` attribute
+ * on a synthetic `state` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of target items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StateTargetsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of targets or `null` if none are provided.
+ *
+ * @example
+ * <TargetsVisualiser
+ *   items={[
+ *     { id: 1, name: "Target 1" },
+ *     { id: 2, name: "Target 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const TargetsVisualiser = ({ items, ...props }) => 
+    <StateTargetsAttribute {...props} state={{ targets: items }} />
 
-export const StateTargetsAttributeInfinite = ({state}) => { 
+/**
+ * Infinite-scrolling component for the `targets` attribute of a state entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `targets` array
+ * associated with the provided `state` object. It utilizes `TargetsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.state - The state entity containing the `targets` array.
+ * @param {Array<Object>} [props.state.targets] - (Optional) Preloaded target items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `TargetsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of targets.
+ *
+ * @example
+ * <StateTargetsAttributeInfinite
+ *   state={{
+ *     targets: [
+ *       { id: 1, name: "Target 1" },
+ *       { id: 2, name: "Target 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StateTargetsAttributeInfinite = ({state, actionParams={}, ...props}) => { 
     const {targets} = state
 
     return (
         <InfiniteScroll 
-            Visualiser={'TargetMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={TargetsVisualiser} 
+            preloadedItems={targets}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StateTargetsAttributeAsyncAction}
         />
     )

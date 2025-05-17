@@ -1,4 +1,5 @@
 import { Col, Row } from "react-bootstrap"
+import { ProgramLink } from "../../ProgramGQLModel"
 /**
  * A component that displays medium-level content for an paymentinfo entity.
  *
@@ -22,17 +23,44 @@ import { Col, Row } from "react-bootstrap"
  *   <p>Additional information about the entity.</p>
  * </PaymentInfoMediumContent>
  */
-export const PaymentInfoMediumContent = ({paymentinfo, children}) => {
+export const PaymentInfoMediumContent = ({paymentInfo, children}) => {
+    const {
+        program, accountNumber, specificSymbol, constantSymbol, IBAN, SWIFT, amount
+    } = paymentInfo
     return (
         <>
-            <Row>
+            {program && <Row>
                 <Col>Program</Col>
-                <Col><ProgramLink program={student?.program} /></Col>
+                <Col>{program && <ProgramLink program={paymentInfo?.program} />}</Col>
+            </Row>}
+            <Row>
+                <Col>accountNumber</Col>
+                <Col>{accountNumber}</Col>
             </Row>
             <Row>
-                <Col>JSON</Col>
-                <Col><pre>{JSON.stringify(paymentinfo, null, 2)}</pre></Col>
+                <Col>specificSymbol</Col>
+                <Col>{specificSymbol}</Col>
             </Row>
+            <Row>
+                <Col>constantSymbol</Col>
+                <Col>{constantSymbol}</Col>
+            </Row>
+                        <Row>
+                <Col>IBAN</Col>
+                <Col>{IBAN}</Col>
+            </Row>
+                        <Row>
+                <Col>SWIFT</Col>
+                <Col>{SWIFT}</Col>
+            </Row>
+                        <Row>
+                <Col>amount</Col>
+                <Col>{amount} Kč</Col>
+            </Row>            
+            {/* <Row>
+                <Col>JSON</Col>
+                <Col><pre>{JSON.stringify(paymentInfo, null, 2)}</pre></Col>
+            </Row> */}
             {children}
         </>
     )

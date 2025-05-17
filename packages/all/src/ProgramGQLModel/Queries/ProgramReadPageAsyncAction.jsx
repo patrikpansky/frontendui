@@ -9,8 +9,8 @@ query ProgramReadPageQuery($skip: Int, $limit: Int, $where: ProgramWhereInputFil
 }
 `
 const ProgramReadPageQuery = createQueryStrLazy(`
-query ProgramById($id: UUID!) {
-  result: programById(id: $id) {
+query ProgramPage($skip: Int, $limit: Int, $orderby: String, $where: ProgramInputFilter) {
+  result: programPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...ProgramLargeFragment
   }
 }

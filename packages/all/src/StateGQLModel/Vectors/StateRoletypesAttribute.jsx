@@ -83,30 +83,37 @@ const StateRoletypesAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `roletypes` attribute of an state entity.
+ * A component for displaying the `roletypes` attribute of a state entity.
  *
  * This component checks if the `roletypes` attribute exists on the `state` object. If `roletypes` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `roletypes` array and
- * displays a placeholder message and a JSON representation for each item in the `roletypes`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `roletypes` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StateRoletypesAttribute component.
  * @param {Object} props.state - The object representing the state entity.
- * @param {Array} [props.state.roletypes] - An array of roletypes items associated with the state entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.state.roletypes] - An array of roletype items associated with the state entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the roletypes array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `roletypes` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `roletypes` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const stateEntity = { 
  *   roletypes: [
  *     { id: 1, name: "Roletype Item 1" }, 
  *     { id: 2, name: "Roletype Item 2" }
  *   ] 
  * };
- *
  * <StateRoletypesAttribute state={stateEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StateRoletypesAttribute 
+ *   state={stateEntity}
+ *   filter={roletype => roletype.name.includes("1")}
+ * />
  */
 export const StateRoletypesAttribute = ({state, filter=Boolean}) => {
     const { roletypes: unfiltered } = state
@@ -119,7 +126,7 @@ export const StateRoletypesAttribute = ({state, filter=Boolean}) => {
                 roletype => <div id={roletype.id} key={roletype.id}>
                     {/* <RoletypeMediumCard roletype={roletype} /> */}
                     {/* <RoletypeLink roletype={roletype} /> */}
-                    Probably {'<RoletypeMediumCard roletype=\{roletype\} />'} <br />
+                    Probably {'<RoletypeMediumCard roletype={roletype} />'} <br />
                     <pre>{JSON.stringify(roletype, null, 4)}</pre>
                 </div>
             )}
@@ -127,14 +134,66 @@ export const StateRoletypesAttribute = ({state, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of roletype items using `StateRoletypesAttribute`.
+ *
+ * Wraps the `StateRoletypesAttribute` component, passing the given `items` as the `roletypes` attribute
+ * on a synthetic `state` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of roletype items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StateRoletypesAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of roletypes or `null` if none are provided.
+ *
+ * @example
+ * <RoletypesVisualiser
+ *   items={[
+ *     { id: 1, name: "Roletype 1" },
+ *     { id: 2, name: "Roletype 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const RoletypesVisualiser = ({ items, ...props }) => 
+    <StateRoletypesAttribute {...props} state={{ roletypes: items }} />
 
-export const StateRoletypesAttributeInfinite = ({state}) => { 
+/**
+ * Infinite-scrolling component for the `roletypes` attribute of a state entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `roletypes` array
+ * associated with the provided `state` object. It utilizes `RoletypesVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.state - The state entity containing the `roletypes` array.
+ * @param {Array<Object>} [props.state.roletypes] - (Optional) Preloaded roletype items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `RoletypesVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of roletypes.
+ *
+ * @example
+ * <StateRoletypesAttributeInfinite
+ *   state={{
+ *     roletypes: [
+ *       { id: 1, name: "Roletype 1" },
+ *       { id: 2, name: "Roletype 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StateRoletypesAttributeInfinite = ({state, actionParams={}, ...props}) => { 
     const {roletypes} = state
 
     return (
         <InfiniteScroll 
-            Visualiser={'RoletypeMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={RoletypesVisualiser} 
+            preloadedItems={roletypes}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StateRoletypesAttributeAsyncAction}
         />
     )

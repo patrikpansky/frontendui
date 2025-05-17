@@ -84,30 +84,37 @@ const TopicLessonsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `lessons` attribute of an topic entity.
+ * A component for displaying the `lessons` attribute of a topic entity.
  *
  * This component checks if the `lessons` attribute exists on the `topic` object. If `lessons` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `lessons` array and
- * displays a placeholder message and a JSON representation for each item in the `lessons`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `lessons` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the TopicLessonsAttribute component.
  * @param {Object} props.topic - The object representing the topic entity.
- * @param {Array} [props.topic.lessons] - An array of lessons items associated with the topic entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.topic.lessons] - An array of lesson items associated with the topic entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the lessons array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `lessons` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `lessons` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const topicEntity = { 
  *   lessons: [
  *     { id: 1, name: "Lesson Item 1" }, 
  *     { id: 2, name: "Lesson Item 2" }
  *   ] 
  * };
- *
  * <TopicLessonsAttribute topic={topicEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <TopicLessonsAttribute 
+ *   topic={topicEntity}
+ *   filter={lesson => lesson.name.includes("1")}
+ * />
  */
 export const TopicLessonsAttribute = ({topic, filter=Boolean}) => {
     const { lessons: unfiltered } = topic
@@ -120,7 +127,7 @@ export const TopicLessonsAttribute = ({topic, filter=Boolean}) => {
                 lesson => <div id={lesson.id} key={lesson.id}>
                     {/* <LessonMediumCard lesson={lesson} /> */}
                     {/* <LessonLink lesson={lesson} /> */}
-                    Probably {'<LessonMediumCard lesson=\{lesson\} />'} <br />
+                    Probably {'<LessonMediumCard lesson={lesson} />'} <br />
                     <pre>{JSON.stringify(lesson, null, 4)}</pre>
                 </div>
             )}
@@ -128,14 +135,66 @@ export const TopicLessonsAttribute = ({topic, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of lesson items using `TopicLessonsAttribute`.
+ *
+ * Wraps the `TopicLessonsAttribute` component, passing the given `items` as the `lessons` attribute
+ * on a synthetic `topic` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of lesson items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `TopicLessonsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of lessons or `null` if none are provided.
+ *
+ * @example
+ * <LessonsVisualiser
+ *   items={[
+ *     { id: 1, name: "Lesson 1" },
+ *     { id: 2, name: "Lesson 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const LessonsVisualiser = ({ items, ...props }) => 
+    <TopicLessonsAttribute {...props} topic={{ lessons: items }} />
 
-export const TopicLessonsAttributeInfinite = ({topic}) => { 
+/**
+ * Infinite-scrolling component for the `lessons` attribute of a topic entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `lessons` array
+ * associated with the provided `topic` object. It utilizes `LessonsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.topic - The topic entity containing the `lessons` array.
+ * @param {Array<Object>} [props.topic.lessons] - (Optional) Preloaded lesson items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `LessonsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of lessons.
+ *
+ * @example
+ * <TopicLessonsAttributeInfinite
+ *   topic={{
+ *     lessons: [
+ *       { id: 1, name: "Lesson 1" },
+ *       { id: 2, name: "Lesson 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const TopicLessonsAttributeInfinite = ({topic, actionParams={}, ...props}) => { 
     const {lessons} = topic
 
     return (
         <InfiniteScroll 
-            Visualiser={'LessonMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={LessonsVisualiser} 
+            preloadedItems={lessons}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={TopicLessonsAttributeAsyncAction}
         />
     )

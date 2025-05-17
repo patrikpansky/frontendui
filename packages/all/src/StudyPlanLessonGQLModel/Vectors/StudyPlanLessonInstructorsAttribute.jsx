@@ -85,30 +85,37 @@ const StudyPlanLessonInstructorsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `instructors` attribute of an studyplanlesson entity.
+ * A component for displaying the `instructors` attribute of a studyplanlesson entity.
  *
  * This component checks if the `instructors` attribute exists on the `studyplanlesson` object. If `instructors` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `instructors` array and
- * displays a placeholder message and a JSON representation for each item in the `instructors`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `instructors` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StudyPlanLessonInstructorsAttribute component.
  * @param {Object} props.studyplanlesson - The object representing the studyplanlesson entity.
- * @param {Array} [props.studyplanlesson.instructors] - An array of instructors items associated with the studyplanlesson entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.studyplanlesson.instructors] - An array of instructor items associated with the studyplanlesson entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the instructors array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `instructors` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `instructors` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const studyplanlessonEntity = { 
  *   instructors: [
  *     { id: 1, name: "Instructor Item 1" }, 
  *     { id: 2, name: "Instructor Item 2" }
  *   ] 
  * };
- *
  * <StudyPlanLessonInstructorsAttribute studyplanlesson={studyplanlessonEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StudyPlanLessonInstructorsAttribute 
+ *   studyplanlesson={studyplanlessonEntity}
+ *   filter={instructor => instructor.name.includes("1")}
+ * />
  */
 export const StudyPlanLessonInstructorsAttribute = ({studyplanlesson, filter=Boolean}) => {
     const { instructors: unfiltered } = studyplanlesson
@@ -121,7 +128,7 @@ export const StudyPlanLessonInstructorsAttribute = ({studyplanlesson, filter=Boo
                 instructor => <div id={instructor.id} key={instructor.id}>
                     {/* <InstructorMediumCard instructor={instructor} /> */}
                     {/* <InstructorLink instructor={instructor} /> */}
-                    Probably {'<InstructorMediumCard instructor=\{instructor\} />'} <br />
+                    Probably {'<InstructorMediumCard instructor={instructor} />'} <br />
                     <pre>{JSON.stringify(instructor, null, 4)}</pre>
                 </div>
             )}
@@ -129,14 +136,66 @@ export const StudyPlanLessonInstructorsAttribute = ({studyplanlesson, filter=Boo
     )
 }
 
+/**
+ * Visualiser component for displaying a list of instructor items using `StudyPlanLessonInstructorsAttribute`.
+ *
+ * Wraps the `StudyPlanLessonInstructorsAttribute` component, passing the given `items` as the `instructors` attribute
+ * on a synthetic `studyplanlesson` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of instructor items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StudyPlanLessonInstructorsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of instructors or `null` if none are provided.
+ *
+ * @example
+ * <InstructorsVisualiser
+ *   items={[
+ *     { id: 1, name: "Instructor 1" },
+ *     { id: 2, name: "Instructor 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const InstructorsVisualiser = ({ items, ...props }) => 
+    <StudyPlanLessonInstructorsAttribute {...props} studyplanlesson={{ instructors: items }} />
 
-export const StudyPlanLessonInstructorsAttributeInfinite = ({studyplanlesson}) => { 
+/**
+ * Infinite-scrolling component for the `instructors` attribute of a studyplanlesson entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `instructors` array
+ * associated with the provided `studyplanlesson` object. It utilizes `InstructorsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.studyplanlesson - The studyplanlesson entity containing the `instructors` array.
+ * @param {Array<Object>} [props.studyplanlesson.instructors] - (Optional) Preloaded instructor items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `InstructorsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of instructors.
+ *
+ * @example
+ * <StudyPlanLessonInstructorsAttributeInfinite
+ *   studyplanlesson={{
+ *     instructors: [
+ *       { id: 1, name: "Instructor 1" },
+ *       { id: 2, name: "Instructor 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StudyPlanLessonInstructorsAttributeInfinite = ({studyplanlesson, actionParams={}, ...props}) => { 
     const {instructors} = studyplanlesson
 
     return (
         <InfiniteScroll 
-            Visualiser={'InstructorMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={InstructorsVisualiser} 
+            preloadedItems={instructors}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StudyPlanLessonInstructorsAttributeAsyncAction}
         />
     )

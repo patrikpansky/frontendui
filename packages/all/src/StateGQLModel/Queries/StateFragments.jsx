@@ -15,7 +15,6 @@ fragment StateLinkFragment on StateGQLModel {
   writerslistId
   readerslistId
   order
-  userCan
 }
 `);
 
@@ -90,45 +89,5 @@ fragment StateMediumFragment on StateGQLModel {
 export const StateLargeFragment = createQueryStrLazy(`
 fragment StateLargeFragment on StateGQLModel {
   ...StateMediumFragment
-  sources {
-    __typename
-    id
-    lastchange
-    created
-    createdbyId
-    changedbyId
-    rbacobjectId
-    name
-    nameEn
-    sourceId
-    targetId
-    statemachineId
-  }
-  targets {
-    __typename
-    id
-    lastchange
-    created
-    createdbyId
-    changedbyId
-    rbacobjectId
-    name
-    nameEn
-    sourceId
-    targetId
-    statemachineId
-  }
-  roletypes {
-    __typename
-    id
-    lastchange
-    created
-    createdbyId
-    changedbyId
-    rbacobjectId
-    name
-    nameEn
-    categoryId
-  }
 }
 `, StateMediumFragment);

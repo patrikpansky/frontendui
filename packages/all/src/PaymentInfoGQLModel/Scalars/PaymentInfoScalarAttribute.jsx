@@ -1,3 +1,6 @@
+import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+
 /**
  * A component for displaying the `scalar` attribute of an paymentinfo entity.
  *
@@ -25,8 +28,61 @@ export const PaymentInfoScalarAttribute = ({paymentinfo}) => {
         <>
             {/* <ScalarMediumCard scalar={scalar} /> */}
             {/* <ScalarLink scalar={scalar} /> */}
-            Probably {'<ScalarMediumCard scalar=\{scalar\} />'} <br />
+            Probably {'<ScalarMediumCard scalar={scalar} />'} <br />
             <pre>{JSON.stringify(scalar, null, 4)}</pre>
         </>
     )
+}
+
+const PaymentInfoScalarAttributeQuery = `
+query PaymentInfoQueryRead($id: UUID!) {
+    result: paymentinfoById(id: $id) {
+        __typename
+        id
+        scalar {
+            __typename
+            id
+        }
+    }
+}
+`
+
+const PaymentInfoScalarAttributeAsyncAction = createAsyncGraphQLAction(
+    PaymentInfoScalarAttributeQuery
+)
+
+/**
+ * A lazy-loading component for displaying filtered `scalar` from a `paymentinfo` entity.
+ *
+ * This component uses the `PaymentInfoScalarAttributeAsyncAction` to asynchronously fetch
+ * the `paymentinfo.scalar` data. It shows a loading spinner while fetching, handles errors,
+ * and filters the resulting list using a custom `filter` function (defaults to `Boolean` to remove falsy values).
+ *
+ * Each vector item is rendered as a `<div>` with its `id` as both the `key` and the `id` attribute,
+ * and displays a formatted JSON preview using `<pre>`.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {Object} props.paymentinfo - The paymentinfo entity or identifying query variables used to fetch it.
+ * @param {Function} [props.filter=Boolean] - A filtering function applied to the `scalar` array before rendering.
+ *
+ * @returns {JSX.Element} A rendered list of filtered scalar or a loading/error placeholder.
+ *
+ * @example
+ * <PaymentInfoScalarAttributeLazy paymentinfo={{ id: "abc123" }} />
+ *
+ * 
+ * @example
+ * <PaymentInfoScalarAttributeLazy
+ *   paymentinfo={{ id: "abc123" }}
+ *   filter={(v) => v.status === "active"}
+ * />
+ */
+export const PaymentInfoScalarAttributeLazy = ({paymentinfo}) => {
+    const {loading, error, entity, fetch} = useAsyncAction(PaymentInfoScalarAttributeAsyncAction, paymentinfo)
+
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+
+    return <PaymentInfoScalarAttribute paymentinfo={entity} />    
 }

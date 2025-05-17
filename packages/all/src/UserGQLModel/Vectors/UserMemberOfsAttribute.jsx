@@ -86,30 +86,37 @@ const UserMemberofsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `memberofs` attribute of an user entity.
+ * A component for displaying the `memberofs` attribute of a user entity.
  *
  * This component checks if the `memberofs` attribute exists on the `user` object. If `memberofs` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `memberofs` array and
- * displays a placeholder message and a JSON representation for each item in the `memberofs`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `memberofs` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the UserMemberofsAttribute component.
  * @param {Object} props.user - The object representing the user entity.
- * @param {Array} [props.user.memberofs] - An array of memberofs items associated with the user entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.user.memberofs] - An array of memberof items associated with the user entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the memberofs array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `memberofs` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `memberofs` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const userEntity = { 
  *   memberofs: [
  *     { id: 1, name: "Memberof Item 1" }, 
  *     { id: 2, name: "Memberof Item 2" }
  *   ] 
  * };
- *
  * <UserMemberofsAttribute user={userEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <UserMemberofsAttribute 
+ *   user={userEntity}
+ *   filter={memberof => memberof.name.includes("1")}
+ * />
  */
 export const UserMemberofsAttribute = ({user, filter=Boolean}) => {
     const { memberofs: unfiltered } = user
@@ -122,7 +129,7 @@ export const UserMemberofsAttribute = ({user, filter=Boolean}) => {
                 memberof => <div id={memberof.id} key={memberof.id}>
                     {/* <MemberofMediumCard memberof={memberof} /> */}
                     {/* <MemberofLink memberof={memberof} /> */}
-                    Probably {'<MemberofMediumCard memberof=\{memberof\} />'} <br />
+                    Probably {'<MemberofMediumCard memberof={memberof} />'} <br />
                     <pre>{JSON.stringify(memberof, null, 4)}</pre>
                 </div>
             )}
@@ -130,14 +137,66 @@ export const UserMemberofsAttribute = ({user, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of memberof items using `UserMemberofsAttribute`.
+ *
+ * Wraps the `UserMemberofsAttribute` component, passing the given `items` as the `memberofs` attribute
+ * on a synthetic `user` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of memberof items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `UserMemberofsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of memberofs or `null` if none are provided.
+ *
+ * @example
+ * <MemberofsVisualiser
+ *   items={[
+ *     { id: 1, name: "Memberof 1" },
+ *     { id: 2, name: "Memberof 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const MemberofsVisualiser = ({ items, ...props }) => 
+    <UserMemberofsAttribute {...props} user={{ memberofs: items }} />
 
-export const UserMemberofsAttributeInfinite = ({user}) => { 
+/**
+ * Infinite-scrolling component for the `memberofs` attribute of a user entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `memberofs` array
+ * associated with the provided `user` object. It utilizes `MemberofsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.user - The user entity containing the `memberofs` array.
+ * @param {Array<Object>} [props.user.memberofs] - (Optional) Preloaded memberof items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `MemberofsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of memberofs.
+ *
+ * @example
+ * <UserMemberofsAttributeInfinite
+ *   user={{
+ *     memberofs: [
+ *       { id: 1, name: "Memberof 1" },
+ *       { id: 2, name: "Memberof 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const UserMemberofsAttributeInfinite = ({user, actionParams={}, ...props}) => { 
     const {memberofs} = user
 
     return (
         <InfiniteScroll 
-            Visualiser={'MemberofMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={MemberofsVisualiser} 
+            preloadedItems={memberofs}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={UserMemberofsAttributeAsyncAction}
         />
     )

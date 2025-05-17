@@ -87,30 +87,37 @@ const StudyPlanLessonLinkedwithsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `linkedwiths` attribute of an studyplanlesson entity.
+ * A component for displaying the `linkedwiths` attribute of a studyplanlesson entity.
  *
  * This component checks if the `linkedwiths` attribute exists on the `studyplanlesson` object. If `linkedwiths` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `linkedwiths` array and
- * displays a placeholder message and a JSON representation for each item in the `linkedwiths`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `linkedwiths` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StudyPlanLessonLinkedwithsAttribute component.
  * @param {Object} props.studyplanlesson - The object representing the studyplanlesson entity.
- * @param {Array} [props.studyplanlesson.linkedwiths] - An array of linkedwiths items associated with the studyplanlesson entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.studyplanlesson.linkedwiths] - An array of linkedwith items associated with the studyplanlesson entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the linkedwiths array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `linkedwiths` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `linkedwiths` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const studyplanlessonEntity = { 
  *   linkedwiths: [
  *     { id: 1, name: "Linkedwith Item 1" }, 
  *     { id: 2, name: "Linkedwith Item 2" }
  *   ] 
  * };
- *
  * <StudyPlanLessonLinkedwithsAttribute studyplanlesson={studyplanlessonEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StudyPlanLessonLinkedwithsAttribute 
+ *   studyplanlesson={studyplanlessonEntity}
+ *   filter={linkedwith => linkedwith.name.includes("1")}
+ * />
  */
 export const StudyPlanLessonLinkedwithsAttribute = ({studyplanlesson, filter=Boolean}) => {
     const { linkedwiths: unfiltered } = studyplanlesson
@@ -123,7 +130,7 @@ export const StudyPlanLessonLinkedwithsAttribute = ({studyplanlesson, filter=Boo
                 linkedwith => <div id={linkedwith.id} key={linkedwith.id}>
                     {/* <LinkedwithMediumCard linkedwith={linkedwith} /> */}
                     {/* <LinkedwithLink linkedwith={linkedwith} /> */}
-                    Probably {'<LinkedwithMediumCard linkedwith=\{linkedwith\} />'} <br />
+                    Probably {'<LinkedwithMediumCard linkedwith={linkedwith} />'} <br />
                     <pre>{JSON.stringify(linkedwith, null, 4)}</pre>
                 </div>
             )}
@@ -131,14 +138,66 @@ export const StudyPlanLessonLinkedwithsAttribute = ({studyplanlesson, filter=Boo
     )
 }
 
+/**
+ * Visualiser component for displaying a list of linkedwith items using `StudyPlanLessonLinkedwithsAttribute`.
+ *
+ * Wraps the `StudyPlanLessonLinkedwithsAttribute` component, passing the given `items` as the `linkedwiths` attribute
+ * on a synthetic `studyplanlesson` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of linkedwith items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StudyPlanLessonLinkedwithsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of linkedwiths or `null` if none are provided.
+ *
+ * @example
+ * <LinkedwithsVisualiser
+ *   items={[
+ *     { id: 1, name: "Linkedwith 1" },
+ *     { id: 2, name: "Linkedwith 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const LinkedwithsVisualiser = ({ items, ...props }) => 
+    <StudyPlanLessonLinkedwithsAttribute {...props} studyplanlesson={{ linkedwiths: items }} />
 
-export const StudyPlanLessonLinkedwithsAttributeInfinite = ({studyplanlesson}) => { 
+/**
+ * Infinite-scrolling component for the `linkedwiths` attribute of a studyplanlesson entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `linkedwiths` array
+ * associated with the provided `studyplanlesson` object. It utilizes `LinkedwithsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.studyplanlesson - The studyplanlesson entity containing the `linkedwiths` array.
+ * @param {Array<Object>} [props.studyplanlesson.linkedwiths] - (Optional) Preloaded linkedwith items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `LinkedwithsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of linkedwiths.
+ *
+ * @example
+ * <StudyPlanLessonLinkedwithsAttributeInfinite
+ *   studyplanlesson={{
+ *     linkedwiths: [
+ *       { id: 1, name: "Linkedwith 1" },
+ *       { id: 2, name: "Linkedwith 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StudyPlanLessonLinkedwithsAttributeInfinite = ({studyplanlesson, actionParams={}, ...props}) => { 
     const {linkedwiths} = studyplanlesson
 
     return (
         <InfiniteScroll 
-            Visualiser={'LinkedwithMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={LinkedwithsVisualiser} 
+            preloadedItems={linkedwiths}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StudyPlanLessonLinkedwithsAttributeAsyncAction}
         />
     )

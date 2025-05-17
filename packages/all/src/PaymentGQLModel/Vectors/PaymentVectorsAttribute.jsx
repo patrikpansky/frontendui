@@ -77,30 +77,37 @@ const PaymentVectorsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `vectors` attribute of an payment entity.
+ * A component for displaying the `vectors` attribute of a payment entity.
  *
  * This component checks if the `vectors` attribute exists on the `payment` object. If `vectors` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `vectors` array and
- * displays a placeholder message and a JSON representation for each item in the `vectors`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `vectors` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the PaymentVectorsAttribute component.
  * @param {Object} props.payment - The object representing the payment entity.
- * @param {Array} [props.payment.vectors] - An array of vectors items associated with the payment entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.payment.vectors] - An array of vector items associated with the payment entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the vectors array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `vectors` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `vectors` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const paymentEntity = { 
  *   vectors: [
  *     { id: 1, name: "Vector Item 1" }, 
  *     { id: 2, name: "Vector Item 2" }
  *   ] 
  * };
- *
  * <PaymentVectorsAttribute payment={paymentEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <PaymentVectorsAttribute 
+ *   payment={paymentEntity}
+ *   filter={vector => vector.name.includes("1")}
+ * />
  */
 export const PaymentVectorsAttribute = ({payment, filter=Boolean}) => {
     const { vectors: unfiltered } = payment
@@ -113,7 +120,7 @@ export const PaymentVectorsAttribute = ({payment, filter=Boolean}) => {
                 vector => <div id={vector.id} key={vector.id}>
                     {/* <VectorMediumCard vector={vector} /> */}
                     {/* <VectorLink vector={vector} /> */}
-                    Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
+                    Probably {'<VectorMediumCard vector={vector} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
@@ -121,14 +128,66 @@ export const PaymentVectorsAttribute = ({payment, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of vector items using `PaymentVectorsAttribute`.
+ *
+ * Wraps the `PaymentVectorsAttribute` component, passing the given `items` as the `vectors` attribute
+ * on a synthetic `payment` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of vector items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `PaymentVectorsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of vectors or `null` if none are provided.
+ *
+ * @example
+ * <VectorsVisualiser
+ *   items={[
+ *     { id: 1, name: "Vector 1" },
+ *     { id: 2, name: "Vector 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const VectorsVisualiser = ({ items, ...props }) => 
+    <PaymentVectorsAttribute {...props} payment={{ vectors: items }} />
 
-export const PaymentVectorsAttributeInfinite = ({payment}) => { 
+/**
+ * Infinite-scrolling component for the `vectors` attribute of a payment entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `vectors` array
+ * associated with the provided `payment` object. It utilizes `VectorsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.payment - The payment entity containing the `vectors` array.
+ * @param {Array<Object>} [props.payment.vectors] - (Optional) Preloaded vector items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `VectorsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of vectors.
+ *
+ * @example
+ * <PaymentVectorsAttributeInfinite
+ *   payment={{
+ *     vectors: [
+ *       { id: 1, name: "Vector 1" },
+ *       { id: 2, name: "Vector 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const PaymentVectorsAttributeInfinite = ({payment, actionParams={}, ...props}) => { 
     const {vectors} = payment
 
     return (
         <InfiniteScroll 
-            Visualiser={'VectorMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={VectorsVisualiser} 
+            preloadedItems={vectors}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={PaymentVectorsAttributeAsyncAction}
         />
     )

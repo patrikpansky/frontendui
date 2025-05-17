@@ -2,9 +2,9 @@ import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfront
 import { PaymentInfoLargeFragment } from "./PaymentInfoFragments";
 
 const PaymentInfoReadPageQueryStr = `
-query PaymentInfoReadPageQuery($skip: Int, $limit: Int, $where: PaymentInfoWhereInputFilter) {
-  result: paymentinfoPage(skip: $skip, limit: $limit, where: $where) {
-    ...PaymentInfoLarge
+query PaymentInfoReadPageQuery($skip: Int, $limit: Int, $where: PaymentInfoInputFilter) {
+  result: paymentInfoPage(skip: $skip, limit: $limit, where: $where) {
+    ...PaymentInfoLargeFragment
   }
 }
 `

@@ -1,5 +1,7 @@
 import { Col, Row } from "react-bootstrap"
 import { ProgramLink } from "../../ProgramGQLModel"
+import { CreatedBy } from "../../UserGQLModel/Components/CreatedBy"
+import { ChangedBy } from "../../UserGQLModel/Components/ChangedBy"
 /**
  * A component that displays medium-level content for an admission entity.
  *
@@ -24,6 +26,29 @@ import { ProgramLink } from "../../ProgramGQLModel"
  * </AdmissionMediumContent>
  */
 export const AdmissionMediumContent = ({admission, children}) => {
+    const {
+        name, program, createdby, changedby,
+        nameEn,
+        stateId,
+        programId,
+        paymentInfoId,
+        applicationStartDate,
+        applicationLastDate,
+        endDate,
+        conditionDate,
+        paymentDate,
+        conditionExtendedDate,
+        requestConditionExtendDate,
+        requestExtraConditionsDate,
+        requestExtraDateDate,
+        examStartDate,
+        examLastDate,
+        studentEntryDate,
+        paymentInfo,
+        state,
+        created,
+        lastchange
+    } = admission
     return (
         <>
             <Row>
@@ -31,10 +56,26 @@ export const AdmissionMediumContent = ({admission, children}) => {
                 <Col>{admission?.program && <ProgramLink program={admission?.program} />}</Col>
             </Row>
             <Row>
+                <Col>Název</Col>
+                <Col>{name}</Col>
+            </Row>
+            <Row>
+                <Col>JSON</Col>
+                <Col>{applicationStartDate && `${applicationStartDate}`}</Col>
+            </Row>
+            <Row>
                 <Col>JSON</Col>
                 <Col><pre>{JSON.stringify(admission, null, 2)}</pre></Col>
             </Row>
             {children}
+            <Row>
+                <Col>Vytvořil@{created && `${new Date(created).toLocaleDateString()}`}</Col>
+                <Col><CreatedBy createdby={admission?.createdby} /></Col>
+            </Row>
+            <Row>
+                <Col>Upravil@{lastchange && `${new Date(lastchange).toLocaleDateString()}`}</Col>
+                <Col><ChangedBy changedby={admission?.changedby} /></Col>
+            </Row>
         </>
     )
 }

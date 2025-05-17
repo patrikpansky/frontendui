@@ -19,7 +19,7 @@ mutation StateInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const StateInsertMutation = createQueryStrLazy(`
 mutation StateInsert($name: String!, $statemachineId: UUID!, $nameEn: String, $order: Int, $id: UUID, $targets: [StatetransitionInsertGQLModel!], $rbacobjectId: UUID) {
-  result: stateInsert(name: $name, statemachineId: $statemachineId, nameEn: $nameEn, order: $order, id: $id, targets: $targets, rbacobjectId: $rbacobjectId) {
+  result: stateInsert(state: { name: $name, statemachineId: $statemachineId, nameEn: $nameEn, order: $order, id: $id, targets: $targets, rbacobjectId: $rbacobjectId }) {
     __typename
     ... on StateGQLModel {
       ...StateLargeFragment

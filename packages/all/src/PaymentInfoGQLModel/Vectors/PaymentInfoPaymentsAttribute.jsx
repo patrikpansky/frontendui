@@ -84,30 +84,37 @@ const PaymentInfoPaymentsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `payments` attribute of an paymentinfo entity.
+ * A component for displaying the `payments` attribute of a paymentinfo entity.
  *
  * This component checks if the `payments` attribute exists on the `paymentinfo` object. If `payments` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `payments` array and
- * displays a placeholder message and a JSON representation for each item in the `payments`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `payments` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the PaymentInfoPaymentsAttribute component.
  * @param {Object} props.paymentinfo - The object representing the paymentinfo entity.
- * @param {Array} [props.paymentinfo.payments] - An array of payments items associated with the paymentinfo entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.paymentinfo.payments] - An array of payment items associated with the paymentinfo entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the payments array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `payments` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `payments` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const paymentinfoEntity = { 
  *   payments: [
  *     { id: 1, name: "Payment Item 1" }, 
  *     { id: 2, name: "Payment Item 2" }
  *   ] 
  * };
- *
  * <PaymentInfoPaymentsAttribute paymentinfo={paymentinfoEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <PaymentInfoPaymentsAttribute 
+ *   paymentinfo={paymentinfoEntity}
+ *   filter={payment => payment.name.includes("1")}
+ * />
  */
 export const PaymentInfoPaymentsAttribute = ({paymentinfo, filter=Boolean}) => {
     const { payments: unfiltered } = paymentinfo
@@ -120,7 +127,7 @@ export const PaymentInfoPaymentsAttribute = ({paymentinfo, filter=Boolean}) => {
                 payment => <div id={payment.id} key={payment.id}>
                     {/* <PaymentMediumCard payment={payment} /> */}
                     {/* <PaymentLink payment={payment} /> */}
-                    Probably {'<PaymentMediumCard payment=\{payment\} />'} <br />
+                    Probably {'<PaymentMediumCard payment={payment} />'} <br />
                     <pre>{JSON.stringify(payment, null, 4)}</pre>
                 </div>
             )}
@@ -128,14 +135,66 @@ export const PaymentInfoPaymentsAttribute = ({paymentinfo, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of payment items using `PaymentInfoPaymentsAttribute`.
+ *
+ * Wraps the `PaymentInfoPaymentsAttribute` component, passing the given `items` as the `payments` attribute
+ * on a synthetic `paymentinfo` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of payment items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `PaymentInfoPaymentsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of payments or `null` if none are provided.
+ *
+ * @example
+ * <PaymentsVisualiser
+ *   items={[
+ *     { id: 1, name: "Payment 1" },
+ *     { id: 2, name: "Payment 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const PaymentsVisualiser = ({ items, ...props }) => 
+    <PaymentInfoPaymentsAttribute {...props} paymentinfo={{ payments: items }} />
 
-export const PaymentInfoPaymentsAttributeInfinite = ({paymentinfo}) => { 
+/**
+ * Infinite-scrolling component for the `payments` attribute of a paymentinfo entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `payments` array
+ * associated with the provided `paymentinfo` object. It utilizes `PaymentsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.paymentinfo - The paymentinfo entity containing the `payments` array.
+ * @param {Array<Object>} [props.paymentinfo.payments] - (Optional) Preloaded payment items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `PaymentsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of payments.
+ *
+ * @example
+ * <PaymentInfoPaymentsAttributeInfinite
+ *   paymentinfo={{
+ *     payments: [
+ *       { id: 1, name: "Payment 1" },
+ *       { id: 2, name: "Payment 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const PaymentInfoPaymentsAttributeInfinite = ({paymentinfo, actionParams={}, ...props}) => { 
     const {payments} = paymentinfo
 
     return (
         <InfiniteScroll 
-            Visualiser={'PaymentMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={PaymentsVisualiser} 
+            preloadedItems={payments}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={PaymentInfoPaymentsAttributeAsyncAction}
         />
     )

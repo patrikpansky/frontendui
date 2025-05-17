@@ -21,13 +21,15 @@ mutation ProgramUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String
 
 const ProgramUpdateMutation = createQueryStrLazy(`
 mutation ProgramUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $nameEn: String, $groupId: UUID, $licencedGroupId: UUID, $typeId: UUID) {
-  result: programUpdate(id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, groupId: $groupId, licencedGroupId: $licencedGroupId, typeId: $typeId) {
+  result: programUpdate(program: { id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, groupId: $groupId, licencedGroupId: $licencedGroupId, typeId: $typeId }) {
     __typename
     ... on ProgramGQLModel {
       ...ProgramLargeFragment
     }
     ... on ProgramGQLModelUpdateError {
-      Entity
+      Entity {
+        ...ProgramLargeFragment
+      }
       msg
       failed
       input

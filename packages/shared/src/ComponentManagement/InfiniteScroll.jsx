@@ -126,13 +126,13 @@ export const InfiniteScroll = ({
             const params = _state.filter;
             // console.log("going to fetch more", JSON.stringify(params))
             let fetchedResults = await dispatch(asyncAction(params));
-            console.log("fetchedResults", JSON.stringify(fetchedResults))
+            // console.log("fetchedResults", JSON.stringify(fetchedResults))
             fetchedResults = Object.values(fetchedResults?.data)?.[0]
             if (!Array.isArray(fetchedResults)) {
                 fetchedResults = Object.values(fetchedResults).find(v => Array.isArray(v)) || [];
             }
-            console.log("fetchedResults", params.skip, params.limit)
-            console.log("fetchedResults", JSON.stringify(fetchedResults))
+            // console.log("fetchedResults", params.skip, params.limit)
+            // console.log("fetchedResults", JSON.stringify(fetchedResults))
 
             if (fetchedResults.length == 0 ) {
                 onAll()

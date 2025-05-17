@@ -86,30 +86,37 @@ const SemesterPlansAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `plans` attribute of an semester entity.
+ * A component for displaying the `plans` attribute of a semester entity.
  *
  * This component checks if the `plans` attribute exists on the `semester` object. If `plans` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `plans` array and
- * displays a placeholder message and a JSON representation for each item in the `plans`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `plans` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the SemesterPlansAttribute component.
  * @param {Object} props.semester - The object representing the semester entity.
- * @param {Array} [props.semester.plans] - An array of plans items associated with the semester entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.semester.plans] - An array of plan items associated with the semester entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the plans array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `plans` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `plans` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const semesterEntity = { 
  *   plans: [
  *     { id: 1, name: "Plan Item 1" }, 
  *     { id: 2, name: "Plan Item 2" }
  *   ] 
  * };
- *
  * <SemesterPlansAttribute semester={semesterEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <SemesterPlansAttribute 
+ *   semester={semesterEntity}
+ *   filter={plan => plan.name.includes("1")}
+ * />
  */
 export const SemesterPlansAttribute = ({semester, filter=Boolean}) => {
     const { plans: unfiltered } = semester
@@ -122,7 +129,7 @@ export const SemesterPlansAttribute = ({semester, filter=Boolean}) => {
                 plan => <div id={plan.id} key={plan.id}>
                     {/* <PlanMediumCard plan={plan} /> */}
                     {/* <PlanLink plan={plan} /> */}
-                    Probably {'<PlanMediumCard plan=\{plan\} />'} <br />
+                    Probably {'<PlanMediumCard plan={plan} />'} <br />
                     <pre>{JSON.stringify(plan, null, 4)}</pre>
                 </div>
             )}
@@ -130,14 +137,66 @@ export const SemesterPlansAttribute = ({semester, filter=Boolean}) => {
     )
 }
 
+/**
+ * Visualiser component for displaying a list of plan items using `SemesterPlansAttribute`.
+ *
+ * Wraps the `SemesterPlansAttribute` component, passing the given `items` as the `plans` attribute
+ * on a synthetic `semester` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of plan items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `SemesterPlansAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of plans or `null` if none are provided.
+ *
+ * @example
+ * <PlansVisualiser
+ *   items={[
+ *     { id: 1, name: "Plan 1" },
+ *     { id: 2, name: "Plan 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const PlansVisualiser = ({ items, ...props }) => 
+    <SemesterPlansAttribute {...props} semester={{ plans: items }} />
 
-export const SemesterPlansAttributeInfinite = ({semester}) => { 
+/**
+ * Infinite-scrolling component for the `plans` attribute of a semester entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `plans` array
+ * associated with the provided `semester` object. It utilizes `PlansVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.semester - The semester entity containing the `plans` array.
+ * @param {Array<Object>} [props.semester.plans] - (Optional) Preloaded plan items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `PlansVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of plans.
+ *
+ * @example
+ * <SemesterPlansAttributeInfinite
+ *   semester={{
+ *     plans: [
+ *       { id: 1, name: "Plan 1" },
+ *       { id: 2, name: "Plan 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const SemesterPlansAttributeInfinite = ({semester, actionParams={}, ...props}) => { 
     const {plans} = semester
 
     return (
         <InfiniteScroll 
-            Visualiser={'PlanMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={PlansVisualiser} 
+            preloadedItems={plans}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={SemesterPlansAttributeAsyncAction}
         />
     )

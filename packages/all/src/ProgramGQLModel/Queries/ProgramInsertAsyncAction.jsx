@@ -19,7 +19,7 @@ mutation ProgramInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const ProgramInsertMutation = createQueryStrLazy(`
 mutation ProgramInsert($id: UUID, $name: String, $nameEn: String, $groupId: UUID, $licencedGroupId: UUID, $typeId: UUID) {
-  result: programInsert(id: $id, name: $name, nameEn: $nameEn, groupId: $groupId, licencedGroupId: $licencedGroupId, typeId: $typeId) {
+  result: programInsert(program: { id: $id, name: $name, nameEn: $nameEn, groupId: $groupId, licencedGroupId: $licencedGroupId, typeId: $typeId }) {
     __typename
     ... on ProgramGQLModel {
       ...ProgramLargeFragment

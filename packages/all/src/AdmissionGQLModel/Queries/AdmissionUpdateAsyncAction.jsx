@@ -21,13 +21,15 @@ mutation AdmissionUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: Stri
 
 const AdmissionUpdateMutation = createQueryStrLazy(`
 mutation AdmissionUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $nameEn: String, $stateId: UUID, $paymentInfoId: UUID, $applicationStartDate: DateTime, $applicationLastDate: DateTime, $endDate: DateTime, $conditionDate: DateTime, $paymentDate: DateTime, $conditionExtendedDate: DateTime, $requestConditionExtendDate: DateTime, $requestExtraConditionsDate: DateTime, $requestExtraDateDate: DateTime, $examStartDate: DateTime, $examLastDate: DateTime, $studentEntryDate: DateTime) {
-  result: admissionUpdate(id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, stateId: $stateId, paymentInfoId: $paymentInfoId, applicationStartDate: $applicationStartDate, applicationLastDate: $applicationLastDate, endDate: $endDate, conditionDate: $conditionDate, paymentDate: $paymentDate, conditionExtendedDate: $conditionExtendedDate, requestConditionExtendDate: $requestConditionExtendDate, requestExtraConditionsDate: $requestExtraConditionsDate, requestExtraDateDate: $requestExtraDateDate, examStartDate: $examStartDate, examLastDate: $examLastDate, studentEntryDate: $studentEntryDate) {
+  result: admissionUpdate(admission: { id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, stateId: $stateId, paymentInfoId: $paymentInfoId, applicationStartDate: $applicationStartDate, applicationLastDate: $applicationLastDate, endDate: $endDate, conditionDate: $conditionDate, paymentDate: $paymentDate, conditionExtendedDate: $conditionExtendedDate, requestConditionExtendDate: $requestConditionExtendDate, requestExtraConditionsDate: $requestExtraConditionsDate, requestExtraDateDate: $requestExtraDateDate, examStartDate: $examStartDate, examLastDate: $examLastDate, studentEntryDate: $studentEntryDate }) {
     __typename
     ... on AdmissionGQLModel {
       ...AdmissionLargeFragment
     }
     ... on AdmissionGQLModelUpdateError {
-      Entity
+      Entity {
+        ...AdmissionLargeFragment
+      }
       msg
       failed
       input

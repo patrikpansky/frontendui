@@ -2,6 +2,7 @@ import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGra
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { AdmissionMediumCard } from "../../AdmissionGQLModel";
 import React, { useCallback, useEffect, useState, useRef } from "react";
+import { Col } from "react-bootstrap";
 
 
 /**
@@ -71,7 +72,15 @@ query ProgramQueryRead($id: UUID!, $where: AdmissionInputFilter, $skip: Int, $li
             lastchange
             created
             createdbyId
+            changedby {
+                id
+                fullname
+            }
             changedbyId
+            createdby {
+                id
+                fullname
+            }
             rbacobjectId
             stateId
             state {
@@ -141,12 +150,12 @@ export const ProgramAdmissionsAttribute = ({program, children, filter=Boolean}) 
     return (
         <>
             {admissions.map(
-                admission => <div id={admission.id} key={admission.id}>
+                admission => <Col id={admission.id} key={admission.id}>
                     <AdmissionMediumCard admission={admission} />
                     {/* <AdmissionLink admission={admission} /> */}
                     {/* Probably {'<AdmissionMediumCard admission=\{admission\} />'} <br />
                     <pre>{JSON.stringify(admission, null, 4)}</pre> */}
-                </div>
+                </Col>
             )}
             {children}
             {/* <ButtonMore skip={0} limit={10} fetch={fetch} /> */}
@@ -155,26 +164,8 @@ export const ProgramAdmissionsAttribute = ({program, children, filter=Boolean}) 
 }
 
 
-const AdmissionsVisualiser1 = ({items, children, filter=Boolean}) => {
-    const unfiltered = items
-    if (typeof unfiltered === 'undefined') return null
-    const admissions = unfiltered.filter(filter)
-    if (admissions.length === 0) return null
-    return (
-        <>
-            {admissions.map(
-                admission => <div id={admission.id} key={admission.id}>
-                    <AdmissionMediumCard admission={admission} />
-                    {/* <AdmissionLink admission={admission} /> */}
-                    {/* Probably {'<AdmissionMediumCard admission=\{admission\} />'} <br />
-                    <pre>{JSON.stringify(admission, null, 4)}</pre> */}
-                </div>
-            )}
-            {children}
-            {/* <ButtonMore skip={0} limit={10} fetch={fetch} /> */}
-        </>
-    )
-}
+const AdmissionsVisualiser1 = ({items, ...props}) => 
+    <ProgramAdmissionsAttribute {...props} program={{admissions: items}} />
 
 
 export const ProgramAdmissionsAttributeInfinite = ({program}) => { 

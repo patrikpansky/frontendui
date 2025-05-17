@@ -77,30 +77,37 @@ const StudyPlanLessonVectorsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `vectors` attribute of an studyplanlesson entity.
+ * A component for displaying the `vectors` attribute of a studyplanlesson entity.
  *
  * This component checks if the `vectors` attribute exists on the `studyplanlesson` object. If `vectors` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `vectors` array and
- * displays a placeholder message and a JSON representation for each item in the `vectors`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `vectors` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StudyPlanLessonVectorsAttribute component.
  * @param {Object} props.studyplanlesson - The object representing the studyplanlesson entity.
- * @param {Array} [props.studyplanlesson.vectors] - An array of vectors items associated with the studyplanlesson entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.studyplanlesson.vectors] - An array of vector items associated with the studyplanlesson entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the vectors array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `vectors` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `vectors` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const studyplanlessonEntity = { 
  *   vectors: [
  *     { id: 1, name: "Vector Item 1" }, 
  *     { id: 2, name: "Vector Item 2" }
  *   ] 
  * };
- *
  * <StudyPlanLessonVectorsAttribute studyplanlesson={studyplanlessonEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StudyPlanLessonVectorsAttribute 
+ *   studyplanlesson={studyplanlessonEntity}
+ *   filter={vector => vector.name.includes("1")}
+ * />
  */
 export const StudyPlanLessonVectorsAttribute = ({studyplanlesson, filter=Boolean}) => {
     const { vectors: unfiltered } = studyplanlesson
@@ -113,7 +120,7 @@ export const StudyPlanLessonVectorsAttribute = ({studyplanlesson, filter=Boolean
                 vector => <div id={vector.id} key={vector.id}>
                     {/* <VectorMediumCard vector={vector} /> */}
                     {/* <VectorLink vector={vector} /> */}
-                    Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
+                    Probably {'<VectorMediumCard vector={vector} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
@@ -121,14 +128,66 @@ export const StudyPlanLessonVectorsAttribute = ({studyplanlesson, filter=Boolean
     )
 }
 
+/**
+ * Visualiser component for displaying a list of vector items using `StudyPlanLessonVectorsAttribute`.
+ *
+ * Wraps the `StudyPlanLessonVectorsAttribute` component, passing the given `items` as the `vectors` attribute
+ * on a synthetic `studyplanlesson` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of vector items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StudyPlanLessonVectorsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of vectors or `null` if none are provided.
+ *
+ * @example
+ * <VectorsVisualiser
+ *   items={[
+ *     { id: 1, name: "Vector 1" },
+ *     { id: 2, name: "Vector 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const VectorsVisualiser = ({ items, ...props }) => 
+    <StudyPlanLessonVectorsAttribute {...props} studyplanlesson={{ vectors: items }} />
 
-export const StudyPlanLessonVectorsAttributeInfinite = ({studyplanlesson}) => { 
+/**
+ * Infinite-scrolling component for the `vectors` attribute of a studyplanlesson entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `vectors` array
+ * associated with the provided `studyplanlesson` object. It utilizes `VectorsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.studyplanlesson - The studyplanlesson entity containing the `vectors` array.
+ * @param {Array<Object>} [props.studyplanlesson.vectors] - (Optional) Preloaded vector items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `VectorsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of vectors.
+ *
+ * @example
+ * <StudyPlanLessonVectorsAttributeInfinite
+ *   studyplanlesson={{
+ *     vectors: [
+ *       { id: 1, name: "Vector 1" },
+ *       { id: 2, name: "Vector 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StudyPlanLessonVectorsAttributeInfinite = ({studyplanlesson, actionParams={}, ...props}) => { 
     const {vectors} = studyplanlesson
 
     return (
         <InfiniteScroll 
-            Visualiser={'VectorMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={VectorsVisualiser} 
+            preloadedItems={vectors}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StudyPlanLessonVectorsAttributeAsyncAction}
         />
     )

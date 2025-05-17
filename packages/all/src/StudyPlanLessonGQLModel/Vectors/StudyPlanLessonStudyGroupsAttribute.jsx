@@ -86,30 +86,37 @@ const StudyPlanLessonStudygroupsAttributeAsyncAction = createAsyncGraphQLAction(
 )
 
 /**
- * A component for displaying the `studygroups` attribute of an studyplanlesson entity.
+ * A component for displaying the `studygroups` attribute of a studyplanlesson entity.
  *
  * This component checks if the `studygroups` attribute exists on the `studyplanlesson` object. If `studygroups` is undefined,
- * the component returns `null` and renders nothing. Otherwise, it maps over the `studygroups` array and
- * displays a placeholder message and a JSON representation for each item in the `studygroups`.
+ * the component returns `null` and renders nothing. Otherwise, it maps over the (optionally filtered) `studygroups` array
+ * and displays a placeholder message and a JSON representation for each item.
  *
  * @component
  * @param {Object} props - The props for the StudyPlanLessonStudygroupsAttribute component.
  * @param {Object} props.studyplanlesson - The object representing the studyplanlesson entity.
- * @param {Array} [props.studyplanlesson.studygroups] - An array of studygroups items associated with the studyplanlesson entity.
- * Each item is expected to have a unique `id` property.
+ * @param {Array<Object>} [props.studyplanlesson.studygroups] - An array of studygroup items associated with the studyplanlesson entity.
+ *   Each item is expected to have a unique `id` property.
+ * @param {Function} [props.filter=Boolean] - (Optional) A function to filter the studygroups array before rendering.
  *
- * @returns {JSX.Element|null} A JSX element displaying the `studygroups` items or `null` if the attribute is undefined.
+ * @returns {JSX.Element|null} A JSX element displaying the (filtered) `studygroups` items or `null` if the attribute is undefined or empty.
  *
  * @example
- * // Example usage:
+ * // Basic usage:
  * const studyplanlessonEntity = { 
  *   studygroups: [
  *     { id: 1, name: "Studygroup Item 1" }, 
  *     { id: 2, name: "Studygroup Item 2" }
  *   ] 
  * };
- *
  * <StudyPlanLessonStudygroupsAttribute studyplanlesson={studyplanlessonEntity} />
+ *
+ * @example
+ * // With a custom filter:
+ * <StudyPlanLessonStudygroupsAttribute 
+ *   studyplanlesson={studyplanlessonEntity}
+ *   filter={studygroup => studygroup.name.includes("1")}
+ * />
  */
 export const StudyPlanLessonStudygroupsAttribute = ({studyplanlesson, filter=Boolean}) => {
     const { studygroups: unfiltered } = studyplanlesson
@@ -122,7 +129,7 @@ export const StudyPlanLessonStudygroupsAttribute = ({studyplanlesson, filter=Boo
                 studygroup => <div id={studygroup.id} key={studygroup.id}>
                     {/* <StudygroupMediumCard studygroup={studygroup} /> */}
                     {/* <StudygroupLink studygroup={studygroup} /> */}
-                    Probably {'<StudygroupMediumCard studygroup=\{studygroup\} />'} <br />
+                    Probably {'<StudygroupMediumCard studygroup={studygroup} />'} <br />
                     <pre>{JSON.stringify(studygroup, null, 4)}</pre>
                 </div>
             )}
@@ -130,14 +137,66 @@ export const StudyPlanLessonStudygroupsAttribute = ({studyplanlesson, filter=Boo
     )
 }
 
+/**
+ * Visualiser component for displaying a list of studygroup items using `StudyPlanLessonStudygroupsAttribute`.
+ *
+ * Wraps the `StudyPlanLessonStudygroupsAttribute` component, passing the given `items` as the `studygroups` attribute
+ * on a synthetic `studyplanlesson` object. All other props are forwarded.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array<Object>} props.items - The array of studygroup items to be visualized.
+ * @param {...any} [props] - Additional props forwarded to `StudyPlanLessonStudygroupsAttribute` (e.g., `filter`).
+ *
+ * @returns {JSX.Element|null} Rendered list of studygroups or `null` if none are provided.
+ *
+ * @example
+ * <StudygroupsVisualiser
+ *   items={[
+ *     { id: 1, name: "Studygroup 1" },
+ *     { id: 2, name: "Studygroup 2" }
+ *   ]}
+ *   filter={v => v.name.includes("1")}
+ * />
+ */
+const StudygroupsVisualiser = ({ items, ...props }) => 
+    <StudyPlanLessonStudygroupsAttribute {...props} studyplanlesson={{ studygroups: items }} />
 
-export const StudyPlanLessonStudygroupsAttributeInfinite = ({studyplanlesson}) => { 
+/**
+ * Infinite-scrolling component for the `studygroups` attribute of a studyplanlesson entity.
+ *
+ * Uses the generic `InfiniteScroll` component to fetch, merge, and display the `studygroups` array
+ * associated with the provided `studyplanlesson` object. It utilizes `StudygroupsVisualiser` for rendering,
+ * and handles pagination, lazy-loading, and merging of items as the user scrolls.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Object} props.studyplanlesson - The studyplanlesson entity containing the `studygroups` array.
+ * @param {Array<Object>} [props.studyplanlesson.studygroups] - (Optional) Preloaded studygroup items.
+ * @param {Object} [props.actionParams={}] - Optional extra parameters for the async fetch action (merged with pagination).
+ * @param {...any} [props] - Additional props passed to `InfiniteScroll` or `StudygroupsVisualiser`.
+ *
+ * @returns {JSX.Element} An infinite-scrolling list of studygroups.
+ *
+ * @example
+ * <StudyPlanLessonStudygroupsAttributeInfinite
+ *   studyplanlesson={{
+ *     studygroups: [
+ *       { id: 1, name: "Studygroup 1" },
+ *       { id: 2, name: "Studygroup 2" }
+ *     ]
+ *   }}
+ * />
+ */
+export const StudyPlanLessonStudygroupsAttributeInfinite = ({studyplanlesson, actionParams={}, ...props}) => { 
     const {studygroups} = studyplanlesson
 
     return (
         <InfiniteScroll 
-            Visualiser={'StudygroupMediumCard'} 
-            actionParams={{skip: 0, limit: 10}}
+            {...props}
+            Visualiser={StudygroupsVisualiser} 
+            preloadedItems={studygroups}
+            actionParams={{...actionParams, skip: 0, limit: 10}}
             asyncAction={StudyPlanLessonStudygroupsAttributeAsyncAction}
         />
     )

@@ -120,7 +120,7 @@ export const TemplateVectorsAttribute = ({template, filter=Boolean}) => {
                 vector => <div id={vector.id} key={vector.id}>
                     {/* <VectorMediumCard vector={vector} /> */}
                     {/* <VectorLink vector={vector} /> */}
-                    Probably {'<VectorMediumCard vector=\{vector\} />'} <br />
+                    Probably {'<VectorMediumCard vector={vector} />'} <br />
                     <pre>{JSON.stringify(vector, null, 4)}</pre>
                 </div>
             )}
