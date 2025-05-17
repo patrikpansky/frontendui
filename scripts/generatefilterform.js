@@ -2,109 +2,89 @@
 const fs = require("fs");
 const path = require("path");
 
-// Helper: Vrátí základní typ (bez NonNull/List)
-function getNamedType(type) {
-    while (type.kind === "NonNullType" || type.kind === "ListType") {
-        type = type.type;
-    }
-    return type;
-}
-
-// Helper: Zjistí, zda pole je [TargetType!]!
-function isListOfTargetType(type, typeName) {
-    let t = type;
-    if (t.kind === "NonNullType") t = t.type;
-    if (t.kind !== "ListType") return false;
-    t = t.type;
-    if (t.kind === "NonNullType") t = t.type;
-    return t.kind === "NamedType" && t.name.value === typeName;
-}
-
-// Helper: detekce základního typu
-function getInputFieldScalarType(field, defsByName) {
-    const baseType = getNamedType(field.type);
-    if (baseType.kind !== "NamedType") return "String";
-    // Najdi scalar/enum
-    const t = defsByName[baseType.name.value];
-    if (!t) return baseType.name.value;
-    if (["ScalarTypeDefinition", "EnumTypeDefinition"].includes(t.kind)) return baseType.name.value;
-    return "String"; // fallback (input object)
-}
-
-// Vygeneruje mapping name:scalarType z input objektu
-function buildFieldTypes(inputDef, defsByName) {
-    const result = {};
-    for (const field of inputDef.fields || []) {
-        // logické jsou _and/_or, ty přeskočíme (nejsou v mappingu)
-        if (field.name.value.startsWith("_")) continue;
-        result[field.name.value] = getInputFieldScalarType(field, defsByName);
-    }
-    return result;
-}
-
-function getHtmlInputType(scalarType) {
-    switch (scalarType) {
-        case "String": return "text";
-        case "Int": case "BigInt": return "number";
-        case "Float": case "Decimal": return "number";
-        case "Boolean": return "checkbox";
-        case "Date": return "date";
-        case "Time": return "time";
-        case "DateTime": case "Timestamp": return "datetime-local";
-        default: return "text";
-    }
-}
-
-// Hlavní funkce – vygeneruje zdroják komponenty
-function generateFilterComponent(typeName, ast) {
-    const defsByName = {};
-    for (const def of ast.definitions) {
-        if (def.name && def.name.value) defsByName[def.name.value] = def;
-    }
-
-    // 1) Najdi Query, která vrací [typeName]
-    const Query = defsByName.Query;
-    if (!Query) throw new Error("SDL AST neobsahuje Query typ");
-
-    let queryField = null, whereArg = null;
-    for (const f of Query.fields) {
-        if (isListOfTargetType(f.type, typeName)) {
-            queryField = f;
-            // Najdi parametr where
-            whereArg = (f.arguments || []).find(arg => arg.name.value === "where");
-            break;
+/**
+ * Vrátí mapu {fieldName: scalarType} pro input typ (např. AdmissionInputFilter).
+ * Nevrací _and/_or ani relation filtry.
+ */
+function getScalarFieldTypes(ast, inputTypeName) {
+    const inputType = (ast.definitions || []).find(
+        d => d.kind === "InputObjectTypeDefinition" && d.name.value === inputTypeName
+    );
+    if (!inputType) throw new Error(`Input type ${inputTypeName} not found`);
+    const fieldTypes = {};
+    for (const f of inputType.fields) {
+        if (!f.name.value.startsWith("_") && f.type.kind === "NamedType") {
+            fieldTypes[f.name.value] = f.type.name.value;
         }
     }
-    if (!queryField || !whereArg) {
-        throw new Error("Nebylo možné najít query, která vrací List[" + typeName + "] a má parametr where.");
-    }
+    return fieldTypes;
+}
 
-    // 2) Najdi input typ parametru where
-    const whereInputTypeName = getNamedType(whereArg.type).name.value;
-    const whereInputDef = defsByName[whereInputTypeName];
-    if (!whereInputDef || whereInputDef.kind !== "InputObjectTypeDefinition") {
-        throw new Error("Typ where parametru není InputObjectTypeDefinition.");
-    }
+function getScalarFieldNames(fieldTypes) {
+    return Object.keys(fieldTypes);
+}
 
-    // 3) Vygeneruj fieldTypes mapping
-    const fieldTypesObj = buildFieldTypes(whereInputDef, defsByName);
-    const fieldTypesJs = JSON.stringify(fieldTypesObj, null, 4);
+/**
+ * Vrací input typ filtru pro dotaz vracející List[Object!]! daného typu.
+ * 
+ * @param {object} ast  AST dokument (SDL)
+ * @param {string} objectTypeName  Název objektu (např. "AdmissionGQLModel")
+ * @returns {string} Název input filtru (např. "AdmissionInputFilter")
+ */
+function findFilterType(ast, objectTypeName) {
+    // Najdi Query typ
+    const queryDef = (ast.definitions || []).find(
+        d => d.kind === "ObjectTypeDefinition" && d.name.value === "Query"
+    );
+    if (!queryDef) throw new Error("No Query type found in SDL!");
 
-    // 4) Vygeneruj pole všech scalar fieldů (pro výběr fieldu)
-    const scalarFieldKeys = Object.keys(fieldTypesObj).map(f => `"${f}"`).join(", ");
+    // Najdi field v Query, který vrací List[objectTypeName!]
+    const listField = (queryDef.fields || []).find(field => {
+        // Unwrap do ListType (musí být přímo nebo pod NonNullType)
+        let t = field.type;
+        while (t.kind === "NonNullType") t = t.type;
+        if (t.kind !== "ListType") return false; // musí to být ListType
+        // ListType -> type je NonNullType, uvnitř NamedType
+        let listOf = t.type;
+        while (listOf.kind === "NonNullType") listOf = listOf.type;
+        // Musí být NamedType a mít správné jméno
+        return listOf.kind === "NamedType" && listOf.name.value === objectTypeName;
+    });
+    if (!listField) throw new Error(`No Query field found returning List[${objectTypeName}!]!`);
 
-    // 5) Název komponenty
-    const compName = typeName.replace(/GQLModel$/, "") + "InputFilterForm";
+    // Najdi argument where (input type)
+    const whereArg = (listField.arguments || []).find(
+        arg =>
+            arg.name.value === "where" &&
+            (arg.type.kind === "NamedType" || arg.type.type?.kind === "NamedType")
+    );
+    if (!whereArg) throw new Error(`Query field ${listField.name.value} has no "where" argument`);
+    return whereArg.type.kind === "NamedType"
+        ? whereArg.type.name.value
+        : whereArg.type.type.name.value;
+}
 
-    // 6) Vlastní komponenta (šablona s logikou jak bylo výše, viz předchozí odpověď)
+/**
+ * Vytvoří React komponentu filtru pro zadaný input filter type.
+ */
+function generateFilterFormComponent(inputTypeName, fieldTypes, scalarFields, exportComponentName) {
+    // Build fieldTypes map string
+    const fieldTypesStr = JSON.stringify(fieldTypes, null, 4);
+
+    // Build scalar field array
+    const scalarArrStr = JSON.stringify(scalarFields);
+
+    // Komponenta
     return `/**
- * Generated filter form for ${whereInputTypeName} (for type ${typeName}), Bootstrap styl, single field selection, logická pole.
+ * Generated filter form for ${inputTypeName}, Bootstrap styl, single field selection, logická pole.
  * Generated by generate-hasura-filter-form.js
  */
+import { SimpleCardCapsule } from "@hrbolek/uoisfrontend-shared";
 import React from "react";
+import { Col, Row } from "react-bootstrap";
 
 const logicalFields = ['_and', '_or'];
-const fieldTypes = ${fieldTypesJs};
+const fieldTypes = ${fieldTypesStr};
 
 function getHtmlInputType(scalarType) {
     switch (scalarType) {
@@ -128,10 +108,10 @@ function getFieldScalarType(fieldName) {
  * @param {function} props.onChange  Callback onChange(newValue)
  * @param {string|null} [props.parentLogical]  Parent logical (pokud je uvnitř _and/_or)
  */
-export function ${compName}({ value = {}, onChange, parentLogical = null }) {
+export function ${exportComponentName}({ value = {}, onChange, parentLogical = null }) {
     const activeLogical = Object.keys(value).find(k => logicalFields.includes(k));
     const isLogic = !!activeLogical;
-    const scalars = [${scalarFieldKeys}];
+    const scalars = ${scalarArrStr};
     const logical = logicalFields.filter(x => x !== parentLogical);
     const selectedField = !isLogic ? Object.keys(value).find(k => !k.startsWith("_")) || "" : "";
     const [operand, setOperand] = React.useState(selectedField ? value[selectedField] : "");
@@ -160,85 +140,102 @@ export function ${compName}({ value = {}, onChange, parentLogical = null }) {
         onChange({ [activeLogical]: arr });
     }
     return (
-        <div className="border p-3 mb-3">
-            {!isLogic && logical.length > 0 && (
-                <div className="mb-3 d-flex gap-2">
-                    {logical.map(f => (
-                        <button key={f} type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => handleAddLogical(f)}
-                        >{f.toUpperCase()}</button>
-                    ))}
-                </div>
-            )}
-            {!isLogic && (
-                <div className="mb-3">
-                    <label className="form-label">Operátor/field</label>
-                    <select className="form-select" value={selectedField} onChange={handleFieldChange}>
-                        <option value="">Vyber operátor…</option>
-                        {scalars.map(f => <option key={f} value={f}>{f}</option>)}
-                    </select>
-                </div>
-            )}
-            {!isLogic && selectedField && (() => {
-                const scalarType = getFieldScalarType(selectedField);
-                const inputType = getHtmlInputType(scalarType);
-                return (
-                    <div className="mb-3">
-                        <input
-                            className="form-control"
-                            type={inputType}
-                            value={inputType === "checkbox" ? undefined : operand}
-                            checked={inputType === "checkbox" ? operand || false : undefined}
-                            onChange={handleOperandChange}
-                            placeholder={"Zadej hodnotu"}
-                        />
+        <div>
+            <div className="mb-3 d-flex gap-2">
+                {!isLogic && logical.length > 0 && (  
+                    <div className="mb-3 d-flex gap-2">
+                        {logical.map(f => (
+                            <button key={f} type="button"
+                                className="btn btn-outline-primary form-control"
+                                onClick={() => handleAddLogical(f)}
+                            >{f.toUpperCase()}</button>
+                        ))}
                     </div>
-                );
-            })()}
-            {isLogic && (
-                <div className="mb-3">
-                    <label>{activeLogical.toUpperCase()}</label>
-                    {(value[activeLogical] || []).map((item, idx) => (
-                        <${compName}
-                            key={idx}
-                            value={item}
-                            onChange={v => handleLogicChange(idx, v)}
-                            parentLogical={activeLogical}
-                        />
-                    ))}
-                    <button
-                        className="btn btn-outline-primary btn-sm mt-1"
-                        type="button"
-                        onClick={() => onChange({ ...value, [activeLogical]: [...(value[activeLogical] || []), {}] })}
-                    >
-                        Přidat podmínku
-                    </button>
-                </div>
-            )}
+                )}
+                {!isLogic && !selectedField && (
+                    <SimpleCardCapsule title={"Operátor/field"}>
+                        <select className="form-select" value={selectedField} onChange={handleFieldChange}>
+                            <option value="">Vyber operátor…</option>
+                            {scalars.map(f => <option key={f} value={f}>{f}</option>)}
+                        </select>
+                    </SimpleCardCapsule>
+                )}
+                {!isLogic && selectedField && (() => {
+                    const scalarType = getFieldScalarType(selectedField);
+                    const inputType = getHtmlInputType(scalarType);
+                    return (
+                        <SimpleCardCapsule title={selectedField.toUpperCase()}>
+                            <Row>
+                                <Col>
+                                    <select className="form-select" value={selectedField} onChange={handleFieldChange}>
+                                        <option value="">Vyber operátor…</option>
+                                        {scalars.map(f => <option key={f} value={f}>{f}</option>)}
+                                    </select>
+                                </Col>
+                                <Col>
+                                    <input
+                                        className="form-control"
+                                        type={inputType}
+                                        value={inputType === "checkbox" ? undefined : operand}
+                                        checked={inputType === "checkbox" ? operand || false : undefined}
+                                        onChange={handleOperandChange}
+                                        placeholder={"Zadej hodnotu"}
+                                    />
+                                </Col>
+                            </Row>
+                        </SimpleCardCapsule>
+                    );
+                })()}
+                {isLogic && (
+                    <SimpleCardCapsule title={activeLogical.toUpperCase()}>
+                        {(value[activeLogical] || []).map((item, idx) => (
+                            <${exportComponentName}
+                                key={idx}
+                                value={item}
+                                onChange={v => handleLogicChange(idx, v)}
+                                parentLogical={activeLogical}
+                            />
+                        ))}
+                        <button
+                            className="btn btn-outline-primary btn-sm mt-1"
+                            type="button"
+                            onClick={() => onChange({ ...value, [activeLogical]: [...(value[activeLogical] || []), {}] })}
+                        >
+                            Přidat podmínku
+                        </button>
+                    </SimpleCardCapsule>
+                )}
+            </div>
+            <pre>
+                {JSON.stringify(value, null, 2)}
+            </pre>
+            <hr />
         </div>
     );
 }
 
 // Example usage:
-// <${compName} value={where} onChange={setWhere} />
-
+// <${exportComponentName} value={where} onChange={setWhere} />
 `;
-
 }
 
-// CLI použití: node generate-hasura-filter-form.js debug-sdl.json AdmissionGQLModel > AdmissionInputFilterForm.jsx
+// ------------------------- Main ---------------------------
 if (require.main === module) {
-    const [, , sdlPath, typeName, outputPath] = process.argv;
-    if (!sdlPath || !typeName || !outputPath) {
-        console.error(`Usage: node generate-hasura-filter-form.js <debug-sdl.json> <TargetTypeName> <output.jsx>`);
+    const [, , sdlPath, entityType, outputFile] = process.argv;
+    if (!sdlPath || !entityType || !outputFile) {
+        console.error("Usage: node generate-hasura-filter-form.js <debug-sdl.json> <EntityType> <OutputFile>");
         process.exit(1);
     }
     const ast = JSON.parse(fs.readFileSync(path.resolve(sdlPath), "utf8"));
-    const output = generateFilterComponent(typeName, ast);
-    
-    fs.writeFileSync(path.resolve(outputPath), output, "utf8");
-    console.log(`✅ File written: ${outputPath}`);
+    // Zjisti input filter typ pro entityType
+    const filterType = findFilterType(ast, entityType);
+    const fieldTypes = getScalarFieldTypes(ast, filterType);
+    const scalarFields = getScalarFieldNames(fieldTypes);
+    // Komponenta pojmenování
+    const exportComponentName = filterType.replace(/Input$/, "InputFilterForm");
+    // Vygeneruj komponentu
+    const componentCode = generateFilterFormComponent(filterType, fieldTypes, scalarFields, exportComponentName);
+    // Zapiš do souboru
+    fs.writeFileSync(outputFile, componentCode, "utf8");
+    console.log("✅ Filter component saved to", outputFile);
 }
-
-module.exports = { generateFilterComponent };
