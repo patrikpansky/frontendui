@@ -1,24 +1,133 @@
-// generate-filter-form.js
-
 const fs = require('fs');
-const path = require('path');
 
-/**
- * Load AST (parsed SDL in JSON form).
- */
-function loadAst(astPath) {
-    return JSON.parse(fs.readFileSync(astPath, 'utf8'));
+function getInputType(ast, inputTypeName) {
+    return ast.definitions.find(
+        d => d.kind === 'InputObjectTypeDefinition' && d.name.value === inputTypeName
+    );
 }
 
 /**
- * Find the Query field returning [TargetType!]!
+ * Vygeneruje form komponentu pro zadaný input filter typ.
+ * Umožní vybrat vždy jen jedno pole (operátor), a vyplnit operand.
+ * _and a _or mohou obsahovat jen ostatní typy (žádné vnořené _and/_or).
  */
-function findQueryField(ast, typeName) {
-    const defs = ast.definitions;
-    const queryDef = defs.find(d => d.kind === 'ObjectTypeDefinition' && d.name.value === 'Query');
+function buildInputForm(ast, inputTypeName, parentLogical = null, used = new Set()) {
+    const inputDef = getInputType(ast, inputTypeName);
+    if (!inputDef) throw new Error(`No InputObjectTypeDefinition: ${inputTypeName}`);
+
+    // Rozděl pole na logická (_and/_or) a scalar fieldy
+    const logicalFields = ['_and', '_or'];
+    const allowedLogical = logicalFields.filter(x => x !== parentLogical); // pod _and nesmí být _and
+    const scalars = inputDef.fields.filter(f => !logicalFields.includes(f.name.value));
+    const logical = inputDef.fields.filter(f => allowedLogical.includes(f.name.value));
+
+    let code = `
+export function ${inputTypeName}Form({ value = {}, onChange }) {
+    // Jediný aktivní field v hodnotě (kromě _and/_or)
+    const [selectedField, setSelectedField] = React.useState(Object.keys(value).find(k => !k.startsWith('_')) || "");
+    const [operand, setOperand] = React.useState(selectedField ? value[selectedField] : "");
+
+    React.useEffect(() => {
+        // Pokud value v props změní pole, aktualizuj stav
+        const current = Object.keys(value).find(k => !k.startsWith('_'));
+        if (current !== selectedField) {
+            setSelectedField(current || "");
+            setOperand(current ? value[current] : "");
+        }
+    }, [value]);
+
+    // Handler změny operátoru
+    function handleFieldChange(e) {
+        const f = e.target.value;
+        setSelectedField(f);
+        setOperand("");
+        onChange({ [f]: "" }); // Vynuluj ostatní
+    }
+
+    // Handler změny hodnoty operand
+    function handleOperandChange(e) {
+        setOperand(e.target.value);
+        onChange({ [selectedField]: e.target.value });
+    }
+
+    return (
+        <div className="border p-3 mb-3">
+            {/* Scalar operátor */}
+            <div className="mb-3">
+                <label className="form-label">Pole/operátor</label>
+                <select className="form-select" value={selectedField} onChange={handleFieldChange}>
+                    <option value="">Vyber operátor…</option>
+                    ${scalars.map(f => `<option value="${f.name.value}">${f.name.value}</option>`).join('\n')}
+                </select>
+            </div>
+            {selectedField &&
+                <div className="mb-3">
+                    <input
+                        className="form-control"
+                        type="text"
+                        value={operand}
+                        onChange={handleOperandChange}
+                        placeholder={"Zadej hodnotu"}
+                    />
+                </div>
+            }
+
+            {/* Logická pole */}
+            ${logical
+                .map(f => `
+            <div className="mb-3">
+                <label>${f.name.value.toUpperCase()}</label>
+                {(value.${f.name.value} || []).map((item, idx) => (
+                    <${inputTypeName}Form
+                        key={idx}
+                        value={item}
+                        onChange={v => {
+                            const arr = [...(value.${f.name.value} || [])];
+                            arr[idx] = v;
+                            onChange({ ...value, ${f.name.value}: arr });
+                        }}
+                        parentLogical="${f.name.value}"
+                    />
+                ))}
+                <button
+                    className="btn btn-outline-primary btn-sm mt-1"
+                    type="button"
+                    onClick={() => onChange({ ...value, ${f.name.value}: [...(value.${f.name.value} || []), {}] })}
+                >
+                    Přidat skupinu
+                </button>
+            </div>
+            `).join('\n')}
+        </div>
+    );
+}
+`;
+
+    // Rekurze: pro každý scalar filter typ (ne logické) rekurzivně vygeneruj pod-komponentu
+    for (const f of scalars) {
+        let t = f.type;
+        while (t.kind === 'NonNullType' || t.kind === 'ListType') t = t.type;
+        if (t.kind === 'NamedType') {
+            const tname = t.name.value;
+            // Nezacykli se (negeneruj sám sebe znovu)
+            if (tname.endsWith('Filter') && tname !== inputTypeName && !used.has(tname)) {
+                used.add(tname);
+                code += buildInputForm(ast, tname, null, used);
+            }
+        }
+    }
+
+    return code;
+}
+
+function main(astPath, typeName, outFile) {
+    const ast = JSON.parse(fs.readFileSync(astPath, 'utf8'));
+    // Najdi odpovídající query
+    const queryDef = ast.definitions.find(d => d.kind === 'ObjectTypeDefinition' && d.name.value === 'Query');
     if (!queryDef) throw new Error('No Query definition');
+    let queryField = null;
     for (const field of queryDef.fields) {
-        // Find List of typeName (NON_NULL > LIST > NON_NULL > NamedType)
+        // List of typeName (NON_NULL > LIST > NON_NULL > NamedType)
         let type = field.type;
         if (
             type.kind === 'NonNullType' &&
@@ -27,147 +136,22 @@ function findQueryField(ast, typeName) {
             type.type.type.type.kind === 'NamedType' &&
             type.type.type.type.name.value === typeName
         ) {
-            return field;
+            queryField = field;
+            break;
         }
     }
-    throw new Error(`No Query field returning [${typeName}!]!`);
-}
-
-/**
- * Find input type name for "where" argument.
- */
-function findWhereInputType(field) {
-    const whereArg = (field.arguments || []).find(arg => arg.name.value === 'where');
+    if (!queryField) throw new Error(`No Query field returning [${typeName}!]!`);
+    // Najdi input typ filtru
+    const whereArg = (queryField.arguments || []).find(arg => arg.name.value === 'where');
     if (!whereArg) throw new Error('No "where" argument');
     let t = whereArg.type;
     while (t.kind !== 'NamedType') t = t.type;
-    return t.name.value;
-}
-
-/**
- * Build React code for a given Input type.
- */
-function buildInputForm(ast, inputTypeName, used = new Set()) {
-    const defs = ast.definitions;
-    const inputDef = defs.find(d => 
-        d.kind === 'InputObjectTypeDefinition' && d.name.value === inputTypeName
-    );
-    if (!inputDef) throw new Error(`No InputObjectTypeDefinition: ${inputTypeName}`);
-
-    if (used.has(inputTypeName)) {
-        return `// Prevented infinite recursion for ${inputTypeName}\n`;
-    }
-    used.add(inputTypeName);
-
-    let code = `// --- ${inputTypeName} ---\n`;
-    code += `
-export function ${inputTypeName}Form({ value = {}, onChange }) {
-    return (
-        <div style={{ border: '1px solid #ccc', padding: 8, margin: 8 }}>
-`;
-
-    for (const field of inputDef.fields) {
-        const fname = field.name.value;
-        let t = field.type;
-        while (t.kind === 'NonNullType' || t.kind === 'ListType') t = t.type;
-
-        if (t.kind === 'NamedType') {
-            const tname = t.name.value;
-            if (tname.endsWith('Filter') && tname !== inputTypeName) {
-                // Nested filter (e.g., StrFilter, DatetimeFilter)
-                code += `
-            <div style={{ marginBottom: 8 }}>
-                <label>${fname}:</label>
-                <${tname}Form value={value.${fname} || {}} onChange={v => onChange({ ...value, ${fname}: v })} />
-            </div>
-`;
-            } else if (tname === inputTypeName) {
-                // Prevent recursion
-                code += `            {/* recursion stopped at ${fname} */}\n`;
-            } else if (tname === "String" || tname === "Int" || tname === "Boolean" || tname === "UUID" || tname === "DateTime") {
-                code += `
-            <div style={{ marginBottom: 8 }}>
-                <label>${fname}:</label>
-                <input
-                    type="text"
-                    value={value.${fname} || ""}
-                    onChange={e => onChange({ ...value, ${fname}: e.target.value })}
-                />
-            </div>
-`;
-            } else if (tname === inputTypeName) {
-                // Prevent recursion
-                code += `            {/* recursion stopped at ${fname} */}\n`;
-            } else if (tname.startsWith("[")) {
-                code += `
-            {/* Array input for ${fname} not implemented */}
-`;
-            } else {
-                // Could be AND/OR group (list of same type)
-                const fieldType = field.type;
-                if (fieldType.kind === "ListType" && fieldType.type.kind === "NamedType" && fieldType.type.name.value === inputTypeName) {
-                    // AND/OR
-                    code += `
-            <div>
-                <label>${fname} (AND/OR group):</label>
-                {(value.${fname} || []).map((item, idx) => (
-                    <${inputTypeName}Form
-                        key={idx}
-                        value={item}
-                        onChange={v => {
-                            const arr = [...(value.${fname} || [])];
-                            arr[idx] = v;
-                            onChange({ ...value, ${fname}: arr });
-                        }}
-                    />
-                ))}
-                <button type="button" onClick={() => onChange({ ...value, ${fname}: [...(value.${fname} || []), {}] })}>
-                    Add filter
-                </button>
-            </div>
-`;
-                } else {
-                    code += `
-            {/* Unhandled type for ${fname}: ${tname} */}
-`;
-                }
-            }
-        }
-    }
-
-    code += `
-        </div>
-    );
-}
-`;
-
-    // Recursively build code for all nested input filters
-    for (const field of inputDef.fields) {
-        let t = field.type;
-        while (t.kind === 'NonNullType' || t.kind === 'ListType') t = t.type;
-        if (t.kind === 'NamedType') {
-            const tname = t.name.value;
-            if (tname.endsWith('Filter') && tname !== inputTypeName && !used.has(tname)) {
-                code += buildInputForm(ast, tname, used);
-            }
-        }
-    }
-
-    return code;
-}
-
-/**
- * Entrypoint – generate component file
- */
-function main(astPath, typeName, outFile) {
-    const ast = loadAst(astPath);
-    const queryField = findQueryField(ast, typeName);
-    const whereInputType = findWhereInputType(queryField);
+    const whereInputType = t.name.value;
 
     let result = `
 /**
- * Generated filter form for ${whereInputType} (for type ${typeName}).
- * Generated by generate-filter-form.js
+ * Generated filter form for ${whereInputType} (for type ${typeName}), Bootstrap styl, single field selection.
+ * Generated by generate-hasura-filter-form.js
  */
 import React from "react";
 
@@ -186,11 +170,11 @@ import React from "react";
     console.log("✅ Generated:", outFile);
 }
 
-// CLI usage: node generate-filter-form.js debug-sdl.json AdmissionGQLModel AdmissionFilterForm.jsx
+// CLI: node generate-hasura-filter-form.js debug-sdl.json AdmissionGQLModel AdmissionFilterForm.jsx
 if (require.main === module) {
     const [,, astPath, typeName, outFile] = process.argv;
     if (!astPath || !typeName || !outFile) {
-        console.error("Usage: node generate-filter-form.js <debug-sdl.json> <TypeName> <OutputFile.jsx>");
+        console.error("Usage: node generate-hasura-filter-form.js <debug-sdl.json> <TypeName> <OutputFile.jsx>");
         process.exit(1);
     }
     main(astPath, typeName, outFile);
