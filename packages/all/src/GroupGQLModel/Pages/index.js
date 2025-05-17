@@ -1,3 +1,5 @@
 export * from './GroupPage'
+export * from './GroupVectorPage'
+export * from './GroupEditPage'
 export * from './GroupPageNavbar'
 export * from './GroupRouterSegment'

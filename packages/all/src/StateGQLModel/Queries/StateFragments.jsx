@@ -68,8 +68,6 @@ fragment StateMediumFragment on StateGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
   statemachine {
     __typename

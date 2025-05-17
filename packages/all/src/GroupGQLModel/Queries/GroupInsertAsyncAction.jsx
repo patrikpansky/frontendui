@@ -19,7 +19,7 @@ mutation GroupInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const GroupInsertMutation = createQueryStrLazy(`
 mutation GroupInsert($name: String!, $grouptypeId: UUID!, $id: UUID, $nameEn: String, $mastergroupId: UUID, $valid: Boolean, $abbreviation: String, $email: String) {
-  result: groupInsert(name: $name, grouptypeId: $grouptypeId, id: $id, nameEn: $nameEn, mastergroupId: $mastergroupId, valid: $valid, abbreviation: $abbreviation, email: $email) {
+  result: groupInsert(group: { name: $name, grouptypeId: $grouptypeId, id: $id, nameEn: $nameEn, mastergroupId: $mastergroupId, valid: $valid, abbreviation: $abbreviation, email: $email }) {
     __typename
     ... on GroupGQLModel {
       ...GroupLargeFragment

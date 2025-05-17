@@ -9,8 +9,8 @@ query AdmissionReadPageQuery($skip: Int, $limit: Int, $where: AdmissionWhereInpu
 }
 `
 const AdmissionReadPageQuery = createQueryStrLazy(`
-query AdmissionById($id: UUID!) {
-  result: admissionById(id: $id) {
+query AdmissionPage($skip: Int, $limit: Int, $orderby: String, $where: AdmissionInputFilter) {
+  result: admissionPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...AdmissionLargeFragment
   }
 }

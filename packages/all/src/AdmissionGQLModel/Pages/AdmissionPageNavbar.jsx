@@ -87,9 +87,8 @@ const TitleNavButton = ({ admission, segment, label, ...props }) => {
  * const admission = { id: 123, ... };
  * <AdmissionPageNavbar admission={admission} onSearchChange={handleSearchChange} />
  */
-export const AdmissionPageNavbar = ({ admission, onSearchChange }) => {
+export const AdmissionPageNavbar = ({ admission, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const AdmissionPageNavbar = ({ admission, onSearchChange }) => {
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

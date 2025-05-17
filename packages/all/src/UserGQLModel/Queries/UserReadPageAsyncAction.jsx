@@ -9,8 +9,8 @@ query UserReadPageQuery($skip: Int, $limit: Int, $where: UserWhereInputFilter) {
 }
 `
 const UserReadPageQuery = createQueryStrLazy(`
-query UserById($id: UUID!) {
-  result: userById(id: $id) {
+query UserPage($skip: Int, $limit: Int, $orderby: String, $where: UserInputWhereFilter) {
+  result: userPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...UserLargeFragment
   }
 }

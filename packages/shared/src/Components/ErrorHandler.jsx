@@ -19,7 +19,7 @@ export const ErrorHandler = ({ errors = "DEMO ERROR", show = true }) => {
     }
 
     if (!visible) return null
-    if (errors?.details[0]?.status === 302) {
+    if (errors?.details?.[0]?.status === 302) {
         return (
         <Modal
             show={show}
@@ -63,7 +63,7 @@ export const ErrorHandler = ({ errors = "DEMO ERROR", show = true }) => {
                     <ErrorDisplay errors={parsedErrors} onClose={onClose} />
                 }
                 <pre>{JSON.stringify(errors, null, 4)}</pre>
-                {errors?.details[0]?.status === 302 && <span>Nejste přihlášeni</span>}
+                {errors?.details?.[0]?.status === 302 && <span>Nejste přihlášeni</span>}
             </Modal.Body>
             <Modal.Footer>
                 <button className="btn btn-primary" onClick={onClose}>

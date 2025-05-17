@@ -9,8 +9,8 @@ query GroupReadPageQuery($skip: Int, $limit: Int, $where: GroupWhereInputFilter)
 }
 `
 const GroupReadPageQuery = createQueryStrLazy(`
-query GroupById($id: UUID!) {
-  result: groupById(id: $id) {
+query GroupPage($skip: Int, $limit: Int, $orderby: String, $where: GroupInputWhereFilter) {
+  result: groupPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...GroupLargeFragment
   }
 }

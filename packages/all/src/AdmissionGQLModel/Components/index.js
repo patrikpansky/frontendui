@@ -7,3 +7,4 @@ export * from './AdmissionMediumContent'
 export * from './AdmissionMediumCard'
 
 export * from './AdmissionMediumEditableContent'
+export * from './AdmissionLiveEdit'

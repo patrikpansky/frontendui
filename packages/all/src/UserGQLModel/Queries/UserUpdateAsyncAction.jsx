@@ -21,13 +21,15 @@ mutation UserUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $
 
 const UserUpdateMutation = createQueryStrLazy(`
 mutation UserUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $surname: String, $email: String, $valid: Boolean) {
-  result: userUpdate(id: $id, lastchange: $lastchange, name: $name, surname: $surname, email: $email, valid: $valid) {
+  result: userUpdate(user: { id: $id, lastchange: $lastchange, name: $name, surname: $surname, email: $email, valid: $valid }) {
     __typename
     ... on UserGQLModel {
       ...UserLargeFragment
     }
     ... on UserGQLModelUpdateError {
-      Entity
+      Entity {
+        ...UserLargeFragment
+      }
       msg
       failed
       input

@@ -7,3 +7,4 @@ export * from './TemplateMediumContent'
 export * from './TemplateMediumCard'
 
 export * from './TemplateMediumEditableContent'
+export * from './TemplateLiveEdit'

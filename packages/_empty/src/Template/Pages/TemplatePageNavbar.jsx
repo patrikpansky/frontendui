@@ -87,9 +87,8 @@ const TitleNavButton = ({ template, segment, label, ...props }) => {
  * const template = { id: 123, ... };
  * <TemplatePageNavbar template={template} onSearchChange={handleSearchChange} />
  */
-export const TemplatePageNavbar = ({ template, onSearchChange }) => {
+export const TemplatePageNavbar = ({ template, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const TemplatePageNavbar = ({ template, onSearchChange }) => {
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

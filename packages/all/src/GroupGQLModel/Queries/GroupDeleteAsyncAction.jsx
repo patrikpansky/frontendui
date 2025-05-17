@@ -19,7 +19,7 @@ mutation GroupDeleteMutation($id: UUID!, $lastchange: DateTime!) {
 `
 const GroupDeleteMutation = createQueryStrLazy(`
 mutation GroupDelete($id: UUID!, $lastchange: DateTime!) {
-  result: groupDelete(id: $id, lastchange: $lastchange) {
+  result: groupDelete(group: { id: $id, lastchange: $lastchange }) {
     ...GroupLargeFragment
   }
 }

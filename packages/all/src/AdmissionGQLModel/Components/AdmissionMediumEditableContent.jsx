@@ -39,7 +39,7 @@ export const AdmissionMediumEditableContent = ({admission, onChange=(e)=>null, o
                 <Options asyncAction={PaymentInfoReadPageAsyncAction} params = {{limit: 100}} />
             </Select>
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
+            <Input id={"nameEn"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
 
             <Input type="date" id={"applicationStartDate"} label={"Datum otevření"} className="form-control" defaultValue={admission?.applicationStartDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
             <Input type="date" id={"applicationLastDate"} label={"Datum ukončení podávání přihlášek"} className="form-control" defaultValue={admission?.applicationLastDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />

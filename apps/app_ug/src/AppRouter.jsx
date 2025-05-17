@@ -4,9 +4,12 @@ import {
 } from "react-router-dom";
 import { GroupRouterSegment as GroupRouterSegmentUG2, UserRouterSegment as UserRouterSegmentUG2 } from "@hrbolek/uoisfrontend-ug2";
 import { SchemaRouterSegment } from "@hrbolek/uoisfrontend-all";
+
 import { UserRouterSegments } from "@hrbolek/uoisfrontend-all";
 import { SchemaTypeRouterSegment } from "../../../packages/all/src/SchemaType/Pages/SchemaTypeRouterSegment";
 import { GroupRouterSegments } from "../../../packages/all/src/GroupGQLModel";
+import { StateMachineRouterSegments } from "../../../packages/all/src/StateMachineGQLModel";
+
 
 import { ProgramRouterSegments } from "../../../packages/all/src/ProgramGQLModel";
 import { SubjectRouterSegments } from "../../../packages/all/src/SubjectGQLModel";
@@ -19,6 +22,7 @@ import { PaymentRouterSegments } from "../../../packages/all/src/PaymentGQLModel
 
 import { StudyPlanRouterSegments } from "../../../packages/all/src/StudyPlanGQLModel";
 import { StudyPlanLessonRouterSegments } from "../../../packages/all/src/StudyPlanLessonGQLModel";
+import { StateRouterSegments } from "../../../packages/all/src/StateGQLModel";
 
 
 const Routes = [
@@ -29,6 +33,9 @@ const Routes = [
 
     ...UserRouterSegments,
     ...GroupRouterSegments,
+    ...StateMachineRouterSegments,
+    ...StateRouterSegments,
+
     ...ProgramRouterSegments,
     ...SubjectRouterSegments,
     ...SemesterRouterSegments,

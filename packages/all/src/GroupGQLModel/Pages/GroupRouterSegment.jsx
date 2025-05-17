@@ -1,30 +1,48 @@
 import { GroupURI } from "../Components/GroupLink"
+import { GroupEditPage } from "./GroupEditPage"
 import { GroupPage } from "./GroupPage"
+import { GroupVectorPage } from "./GroupVectorPage"
 
 /**
- * An array of route segment definitions for the Group pages.
+ * Definice segmentů rout pro Group stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific group entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci group entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `group`, `onChange`, and `onBlur` as props from the `GroupPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `group` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/group/123":
+ * // Tato route reaguje na URL jako "/group/123"
  * {
  *   path: "/group/:id",
  *   element: <GroupPage />
  * }
+ *
+ * // Editační route: "/group/edit/123"
+ * {
+ *   path: "/group/edit/:id",
+ *   element: <GroupEditPage />
+ * }
  */
-
 export const GroupRouterSegments = [
     {
         path: `/${GroupURI}:id`,
         element: (<GroupPage />),
+    },
+    {
+        path: `/${GroupURI}`,
+        element: (<GroupVectorPage />),
+    },
+    {
+        path: `/${GroupURI.replace('view', 'edit')}:id`,
+        element: (<GroupEditPage />),
     }
 ]

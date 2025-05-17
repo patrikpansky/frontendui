@@ -87,9 +87,8 @@ const TitleNavButton = ({ group, segment, label, ...props }) => {
  * const group = { id: 123, ... };
  * <GroupPageNavbar group={group} onSearchChange={handleSearchChange} />
  */
-export const GroupPageNavbar = ({ group, onSearchChange }) => {
+export const GroupPageNavbar = ({ group, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const GroupPageNavbar = ({ group, onSearchChange }) => {
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

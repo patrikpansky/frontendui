@@ -1,4 +1,5 @@
 import { AdmissionButton, AdmissionLargeCard, AdmissionMediumEditableContent } from "../Components"
+import { AdmissionLiveEdit } from "../Components/AdmissionLiveEdit"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
 
 /**
@@ -27,6 +28,7 @@ export const AdmissionPageContent = ({admission, children, ...props}) => {
             {/* <AdmissionMediumEditableContent admission={admission} /> */}
             <AdmissionButton className="btn btn-success" operation="U" admission={admission}>Upravit</AdmissionButton>
             {/* Admission {JSON.stringify(admission)} */}
+            <AdmissionLiveEdit admission={admission} />
             {children}
         </AdmissionLargeCard>
     </>)

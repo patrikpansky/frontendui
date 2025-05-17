@@ -21,13 +21,15 @@ mutation GroupUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, 
 
 const GroupUpdateMutation = createQueryStrLazy(`
 mutation GroupUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $nameEn: String, $grouptypeId: UUID, $mastergroupId: UUID, $valid: Boolean, $abbreviation: String, $email: String) {
-  result: groupUpdate(id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, grouptypeId: $grouptypeId, mastergroupId: $mastergroupId, valid: $valid, abbreviation: $abbreviation, email: $email) {
+  result: groupUpdate(group: { id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, grouptypeId: $grouptypeId, mastergroupId: $mastergroupId, valid: $valid, abbreviation: $abbreviation, email: $email }) {
     __typename
     ... on GroupGQLModel {
       ...GroupLargeFragment
     }
     ... on GroupGQLModelUpdateError {
-      Entity
+      Entity {
+        ...GroupLargeFragment
+      }
       msg
       failed
       input

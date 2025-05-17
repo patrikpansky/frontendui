@@ -19,7 +19,7 @@ mutation UserInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const UserInsertMutation = createQueryStrLazy(`
 mutation UserInsert($id: UUID, $name: String, $surname: String, $email: String, $valid: Boolean) {
-  result: userInsert(id: $id, name: $name, surname: $surname, email: $email, valid: $valid) {
+  result: userInsert(user: { id: $id, name: $name, surname: $surname, email: $email, valid: $valid }) {
     __typename
     ... on UserGQLModel {
       ...UserLargeFragment
