@@ -29,7 +29,7 @@ import { UserLink } from "./UserLink"
  *   <Button variant="primary">Click Me</Button>
  * </UserCardCapsule>
  */
-export const UserCardCapsule = ({user, children, title=<><PersonFill /> <UserLink user={user} /></>}) => {
+export const UserCardCapsule = ({user, children, title="Stránka uživatele"}) => {
     return (
         <CardCapsule title={title}>
             {children}

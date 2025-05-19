@@ -6,16 +6,17 @@ export const DisplayPrograms = () => {
 
     const {loading, dispatchResult} = useAsyncAction(ProgramReadPageAsyncAction, {limit: 100, skip: 0})
     
-    while (loading) {
+    if (loading) {
         return <div>Loading...</div>
     }
     if (!dispatchResult) {
         return <div>No data</div>
     }
 
-    return (
-        <div>
-            <UserProgramsAttribute programPage={dispatchResult.data.result}/>
-        </div>
-    )
+   return (
+    <div>
+        <UserProgramsAttribute programPage={dispatchResult.data.result}/>
+        
+    </div>
+)
 }

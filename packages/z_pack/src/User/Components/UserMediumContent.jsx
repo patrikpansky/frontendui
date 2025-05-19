@@ -22,11 +22,37 @@
  * </UserMediumContent>
  */
 export const UserMediumContent = ({user, children}) => {
+    if (!user) return null;
+
+    // Formátování času na český formát bez sekund
+    const formatDate = (isoString) => {
+        if (!isoString) return null;
+        const date = new Date(isoString);
+        return date.toLocaleString("cs-CZ", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
     return (
-        <>
-            UserMediumContent <br />
-            {JSON.stringify(user)}
+        <div>
+            <div><b>ID:</b> {user.id}</div>
+            {user.name && <div><b>Jméno:</b> {user.name}</div>}
+            {user.surname && <div><b>Příjmení:</b> {user.surname}</div>}
+            {user.email && (
+                <div>
+                    <b>Email:</b> <a href={`mailto:${user.email}`}>{user.email}</a>
+                </div>
+            )}
+            {user.lastchange && (
+                <div>
+                    <b>Poslední změna:</b> {formatDate(user.lastchange)}
+                </div>
+            )}
             {children}
-        </>
-    )
+        </div>
+    );
 }

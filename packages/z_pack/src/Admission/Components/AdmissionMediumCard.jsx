@@ -30,7 +30,11 @@ import { AdmissionMediumContent } from "./AdmissionMediumContent"
  */
 export const AdmissionMediumCard = ({admission, children}) => {
     return (
-        <AdmissionCardCapsule title={<><PersonFill /> <AdmissionLink admission={admission} /></>}>
+        <AdmissionCardCapsule title={
+            <>
+                <PersonFill /> Podrobnosti přihlášky
+            </>
+        }>
             <AdmissionMediumContent admission={admission}>
                 {children}
             </AdmissionMediumContent>

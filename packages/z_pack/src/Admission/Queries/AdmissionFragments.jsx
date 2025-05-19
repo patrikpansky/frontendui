@@ -15,6 +15,8 @@ fragment AdmissionLink on AdmissionGQLModel {
 export const AdmissionMediumFragment = createQueryStrLazy(
 `
 fragment AdmissionMedium on AdmissionGQLModel {
+  examLastDate
+  examStartDate
   ...AdmissionLink
 }
 `, AdmissionLinkFragment)

@@ -23,11 +23,13 @@ import { Input } from "@hrbolek/uoisfrontend-shared"
  *   <p>Additional information about the entity.</p>
  * </AdmissionMediumContent>
  */
-export const AdmissionMediumEditableContent = ({admission, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
+export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => null, onBlur = (e) => null, children }) => {
     return (
-        <>           
-            <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
+        <>
+            <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name || "Název"} onChange={onChange} onBlur={onBlur} />
+            <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en || "Anglický název"} onChange={onChange} onBlur={onBlur} />
+            <Input id={"examStartDate"} label={"Zacatek prezkouseni"} className="form-control" defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
+            <Input id={"examLastDate"} label={"Konec prezkouseni"} className="form-control" defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
             {children}
         </>
     )

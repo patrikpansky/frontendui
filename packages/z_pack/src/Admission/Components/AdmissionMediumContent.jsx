@@ -22,10 +22,42 @@
  * </AdmissionMediumContent>
  */
 export const AdmissionMediumContent = ({admission, children}) => {
+    // Mapování klíčů na české popisky
+    const labels = {
+        id: "ID",
+        name: "Název",
+        examStartDate: "Začátek zkoušky",
+        examLastDate: "Konec zkoušky",
+        lastchange: "Poslední změna"
+    };
+
+    // Požadované pořadí klíčů
+    const order = ["examStartDate", "examLastDate", "id", "name", "lastchange"];
+
+    // Získání klíčů, které jsou v admission a v požadovaném pořadí
+    const orderedKeys = order.filter(key => admission[key] !== undefined)
+        .concat(Object.keys(admission).filter(
+            key => !order.includes(key) && key !== 'nameEn' && key !== '__typename'
+        ));
+
     return (
         <>
-            AdmissionMediumContent <br />
-            {JSON.stringify(admission)}
+            <table style={{ borderCollapse: 'collapse', margin: '8px 0' }}>
+                <tbody>
+                    {orderedKeys.map(key => (
+                        <tr key={key}>
+                            <td style={{ border: '1px solid #ccc', padding: '4px 8px', fontWeight: 'bold', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                                {labels[key] || key}
+                            </td>
+                            <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>
+                                {typeof admission[key] === 'string' && admission[key].match(/^\d{4}-\d{2}-\d{2}T/)
+                                    ? new Date(admission[key]).toLocaleString('cs-CZ')
+                                    : admission[key]?.toString()}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
             {children}
         </>
     )

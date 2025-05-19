@@ -3,9 +3,9 @@ import { AdmissionLargeFragment } from "./AdmissionFragments";
 
 const AdmissionUpdateMutation = createQueryStrLazy(
 `
-mutation AdmissionUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String) {
+mutation AdmissionUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String, $examLastDate: DateTime, $examStartDate: DateTime) {
   result: admissionUpdate(
-    admission: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en}
+    admission: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en, examLastDate: $examLastDate, examStartDate: $examStartDate}
   ) {
     ... on AdmissionGQLModelUpdateError {
       failed

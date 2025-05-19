@@ -99,10 +99,20 @@ export const AdmissionButton = ({ operation, children, admission, onDone = () =>
 
     const { asyncAction, dialogTitle, loadingMsg, renderContent } = operationConfig[operation];
 
+
+
     const { error, loading, fetch, entity } = useAsyncAction(asyncAction, admission, { deferred: true });
     const handleClick = async (params = {}) => {
+        console.log(transformCzechDateToISO(params.examLastDate));
+        params = {
+            ...params,
+            examStartDate: transformCzechDateToISO(params.examStartDate),
+            examLastDate: transformCzechDateToISO(params.examLastDate),
+        };
+        console.log("AdmissionButton.handleClick", params);
         const fetchParams = { ...admission, ...params };
         const freshAdmission = await fetch(fetchParams);
+
         onDone(freshAdmission); // Pass the result to the external callback
     };
 
@@ -125,6 +135,36 @@ export const AdmissionButton = ({ operation, children, admission, onDone = () =>
         </ButtonWithDialog>
     </>);
 };
+
+function transformCzechDateToISO(czechDate) {
+  // 1. Split the Czech date string
+  // The regex /\s*\.\s*/ handles a dot possibly surrounded by spaces.
+  const parts = czechDate.split(/\s*\.\s*/);
+  if (parts.length !== 3) {
+    throw new Error("Invalid Czech date format. Expected DD. MM. YYYY");
+  }
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10); // JavaScript months are 0-indexed (0-11)
+  const year = parseInt(parts[2], 10);
+
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {
+    throw new Error("Invalid date components. Ensure day, month, and year are numbers.");
+  }
+
+  // 2. Create a Date object using Date.UTC()
+  // Month is month - 1 because JavaScript months are 0-indexed.
+  const dateObj = new Date(Date.UTC(year, month - 1, day));
+
+  // 3. Use toISOString() and extract the date part
+  // toISOString() returns YYYY-MM-DDTHH:mm:ss.sssZ
+  const isoString = dateObj.toISOString();
+
+  // 4. Extract only the YYYY-MM-DD part
+  return isoString.slice(0, 10);
+}
+
+
 
 // // Prop validation using PropTypes
 // AdmissionCUDButton.propTypes = {

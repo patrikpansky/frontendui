@@ -3,6 +3,8 @@ import { InfiniteScroll } from "@hrbolek/uoisfrontend-shared"
 import { ProgramMediumCard } from "../../Program"
 import { AdmissionReadPageAsyncAction } from "../../Admission/Queries/AdmissionReadPageAsyncAction"
 import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
+import { AdmissionLink } from "../../Admission/Components/AdmissionLink";
+import { AdmissionDelete } from "../Components";
 
 
 /**
@@ -49,11 +51,22 @@ export const UserProgramsAttribute = ({ programPage }) => {
 
                         <div>
                             {JSON.stringify(dispatchResult)}
+                            {dispatchResult?.data?.result?.map(admission => {
+                                return (
+                                    <div key={admission.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                                        <AdmissionLink admission={admission} />
+                                        <AdmissionDelete
+                                            admission={admission}
+                                            onDeleted={(id) => console.log("Deleted admission with id:", id)}
+                                        />
+                                    </div>
+                                );
+                            })}
                             {loading && <div>Loading...</div>}
                         </div>
 
                         </ProgramMediumCard> <br />
-                        {JSON.stringify(program)}
+                        {/*JSON.stringify(program)*/}
                     </div>
                 }
             )}

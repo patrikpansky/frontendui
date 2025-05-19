@@ -30,7 +30,7 @@ import { UserMediumContent } from "./UserMediumContent"
  */
 export const UserMediumCard = ({user, children}) => {
     return (
-        <UserCardCapsule title={<><PersonFill /> <UserLink user={user} /></>}>
+        <UserCardCapsule title={<><PersonFill /> Uživatel</>}>
             <UserMediumContent user={user}>
                 {children}
             </UserMediumContent>

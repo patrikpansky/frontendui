@@ -3,7 +3,7 @@ import { useParams } from "react-router"
 
 import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { AdmissionLargeCard } from "../Components"
+import { AdmissionButton, AdmissionLargeCard } from "../Components"
 import { AdmissionReadAsyncAction } from "../Queries"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
 
@@ -28,12 +28,16 @@ import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
  * <AdmissionPageContent admission={admissionEntity} />
  */
 const AdmissionPageContent = ({admission}) => {
-    return (<>
-        <AdmissionPageNavbar admission={admission} />
-        <AdmissionLargeCard admission={admission}>
-            Admission {JSON.stringify(admission)}
-        </AdmissionLargeCard>
-    </>)
+    return (
+        <>
+            <AdmissionPageNavbar admission={admission} />
+            <AdmissionLargeCard admission={admission}>
+                <AdmissionButton operation="U" admission={admission} onDone={(admission) => console.log("AdmissionPageContent.onDone", admission)}>
+                    Upravit
+                </AdmissionButton>
+            </AdmissionLargeCard>
+        </>
+    )
 }
 
 /**
@@ -101,7 +105,7 @@ const AdmissionPageContentLazy = ({admission}) => {
 export const AdmissionPage = () => {
     const {id} = useParams()
     const admission = {id}
-    return <AdmissionPageContent admission={admission} />
+    return <AdmissionPageContentLazy admission={admission} />
 }
 
 //   http://localhost:5173/pataszdenda/user/view/51d101a0-81f1-44ca-8366-6cf51432e8d6
