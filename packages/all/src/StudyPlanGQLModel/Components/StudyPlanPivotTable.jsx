@@ -5,7 +5,7 @@ import { PlusLg } from "react-bootstrap-icons"
 import { useMemo, useState } from "react"
 import { GroupLink, GroupReadPageAsyncAction } from "../../GroupGQLModel"
 import { FacilityLink, FacilityReadPageAsyncAction } from "../../FacilityGQLModel"
-import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { useAsyncAction, useDelayedModelUpdate } from "@hrbolek/uoisfrontend-gql-shared"
 import { LessonAddInstructorAsyncAction, LessonRemoveInstructorAsyncAction } from "../Queries/StudyPlanInstructorAsyncActions"
 import { LessonAddFacilityAsyncAction, LessonRemoveFacilityAsyncAction } from "../Queries/StudyPlanFacilityAsyncActions"
 import { LessonAddGroupAsyncAction, LessonRemoveGroupAsyncAction } from "../Queries/StudyPlanGroupAsyncActions"
@@ -485,29 +485,7 @@ const StudyPlanPivotInstructorSegmentRow = ({lesson, instructors, editable}) => 
  */
 const StudyPlanPivotTableRow = ({lesson, instructors, groups, facilities, editable}) => {
     const { loading, error, fetch } = useAsyncAction(StudyPlanLessonUpdateAsyncAction, lesson, {deferred: true})
-    const [state, setState] = useState(lesson)
-    const [delayer] = useState(() => CreateDelayer())
-    const handleChange = (e) => {
-        const { id, value } = e.target
-
-        if (state[id] === value) return
-
-        console.log("handleChange", id, value, {...state, [id]: value})
-        const executor = async () => {
-            const newState = ({
-                ...state,
-                [id]: value
-            })
-            newState.order = Number(newState.order)
-            console.log("newState", newState)
-            const response = await delayer(() => fetch(newState))
-            console.log("response", response[id]===value, response)
-            setState(response) 
-        }
-        executor()
-        
-
-    }
+    const { handleChange } = useDelayedModelUpdate(lesson, fetch)
     return (<tr>
         <th scope="row">
             {loading && <LoadingSpinner />}
@@ -519,6 +497,7 @@ const StudyPlanPivotTableRow = ({lesson, instructors, groups, facilities, editab
                 defaultValue={lesson?.order} 
                 disabled={!editable}
                 onChange={handleChange}
+                style={{ width: '8ch' }}
                 // onBlur={(handleChange)}
             />
         </th>
@@ -553,6 +532,7 @@ const StudyPlanPivotTableRow = ({lesson, instructors, groups, facilities, editab
                 onChange={handleChange} 
                 // onBlur={handleChange}
             >
+                {/* {lesson?.lessontypeId && <option value={lesson?.lessontypeId}>Zvoleno</option>} */}
                 <Options 
                     asyncAction={LessonTypeReadPageAsyncAction}
                     params={{limit: 100, skip: 0}} 

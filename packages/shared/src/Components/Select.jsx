@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useEffect, useRef } from 'react'
 import { Label } from './Label'
 
@@ -58,28 +58,38 @@ import { Label } from './Label'
  *   );
  * };
  */
-export const Select = ({ label, children, onChange, onBlur, defaultValue, ariaHidden, ...props }) => {
+export const Select_ = ({ label, children, defaultValue, onChange, onBlur, ariaHidden, ...props }) => {
     const selectRef = useRef(null);
+    const prevValueRef = useRef(defaultValue); // poslední známá hodnota
 
     useEffect(() => {
-        if (!selectRef.current || typeof onChange !== "function" || defaultValue === undefined) return;
+        if (!selectRef.current || typeof onChange !== "function") return;
 
         const observer = new MutationObserver(() => {
-            const selectedValue = selectRef.current.value;
-            if (selectedValue !== defaultValue) {
-                const event = { target: { id: selectRef.current.id, value: selectedValue } };
-                console.log("Select firing an event", defaultValue, selectedValue, event);
-                onChange(event);
-            }
+            // Oddálíme vyhodnocení, až se React přepne na novou hodnotu
+            setTimeout(() => {
+                const current = selectRef.current?.value;
+
+                if (prevValueRef.current !== current) {
+                    prevValueRef.current = current;
+                    const event = { target: { id: selectRef.current.id, value: current } };
+                    console.log("Select firing event due to real change", event);
+                    onChange(event);
+                } else {
+                    console.log("MutationObserver detected change but value unchanged");
+                }
+            }, 0);
         });
 
-        observer.observe(selectRef.current, {
-            childList: true,
-            subtree: true,
-        });
+        observer.observe(selectRef.current, { childList: true, subtree: true });
+
+        // Uložíme počáteční hodnotu
+        if (selectRef.current?.value) {
+            prevValueRef.current = selectRef.current.value;
+        }
 
         return () => observer.disconnect();
-    }, [onChange, defaultValue]);
+    }, [onChange, children]);
 
     if (ariaHidden) return null;
 
@@ -99,3 +109,42 @@ export const Select = ({ label, children, onChange, onBlur, defaultValue, ariaHi
 };
 
 
+export const Select = ({ id, label, defaultValue, onChange, onBlur, children, ...props }) => {
+    const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+
+    // Když se externí `value` změní, aktualizuj i vnitřní stav
+    useEffect(() => {
+        setInternalValue(defaultValue ?? "");
+    }, [defaultValue]);
+
+    const handleChange = (e) => {
+        const newValue = e.target.value;
+        setInternalValue(newValue); // aktualizuj interní stav
+        onChange?.({ target: { id, value: newValue } }); // zavolej callback s konzistentním tvarem
+    };
+
+    const handleBlur = (e) => {
+        const newValue = e.target.value;
+        onBlur?.({ target: { id, value: newValue } });
+    };
+
+    const selectElement = (
+        <select
+            id={id}
+            value={internalValue}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            {...props}
+        >
+            {children}
+        </select>
+    );
+
+    if (props.ariaHidden) return null;
+
+    return label ? (
+        <Label title={label}>{selectElement}</Label>
+    ) : (
+        selectElement
+    );
+};
