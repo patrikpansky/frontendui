@@ -58,47 +58,44 @@ import { Label } from './Label'
  *   );
  * };
  */
-export const Select = ({label, children, ...props}) => {
-    const {id, value, defaultValue, onChange, onBlur} = props
+export const Select = ({ label, children, onChange, onBlur, defaultValue, ariaHidden, ...props }) => {
     const selectRef = useRef(null);
 
     useEffect(() => {
+        if (!selectRef.current || typeof onChange !== "function" || defaultValue === undefined) return;
+
         const observer = new MutationObserver(() => {
-            if (selectRef.current) {
-                
-                const selectedValue = selectRef.current.value;
-                if (!defaultValue) return
+            const selectedValue = selectRef.current.value;
+            if (selectedValue !== defaultValue) {
                 const event = { target: { id: selectRef.current.id, value: selectedValue } };
-                console.log("Select firing an event", defaultValue, selectedValue, event)
+                console.log("Select firing an event", defaultValue, selectedValue, event);
                 onChange(event);
             }
         });
 
-        if (selectRef.current) {
-            observer.observe(selectRef.current, {
-            childList: true, // Listen for child changes
-            });
-        }
+        observer.observe(selectRef.current, {
+            childList: true,
+            subtree: true,
+        });
 
         return () => observer.disconnect();
-    }, [onChange]);
+    }, [onChange, defaultValue]);
 
-    const changedprops = {...props}
+    if (ariaHidden) return null;
 
+    const selectElement = (
+        <select
+            ref={selectRef}
+            defaultValue={defaultValue}
+            onChange={onChange}
+            onBlur={onBlur}
+            {...props}
+        >
+            {children}
+        </select>
+    );
 
-    if (!label) return (
-        <select ref={selectRef} {...changedprops} >
-                {children} 
-            </select>
-    )
-    if (props.ariaHidden) return null
-    return (
-        <Label title={label}>
-            <select ref={selectRef} {...changedprops} >
-                {children} 
-            </select>
-        </Label>
-    )
-}
+    return label ? <Label title={label}>{selectElement}</Label> : selectElement;
+};
 
 
