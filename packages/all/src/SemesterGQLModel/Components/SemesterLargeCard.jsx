@@ -3,6 +3,10 @@ import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
 import { SemesterCardCapsule } from "./SemesterCardCapsule"
 import { SemesterMediumCard } from "./SemesterMediumCard"
 import { SemesterSubjectAttribute } from "../Scalars/SemesterSubjectAttribute"
+import { SemesterLink } from "./SemesterLink"
+import { Col } from "react-bootstrap"
+import { SemesterTopicsAttribute, SemesterTopicsAttributeInfinite } from "../Vectors/SemesterTopicsAttribute"
+import { SemesterPlansAttributeInfinite } from "../Vectors/SemesterPlansAttribute"
 /**
  * A large card component for displaying detailed content and layout for an semester entity.
  *
@@ -36,10 +40,23 @@ export const SemesterLargeCard = ({semester, children}) => {
                     <SemesterCardCapsule semester={semester} >
                         <SemesterSubjectAttribute semester={semester}/>
                     </SemesterCardCapsule>
-
+                    <SemesterCardCapsule semester={semester} title="Další semestry">
+                        {/* {JSON.stringify(semester?.subject)} */}
+                        <Row>
+                        {semester?.subject?.semesters?.map(
+                            s => <Col key={s.id} xs={12} md={3} lg={2} className="mb-2">
+                                <SemesterLink semester={s} />
+                            </Col>
+                        )}
+                        </Row>
+                        
+                    </SemesterCardCapsule>
+                    
                     
                 </LeftColumn>
                 <MiddleColumn>
+                    <SemesterTopicsAttributeInfinite semester={semester} />
+                    <SemesterPlansAttributeInfinite semester={semester} />
                     {children}
                 </MiddleColumn>
             </Row>

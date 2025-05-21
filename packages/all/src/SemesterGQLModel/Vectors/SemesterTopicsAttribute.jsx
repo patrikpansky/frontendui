@@ -1,7 +1,8 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { use, useEffect } from "react";
-
+import { TopicMediumCard } from "../../TopicGQLModel"
+import { Col, Row } from "react-bootstrap";
 
 /**
  * Inserts a TopicGQLModel item into a semester’s topics array and dispatches an update.
@@ -66,6 +67,8 @@ query SemesterQueryRead($id: UUID!, $where: TopicInputFilter, $skip: Int, $limit
         topics(skip: $skip, limit: $limit, where: $where) {
             __typename
             id
+            name
+            description
             lastchange
             created
             createdbyId
@@ -123,12 +126,12 @@ export const SemesterTopicsAttribute = ({semester, filter=Boolean}) => {
     return (
         <>
             {topics.map(
-                topic => <div id={topic.id} key={topic.id}>
-                    {/* <TopicMediumCard topic={topic} /> */}
+                topic => <Col id={topic.id} key={topic.id}>
+                    <TopicMediumCard topic={topic} />
                     {/* <TopicLink topic={topic} /> */}
-                    Probably {'<TopicMediumCard topic={topic} />'} <br />
-                    <pre>{JSON.stringify(topic, null, 4)}</pre>
-                </div>
+                    {/* Probably {'<TopicMediumCard topic={topic} />'} <br /> */}
+                    {/* <pre>{JSON.stringify(topic, null, 4)}</pre> */}
+                </Col>
             )}
         </>
     )
@@ -157,7 +160,9 @@ export const SemesterTopicsAttribute = ({semester, filter=Boolean}) => {
  * />
  */
 const TopicsVisualiser = ({ items, ...props }) => 
-    <SemesterTopicsAttribute {...props} semester={{ topics: items }} />
+    <Row>
+        <SemesterTopicsAttribute {...props} semester={{ topics: items }} />
+    </Row>
 
 /**
  * Infinite-scrolling component for the `topics` attribute of a semester entity.
@@ -193,7 +198,7 @@ export const SemesterTopicsAttributeInfinite = ({semester, actionParams={}, ...p
             {...props}
             Visualiser={TopicsVisualiser} 
             preloadedItems={topics}
-            actionParams={{...actionParams, skip: 0, limit: 10}}
+            actionParams={{...semester, ...actionParams, skip: 0, limit: 10}}
             asyncAction={SemesterTopicsAttributeAsyncAction}
         />
     )

@@ -21,13 +21,15 @@ mutation LessonUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String,
 
 const LessonUpdateMutation = createQueryStrLazy(`
 mutation LessonUpdate($id: UUID!, $lastchange: DateTime!, $count: Int, $topicId: UUID, $typeId: UUID) {
-  result: lessonUpdate(id: $id, lastchange: $lastchange, count: $count, topicId: $topicId, typeId: $typeId) {
+  result: lessonUpdate(lesson: { id: $id, lastchange: $lastchange, count: $count, topicId: $topicId, typeId: $typeId }) {
     __typename
     ... on LessonGQLModel {
       ...LessonLargeFragment
     }
     ... on LessonGQLModelUpdateError {
-      Entity
+      Entity {
+        ...LessonLargeFragment
+      }
       msg
       failed
       input

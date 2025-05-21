@@ -7,3 +7,4 @@ export * from './StudentMediumContent'
 export * from './StudentMediumCard'
 
 export * from './StudentMediumEditableContent'
+export * from './StudentLiveEdit'

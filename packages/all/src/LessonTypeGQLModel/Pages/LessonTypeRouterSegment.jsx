@@ -1,30 +1,48 @@
 import { LessonTypeURI } from "../Components/LessonTypeLink"
+import { LessonTypeEditPage } from "./LessonTypeEditPage"
 import { LessonTypePage } from "./LessonTypePage"
+import { LessonTypeVectorPage } from "./LessonTypeVectorPage"
 
 /**
- * An array of route segment definitions for the LessonType pages.
+ * Definice segmentů rout pro LessonType stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific lessontype entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci lessontype entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `lessontype`, `onChange`, and `onBlur` as props from the `LessonTypePageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `lessontype` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/lessontype/123":
+ * // Tato route reaguje na URL jako "/lessontype/123"
  * {
  *   path: "/lessontype/:id",
  *   element: <LessonTypePage />
  * }
+ *
+ * // Editační route: "/lessontype/edit/123"
+ * {
+ *   path: "/lessontype/edit/:id",
+ *   element: <LessonTypeEditPage />
+ * }
  */
-
 export const LessonTypeRouterSegments = [
     {
         path: `/${LessonTypeURI}:id`,
         element: (<LessonTypePage />),
+    },
+    {
+        path: `/${LessonTypeURI}`,
+        element: (<LessonTypeVectorPage />),
+    },
+    {
+        path: `/${LessonTypeURI.replace('view', 'edit')}:id`,
+        element: (<LessonTypeEditPage />),
     }
 ]

@@ -31,5 +31,5 @@ export const StudyPlanURI = `${URIRoot}/studyplan/view/`;
  * @see ProxyLink - The base component used for rendering the link.
  */
 export const StudyPlanLink = ({studyplan, ...props}) => {
-    return <ProxyLink to={StudyPlanURI + studyplan.id} {...props}>{studyplan.name}</ProxyLink>
+    return <ProxyLink to={StudyPlanURI + studyplan.id} {...props}>{studyplan?.name || studyplan?.event?.name || studyplan?.id}</ProxyLink>
 }

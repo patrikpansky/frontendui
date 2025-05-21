@@ -2,19 +2,19 @@ import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfront
 import { StudyPlanLargeFragment } from "./StudyPlanFragments";
 
 const StudyPlanUpdateMutationStr = `
-mutation StudyPlanUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, $name_en: String) {
-  result: studyplanUpdate(
-    studyplan: {id: $id, lastchange: $lastchange, name: $name, nameEn: $name_en}
+mutation StudyPlanUpdateMutation($id: UUID!, $lastchange: DateTime!, $semesterId: UUID, $eventId: UUID, $examId: UUID) {
+  result: studyPlanUpdate(
+    studyPlan: {id: $id, lastchange: $lastchange, semesterId: $semesterId, eventId: $eventId, examId: $examId}
   ) {
     ... on StudyPlanGQLModelUpdateError {
       failed
       msg
       input
       Entity {
-        ...StudyPlanLarge
+        ...StudyPlanLargeFragment
       }      
     }
-    ...StudyPlanLarge
+    ...StudyPlanLargeFragment
   }
 }
 `

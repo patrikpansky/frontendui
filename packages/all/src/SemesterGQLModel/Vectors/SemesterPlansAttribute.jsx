@@ -1,7 +1,7 @@
 import { useAsyncAction, createAsyncGraphQLAction, processVectorAttributeFromGraphQLResult } from "@hrbolek/uoisfrontend-gql-shared"
 import { ErrorHandler, InfiniteScroll, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { use, useEffect } from "react";
-
+import { StudyPlanMediumCard } from "../../StudyPlanGQLModel"
 
 /**
  * Inserts a PlanGQLModel item into a semester’s plans array and dispatches an update.
@@ -59,13 +59,14 @@ const followUpSemesterPlanItemDelete = (semester, planItem, dispatch) => {
 };
 
 const SemesterPlansAttributeQuery = `
-query SemesterQueryRead($id: UUID!, $where: PlanInputFilter, $skip: Int, $limit: Int) {
+query SemesterQueryRead($id: UUID!, $where: StudyPlanInputFilter, $skip: Int, $limit: Int) {
     result: semesterById(id: $id) {
         __typename
         id
         plans(skip: $skip, limit: $limit, where: $where) {
             __typename
             id
+            
             lastchange
             created
             createdbyId
@@ -75,6 +76,10 @@ query SemesterQueryRead($id: UUID!, $where: PlanInputFilter, $skip: Int, $limit:
             classificationplanId
             examId
             eventId
+            event {
+                startdate
+                enddate
+            }
         }
     }
 }
@@ -126,11 +131,11 @@ export const SemesterPlansAttribute = ({semester, filter=Boolean}) => {
     return (
         <>
             {plans.map(
-                plan => <div id={plan.id} key={plan.id}>
-                    {/* <PlanMediumCard plan={plan} /> */}
+                studyplan => <div id={studyplan.id} key={studyplan.id}>
+                    <StudyPlanMediumCard studyplan={studyplan} />
                     {/* <PlanLink plan={plan} /> */}
-                    Probably {'<PlanMediumCard plan={plan} />'} <br />
-                    <pre>{JSON.stringify(plan, null, 4)}</pre>
+                    {/* Probably {'<PlanMediumCard plan={plan} />'} <br /> */}
+                    {/* <pre>{JSON.stringify(plan, null, 4)}</pre> */}
                 </div>
             )}
         </>
@@ -196,7 +201,7 @@ export const SemesterPlansAttributeInfinite = ({semester, actionParams={}, ...pr
             {...props}
             Visualiser={PlansVisualiser} 
             preloadedItems={plans}
-            actionParams={{...actionParams, skip: 0, limit: 10}}
+            actionParams={{...semester, ...actionParams, skip: 0, limit: 10}}
             asyncAction={SemesterPlansAttributeAsyncAction}
         />
     )

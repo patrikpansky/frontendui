@@ -90,17 +90,5 @@ fragment TopicMediumFragment on TopicGQLModel {
 export const TopicLargeFragment = createQueryStrLazy(`
 fragment TopicLargeFragment on TopicGQLModel {
   ...TopicMediumFragment
-  lessons {
-    __typename
-    id
-    lastchange
-    created
-    createdbyId
-    changedbyId
-    rbacobjectId
-    count
-    topicId
-    typeId
-  }
 }
 `, TopicMediumFragment);

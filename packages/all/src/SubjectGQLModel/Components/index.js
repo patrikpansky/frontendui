@@ -7,3 +7,4 @@ export * from './SubjectMediumContent'
 export * from './SubjectMediumCard'
 
 export * from './SubjectMediumEditableContent'
+export * from './SubjectLiveEdit'

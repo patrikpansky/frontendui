@@ -3,7 +3,7 @@ import { StudyPlanLargeFragment } from "./StudyPlanFragments";
 
 const StudyPlanReadPageQueryStr = `
 query StudyPlanReadPageQuery($skip: Int, $limit: Int, $where: StudyPlanWhereInputFilter) {
-  result: studyplanPage(skip: $skip, limit: $limit, where: $where) {
+  result: studyPlanPage(skip: $skip, limit: $limit, where: $where) {
     ...StudyPlanLarge
   }
 }

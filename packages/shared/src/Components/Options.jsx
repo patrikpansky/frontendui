@@ -51,7 +51,7 @@ import { AsyncComponent } from './AsyncComponent';
  *   );
  * };
  */
-export const Options = ({ asyncAction, params = {}, shouldFetch }) => {
+export const Options = ({ asyncAction, params = {}, shouldFetch, valueSelector=(option)=>(option?.name || option?.id) }) => {
     const { error, loading, fetch, entity, dispatchResult } = useAsyncAction(asyncAction, params, {deferred: true});
     
     useEffect(() => {
@@ -75,7 +75,7 @@ export const Options = ({ asyncAction, params = {}, shouldFetch }) => {
             {error && <ErrorHandler errors={error} />}
             {options.map((option) => (
                 <option key={option?.id} value={option?.id}>
-                    {option?.name || option?.id}
+                    {valueSelector(option)}
                 </option>
             ))}
         </>

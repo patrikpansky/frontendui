@@ -7,3 +7,4 @@ export * from './StudyPlanLessonMediumContent'
 export * from './StudyPlanLessonMediumCard'
 
 export * from './StudyPlanLessonMediumEditableContent'
+export * from './StudyPlanLessonLiveEdit'

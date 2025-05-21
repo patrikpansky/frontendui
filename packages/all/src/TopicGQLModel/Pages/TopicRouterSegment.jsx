@@ -1,30 +1,48 @@
 import { TopicURI } from "../Components/TopicLink"
+import { TopicEditPage } from "./TopicEditPage"
 import { TopicPage } from "./TopicPage"
+import { TopicVectorPage } from "./TopicVectorPage"
 
 /**
- * An array of route segment definitions for the Topic pages.
+ * Definice segmentů rout pro Topic stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific topic entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci topic entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `topic`, `onChange`, and `onBlur` as props from the `TopicPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `topic` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/topic/123":
+ * // Tato route reaguje na URL jako "/topic/123"
  * {
  *   path: "/topic/:id",
  *   element: <TopicPage />
  * }
+ *
+ * // Editační route: "/topic/edit/123"
+ * {
+ *   path: "/topic/edit/:id",
+ *   element: <TopicEditPage />
+ * }
  */
-
 export const TopicRouterSegments = [
     {
         path: `/${TopicURI}:id`,
         element: (<TopicPage />),
+    },
+    {
+        path: `/${TopicURI}`,
+        element: (<TopicVectorPage />),
+    },
+    {
+        path: `/${TopicURI.replace('view', 'edit')}:id`,
+        element: (<TopicEditPage />),
     }
 ]

@@ -1,30 +1,48 @@
 import { ProgramLanguageTypeURI } from "../Components/ProgramLanguageTypeLink"
+import { ProgramLanguageTypeEditPage } from "./ProgramLanguageTypeEditPage"
 import { ProgramLanguageTypePage } from "./ProgramLanguageTypePage"
+import { ProgramLanguageTypeVectorPage } from "./ProgramLanguageTypeVectorPage"
 
 /**
- * An array of route segment definitions for the ProgramLanguageType pages.
+ * Definice segmentů rout pro ProgramLanguageType stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific programlanguagetype entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci programlanguagetype entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `programlanguagetype`, `onChange`, and `onBlur` as props from the `ProgramLanguageTypePageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `programlanguagetype` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/programlanguagetype/123":
+ * // Tato route reaguje na URL jako "/programlanguagetype/123"
  * {
  *   path: "/programlanguagetype/:id",
  *   element: <ProgramLanguageTypePage />
  * }
+ *
+ * // Editační route: "/programlanguagetype/edit/123"
+ * {
+ *   path: "/programlanguagetype/edit/:id",
+ *   element: <ProgramLanguageTypeEditPage />
+ * }
  */
-
 export const ProgramLanguageTypeRouterSegments = [
     {
         path: `/${ProgramLanguageTypeURI}:id`,
         element: (<ProgramLanguageTypePage />),
+    },
+    {
+        path: `/${ProgramLanguageTypeURI}`,
+        element: (<ProgramLanguageTypeVectorPage />),
+    },
+    {
+        path: `/${ProgramLanguageTypeURI.replace('view', 'edit')}:id`,
+        element: (<ProgramLanguageTypeEditPage />),
     }
 ]

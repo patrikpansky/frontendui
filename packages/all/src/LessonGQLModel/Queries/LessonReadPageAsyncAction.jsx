@@ -9,8 +9,8 @@ query LessonReadPageQuery($skip: Int, $limit: Int, $where: LessonWhereInputFilte
 }
 `
 const LessonReadPageQuery = createQueryStrLazy(`
-query LessonById($id: UUID!) {
-  result: lessonById(id: $id) {
+query LessonPage($skip: Int, $limit: Int, $orderby: String, $where: LessonInputFilter) {
+  result: lessonPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...LessonLargeFragment
   }
 }

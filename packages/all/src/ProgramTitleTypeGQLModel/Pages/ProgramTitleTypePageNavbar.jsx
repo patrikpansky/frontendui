@@ -87,9 +87,8 @@ const TitleNavButton = ({ programtitletype, segment, label, ...props }) => {
  * const programtitletype = { id: 123, ... };
  * <ProgramTitleTypePageNavbar programtitletype={programtitletype} onSearchChange={handleSearchChange} />
  */
-export const ProgramTitleTypePageNavbar = ({ programtitletype, onSearchChange }) => {
+export const ProgramTitleTypePageNavbar = ({ programtitletype, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const ProgramTitleTypePageNavbar = ({ programtitletype, onSearchChange })
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

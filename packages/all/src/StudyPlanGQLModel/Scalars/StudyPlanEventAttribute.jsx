@@ -1,3 +1,5 @@
+import { EventLink } from '../../EventGQLModel'
+
 /**
  * A component for displaying the `event` attribute of an studyplan entity.
  *
@@ -21,12 +23,13 @@
 export const StudyPlanEventAttribute = ({studyplan}) => {
     const {event} = studyplan
     if (typeof event === 'undefined') return null
+    if (event === null) return null
     return (
         <>
             {/* <EventMediumCard event={event} /> */}
-            {/* <EventLink event={event} /> */}
-            Probably {'<EventMediumCard event=\{event\} />'} <br />
-            <pre>{JSON.stringify(event, null, 4)}</pre>
+            <EventLink event={event} />
+            {/* Probably {'<EventMediumCard event=\{event\} />'} <br /> */}
+            {/* <pre>{JSON.stringify(event, null, 4)}</pre> */}
         </>
     )
 }

@@ -1,30 +1,48 @@
 import { ProgramTypeURI } from "../Components/ProgramTypeLink"
+import { ProgramTypeEditPage } from "./ProgramTypeEditPage"
 import { ProgramTypePage } from "./ProgramTypePage"
+import { ProgramTypeVectorPage } from "./ProgramTypeVectorPage"
 
 /**
- * An array of route segment definitions for the ProgramType pages.
+ * Definice segmentů rout pro ProgramType stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific programtype entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci programtype entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `programtype`, `onChange`, and `onBlur` as props from the `ProgramTypePageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `programtype` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/programtype/123":
+ * // Tato route reaguje na URL jako "/programtype/123"
  * {
  *   path: "/programtype/:id",
  *   element: <ProgramTypePage />
  * }
+ *
+ * // Editační route: "/programtype/edit/123"
+ * {
+ *   path: "/programtype/edit/:id",
+ *   element: <ProgramTypeEditPage />
+ * }
  */
-
 export const ProgramTypeRouterSegments = [
     {
         path: `/${ProgramTypeURI}:id`,
         element: (<ProgramTypePage />),
+    },
+    {
+        path: `/${ProgramTypeURI}`,
+        element: (<ProgramTypeVectorPage />),
+    },
+    {
+        path: `/${ProgramTypeURI.replace('view', 'edit')}:id`,
+        element: (<ProgramTypeEditPage />),
     }
 ]

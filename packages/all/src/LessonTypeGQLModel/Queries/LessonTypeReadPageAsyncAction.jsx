@@ -2,9 +2,9 @@ import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfront
 import { LessonTypeLargeFragment } from "./LessonTypeFragments";
 
 const LessonTypeReadPageQueryStr = `
-query LessonTypeReadPageQuery($skip: Int, $limit: Int, $where: LessonTypeWhereInputFilter) {
-  result: lessontypePage(skip: $skip, limit: $limit, where: $where) {
-    ...LessonTypeLarge
+query LessonTypeReadPageQuery($skip: Int, $limit: Int, $where: LessonTypeInputFilter) {
+  result: lessonTypePage(skip: $skip, limit: $limit, where: $where) {
+    ...LessonTypeLargeFragment
   }
 }
 `

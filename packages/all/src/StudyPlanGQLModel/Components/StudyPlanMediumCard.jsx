@@ -1,4 +1,4 @@
-import { PersonFill } from "react-bootstrap-icons"
+import { JournalBookmark, PersonFill } from "react-bootstrap-icons"
 import { StudyPlanLink } from "./StudyPlanLink"
 import { StudyPlanCardCapsule } from "./StudyPlanCardCapsule"
 import { StudyPlanMediumContent } from "./StudyPlanMediumContent"
@@ -30,7 +30,7 @@ import { StudyPlanMediumContent } from "./StudyPlanMediumContent"
  */
 export const StudyPlanMediumCard = ({studyplan, children}) => {
     return (
-        <StudyPlanCardCapsule title={<><PersonFill /> <StudyPlanLink studyplan={studyplan} /></>}>
+        <StudyPlanCardCapsule title={<><JournalBookmark /> <StudyPlanLink studyplan={studyplan} /></>}>
             <StudyPlanMediumContent studyplan={studyplan}>
                 {children}
             </StudyPlanMediumContent>

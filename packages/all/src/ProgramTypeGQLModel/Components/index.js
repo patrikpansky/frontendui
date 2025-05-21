@@ -7,3 +7,4 @@ export * from './ProgramTypeMediumContent'
 export * from './ProgramTypeMediumCard'
 
 export * from './ProgramTypeMediumEditableContent'
+export * from './ProgramTypeLiveEdit'

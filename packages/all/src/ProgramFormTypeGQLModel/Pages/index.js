@@ -1,3 +1,5 @@
 export * from './ProgramFormTypePage'
+export * from './ProgramFormTypeVectorPage'
+export * from './ProgramFormTypeEditPage'
 export * from './ProgramFormTypePageNavbar'
 export * from './ProgramFormTypeRouterSegment'

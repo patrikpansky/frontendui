@@ -3,16 +3,16 @@ import { StudyPlanLargeFragment } from "./StudyPlanFragments";
 
 
 const StudyPlanInsertMutationStr = `
-mutation StudyPlanInsertMutation($id: UUID, $name: String, $name_en: String) {
-  result: studyplanInsert(
-    studyplan: {id: $id, name: $name, nameEn: $name_en}
+mutation StudyPlanInsertMutation($id: UUID, $semesterId: UUID, $eventId: UUID, $examId: UUID) {
+  result: studyPlanInsert(
+    studyPlan: {id: $id, semesterId: $semesterId, eventId: $eventId, examId: $examId}
   ) {
     ... on InsertError {
       failed
       msg
       input
     }
-    ...StudyPlanLarge
+    ...StudyPlanLargeFragment
   }
 }
 `

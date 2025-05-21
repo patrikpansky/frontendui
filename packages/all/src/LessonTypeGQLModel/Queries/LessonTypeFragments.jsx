@@ -65,8 +65,6 @@ fragment LessonTypeMediumFragment on LessonTypeGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
 }
 `, LessonTypeLinkFragment);

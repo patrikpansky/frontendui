@@ -87,9 +87,8 @@ const TitleNavButton = ({ programformtype, segment, label, ...props }) => {
  * const programformtype = { id: 123, ... };
  * <ProgramFormTypePageNavbar programformtype={programformtype} onSearchChange={handleSearchChange} />
  */
-export const ProgramFormTypePageNavbar = ({ programformtype, onSearchChange }) => {
+export const ProgramFormTypePageNavbar = ({ programformtype, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const ProgramFormTypePageNavbar = ({ programformtype, onSearchChange }) =
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

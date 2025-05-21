@@ -87,9 +87,8 @@ const TitleNavButton = ({ student, segment, label, ...props }) => {
  * const student = { id: 123, ... };
  * <StudentPageNavbar student={student} onSearchChange={handleSearchChange} />
  */
-export const StudentPageNavbar = ({ student, onSearchChange }) => {
+export const StudentPageNavbar = ({ student, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const StudentPageNavbar = ({ student, onSearchChange }) => {
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

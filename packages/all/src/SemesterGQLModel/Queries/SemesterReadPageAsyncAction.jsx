@@ -9,8 +9,8 @@ query SemesterReadPageQuery($skip: Int, $limit: Int, $where: SemesterWhereInputF
 }
 `
 const SemesterReadPageQuery = createQueryStrLazy(`
-query SemesterById($id: UUID!) {
-  result: semesterById(id: $id) {
+query SemesterPage($skip: Int, $limit: Int, $orderby: String, $where: SemesterInputFilter) {
+  result: semesterPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...SemesterLargeFragment
   }
 }

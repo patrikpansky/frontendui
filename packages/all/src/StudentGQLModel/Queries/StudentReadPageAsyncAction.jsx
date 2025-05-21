@@ -9,8 +9,8 @@ query StudentReadPageQuery($skip: Int, $limit: Int, $where: StudentWhereInputFil
 }
 `
 const StudentReadPageQuery = createQueryStrLazy(`
-query StudentById($id: UUID!) {
-  result: studentById(id: $id) {
+query StudentPage($skip: Int, $limit: Int, $orderby: String, $where: StudentInputFilter) {
+  result: studentPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...StudentLargeFragment
   }
 }

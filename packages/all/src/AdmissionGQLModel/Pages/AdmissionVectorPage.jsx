@@ -3,7 +3,7 @@ import { InfiniteScroll, MyNavbar } from "@hrbolek/uoisfrontend-shared"
 import { AdmissionReadPageAsyncAction } from "../Queries"
 import { AdmissionMediumCard } from "../Components"
 import { Col, Row } from "react-bootstrap"
-import { AdmissionInputFilterForm } from "../Components/AdmissionFilter"
+import { AdmissionInputFilter } from "../Components/AdmissionFilter"
 import { useState } from "react"
 
 /**
@@ -77,7 +77,7 @@ export const AdmissionVectorPage = ({children, Visualiser=AdmissionVisualiser}) 
     const [filter, setFilter] = useState({})
     return (<>
         <MyNavbar />
-        <AdmissionInputFilterForm value={filter} onChange={setFilter} />
+        <AdmissionInputFilter value={filter} onChange={setFilter} />
         <Row>
         <InfiniteScroll
             preloadedItems={[]} // No preloaded items for admission

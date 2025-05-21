@@ -1,4 +1,5 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
+import { Input, Options, Select } from "@hrbolek/uoisfrontend-shared"
+import { EventReadPageAsyncAction } from "../../EventGQLModel"
 
 /**
  * A component that displays medium-level content for an studyplan entity.
@@ -26,6 +27,9 @@ import { Input } from "@hrbolek/uoisfrontend-shared"
 export const StudyPlanMediumEditableContent = ({studyplan, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
     return (
         <>           
+            <Select id={"eventId"} label={"Období"} className="form-control" defaultValue={studyplan?.eventId} onChange={onChange} onBlur={onBlur}>
+                <Options asyncAction={EventReadPageAsyncAction} params={{where: {type_id: {_eq: "69ec2b0b-a39d-40df-9cea-e295b36749c9"}}}}/>
+            </Select>
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={studyplan?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={studyplan?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
             {children}

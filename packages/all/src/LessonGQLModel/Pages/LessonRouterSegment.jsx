@@ -1,30 +1,48 @@
 import { LessonURI } from "../Components/LessonLink"
+import { LessonEditPage } from "./LessonEditPage"
 import { LessonPage } from "./LessonPage"
+import { LessonVectorPage } from "./LessonVectorPage"
 
 /**
- * An array of route segment definitions for the Lesson pages.
+ * Definice segmentů rout pro Lesson stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific lesson entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci lesson entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `lesson`, `onChange`, and `onBlur` as props from the `LessonPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `lesson` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/lesson/123":
+ * // Tato route reaguje na URL jako "/lesson/123"
  * {
  *   path: "/lesson/:id",
  *   element: <LessonPage />
  * }
+ *
+ * // Editační route: "/lesson/edit/123"
+ * {
+ *   path: "/lesson/edit/:id",
+ *   element: <LessonEditPage />
+ * }
  */
-
 export const LessonRouterSegments = [
     {
         path: `/${LessonURI}:id`,
         element: (<LessonPage />),
+    },
+    {
+        path: `/${LessonURI}`,
+        element: (<LessonVectorPage />),
+    },
+    {
+        path: `/${LessonURI.replace('view', 'edit')}:id`,
+        element: (<LessonEditPage />),
     }
 ]

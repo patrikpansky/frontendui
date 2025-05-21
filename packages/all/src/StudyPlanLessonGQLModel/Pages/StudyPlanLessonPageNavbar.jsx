@@ -87,9 +87,8 @@ const TitleNavButton = ({ studyplanlesson, segment, label, ...props }) => {
  * const studyplanlesson = { id: 123, ... };
  * <StudyPlanLessonPageNavbar studyplanlesson={studyplanlesson} onSearchChange={handleSearchChange} />
  */
-export const StudyPlanLessonPageNavbar = ({ studyplanlesson, onSearchChange }) => {
+export const StudyPlanLessonPageNavbar = ({ studyplanlesson, children, onSearchChange }) => {
     const [currentHash, setHash] = useHash(); // Use the custom hook to manage hash
-
     
     return (
         <div className='screen-only'>
@@ -104,6 +103,7 @@ export const StudyPlanLessonPageNavbar = ({ studyplanlesson, onSearchChange }) =
                     />
                 </Nav.Item>
             ))}
+            {children}
       </MyNavbar>
       </div>
     );

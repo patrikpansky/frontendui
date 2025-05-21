@@ -1,30 +1,48 @@
 import { SubjectURI } from "../Components/SubjectLink"
+import { SubjectEditPage } from "./SubjectEditPage"
 import { SubjectPage } from "./SubjectPage"
+import { SubjectVectorPage } from "./SubjectVectorPage"
 
 /**
- * An array of route segment definitions for the Subject pages.
+ * Definice segmentů rout pro Subject stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific subject entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci subject entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `subject`, `onChange`, and `onBlur` as props from the `SubjectPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `subject` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/subject/123":
+ * // Tato route reaguje na URL jako "/subject/123"
  * {
  *   path: "/subject/:id",
  *   element: <SubjectPage />
  * }
+ *
+ * // Editační route: "/subject/edit/123"
+ * {
+ *   path: "/subject/edit/:id",
+ *   element: <SubjectEditPage />
+ * }
  */
-
 export const SubjectRouterSegments = [
     {
         path: `/${SubjectURI}:id`,
         element: (<SubjectPage />),
+    },
+    {
+        path: `/${SubjectURI}`,
+        element: (<SubjectVectorPage />),
+    },
+    {
+        path: `/${SubjectURI.replace('view', 'edit')}:id`,
+        element: (<SubjectEditPage />),
     }
 ]

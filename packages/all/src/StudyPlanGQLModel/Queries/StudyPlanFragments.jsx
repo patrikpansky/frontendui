@@ -66,8 +66,6 @@ fragment StudyPlanMediumFragment on StudyPlanGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
   semester {
     __typename
@@ -144,6 +142,20 @@ fragment StudyPlanLargeFragment on StudyPlanGQLModel {
     lessontypeId
     linkedWithId
     planId
+
+    instructors {
+        id
+        fullname
+        email
+      }
+      studyGroups {
+        id
+        name
+      }
+      facilities {
+        id
+        name
+      }
   }
 }
 `, StudyPlanMediumFragment);

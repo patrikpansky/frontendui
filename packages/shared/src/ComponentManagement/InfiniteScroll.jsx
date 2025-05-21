@@ -192,7 +192,6 @@ export const InfiniteScroll = ({
     if (_state.results)
         return (
             <>
-                <h1>Přijímací řízení</h1>
                 <Visualiser items={_state.results} {...props}>
                     {children}
                 </Visualiser>

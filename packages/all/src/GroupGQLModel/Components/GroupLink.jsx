@@ -31,5 +31,5 @@ export const GroupURI = `${URIRoot}/group/view/`;
  * @see ProxyLink - The base component used for rendering the link.
  */
 export const GroupLink = ({group, ...props}) => {
-    return <ProxyLink to={`${GroupURI}${group.id}`} {...props}>{group.name}</ProxyLink>
+    return <ProxyLink to={`${GroupURI}${group.id}`} {...props}>{group?.name || group?.id}</ProxyLink>
 }

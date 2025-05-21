@@ -1,30 +1,48 @@
 import { StudentURI } from "../Components/StudentLink"
+import { StudentEditPage } from "./StudentEditPage"
 import { StudentPage } from "./StudentPage"
+import { StudentVectorPage } from "./StudentVectorPage"
 
 /**
- * An array of route segment definitions for the Student pages.
+ * Definice segmentů rout pro Student stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific student entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci student entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `student`, `onChange`, and `onBlur` as props from the `StudentPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `student` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/student/123":
+ * // Tato route reaguje na URL jako "/student/123"
  * {
  *   path: "/student/:id",
  *   element: <StudentPage />
  * }
+ *
+ * // Editační route: "/student/edit/123"
+ * {
+ *   path: "/student/edit/:id",
+ *   element: <StudentEditPage />
+ * }
  */
-
 export const StudentRouterSegments = [
     {
         path: `/${StudentURI}:id`,
         element: (<StudentPage />),
+    },
+    {
+        path: `/${StudentURI}`,
+        element: (<StudentVectorPage />),
+    },
+    {
+        path: `/${StudentURI.replace('view', 'edit')}:id`,
+        element: (<StudentEditPage />),
     }
 ]

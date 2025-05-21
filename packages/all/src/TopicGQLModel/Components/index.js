@@ -7,3 +7,4 @@ export * from './TopicMediumContent'
 export * from './TopicMediumCard'
 
 export * from './TopicMediumEditableContent'
+export * from './TopicLiveEdit'

@@ -21,13 +21,15 @@ mutation TopicUpdateMutation($id: UUID!, $lastchange: DateTime!, $name: String, 
 
 const TopicUpdateMutation = createQueryStrLazy(`
 mutation TopicUpdate($id: UUID!, $lastchange: DateTime!, $name: String, $nameEn: String, $order: Int, $description: String, $semesterId: UUID) {
-  result: topicUpdate(id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, order: $order, description: $description, semesterId: $semesterId) {
+  result: topicUpdate(topic: { id: $id, lastchange: $lastchange, name: $name, nameEn: $nameEn, order: $order, description: $description, semesterId: $semesterId }) {
     __typename
     ... on TopicGQLModel {
       ...TopicLargeFragment
     }
     ... on TopicGQLModelUpdateError {
-      Entity
+      Entity {
+        ...TopicLargeFragment
+      }
       msg
       failed
       input

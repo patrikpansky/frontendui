@@ -1,3 +1,5 @@
 export * from './SubjectPage'
+export * from './SubjectVectorPage'
+export * from './SubjectEditPage'
 export * from './SubjectPageNavbar'
 export * from './SubjectRouterSegment'

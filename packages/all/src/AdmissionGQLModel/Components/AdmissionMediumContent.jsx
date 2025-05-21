@@ -60,8 +60,16 @@ export const AdmissionMediumContent = ({admission, children}) => {
                 <Col>{name}</Col>
             </Row>
             <Row>
-                <Col>JSON</Col>
-                <Col>{applicationStartDate && `${applicationStartDate}`}</Col>
+                <Col>applicationStartDate</Col>
+                <Col>{applicationStartDate && `${new Date(applicationStartDate).toLocaleDateString()}`}</Col>
+            </Row>
+            <Row>
+                <Col>applicationLastDate</Col>
+                <Col>{applicationLastDate && `${new Date(applicationLastDate).toLocaleDateString()}`}</Col>
+            </Row>
+            <Row>
+                <Col>endDate</Col>
+                <Col>{endDate && `${new Date(endDate).toLocaleDateString()}`}</Col>
             </Row>
             <Row>
                 <Col>JSON</Col>

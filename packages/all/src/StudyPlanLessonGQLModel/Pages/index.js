@@ -1,3 +1,5 @@
 export * from './StudyPlanLessonPage'
+export * from './StudyPlanLessonVectorPage'
+export * from './StudyPlanLessonEditPage'
 export * from './StudyPlanLessonPageNavbar'
 export * from './StudyPlanLessonRouterSegment'

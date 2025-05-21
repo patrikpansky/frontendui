@@ -26,12 +26,16 @@ export const TopicMediumContent = ({topic, children}) => {
     return (
         <>
             <Row>
-                <Col>Program</Col>
-                <Col><ProgramLink program={student?.program} /></Col>
+                <Col>Název</Col>
+                <Col>{topic?.name}</Col>
             </Row>
             <Row>
-                <Col>JSON</Col>
-                <Col><pre>{JSON.stringify(topic, null, 2)}</pre></Col>
+                <Col>Pořadí</Col>
+                <Col>{topic?.order}</Col>
+            </Row>
+            <Row>
+                <Col>Popis</Col>
+                <Col>{topic?.description}</Col>
             </Row>
             {children}
         </>

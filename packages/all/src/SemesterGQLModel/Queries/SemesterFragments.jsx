@@ -88,6 +88,19 @@ fragment SemesterMediumFragment on SemesterGQLModel {
       name
     }
     groupId
+    semesters(limit: 100) {
+      __typename
+      id
+      lastchange
+      created
+      createdbyId
+      changedbyId
+      rbacobjectId
+      order
+      mandatory
+      credits
+      classificationtypeId
+    }
   }
 }
 `, SemesterLinkFragment);

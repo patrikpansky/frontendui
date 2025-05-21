@@ -1,3 +1,5 @@
+import { SemesterLink } from "../../SemesterGQLModel"
+
 /**
  * A component for displaying the `semester` attribute of an studyplan entity.
  *
@@ -21,12 +23,13 @@
 export const StudyPlanSemesterAttribute = ({studyplan}) => {
     const {semester} = studyplan
     if (typeof semester === 'undefined') return null
+    if (semester === null) return null
     return (
         <>
             {/* <SemesterMediumCard semester={semester} /> */}
-            {/* <SemesterLink semester={semester} /> */}
-            Probably {'<SemesterMediumCard semester=\{semester\} />'} <br />
-            <pre>{JSON.stringify(semester, null, 4)}</pre>
+            <SemesterLink semester={semester} />
+            {/* Probably {'<SemesterMediumCard semester=\{semester\} />'} <br /> */}
+            {/* <pre>{JSON.stringify(semester, null, 4)}</pre> */}
         </>
     )
 }

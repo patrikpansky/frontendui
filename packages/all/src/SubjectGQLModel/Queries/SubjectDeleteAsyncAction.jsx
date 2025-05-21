@@ -19,7 +19,7 @@ mutation SubjectDeleteMutation($id: UUID!, $lastchange: DateTime!) {
 `
 const SubjectDeleteMutation = createQueryStrLazy(`
 mutation SubjectDelete($id: UUID!, $lastchange: DateTime!) {
-  result: subjectDelete(id: $id, lastchange: $lastchange) {
+  result: subjectDelete(subject: { id: $id, lastchange: $lastchange }) {
     ...SubjectLargeFragment
   }
 }

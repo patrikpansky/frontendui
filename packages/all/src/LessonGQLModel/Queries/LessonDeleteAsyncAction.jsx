@@ -19,7 +19,7 @@ mutation LessonDeleteMutation($id: UUID!, $lastchange: DateTime!) {
 `
 const LessonDeleteMutation = createQueryStrLazy(`
 mutation LessonDelete($id: UUID!, $lastchange: DateTime!, $count: Int, $topicId: UUID, $typeId: UUID) {
-  result: lessonDelete(id: $id, lastchange: $lastchange, count: $count, topicId: $topicId, typeId: $typeId) {
+  result: lessonDelete(lesson: { id: $id, lastchange: $lastchange, count: $count, topicId: $topicId, typeId: $typeId }) {
     ...LessonLargeFragment
   }
 }

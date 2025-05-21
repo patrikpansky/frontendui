@@ -61,26 +61,15 @@ import { Label } from './Label'
 export const Select = ({label, children, ...props}) => {
     const {id, value, defaultValue, onChange, onBlur} = props
     const selectRef = useRef(null);
-    // const fired = useRef(false)
-    // useEffect(() => {
-    //     if (!children) return
-    //     console.log("got children")
-    //     if (!fired.current) {
-    //       let initialValue = value || defaultValue;
-    //       // Simulate the onChange event
-    //       const e = { target: { id, value: initialValue } };
-    //       onChange(e);
-    //       fired.current = true;
-    //     }
-    //   }, [id, value, defaultValue, onChange, children]);
 
     useEffect(() => {
         const observer = new MutationObserver(() => {
             if (selectRef.current) {
                 
                 const selectedValue = selectRef.current.value;
+                if (!defaultValue) return
                 const event = { target: { id: selectRef.current.id, value: selectedValue } };
-                console.log("Select firing an event", event)
+                console.log("Select firing an event", defaultValue, selectedValue, event)
                 onChange(event);
             }
         });
@@ -95,19 +84,14 @@ export const Select = ({label, children, ...props}) => {
     }, [onChange]);
 
     const changedprops = {...props}
-    // const ReactChildren = React.Children(children)
-    // if (ReactChildren.lenght > 0) {
-    //     const firstChild = ReactChildren[0]
-    // }
-    // const handleOnChange = (e) => {
-    //     onChange(e)
-    // }
 
-    // const handleOnBlur = (e) => {
-    //     console.log("Select onChange", e)
-    //     onBlur(e)
-    // }
 
+    if (!label) return (
+        <select ref={selectRef} {...changedprops} >
+                {children} 
+            </select>
+    )
+    if (props.ariaHidden) return null
     return (
         <Label title={label}>
             <select ref={selectRef} {...changedprops} >

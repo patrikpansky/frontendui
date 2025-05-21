@@ -36,9 +36,10 @@ import { StudyPlanPageContent } from "./StudyPlanPageContent"
 export const StudyPlanPageContentLazy = ({ studyplan, children }) => {
     const { error, loading, entity, fetch } = useAsyncAction(StudyPlanReadAsyncAction, studyplan)
     const [delayer] = useState(() => CreateDelayer())
-  
+    console.log("StudyPlanPageContentLazy.render")
     const handleChange = async (e) => {
       const value = e?.target?.value && studyplan
+      console.log("StudyPlanPageContentLazy.handleChange", value)
       await delayer(() => fetch(value))
     }
   

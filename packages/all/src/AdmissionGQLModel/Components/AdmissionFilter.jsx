@@ -28,6 +28,103 @@ const fieldTypes = {
     "student_entry_date": "DatetimeFilter",
     "payment_info": "AdmissionInputFilterPaymentInfo"
 };
+const filterOperatorsByType = {
+    "id": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "programId": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "stateId": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "paymentInfoId": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "name": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "name_en": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "application_start_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "application_last_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "end_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "condition_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "payment_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "condition_extended_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "request_condition_extend_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "request_extra_conditions_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "request_extra_date_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "exam_start_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "exam_last_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "student_entry_date": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ],
+    "payment_info": [
+        "_eq",
+        "_neq",
+        "_is_null"
+    ]
+};
 
 function getHtmlInputType(scalarType) {
     switch (scalarType) {
@@ -50,29 +147,42 @@ function getFieldScalarType(fieldName) {
  * @param {object} props.value  Aktuální hodnota filtru (where objekt)
  * @param {function} props.onChange  Callback onChange(newValue)
  * @param {string|null} [props.parentLogical]  Parent logical (pokud je uvnitř _and/_or)
+ * @param {function} [props.onRemove] Callback na odstranění podmínky (volitelné, použije se pro zanoření)
  */
-export function AdmissionInputFilterForm({ value = {}, onChange, parentLogical = null }) {
+export function AdmissionInputFilter({ value = {}, onChange, parentLogical = null, onRemove }) {
     const activeLogical = Object.keys(value).find(k => logicalFields.includes(k));
     const isLogic = !!activeLogical;
     const scalars = ["id","programId","stateId","paymentInfoId","name","name_en","application_start_date","application_last_date","end_date","condition_date","payment_date","condition_extended_date","request_condition_extend_date","request_extra_conditions_date","request_extra_date_date","exam_start_date","exam_last_date","student_entry_date","payment_info"];
     const logical = logicalFields.filter(x => x !== parentLogical);
+
+    // Pro scalar filtr
     const selectedField = !isLogic ? Object.keys(value).find(k => !k.startsWith("_")) || "" : "";
-    const [operand, setOperand] = React.useState(selectedField ? value[selectedField] : "");
+    const operatorList = selectedField ? (filterOperatorsByType[getFieldScalarType(selectedField)] || ["_eq"]) : ["_eq"];
+    const selectedOperator = selectedField ? (Object.keys(value[selectedField] || {})[0] || operatorList[0]) : operatorList[0];
+    const [operand, setOperand] = React.useState(selectedField ? value[selectedField]?.[selectedOperator] ?? "" : "");
+    const [operator, setOperator] = React.useState(selectedOperator);
 
     React.useEffect(() => {
-        if (selectedField && value[selectedField] !== operand) setOperand(value[selectedField]);
-    }, [value, selectedField]);
+        if (selectedField) {
+            setOperator(selectedOperator);
+            setOperand(value[selectedField]?.[selectedOperator] ?? "");
+        }
+    }, [value, selectedField, selectedOperator]);
 
     function handleFieldChange(e) {
         const f = e.target.value;
-        setOperand(""); // Resetovat operand
-        onChange({ [f]: "" });
+        setOperand(""); setOperator("_eq");
+        onChange({ [f]: { "_eq": "" } });
+    }
+    function handleOperatorChange(e) {
+        setOperator(e.target.value);
+        onChange({ [selectedField]: { [e.target.value]: operand } });
     }
     function handleOperandChange(e) {
         let val = e.target.value;
         if (e.target.type === "checkbox") val = e.target.checked;
         setOperand(val);
-        onChange({ [selectedField]: val });
+        onChange({ [selectedField]: { [operator]: val } });
     }
     function handleAddLogical(logicKey) {
         onChange({ [logicKey]: [{}] });
@@ -82,10 +192,20 @@ export function AdmissionInputFilterForm({ value = {}, onChange, parentLogical =
         arr[idx] = v;
         onChange({ [activeLogical]: arr });
     }
+    function handleRemove() {
+        if (onRemove) onRemove();
+    }
+    function handleRemoveLogic(idx) {
+        const arr = [...(value[activeLogical] || [])];
+        arr.splice(idx, 1);
+        onChange({ [activeLogical]: arr });
+    }
+
     return (
         <div>
             <div className="mb-3 d-flex gap-2">
-                {!isLogic && logical.length > 0 && (  
+                {/* Logická tlačítka na začátku */}
+                {!isLogic && logical.length > 0 && (
                     <div className="mb-3 d-flex gap-2">
                         {logical.map(f => (
                             <button key={f} type="button"
@@ -95,6 +215,7 @@ export function AdmissionInputFilterForm({ value = {}, onChange, parentLogical =
                         ))}
                     </div>
                 )}
+                {/* Výběr field+operátor+hodnota */}
                 {!isLogic && !selectedField && (
                     <SimpleCardCapsule title={"Operátor/field"}>
                         <select className="form-select" value={selectedField} onChange={handleFieldChange}>
@@ -106,37 +227,57 @@ export function AdmissionInputFilterForm({ value = {}, onChange, parentLogical =
                 {!isLogic && selectedField && (() => {
                     const scalarType = getFieldScalarType(selectedField);
                     const inputType = getHtmlInputType(scalarType);
+                    const operators = filterOperatorsByType[scalarType] || ["_eq"];
                     return (
                         <SimpleCardCapsule title={selectedField.toUpperCase()}>
                             <Row>
                                 <Col>
                                     <select className="form-select" value={selectedField} onChange={handleFieldChange}>
-                                        <option value="">Vyber operátor…</option>
+                                        <option value="">Vyber field…</option>
                                         {scalars.map(f => <option key={f} value={f}>{f}</option>)}
                                     </select>
                                 </Col>
                                 <Col>
-                                    <input
-                                        className="form-control"
-                                        type={inputType}
-                                        value={inputType === "checkbox" ? undefined : operand}
-                                        checked={inputType === "checkbox" ? operand || false : undefined}
-                                        onChange={handleOperandChange}
-                                        placeholder={"Zadej hodnotu"}
-                                    />
+                                    <select className="form-select" value={operator} onChange={handleOperatorChange}>
+                                        {operators.map(op => <option key={op} value={op}>{op}</option>)}
+                                    </select>
+                                </Col>
+                                <Col>
+                                    {operator === "_is_null" ? (
+                                        <select className="form-select" value={operand ? "true" : "false"} onChange={e => handleOperandChange({target: {value: e.target.value === "true"}})}>
+                                            <option value="false">Není null</option>
+                                            <option value="true">Je null</option>
+                                        </select>
+                                    ) : (
+                                        <input
+                                            className="form-control"
+                                            type={inputType}
+                                            value={inputType === "checkbox" ? undefined : operand}
+                                            checked={inputType === "checkbox" ? operand || false : undefined}
+                                            onChange={handleOperandChange}
+                                            placeholder={"Zadej hodnotu"}
+                                        />
+                                    )}
+                                </Col>
+                                <Col xs="auto">
+                                    {onRemove && (
+                                        <button className="btn btn-outline-danger" type="button" onClick={handleRemove}>✕</button>
+                                    )}
                                 </Col>
                             </Row>
                         </SimpleCardCapsule>
                     );
                 })()}
+                {/* Logický blok */}
                 {isLogic && (
                     <SimpleCardCapsule title={activeLogical.toUpperCase()}>
                         {(value[activeLogical] || []).map((item, idx) => (
-                            <AdmissionInputFilterForm
+                            <AdmissionInputFilter
                                 key={idx}
                                 value={item}
                                 onChange={v => handleLogicChange(idx, v)}
                                 parentLogical={activeLogical}
+                                onRemove={() => handleRemoveLogic(idx)}
                             />
                         ))}
                         <button
@@ -146,6 +287,9 @@ export function AdmissionInputFilterForm({ value = {}, onChange, parentLogical =
                         >
                             Přidat podmínku
                         </button>
+                        {!!onRemove && (
+                            <button className="btn btn-outline-danger btn-sm ms-2" type="button" onClick={handleRemove}>Odstranit</button>
+                        )}
                     </SimpleCardCapsule>
                 )}
             </div>

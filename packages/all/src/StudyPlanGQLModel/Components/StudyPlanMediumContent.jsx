@@ -1,4 +1,7 @@
 import { Col, Row } from "react-bootstrap"
+import { StudyPlanSemesterAttribute } from "../Scalars/StudyPlanSemesterAttribute"
+import { StudyPlanEventAttribute } from "../Scalars/StudyPlanEventAttribute"
+
 /**
  * A component that displays medium-level content for an studyplan entity.
  *
@@ -23,11 +26,16 @@ import { Col, Row } from "react-bootstrap"
  * </StudyPlanMediumContent>
  */
 export const StudyPlanMediumContent = ({studyplan, children}) => {
+    const {semester} = studyplan
     return (
         <>
             <Row>
-                <Col>Program</Col>
-                <Col><ProgramLink program={student?.program} /></Col>
+                <Col>Semester</Col>
+                <Col><StudyPlanSemesterAttribute studyplan={studyplan} /></Col>
+            </Row>
+            <Row>
+                <Col>Období</Col>
+                <Col><StudyPlanEventAttribute studyplan={studyplan} /></Col>
             </Row>
             <Row>
                 <Col>JSON</Col>

@@ -1,30 +1,48 @@
 import { StudyPlanURI } from "../Components/StudyPlanLink"
+import { StudyPlanEditPage } from "./StudyPlanEditPage"
 import { StudyPlanPage } from "./StudyPlanPage"
+import { StudyPlanVectorPage } from "./StudyPlanVectorPage"
 
 /**
- * An array of route segment definitions for the StudyPlan pages.
+ * Definice segmentů rout pro StudyPlan stránky.
  *
- * Each route object in the array defines a `path` and its associated React `element`.
- * The `path` includes a dynamic `:id` parameter, used to load and display a specific studyplan entity.
- * The `element` property specifies the React component to render when the route matches.
+ * Každý objekt v tomto poli popisuje jednu trasu (route) v aplikaci:
+ *  - `path`: Stringová URL s parametrem `:id`, která identifikuje konkrétní instanci studyplan entity.
+ *  - `element`: React komponenta, která se má renderovat při shodě s cestou.
  *
- * Any React `children` elements passed through this route will be injected into the page and 
- * receive `studyplan`, `onChange`, and `onBlur` as props from the `StudyPlanPageContentLazy` component.
+ * Pokud komponenta stránky podporuje children jako render funkci,
+ * všechny children předané přes router budou dostávat objekt:
+ *   - `studyplan` — načtená entita podle `:id`
+ *   - `onChange` — callback pro změnu hodnoty pole
+ *   - `onBlur` — callback pro blur event (například při opuštění pole)
  *
  * @constant
  * @type {Array<{ path: string, element: JSX.Element }>}
  *
  * @example
- * // This route matches URLs like "/studyplan/123":
+ * // Tato route reaguje na URL jako "/studyplan/123"
  * {
  *   path: "/studyplan/:id",
  *   element: <StudyPlanPage />
  * }
+ *
+ * // Editační route: "/studyplan/edit/123"
+ * {
+ *   path: "/studyplan/edit/:id",
+ *   element: <StudyPlanEditPage />
+ * }
  */
-
 export const StudyPlanRouterSegments = [
     {
         path: `/${StudyPlanURI}:id`,
         element: (<StudyPlanPage />),
+    },
+    {
+        path: `/${StudyPlanURI}`,
+        element: (<StudyPlanVectorPage />),
+    },
+    {
+        path: `/${StudyPlanURI.replace('view', 'edit')}:id`,
+        element: (<StudyPlanEditPage />),
     }
 ]

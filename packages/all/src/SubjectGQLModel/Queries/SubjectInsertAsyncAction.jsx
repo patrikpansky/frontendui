@@ -19,7 +19,7 @@ mutation SubjectInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const SubjectInsertMutation = createQueryStrLazy(`
 mutation SubjectInsert($id: UUID, $name: String, $nameEn: String, $description: String, $descriptionEn: String, $programId: UUID, $groupId: UUID) {
-  result: subjectInsert(id: $id, name: $name, nameEn: $nameEn, description: $description, descriptionEn: $descriptionEn, programId: $programId, groupId: $groupId) {
+  result: subjectInsert(subject: { id: $id, name: $name, nameEn: $nameEn, description: $description, descriptionEn: $descriptionEn, programId: $programId, groupId: $groupId }) {
     __typename
     ... on SubjectGQLModel {
       ...SubjectLargeFragment

@@ -19,7 +19,7 @@ mutation SemesterInsertMutation($id: UUID, $name: String, $name_en: String) {
 
 const SemesterInsertMutation = createQueryStrLazy(`
 mutation SemesterInsert($id: UUID, $order: Int, $mandatory: Boolean, $credits: Int, $classificationtypeId: UUID, $subjectId: UUID) {
-  result: semesterInsert(id: $id, order: $order, mandatory: $mandatory, credits: $credits, classificationtypeId: $classificationtypeId, subjectId: $subjectId) {
+  result: semesterInsert(semester: { id: $id, order: $order, mandatory: $mandatory, credits: $credits, classificationtypeId: $classificationtypeId, subjectId: $subjectId }) {
     __typename
     ... on SemesterGQLModel {
       ...SemesterLargeFragment

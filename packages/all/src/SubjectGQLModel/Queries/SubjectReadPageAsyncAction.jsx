@@ -9,8 +9,8 @@ query SubjectReadPageQuery($skip: Int, $limit: Int, $where: SubjectWhereInputFil
 }
 `
 const SubjectReadPageQuery = createQueryStrLazy(`
-query SubjectById($id: UUID!) {
-  result: subjectById(id: $id) {
+query SubjectPage($skip: Int, $limit: Int, $orderby: String, $where: SubjectInputFilter) {
+  result: subjectPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...SubjectLargeFragment
   }
 }

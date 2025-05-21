@@ -9,8 +9,8 @@ query TopicReadPageQuery($skip: Int, $limit: Int, $where: TopicWhereInputFilter)
 }
 `
 const TopicReadPageQuery = createQueryStrLazy(`
-query TopicById($id: UUID!) {
-  result: topicById(id: $id) {
+query TopicPage($skip: Int, $limit: Int, $orderby: String, $where: TopicInputFilter) {
+  result: topicPage(skip: $skip, limit: $limit, orderby: $orderby, where: $where) {
     ...TopicLargeFragment
   }
 }

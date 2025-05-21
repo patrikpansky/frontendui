@@ -71,8 +71,6 @@ fragment StudyPlanLessonMediumFragment on StudyPlanLessonGQLModel {
   rbacobject {
     __typename
     id
-    userCanWithState
-    userCanWithoutState
   }
   event {
     __typename
@@ -116,15 +114,10 @@ fragment StudyPlanLessonMediumFragment on StudyPlanLessonGQLModel {
     createdbyId
     changedbyId
     rbacobjectId
-    order
-    name
-    nameEn
-    length
+    semesterId
+    classificationplanId
+    examId
     eventId
-    topicId
-    lessontypeId
-    linkedWithId
-    planId
   }
 }
 `, StudyPlanLessonLinkFragment);

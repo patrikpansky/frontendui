@@ -3,8 +3,8 @@ import { StudyPlanLargeFragment } from "./StudyPlanFragments";
 
 const StudyPlanReadQueryStr = `
 query StudyPlanReadQuery($id: UUID!) {
-  result: studyplanById(id: $id) {
-    ...StudyPlanLarge
+  result: studyPlanById(id: $id) {
+    ...StudyPlanLargeFragment
   }
 }
 `

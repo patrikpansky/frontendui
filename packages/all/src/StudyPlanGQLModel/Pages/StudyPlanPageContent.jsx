@@ -24,7 +24,7 @@ export const StudyPlanPageContent = ({studyplan, children, ...props}) => {
     return (<>
         <StudyPlanPageNavbar studyplan={studyplan} />
         <StudyPlanLargeCard studyplan={studyplan} {...props} >
-            StudyPlan {JSON.stringify(studyplan)}
+            {/* StudyPlan {JSON.stringify(studyplan)} */}
             {children}
         </StudyPlanLargeCard>
     </>)

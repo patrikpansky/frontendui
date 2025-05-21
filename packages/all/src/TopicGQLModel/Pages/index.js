@@ -1,3 +1,5 @@
 export * from './TopicPage'
+export * from './TopicVectorPage'
+export * from './TopicEditPage'
 export * from './TopicPageNavbar'
 export * from './TopicRouterSegment'
