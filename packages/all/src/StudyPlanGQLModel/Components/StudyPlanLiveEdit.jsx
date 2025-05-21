@@ -59,13 +59,13 @@ export const StudyPlanLiveEdit = ({studyplan, children, asyncAction=StudyPlanUpd
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {entity && (
-            // <StudyPlanMediumEditableContent studyplan={entity} onChange={onChange_} onBlur={onChange_} >
-            //     <StudyPlanPivotTable studyplan={entity} onChange={onChange_} onBlur={onChange_} editable={true}/>
-            //     {children}
-            // </StudyPlanMediumEditableContent>
-            <StudyPlanPivotTable studyplan={entity} onChange={onChange_} onBlur={onChange_} editable={true}/>
-        )}
+        {entity && (<>
+            <StudyPlanMediumEditableContent studyplan={entity} onChange={onChange_} onBlur={onChange_} >
+                <StudyPlanPivotTable studyplan={entity} onChange={onChange_} onBlur={onChange_} editable={true}/>
+                {children}
+            </StudyPlanMediumEditableContent>
+            {/* <StudyPlanPivotTable studyplan={entity} onChange={onChange_} onBlur={onChange_} editable={true}/> */}
+        </>)}
         {children}
     </>)
 }

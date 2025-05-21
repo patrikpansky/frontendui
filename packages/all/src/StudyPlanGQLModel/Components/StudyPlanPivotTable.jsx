@@ -11,6 +11,7 @@ import { LessonAddFacilityAsyncAction, LessonRemoveFacilityAsyncAction } from ".
 import { LessonAddGroupAsyncAction, LessonRemoveGroupAsyncAction } from "../Queries/StudyPlanGroupAsyncActions"
 import { StudyPlanLessonUpdateAsyncAction } from "../../StudyPlanLessonGQLModel"
 import { LessonTypeReadPageAsyncAction } from "../../LessonTypeGQLModel/Queries/LessonTypeReadPageAsyncAction"
+import { TopicLink } from "../../TopicGQLModel"
 
 /**
  * DialogSelectWithAsyncAction
@@ -209,7 +210,13 @@ const StudyPlanPivotTableHeader = ({studyplan, instructors, groups, facilities, 
             <tr>
                 <th scope="col" rowSpan={2} style={{ verticalAlign: "middle", textAlign: "center"}}>#</th>
                 <th scope="col" rowSpan={2} style={{ verticalAlign: "middle", textAlign: "center"}}>Name</th>
-                <th scope="col" rowSpan={2} style={{ verticalAlign: "middle", textAlign: "center"}}>Description</th>
+                <th 
+                    scope="col" 
+                    rowSpan={2} 
+                    style={{ writingMode: "vertical-rl", verticalAlign: "middle", transform: "rotate(180deg)", textAlign: "center"}}
+                >
+                    Link<br />do akreditace
+                </th>
                 <th scope="col" rowSpan={2} style={{ verticalAlign: "middle", textAlign: "center"}}>Type</th>
 
                 <th scope="col" colSpan={1+groups.length} className="text-center">
@@ -513,6 +520,7 @@ const StudyPlanPivotTableRow = ({lesson, instructors, groups, facilities, editab
             />
         </td>
         <td>
+            <TopicLink topic={{id: lesson?.topicId, name: "akr"}} />
             {/* <Input 
                 id="description"
                 type="text" 
@@ -648,6 +656,35 @@ const gatherStudyPlanData = (studyplan) => {
     return {instructors, groups, facilities}
 }
 
+const gatherLessonsSummary = (studyplan) => {
+    const result = {}
+    const {lessons=[]} = studyplan
+    lessons.forEach(
+        lesson => {
+            const {id="unknown", lessontype={id: "unknonw", name: "unknown"}, sum=0} = lesson
+            const currentValue = (result[id] || {id, lessontype, sum})
+            result[id] = {...currentValue, sum: currentValue.sum + (lesson?.length || 0)}
+        }
+    )
+    return result
+}
+
+const StudyPlanPivotTableFooter = ({studyplan, instructors, groups, facilities, children, editable, ...props}) => {
+    const lessonTypesMap = gatherLessonsSummary(studyplan)
+    return (<>{Object.values(lessonTypesMap).map(
+        lessontype => <tr key={lessontype?.lessontype?.id}>
+                <th colSpan={3} >{lessontype?.lessontype?.name}</th>
+                <td>{lessontype?.sum}</td>
+                <td colSpan={groups?.length+1}></td>
+                <td colSpan={instructors?.length+1}></td>
+                <td colSpan={facilities?.length+1}></td>
+                <td></td>
+            </tr>
+        )}
+    </>)
+}
+
+
 /**
  * Komponenta tabulky pro zobrazení a interaktivní editaci pivot tabulky studijního plánu.
  *
@@ -715,6 +752,18 @@ export const StudyPlanPivotTable = ({studyplan, editable, children, ...props}) =
             >
                 {children}
             </StudyPlanPivotTableBody>
+            <StudyPlanPivotTableFooter 
+               studyplan={studyplan} 
+                instructors={instructors} 
+                groups={groups} 
+                facilities={facilities} 
+                onAddFacility={onAddFacility}
+                onAddGroup={onAddGroup}
+                onAddInstructor={onAddInstructor}
+                editable={editable}>
+
+            </StudyPlanPivotTableFooter>
+            
         </table>
     )
 }

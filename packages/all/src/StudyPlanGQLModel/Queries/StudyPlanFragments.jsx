@@ -140,6 +140,10 @@ fragment StudyPlanLargeFragment on StudyPlanGQLModel {
     eventId
     topicId
     lessontypeId
+    lessontype {
+      id
+      name
+    }
     linkedWithId
     planId
 
