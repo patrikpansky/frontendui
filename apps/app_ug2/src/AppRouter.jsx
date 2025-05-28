@@ -7,6 +7,7 @@ import {
 import { ProgramRouterSegment, AdmissionRouterSegment, UserRouterSegment } from "../../../packages/z_pack/src";
 import { UserPage } from "../../../packages/z_pack/src";
 import { AdmissionPage } from "../../../packages/z_pack/src";
+import { ProgramListPage } from "../../../packages/z_pack/src";
 
 // import { UserRouterSegment } from "@hrbolek/uoisfrontend-ug2";
 
@@ -20,9 +21,14 @@ export const Routes = [
         path: "/program/program/view/:id",
         element: <AdmissionPage/>
     },
+    {
+        path: "/admissionlistview/programs/view",
+        element: <ProgramListPage/>
+    },
     ProgramRouterSegment,
     AdmissionRouterSegment,
     UserRouterSegment,
+    ProgramListPage,
     
 ]
 
