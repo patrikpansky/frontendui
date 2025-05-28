@@ -7,3 +7,4 @@ export * from './ProgramMediumContent'
 export * from './ProgramMediumCard'
 
 export * from './ProgramMediumEditableContent'
+export * from './DisplayPrograms'

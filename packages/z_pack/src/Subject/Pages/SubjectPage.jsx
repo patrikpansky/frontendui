@@ -1,11 +1,58 @@
 import { useState } from "react"
 import { useParams } from "react-router"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 
 import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { SubjectLargeCard } from "../Components"
+import { SubjectLargeCard, SubjectMediumCard, SubjectLink } from "../Components"
 import { SubjectReadAsyncAction } from "../Queries"
 import { SubjectPageNavbar } from "./SubjectPageNavbar"
+
+const mockSubjectData = {
+    "subjectPage": [
+      {
+        "id": "3c0f46a2-f7ba-4ae5-9a07-2c21662db562",
+        "name": "Teoretická matematika"
+      },
+      {
+        "id": "0e2830aa-ff05-488d-8db3-25500d77e793",
+        "name": "Aplikovaná matematika"
+      },
+      {
+        "id": "1e52551a-d3c9-4c22-908b-2f121ed0d858",
+        "name": "Praktická matematika"
+      },
+      {
+        "id": "b02afed3-1faa-4816-8ee1-f7b3447bf9e5",
+        "name": "Obranná matematika"
+      },
+      {
+        "id": "52561501-0c7a-4ff8-93ae-20c39b9d13b1",
+        "name": "Převratná matematika"
+      },
+      {
+        "id": "f6979f0f-7608-4a4a-a37a-6eba7eda6dd6",
+        "name": "Klasická matematika"
+      },
+      {
+        "id": "2feb1e49-a309-42c7-90ee-638674508190",
+        "name": "Královská matematika"
+      },
+      {
+        "id": "6aba46f6-1d12-4f3a-9e58-33d1e8b8ae00",
+        "name": "Teoretická fyzika"
+      },
+      {
+        "id": "fe879294-51d7-47fa-8a35-76381f285ac9",
+        "name": "Aplikovaná fyzika"
+      },
+      {
+        "id": "640fdb74-02ab-4a98-be19-4b2062a637d4",
+        "name": "Praktická fyzika"
+      }
+    ]
+}
 
 /**
  * A page content component for displaying detailed information about an subject entity.
@@ -100,6 +147,29 @@ const SubjectPageContentLazy = ({subject}) => {
  */
 export const SubjectPage = () => {
     const {id} = useParams()
+    // If no ID is provided, show the list of subjects
+    if (!id) {
+        return (
+            <SubjectLargeCard>
+                <Row>
+                    {mockSubjectData.subjectPage.map((subject, index) => (
+                        <Col key={subject.id} md={6} lg={4} className="mb-3">
+                            <SubjectMediumCard 
+                                subject={subject}
+                                title={<SubjectLink subject={subject} />}
+                            >
+                                <div>
+                                    <p>ID: {subject.id}</p>
+                                    <p>Name: {subject.name}</p>
+                                </div>
+                            </SubjectMediumCard>
+                        </Col>
+                    ))}
+                </Row>
+            </SubjectLargeCard>
+        )
+    }
+    // If ID is provided, show the specific subject
     const subject = {id}
     return <SubjectPageContentLazy subject={subject} />
 }
