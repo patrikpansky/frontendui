@@ -5,6 +5,7 @@ export * from './ProgramLargeCard'
 export * from './ProgramLink'
 export * from './ProgramMediumContent'
 export * from './ProgramMediumCard'
+export * from './ProgramList'
 
 export * from './ProgramMediumEditableContent'
 export * from './DisplayPrograms'

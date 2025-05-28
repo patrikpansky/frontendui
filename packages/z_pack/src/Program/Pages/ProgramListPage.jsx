@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams } from "react-router"
-
+import { ProgramList } from "../Components"
 import { ProgramReadPageAsyncAction } from "../Queries/ProgramReadPageAsyncAction"
 import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
@@ -31,13 +31,16 @@ import { ProgramSubjectsAttribute } from "../Vectors/ProgramSubjectsAttribute"
  */
 const ProgramListPageContent = ({programs}) => {
     return (<>
-    {JSON.stringify(programs)}
+  
         {/* <ProgramPageNavbar program={program} />
         <ProgramLargeCard program={program}>
             <ProgramSubjectsAttribute program={program} />
             Program JSON <pre>{JSON.stringify(program, null, 2)}</pre> <br />
-        </ProgramLargeCard> */}
-    </>)
+        </ProgramLargeCard> */
+        }
+        <ProgramList programs={programs} />
+    </>    
+)
 }
 
 /**
@@ -81,7 +84,7 @@ const ProgramListPageContentLazy = ({}) => {
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {dispatchResult && <ProgramListPageContent programs={dispatchResult}  onChange={handleChange} onBlur={handleBlur} />}
+        {dispatchResult && <ProgramListPageContent programs={dispatchResult.data.result}  onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }
 
