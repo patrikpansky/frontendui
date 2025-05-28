@@ -32,7 +32,6 @@ const ProgramPageContent = ({program}) => {
     return (<>
         <ProgramPageNavbar program={program} />
         <ProgramLargeCard program={program}>
-            <ProgramSubjectsAttribute program={program} />
             Program JSON <pre>{JSON.stringify(program, null, 2)}</pre> <br />
         </ProgramLargeCard>
     </>)
@@ -105,6 +104,8 @@ export const ProgramPage = () => {
     const program = {id}
 
     // return <div>Hello World {id}</div>
+    console.log("ProgramPage.id", id);
+    
 
     return <ProgramPageContentLazy program={program} />
 }

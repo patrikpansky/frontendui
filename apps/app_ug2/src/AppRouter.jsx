@@ -18,10 +18,6 @@ export const Routes = [
         element: <UserPage/>
     },
     {
-        path: "/program/program/view/:id",
-        element: <AdmissionPage/>
-    },
-    {
         path: "/admissionlistview/programs/view",
         element: <ProgramListPage/>
     },
