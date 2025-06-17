@@ -32,7 +32,7 @@ export const AdmissionMediumCard = ({admission, children}) => {
     return (
         <AdmissionCardCapsule title={
             <>
-                <PersonFill /> Podrobnosti přihlášky
+                <PersonFill /> <AdmissionLink admission={admission}>{admission.name}</AdmissionLink>
             </>
         }>
             <AdmissionMediumContent admission={admission}>

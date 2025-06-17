@@ -6,8 +6,9 @@ fragment StudentLink on StudentGQLModel {
   __typename
   id
   lastchange
-  name
-  nameEn
+  student {
+    fullname
+  }
 }
 `)
 

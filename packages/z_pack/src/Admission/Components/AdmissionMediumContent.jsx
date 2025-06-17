@@ -26,13 +26,31 @@ export const AdmissionMediumContent = ({admission, children}) => {
     const labels = {
         id: "ID",
         name: "Název",
+        paymentInfoId: "ID platby",
+        programId: "ID programu",
+        studentEntryDate: "Datum vstupu studenta",
         examStartDate: "Začátek zkoušky",
         examLastDate: "Konec zkoušky",
+        paymentDate: "Datum platby",
+        requestConditionExtendDate: "Datum žádosti o prodloužení podmínek",
+        requestExtraConditionsDate: "Datum žádosti o dodatečné podmínky",
         lastchange: "Poslední změna"
     };
 
     // Požadované pořadí klíčů
-    const order = ["examStartDate", "examLastDate", "id", "name", "lastchange"];
+    const order = [
+        "name",
+        "paymentInfoId",
+        "programId",
+        "studentEntryDate",
+        "examStartDate",
+        "examLastDate",
+        "paymentDate",
+        "requestConditionExtendDate",
+        "requestExtraConditionsDate",
+        "id",
+        "lastchange"
+    ];
 
     // Získání klíčů, které jsou v admission a v požadovaném pořadí
     const orderedKeys = order.filter(key => admission[key] !== undefined)

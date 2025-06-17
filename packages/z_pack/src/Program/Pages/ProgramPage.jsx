@@ -6,7 +6,8 @@ import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { ProgramLargeCard } from "../Components"
 import { ProgramReadAsyncAction } from "../Queries"
 import { ProgramPageNavbar } from "./ProgramPageNavbar"
-import { ProgramSubjectsAttribute } from "../Vectors/ProgramSubjectsAttribute"
+import { AdmissionMediumCard } from "../../Admission/Components"
+import { AdmissionReadPageAsyncAction } from "../../Admission/Queries"
 
 /**
  * A page content component for displaying detailed information about an program entity.
@@ -28,11 +29,14 @@ import { ProgramSubjectsAttribute } from "../Vectors/ProgramSubjectsAttribute"
  * 
  * <ProgramPageContent program={programEntity} />
  */
-const ProgramPageContent = ({program}) => {
+const ProgramPageContent = ({program, admissions}) => {
     return (<>
         <ProgramPageNavbar program={program} />
         <ProgramLargeCard program={program}>
             Program JSON <pre>{JSON.stringify(program, null, 2)}</pre> <br />
+            {admissions && admissions.map(admission => (
+                <AdmissionMediumCard key={admission.id} admission={admission} />
+            ))}
         </ProgramLargeCard>
     </>)
 }
@@ -61,25 +65,26 @@ const ProgramPageContent = ({program}) => {
  */
 const ProgramPageContentLazy = ({program}) => {
     const { error, loading, entity, fetch } = useAsyncAction(ProgramReadAsyncAction, program)
+    const { error: admissionsError, loading: admissionsLoading, dispatchResult: admissionsDispatchResult } = useAsyncAction(AdmissionReadPageAsyncAction, {})
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleChange.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
     }
     const handleBlur = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleBlur.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
     }
 
+
+    // vyfiltrujeme admissions, které mají programId shodný s id programu.
+    // AdmissionInputFilter nefunguje
+
     return (<>
-        {loading && <LoadingSpinner />}
-        {error && <ErrorHandler errors={error} />}
-        {entity && <ProgramPageContent program={entity}  onChange={handleChange} onBlur={handleBlur} />}
+        {loading || admissionsLoading && <LoadingSpinner />}
+        {error || admissionsError && <ErrorHandler errors={error || admissionsError} />}
+        {(entity && admissionsDispatchResult) && <ProgramPageContent program={entity} admissions={admissionsDispatchResult.data?.result.filter(admission => admission.programId === program.id)} onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }
 
