@@ -6,6 +6,7 @@ import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
 import { AdmissionButton, AdmissionLargeCard } from "../Components"
 import { AdmissionReadAsyncAction } from "../Queries"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
+import { StudentReadPageAsyncAction } from "../../Student/Queries"
 
 /**
  * A page content component for displaying detailed information about an admission entity.
@@ -27,7 +28,7 @@ import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
  * 
  * <AdmissionPageContent admission={admissionEntity} />
  */
-const AdmissionPageContent = ({admission}) => {
+const AdmissionPageContent = ({admission, children, onChange, onBlur}) => {
     return (
         <>
             <AdmissionPageNavbar admission={admission} />
@@ -35,8 +36,44 @@ const AdmissionPageContent = ({admission}) => {
                 <AdmissionButton operation="U" admission={admission} onDone={(admission) => console.log("AdmissionPageContent.onDone", admission)}>
                     Upravit
                 </AdmissionButton>
+
+                {children}
             </AdmissionLargeCard>
         </>
+    )
+}
+
+/**
+ * A lazy-loading component for displaying a list of students filtered by program ID.
+ *
+ * @component
+ * @param {Object} props - The props for the StudentListLazy component.
+ * @param {string|number} props.programId - The ID of the program to filter students by.
+ * @returns {JSX.Element} A component that fetches and displays students for the given program.
+ */
+const StudentListLazy = ({ programId }) => {
+    const { error, loading, dispatchResult } = useAsyncAction(StudentReadPageAsyncAction, {
+        where: { program_id: { _eq: programId } }
+    })
+
+    if (loading) return <LoadingSpinner />
+    if (error) return <ErrorHandler errors={error} />
+    
+    const students = dispatchResult?.data?.result.filter(student => student.) || []
+
+    if (students.length === 0) return null
+
+    return (
+        <div className="mt-4">
+            <h4>Podane prihlasky:</h4>
+            <ul className="list-group">
+                {students.map(student => (
+                    <li key={student.id} className="list-group-item">
+                        {student.student?.fullname || "Student without name"}
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 }
 
@@ -67,22 +104,26 @@ const AdmissionPageContentLazy = ({admission}) => {
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleChange.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
     }
     const handleBlur = async(e) => {
-        // console.log("GroupCategoryPageContentLazy.handleBlur.e", e)
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
-        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
     }
+
+    console.log("AdmissionPageContentLazy.entity", entity)
 
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {entity && <AdmissionPageContent admission={entity}  onChange={handleChange} onBlur={handleBlur} />}
+        {entity && <AdmissionPageContent 
+            admission={entity} 
+            onChange={handleChange} 
+            onBlur={handleBlur} 
+        >
+            {entity.programId && <StudentListLazy programId={entity.programId} />}
+        </AdmissionPageContent>}
     </>)
 }
 
