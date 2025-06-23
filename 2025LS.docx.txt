@@ -1,0 +1,133 @@
+ŠR 2024/25 LS 22-5KB
+ 
+Zobrazení z pohledu fakulty (stránka fakulty)
+-	Vypsaná přijímací řízení na fakultě (podle programů uskutečňovaných fakultou)
+-	Otevření přijímacího řízení
+-	Zobrazení agregovaných dat (počet přihlášek do programů a jejich stav)
+-	Zobrazení časové osy (kalendář událostí vztažených k přijímacím řízením)
+ --> our 
+Zobrazení podaných přihlášek (stránka studijního programu / přijímacího řízení)
+-	Podle studijního programu
+-	Stav přihlášek
+-	Správa podmínek zkoušek
+-	Správa termínů zkoušek
+ <-- work 
+
+Zobrazení uchazečů správním orgánem
+-	Podané přihlášky uchazeče a jejich stav
+-	Platby uchazeče
+-	Výsledky uchazeče
+-	Doložené dokumenty
+-	Hromadné generování rozhodnutí
+ 
+Zobrazení uchazeče správním orgánem
+-	Podané přihlášky uchazeče a jejich stav
+-	Platby uchazeče
+-	Výsledky uchazeče
+-	Doložené dokumenty
+-	Splnění stanovených termínů
+ 
+Zobrazení zkoušky (v termínu u semestru / předmětu)
+-	Seznam zkoušených
+-	Podmínky zkoušek a jejich částí
+-	Zápis výsledků (výkonů) souhrnná hodnocení
+ 
+Stránka uchazeče (zobrazení uchazečem)
+-	Podání přihlášky, zpětvzetí přihlášky
+-	Podané přihlášky
+-	Realizované platby za přijímací řízení
+-	Termíny zkoušek
+-	Výsledky zkoušek
+ 
+Stránka studijního programu (zobrazení pro garanta)
+-	Zobrazení studijního programu (typu)
+-	Zobrazení předmětů v daném studijním programu
+-	Správa garantů
+-	Založení předmětu
+ 
+Stránka studijního předmětu (zobrazení pro garanta)
+-	Zobrazení semestrů předmětu
+-	Založení semestru předmětu
+-	Správa garantů
+ 
+Stránka semestru předmětu (zobrazení pro garanta)
+-	Zobrazení témat akreditovaného studia 
+-	Správa témat studia
+-	Správa druhu klasifikace
+-	Založení Plánu studia předmětu
+-	Správa garantů
+ 
+Stránka Plánu studia předmětu (semestru předmětu) PSP (zobrazení pro garanta)
+-	Správa témat studia (kdo, kde, kdy)
+-	Zobrazení podmínek klasifikace
+-	Nastavení podmínek klasifikace
+-	Vypisování termínů klasifikace
+-	Uznání klasifikace
+ 
+Stránka (studijní) skupiny
+-	Zobrazení členů,
+-	Zobrazení nadřízených skupin
+-	Zobrazení vedoucích (rolí)
+-	Správa členů
+-	Správa rolí
+ 
+Dotčené technologie
+-	Javascript
+-	Nodejs (+npmjs)
+-	Reactjs
+-	RTK (redux / redux toolkit)
+-	Vite
+-	Docker
+-	graphql
+ 
+Společné podmínky
+-	Všechny úkoly jsou v návaznosti na stack uois.
+-	Všichni si vytvoří repozitáře (kopie hrbolek@frontendui), kde bude pro mne přístup.
+-	Dodržte MIT licenci.
+-	V každém zobrazení je-li odkaz na entitu (např jméno entity), poskytnout link na entitu (cílová stránka).
+-	Zobrazení (zadání) má vždy formu readonly a writtable, je tedy nutné vytvořit dvě stránky (elementy pro react router).
+-	Každá stránka je spojena s konkrétní entitou, na této stránce jsou zobrazeny všechny atributy příslušné entity, Pro stránku v modu writtable jsou použity dostupné mutace. Odrážky v zadání jsou spíše inspirativní, rozhodně nejsou kompletním výčtem zobrazovaných atributů.
+-	Je zakázáno volit CSS bez předchozí konzultace. Vystačte si s knihovnou bootstrap.
+-	Dodržte file structure 
+o	package/src/EntityName
+§	Components
+§	Pages
+§	Queries
+§	Scalars
+§	Vectors
+-	Použijte AI podle libovůle a pochlubte se, jak se vám podařilo ji využít.
+ 
+Doporučený postup
+-	Připravte si prostředí (docker desktop - https://www.docker.com/products/docker-desktop/, vs code - https://code.visualstudio.com/)
+Spusťte si docker compose setup (https://github.com/hrbolek/gql_admissions/blob/latest/docker-compose.2025LS.yml)
+-	Ujistěte se, že rozumíte zadání
+-	Vytvořte si fork repository (https://github.com/hrbolek/frontendui, větev monorepo)
+-	Ujasněte si, že rozumíte graphql post a struktuře response (pracujte s /graphiql, použijte uri /doc)
+-	Na základě forku si vytvořte js aplikaci a zprovozněte si minimum (aka hello world)
+-	Na základě forku si vytvořte package a propojte jej s vaší aplikací (aka hello world package)
+-	…
+ 
+Časový harmonogram
+-	27.3.2025 vybraná témata, vytvořený fork repository
+-	11.4.2025 1A. projektový den, doložení první funkční stránky v modu čtení
+-	15.4.2025 1B. projektový den, doložení první funkční stránky v modu čtení
+-	9.5.2025 2. projektový den, doložení využití mutací
+-	28.5.2025 3A. projektový den, doložení kompletní funkcionality
+-	29.5.2025 3B. projektový den, doložení kompletní funkcionality
+ 
+Hodnocení
+-	Absolvování jednoho projektového dne (součástí je commit na github ne starší než 1 týden) 5 b (x3, tj. 15 b), pod omluvě lze nahradit individuálně
+-	Příběh / deníček (na githubu) ve formátu md ReadME.md (markdown) 5 b součástí příběhu musí být, za chybějící prvek snížení počtu bodů
+o	časová posloupnost commitů, 
+o	definice problémů k vyřešení, 
+o	co jste objevili, 
+o	které problémy se nedaří řešit, jak byly vyřešeny
+-	Řádné komentáře v kódu, řádné formátování kódu, popis komponent ve formátu jsdoc, generování dokumentace až 5 b. 
+-	Readonly stránka 10 b
+-	Writtable stránka 10 b
+-	Generování dat ve vztahu k tématu aplikace 10 b
+-	Publikace npm 5 b (včetně prokázání funkčnosti).
+-	Obhajoba 60 b, každý student předvede svoji část, bez ohledu na týmovou práci
+-	Lze získat až 120 bodů. Předmětem projdete, pokud budete mít více než 50 bodů, hodnocení „A“ získáte za 90 bodů a více
+-	
+
