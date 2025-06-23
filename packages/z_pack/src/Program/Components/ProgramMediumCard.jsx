@@ -2,6 +2,7 @@ import { PersonFill } from "react-bootstrap-icons"
 import { ProgramLink } from "./ProgramLink"
 import { ProgramCardCapsule } from "./ProgramCardCapsule"
 import { ProgramMediumContent } from "./ProgramMediumContent"
+import { CalendarEvent, Tag } from "react-bootstrap-icons"; // Added icons
 
 /**
  * A card component that displays detailed content for an program entity.
@@ -15,6 +16,8 @@ import { ProgramMediumContent } from "./ProgramMediumContent"
  * @param {Object} props.program - The object representing the program entity.
  * @param {string|number} props.program.id - The unique identifier for the program entity.
  * @param {string} props.program.name - The name or label of the program entity.
+ * @param {string} [props.program.type] - The type of the program entity.
+ * @param {string} [props.program.createdAt] - The creation date of the program entity.
  * @param {React.ReactNode} [props.icon] - Custom icon component to display in the title
  * @param {string} [props.title] - Custom title text to display
  * @param {React.ReactNode} [props.children=null] - Content to render inside the card body.
@@ -38,6 +41,19 @@ export const ProgramMediumCard = ({program, icon = <PersonFill />, title, childr
         <ProgramCardCapsule title={<>{icon} {title || <ProgramLink program={program} />}</>}>
             <ProgramMediumContent program={program}>
                 {children}
+                {/* Displaying additional program information */}
+                {program.type && (
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.9em', color: '#555' }}>
+                        <Tag size={16} style={{ marginRight: '0.25rem' }} /> 
+                        Type: {program.type}
+                    </div>
+                )}
+                {program.createdAt && (
+                    <div style={{ fontSize: '0.9em', color: '#555' }}>
+                        <CalendarEvent size={16} style={{ marginRight: '0.25rem' }} />
+                        Created: {new Date(program.createdAt).toLocaleDateString()}
+                    </div>
+                )}
             </ProgramMediumContent>
         </ProgramCardCapsule>
     )
