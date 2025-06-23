@@ -28,7 +28,7 @@ import { StudentReadPageAsyncAction } from "../../Student/Queries"
  * 
  * <AdmissionPageContent admission={admissionEntity} />
  */
-const AdmissionPageContent = ({admission, children, onChange, onBlur}) => {
+const AdmissionPageContent = ({ admission, children, onChange, onBlur }) => {
     return (
         <>
             <AdmissionPageNavbar admission={admission} />
@@ -51,30 +51,42 @@ const AdmissionPageContent = ({admission, children, onChange, onBlur}) => {
  * @param {string|number} props.programId - The ID of the program to filter students by.
  * @returns {JSX.Element} A component that fetches and displays students for the given program.
  */
-const StudentListLazy = ({ programId }) => {
+const StudentListLazy = ({ programId, admission }) => {
     const { error, loading, dispatchResult } = useAsyncAction(StudentReadPageAsyncAction, {
         where: { program_id: { _eq: programId } }
     })
 
     if (loading) return <LoadingSpinner />
     if (error) return <ErrorHandler errors={error} />
-    
-    const students = dispatchResult?.data?.result.filter(student => student.) || []
 
-    if (students.length === 0) return null
+    console.log("StudentListLazy.admission", admission)
+    console.log("StudentListLazy.programId", programId)
+    console.log("StudentListLazy.dispatchResult", dispatchResult)
+    const students = dispatchResult?.data?.result.filter(student => student.payment?.paymentInfo?.admission?.id === admission.id) || []
 
     return (
-        <div className="mt-4">
-            <h4>Podane prihlasky:</h4>
-            <ul className="list-group">
-                {students.map(student => (
-                    <li key={student.id} className="list-group-item">
-                        {student.student?.fullname || "Student without name"}
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <>
+            {students.length > 0 ? (
+                <>
+                    <div className="mt-4">
+                        <h4>Podane prihlasky:</h4>
+                        <ul className="list-group">
+                            {students.map(student => (
+                                <li key={student.id} className="list-group-item">
+                                    {student.student?.fullname || "Student without name"}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
+            ) : (
+                <div className="mt-4">
+                    <h4>Žádné přihlášky</h4>
+                </div>
+            )}
+        </>
     )
+
 }
 
 /**
@@ -99,30 +111,28 @@ const StudentListLazy = ({ programId }) => {
  *
  * <AdmissionPageContentLazy admission={admissionId} />
  */
-const AdmissionPageContentLazy = ({admission}) => {
+const AdmissionPageContentLazy = ({ admission }) => {
     const { error, loading, entity, fetch } = useAsyncAction(AdmissionReadAsyncAction, admission)
     const [delayer] = useState(() => CreateDelayer())
 
-    const handleChange = async(e) => {
+    const handleChange = async (e) => {
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
     }
-    const handleBlur = async(e) => {
+    const handleBlur = async (e) => {
         const data = e.target.value
         const serverResponse = await delayer(() => fetch(data))
     }
-
-    console.log("AdmissionPageContentLazy.entity", entity)
 
     return (<>
         {loading && <LoadingSpinner />}
         {error && <ErrorHandler errors={error} />}
-        {entity && <AdmissionPageContent 
-            admission={entity} 
-            onChange={handleChange} 
-            onBlur={handleBlur} 
+        {entity && <AdmissionPageContent
+            admission={entity}
+            onChange={handleChange}
+            onBlur={handleBlur}
         >
-            {entity.programId && <StudentListLazy programId={entity.programId} />}
+            {entity.programId && <StudentListLazy programId={entity.programId} admission={entity} />}
         </AdmissionPageContent>}
     </>)
 }
@@ -144,8 +154,8 @@ const AdmissionPageContentLazy = ({admission}) => {
  * // Navigating to "/admission/12345" will render the page for the admission entity with ID 12345.
  */
 export const AdmissionPage = () => {
-    const {id} = useParams()
-    const admission = {id}
+    const { id } = useParams()
+    const admission = { id }
     return <AdmissionPageContentLazy admission={admission} />
 }
 
