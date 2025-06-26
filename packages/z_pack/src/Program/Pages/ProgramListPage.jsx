@@ -31,13 +31,7 @@ import { ProgramSubjectsAttribute } from "../Vectors/ProgramSubjectsAttribute"
  */
 const ProgramListPageContent = ({programs}) => {
     return (<>
-  
-        {/* <ProgramPageNavbar program={program} />
-        <ProgramLargeCard program={program}>
-            <ProgramSubjectsAttribute program={program} />
-            Program JSON <pre>{JSON.stringify(program, null, 2)}</pre> <br />
-        </ProgramLargeCard> */
-        }
+        <ProgramPageNavbar />
         <ProgramList programs={programs} />
     </>    
 )

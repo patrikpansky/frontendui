@@ -103,11 +103,15 @@ export const AdmissionButton = ({ operation, children, admission, onDone = () =>
 
     const { error, loading, fetch, entity } = useAsyncAction(asyncAction, admission, { deferred: true });
     const handleClick = async (params = {}) => {
-        console.log(transformCzechDateToISO(params.examLastDate));
+        console.log(params);
         params = {
             ...params,
             examStartDate: transformCzechDateToISO(params.examStartDate),
             examLastDate: transformCzechDateToISO(params.examLastDate),
+            studentEntryDate: transformCzechDateToISO(params.studentEntryDate),
+            paymentDate: transformCzechDateToISO(params.paymentDate),
+            requestConditionExtendDate: transformCzechDateToISO(params.requestConditionExtendDate),
+            requestExtraConditionsDate: transformCzechDateToISO(params.requestExtraConditionsDate),
         };
         console.log("AdmissionButton.handleClick", params);
         const fetchParams = { ...admission, ...params };

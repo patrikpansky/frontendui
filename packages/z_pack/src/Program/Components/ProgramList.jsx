@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col'; // Added import
 export const ProgramList = ({programs}) => {
     return (
         <Container>
-            <h2>Programs - Ahojkyyyy</h2>
+            <h2>Seznam programů</h2>
              {/* Added Row with responsive columns and gutter spacing */}
                 {programs.map((program) => (
                     <Col key={program.id}> {/* Each card in a Col */}
