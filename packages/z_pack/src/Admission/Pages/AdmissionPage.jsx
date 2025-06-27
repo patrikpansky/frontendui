@@ -33,7 +33,7 @@ const AdmissionPageContent = ({ admission, children, onChange, onBlur }) => {
         <>
             <AdmissionPageNavbar admission={admission} />
             <AdmissionLargeCard admission={admission}>
-                <AdmissionButton operation="U" admission={admission} onDone={(admission) => console.log("AdmissionPageContent.onDone", admission)}>
+                <AdmissionButton className = "btn btn-outline-success" operation="U" admission={admission} onDone={(admission) => console.log("AdmissionPageContent.onDone", admission)}>
                     Upravit
                 </AdmissionButton>
 
