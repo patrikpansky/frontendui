@@ -33,7 +33,6 @@ const ProgramPageContent = ({program, admissions}) => {
     return (<>
         <ProgramPageNavbar program={program} />
         <ProgramLargeCard program={program}>
-            Program JSON <pre>{JSON.stringify(program, null, 2)}</pre> <br />
             {admissions && admissions.map(admission => (
                 <AdmissionMediumCard key={admission.id} admission={admission} />
             ))}
