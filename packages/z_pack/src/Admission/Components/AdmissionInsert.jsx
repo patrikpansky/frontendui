@@ -28,7 +28,7 @@ export const AdmissionInsert = ({program, onDone = () => {}}) => {
 
         fetchInsert(insertParams)
             .then((json) => {
-                console.log("Admise vytvořeno:", json);
+                console.log("Admise vytvořena:", json);
                 setName("");
                 onDone();
             })
