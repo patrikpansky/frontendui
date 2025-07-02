@@ -23,6 +23,19 @@ export const ProgramLargeFragment = createQueryStrLazy(
 `
 fragment ProgramLarge on ProgramGQLModel {
   ...ProgramMedium
+  admissions {
+  __typename
+  id
+  name
+  paymentInfoId
+  programId
+  studentEntryDate
+  examStartDate
+  examLastDate
+  paymentDate
+  requestConditionExtendDate
+  requestExtraConditionsDate
+  lastchange
+  }
 }
 `, ProgramMediumFragment)
-  

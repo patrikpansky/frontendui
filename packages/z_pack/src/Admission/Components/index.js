@@ -8,3 +8,4 @@ export * from './AdmissionMediumCard'
 
 export * from './AdmissionMediumEditableContent'
 export * from './AdmissionInsert'
+export * from './AmissionDelete'
