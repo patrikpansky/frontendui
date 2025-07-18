@@ -38,11 +38,11 @@ export const AdmissionInsert = ({program, onDone = () => {}}) => {
     };
 
     return (
-        <div className="d-flex align-items-end mb-2" style={{ gap: "0.5rem" }}>
+        <div className="mb-2">
       <input
-        className="form-control"
+        className="form-control mb-2"
         type="text"
-        placeholder="Název přijímacího řízení"
+        placeholder="Zadej název řízení"
         value={name}
         onChange={(e) => setName(e.target.value)}
         style={{ maxWidth: 400 }}

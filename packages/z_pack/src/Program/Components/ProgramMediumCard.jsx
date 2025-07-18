@@ -2,7 +2,7 @@ import { PersonFill } from "react-bootstrap-icons"
 import { ProgramLink } from "./ProgramLink"
 import { ProgramCardCapsule } from "./ProgramCardCapsule"
 import { ProgramMediumContent } from "./ProgramMediumContent"
-import { CalendarEvent, Tag } from "react-bootstrap-icons"; // Added icons
+import { CalendarEvent, Tag, ClipboardCheck } from "react-bootstrap-icons"; // Added icons
 
 /**
  * A card component that displays detailed content for an program entity.
@@ -38,7 +38,7 @@ import { CalendarEvent, Tag } from "react-bootstrap-icons"; // Added icons
  */
 export const ProgramMediumCard = ({program, icon = <PersonFill />, title, children}) => {
     return (
-        <ProgramCardCapsule title={<>{icon} {title || <ProgramLink program={program} />}</>}>
+                <ProgramCardCapsule title={<>{icon} {title || <ProgramLink program={program} />}</>}>
             <ProgramMediumContent program={program}>
                 {children}
                 {/* Displaying additional program information */}

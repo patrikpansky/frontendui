@@ -4,7 +4,7 @@ import { AdmissionReadPageAsyncAction } from '../../Admission/Queries/AdmissionR
 import { AdmissionLink } from '../../Admission/Components/AdmissionLink';
 import { LoadingSpinner, ErrorHandler } from '@hrbolek/uoisfrontend-shared';
 import { Container, Row, Col, Card, Badge, Form } from 'react-bootstrap';
-import { PersonFill, CalendarEvent, CheckCircle, XCircle, Clock } from 'react-bootstrap-icons';
+import { PersonFill, CalendarEvent } from 'react-bootstrap-icons';
 
 /**
  * Component for displaying admission applications for a specific study program
@@ -34,19 +34,7 @@ export const ProgramAdmissionApplicationsList = ({ program }) => {
         }
     );
 
-    const getStatusBadge = (admission) => {
-        // Determine status based on admission data
-        if (admission.student_entry_date) {
-            return <Badge bg="success"><CheckCircle size={14} /> Přijat</Badge>;
-        }
-        if (admission.condition_date && new Date(admission.condition_date) > new Date()) {
-            return <Badge bg="warning"><Clock size={14} /> Podmíněně přijat</Badge>;
-        }
-        if (admission.exam_start_date && new Date(admission.exam_start_date) > new Date()) {
-            return <Badge bg="info"><CalendarEvent size={14} /> Ke zkoušce</Badge>;
-        }
-        return <Badge bg="secondary"><XCircle size={14} /> Podáno</Badge>;
-    };
+
 
     const getFilteredApplications = () => {
         if (!dispatchResult?.data?.result) return [];
@@ -128,9 +116,8 @@ export const ProgramAdmissionApplicationsList = ({ program }) => {
                     {filteredApplications.map((admission) => (
                         <Col key={admission.id} md={6} lg={4} className="mb-3">
                             <Card className="h-100">
-                                <Card.Header className="d-flex justify-content-between align-items-center">
+                                <Card.Header>
                                     <AdmissionLink admission={admission} />
-                                    {getStatusBadge(admission)}
                                 </Card.Header>
                                 <Card.Body>
                                     <div className="mb-2">

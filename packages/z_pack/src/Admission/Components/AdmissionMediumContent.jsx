@@ -28,9 +28,9 @@ export const AdmissionMediumContent = ({admission, children}) => {
         paymentInfoId: "ID platby",
         programId: "ID programu",
         studentEntryDate: "Datum vstupu studenta",
-        examStartDate: "Začátek zkoušky",
-        examLastDate: "Konec zkoušky",
-        paymentDate: "Datum platby",
+        examStartDate: "První termín zkoušky",
+        examLastDate: "Poslední zkoušky",
+        paymentDate: "Datum do kdy lze zaplatit poplatek",
         requestConditionExtendDate: "Datum žádosti o prodloužení podmínek",
         requestExtraConditionsDate: "Datum žádosti o dodatečné podmínky",
         lastchange: "Poslední změna"

@@ -2,10 +2,9 @@ import Row from "react-bootstrap/Row"
 import Card from "react-bootstrap/Card"
 import ListGroup from "react-bootstrap/ListGroup"
 import { ProgramCardCapsule } from "./ProgramCardCapsule"
-import { ProgramMediumCard } from "./ProgramMediumCard"
+import { ProgramInfoCard } from "./ProgramInfoCard"
+import { ProgramAdmissionCreateCard } from "./ProgramAdmissionCreateCard"
 import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
-import { AdmissionInsert } from "../../Admission"
-import { AdmissionMediumContent } from "../../Admission"
 import { Link } from "react-router-dom" // přidáno pro odkaz
 import { AdmissionDelete } from "../../Admission"
 
@@ -23,12 +22,12 @@ export const ProgramLargeCard = ({program, children, onBlur, readOnly}) => {
         <ProgramCardCapsule program={program}>
             <Row>
                 <LeftColumn>
-                    <ProgramMediumCard program={program}/>
+                    <ProgramInfoCard program={program} admissions={admissions}/>
+                    <div className="mt-4">
+                        <ProgramAdmissionCreateCard program={program} onDone={() => onBlur({target: { value: program}})}/>
+                    </div>
                 </LeftColumn>
                 <MiddleColumn>
-                    <div className="mt-4">
-                        <AdmissionInsert program={program} onDone={() => onBlur({target: { value: program}})}/>
-                    </div>
                     <Card className="mt-4">
                         <Card.Body>
                             <div className="d-flex align-items-center justify-content-between mb-2">
@@ -53,7 +52,6 @@ export const ProgramLargeCard = ({program, children, onBlur, readOnly}) => {
                                                     onDeleted={() => onBlur?.({target: { value: program }})}
                                                 />
                                             </div>
-                                            <AdmissionMediumContent admission={admission} />
                                         </ListGroup.Item>
                                     ))}
                                 </ListGroup>
