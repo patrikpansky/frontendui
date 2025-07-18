@@ -11,12 +11,14 @@ import { AdmissionDelete } from "../../Admission"
 /**
  * A large card component for displaying detailed content and layout for program entities.
  */
-export const ProgramLargeCard = ({program, children, onBlur, readOnly}) => {
+export const ProgramLargeCard = ({program, admissions: admissionsProp, children, onBlur, readOnly}) => {
     // LOGY pro debug
     console.log("ProgramLargeCard: program", program);
     console.log("ProgramLargeCard: program.admissions", program.admissions);
+    console.log("ProgramLargeCard: admissionsProp", admissionsProp);
 
-    const admissions = Array.isArray(program.admissions) ? program.admissions : [];
+    // Používáme prop admissions pokud je zadán, jinak fallback na program.admissions
+    const admissions = Array.isArray(admissionsProp) ? admissionsProp : (Array.isArray(program.admissions) ? program.admissions : []);
 
     return (
         <ProgramCardCapsule program={program}>
@@ -24,7 +26,7 @@ export const ProgramLargeCard = ({program, children, onBlur, readOnly}) => {
                 <LeftColumn>
                     <ProgramInfoCard program={program} admissions={admissions}/>
                     <div className="mt-4">
-                        <ProgramAdmissionCreateCard program={program} onDone={() => onBlur({target: { value: program}})}/>
+                        <ProgramAdmissionCreateCard program={program} onDone={() => onBlur({target: { value: program.id}})}/>
                     </div>
                 </LeftColumn>
                 <MiddleColumn>
@@ -49,7 +51,7 @@ export const ProgramLargeCard = ({program, children, onBlur, readOnly}) => {
                                                 </div>
                                                 <AdmissionDelete
                                                     admission={admission}
-                                                    onDeleted={() => onBlur?.({target: { value: program }})}
+                                                    onDeleted={() => onBlur?.({target: { value: program.id }})}
                                                 />
                                             </div>
                                         </ListGroup.Item>

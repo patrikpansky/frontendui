@@ -29,10 +29,10 @@ import { AdmissionReadPageAsyncAction } from "../../Admission/Queries"
  * 
  * <ProgramPageContent program={programEntity} />
  */
-const ProgramPageContent = ({program, admissions}) => {
+const ProgramPageContent = ({program, admissions, onChange, onBlur}) => {
     return (<>
         <ProgramPageNavbar program={program} />
-        <ProgramLargeCard program={program}>
+        <ProgramLargeCard program={program} admissions={admissions} onChange={onChange} onBlur={onBlur}>
             
         </ProgramLargeCard>
     </>)
@@ -62,7 +62,7 @@ const ProgramPageContent = ({program, admissions}) => {
  */
 const ProgramPageContentLazy = ({program}) => {
     const { error, loading, entity, fetch } = useAsyncAction(ProgramReadAsyncAction, program)
-    const { error: admissionsError, loading: admissionsLoading, dispatchResult: admissionsDispatchResult } = useAsyncAction(AdmissionReadPageAsyncAction, {})
+    const { error: admissionsError, loading: admissionsLoading, dispatchResult: admissionsDispatchResult, fetch: fetchAdmissions } = useAsyncAction(AdmissionReadPageAsyncAction, {})
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {
@@ -71,7 +71,9 @@ const ProgramPageContentLazy = ({program}) => {
     }
     const handleBlur = async(e) => {
         const data = e.target.value
+        // Refreshneme oboje - program i admissions
         const serverResponse = await delayer(() => fetch(data))
+        fetchAdmissions({}) // Refreshneme také admissions
     }
 
 
