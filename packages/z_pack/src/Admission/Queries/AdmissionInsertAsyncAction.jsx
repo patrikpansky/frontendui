@@ -3,10 +3,11 @@ import { AdmissionLargeFragment } from "./AdmissionFragments";
 
 const AdmissionInsertMutation = createQueryStrLazy(
 `
-mutation AdmissionInsertMutation($id: UUID, $name: String, $name_en: String) {
+mutation AdmissionInsertMutation($programId: UUID!, $name: String!, $examStartDate: DateTime!, $paymentInfoId: UUID!, $id: UUID, $name_en: String, $examLastDate: DateTime, $studentEntryDate: DateTime, $paymentDate: DateTime, $requestConditionExtendDate: DateTime, $requestExtraConditionsDate: DateTime) {
   result: admissionInsert(
-    admission: {id: $id, name: $name, nameEn: $name_en}
+    admission: {programId: $programId, name: $name, examStartDate: $examStartDate, paymentInfoId: $paymentInfoId, id: $id, nameEn: $name_en, examLastDate: $examLastDate, studentEntryDate: $studentEntryDate, paymentDate: $paymentDate, requestConditionExtendDate: $requestConditionExtendDate, requestExtraConditionsDate: $requestExtraConditionsDate}
   ) {
+    __typename
     ... on InsertError {
       failed
       msg

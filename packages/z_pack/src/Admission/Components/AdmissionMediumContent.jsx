@@ -36,42 +36,69 @@ export const AdmissionMediumContent = ({admission, children}) => {
         lastchange: "Poslední změna"
     };
 
-    const order = [
-        "name",
-        "paymentInfoId",
-        "programId",
-        "studentEntryDate",
-        "examStartDate",
-        "examLastDate",
-        "paymentDate",
-        "requestConditionExtendDate",
-        "requestExtraConditionsDate",
-        "id",
-        "lastchange"
-    ];
+    // Základní informace
+    const basicFields = ["name", "programId"];
+    
+    // Datumy zkoušek a vstupů
+    const examFields = ["examStartDate", "examLastDate", "studentEntryDate"];
+    
+    // Platby a žádosti
+    const paymentFields = ["paymentInfoId", "paymentDate", "requestConditionExtendDate", "requestExtraConditionsDate"];
+    
+    // Systémová pole
+    const systemFields = ["id", "lastchange"];
 
-    const orderedKeys = order.filter(key => admission[key] !== undefined)
-        .concat(Object.keys(admission).filter(
-            key => !order.includes(key) && key !== 'nameEn' && key !== '__typename'
-        ));
+    const renderFieldGroup = (fields, title) => {
+        const existingFields = fields.filter(key => admission[key] !== undefined);
+        if (existingFields.length === 0) return null;
+
+        return (
+            <div style={{ marginBottom: '16px' }}>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>
+                    {title}
+                </h4>
+                <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                    <tbody>
+                        {existingFields.map(key => (
+                            <tr key={key}>
+                                <td style={{ 
+                                    border: '1px solid #ccc', 
+                                    padding: '4px 8px', 
+                                    fontWeight: 'bold', 
+                                    textAlign: 'right', 
+                                    whiteSpace: 'nowrap',
+                                    backgroundColor: '#f5f5f5',
+                                    width: '40%'
+                                }}>
+                                    {labels[key] || key}
+                                </td>
+                                <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>
+                                    {typeof admission[key] === 'string' && admission[key].match(/^\d{4}-\d{2}-\d{2}T/)
+                                        ? new Date(admission[key]).toLocaleString('cs-CZ')
+                                        : admission[key]?.toString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
+    // Ostatní pole, která nejsou v definovaných skupinách
+    const otherFields = Object.keys(admission).filter(
+        key => ![...basicFields, ...examFields, ...paymentFields, ...systemFields].includes(key) 
+               && key !== 'nameEn' && key !== '__typename'
+    );
 
     return (
-        <table style={{ borderCollapse: 'collapse', margin: '8px 0' }}>
-            <tbody>
-                {orderedKeys.map(key => (
-                    <tr key={key}>
-                        <td style={{ border: '1px solid #ccc', padding: '4px 8px', fontWeight: 'bold', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                            {labels[key] || key}
-                        </td>
-                        <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>
-                            {typeof admission[key] === 'string' && admission[key].match(/^\d{4}-\d{2}-\d{2}T/)
-                                ? new Date(admission[key]).toLocaleString('cs-CZ')
-                                : admission[key]?.toString()}
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
+        <div style={{ margin: '8px 0' }}>
+            {renderFieldGroup(basicFields, "Základní informace")}
+            {renderFieldGroup(examFields, "Termíny a datumy")}
+            {renderFieldGroup(paymentFields, "Platby a žádosti")}
+            {renderFieldGroup(systemFields, "Systémové informace")}
+            {otherFields.length > 0 && renderFieldGroup(otherFields, "Další informace")}
             {children}
-        </table>
+        </div>
     )
 }
