@@ -27,9 +27,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
     return (
         <>
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name || "Název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"paymentInfoId"} label={"Info ID platby"} className="form-control" defaultValue={admission?.paymentInfoId || "Info ID platby"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en || "Anglický název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"studentEntryDate"} label={"Datum vstupu studenta	"} className="form-control" defaultValue={new Date(admission?.studentEntryDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
+            <Input id={"studentEntryDate"} label={"Datum vstupu studenta"} className="form-control" defaultValue={new Date(admission?.studentEntryDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
             <Input id={"examStartDate"} label={"Zacatek prezkouseni"} className="form-control" defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
             <Input id={"examLastDate"} label={"Konec prezkouseni"} className="form-control" defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
             <Input id={"paymentDate"} label={"Datum platby"} className="form-control" defaultValue={new Date(admission?.paymentDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />

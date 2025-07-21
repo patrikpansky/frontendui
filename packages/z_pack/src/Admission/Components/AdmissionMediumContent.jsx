@@ -29,7 +29,7 @@ export const AdmissionMediumContent = ({admission, children}) => {
         programId: "ID programu",
         studentEntryDate: "Datum vstupu studenta",
         examStartDate: "První termín zkoušky",
-        examLastDate: "Poslední zkoušky",
+        examLastDate: "Poslední termín zkoušky",
         paymentDate: "Datum do kdy lze zaplatit poplatek",
         requestConditionExtendDate: "Datum žádosti o prodloužení podmínek",
         requestExtraConditionsDate: "Datum žádosti o dodatečné podmínky",
@@ -54,7 +54,7 @@ export const AdmissionMediumContent = ({admission, children}) => {
 
         return (
             <div style={{ marginBottom: '16px' }}>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 'bold', color: '#333' }}>
                     {title}
                 </h4>
                 <table style={{ borderCollapse: 'collapse', width: '100%' }}>

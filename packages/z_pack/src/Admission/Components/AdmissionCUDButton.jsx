@@ -77,7 +77,7 @@ export const AdmissionButton = ({ operation, children, admission, onDone = () =>
         },
         U: {
             asyncAction: AdmissionUpdateAsyncAction,
-            dialogTitle: "Upravit admission",
+            dialogTitle: "Upravit řízení",
             loadingMsg: "Ukládám admission",
             renderContent: () => <AdmissionMediumEditableContent admission={admission} />,
         },
