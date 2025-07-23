@@ -23,13 +23,13 @@
  */
 export const AdmissionMediumContent = ({admission, children}) => {
     const labels = {
-        id: "ID",
+        id: "ID přijímacího řízení",
         name: "Název",
         paymentInfoId: "ID platby",
         programId: "ID programu",
-        studentEntryDate: "Datum vstupu studenta",
-        examStartDate: "První termín zkoušky",
-        examLastDate: "Poslední termín zkoušky",
+        studentEntryDate: "Datum možnosti přihlášení",
+        examStartDate: "První zkouška",
+        examLastDate: "Poslední zkouška",
         paymentDate: "Datum do kdy lze zaplatit poplatek",
         requestConditionExtendDate: "Datum žádosti o prodloužení podmínek",
         requestExtraConditionsDate: "Datum žádosti o dodatečné podmínky",
@@ -74,7 +74,15 @@ export const AdmissionMediumContent = ({admission, children}) => {
                                 </td>
                                 <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>
                                     {typeof admission[key] === 'string' && admission[key].match(/^\d{4}-\d{2}-\d{2}T/)
-                                        ? new Date(admission[key]).toLocaleString('cs-CZ')
+                                        ? (key === 'paymentDate' || key === 'requestConditionExtendDate' || key === 'requestExtraConditionsDate')
+                                            ? new Date(admission[key]).toLocaleDateString('cs-CZ')
+                                            : new Date(admission[key]).toLocaleString('cs-CZ', { 
+                                                year: 'numeric', 
+                                                month: 'numeric', 
+                                                day: 'numeric', 
+                                                hour: '2-digit', 
+                                                minute: '2-digit' 
+                                              })
                                         : admission[key]?.toString()}
                                 </td>
                             </tr>
