@@ -51,7 +51,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             />
             <Input 
                 id={"examStartDate"} 
-                label={"Zacatek prezkouseni"} 
+                label={"První zkouška"} 
                 className="form-control" 
                 defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
@@ -61,7 +61,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             />
             <Input 
                 id={"examLastDate"} 
-                label={"Konec prezkouseni"} 
+                label={"Poslední zkouška"} 
                 className="form-control" 
                 defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
@@ -71,7 +71,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             />
             <Input 
                 id={"paymentDate"} 
-                label={"Datum platby"} 
+                label={"Datum do kdy lze provést platbu"} 
                 className="form-control" 
                 defaultValue={new Date(admission?.paymentDate).toLocaleDateString() || new Date().toLocaleDateString()} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
@@ -81,7 +81,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             />
             <Input 
                 id={"requestConditionExtendDate"} 
-                label={"Datum žádosti o prodloužení podmínek"} 
+                label={"Datum do kdy lze podat žádost o prodloužení podmínek"} 
                 className="form-control" 
                 defaultValue={new Date(admission?.requestConditionExtendDate).toLocaleDateString() || new Date().toLocaleDateString()} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
@@ -91,7 +91,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             />
             <Input 
                 id={"requestExtraConditionsDate"} 
-                label={"Datum žádosti o dodatečné podmínky"} 
+                label={"Datum do kdy lze podat žádost o dodatečné podmínky"} 
                 className="form-control" 
                 defaultValue={new Date(admission?.requestExtraConditionsDate).toLocaleDateString() || new Date().toLocaleDateString()} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
