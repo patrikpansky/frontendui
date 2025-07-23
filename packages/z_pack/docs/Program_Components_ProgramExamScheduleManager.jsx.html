@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Program/Components/ProgramExamScheduleManager.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Program/Components/ProgramExamScheduleManager.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from 'react';
+import { useAsyncAction } from '@hrbolek/uoisfrontend-gql-shared';
+import { LoadingSpinner, ErrorHandler } from '@hrbolek/uoisfrontend-shared';
+import { Container, Row, Col, Card, Button, Form, Modal, Alert, Badge, Table } from 'react-bootstrap';
+import { PlusCircle, PencilSquare, Trash, CalendarEvent, Clock, GeoAlt, People } from 'react-bootstrap-icons';
+
+/**
+ * Component for managing exam schedules and terms for admission processes
+ * 
+ * Features:
+ * - Display exam schedule calendar
+ * - Add new exam terms
+ * - Edit existing exam terms
+ * - Delete exam terms
+ * - Set exam locations and capacity
+ * - Manage exam time slots
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.program - The study program object
+ * @param {string} props.program.id - Program ID
+ * @returns {JSX.Element} Exam schedule manager component
+ */
+export const ProgramExamScheduleManager = ({ program }) => {
+    const [examTerms, setExamTerms] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [editingTerm, setEditingTerm] = useState(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        exam_date: '',
+        start_time: '',
+        end_time: '',
+        location: '',
+        capacity: '',
+        description: '',
+        exam_type: 'written',
+        is_active: true
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState('');
+    const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
+
+    // Mock data for demonstration - in real app, this would come from GraphQL
+    useEffect(() => {
+        // Simulate loading exam terms
+        setExamTerms([
+            {
+                id: '1',
+                name: 'Písemná zkouška - 1. termín',
+                exam_date: '2025-06-15',
+                start_time: '09:00',
+                end_time: '11:00',
+                location: 'Učebna A101',
+                capacity: 30,
+                registered_count: 18,
+                description: 'Písemná zkouška z matematiky a fyziky',
+                exam_type: 'written',
+                is_active: true,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '2',
+                name: 'Ústní zkouška - 1. termín',
+                exam_date: '2025-06-20',
+                start_time: '08:00',
+                end_time: '16:00',
+                location: 'Kancelář B205',
+                capacity: 20,
+                registered_count: 15,
+                description: 'Ústní pohovor s komisí',
+                exam_type: 'oral',
+                is_active: true,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '3',
+                name: 'Praktická zkouška',
+                exam_date: '2025-06-25',
+                start_time: '13:00',
+                end_time: '17:00',
+                location: 'Laboratoř C301',
+                capacity: 15,
+                registered_count: 8,
+                description: 'Praktické úkoly z oboru',
+                exam_type: 'practical',
+                is_active: true,
+                created_at: new Date().toISOString()
+            }
+        ]);
+    }, [program?.id]);
+
+    const handleShowModal = (term = null) => {
+        if (term) {
+            setEditingTerm(term);
+            setFormData({
+                name: term.name,
+                exam_date: term.exam_date,
+                start_time: term.start_time,
+                end_time: term.end_time,
+                location: term.location,
+                capacity: term.capacity.toString(),
+                description: term.description,
+                exam_type: term.exam_type,
+                is_active: term.is_active
+            });
+        } else {
+            setEditingTerm(null);
+            setFormData({
+                name: '',
+                exam_date: '',
+                start_time: '',
+                end_time: '',
+                location: '',
+                capacity: '',
+                description: '',
+                exam_type: 'written',
+                is_active: true
+            });
+        }
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditingTerm(null);
+        setError(null);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        try {
+            // Validate form
+            if (!formData.name.trim()) {
+                throw new Error('Název termínu je povinný');
+            }
+            if (!formData.exam_date) {
+                throw new Error('Datum zkoušky je povinné');
+            }
+            if (!formData.start_time || !formData.end_time) {
+                throw new Error('Čas začátku a konce je povinný');
+            }
+            if (formData.start_time >= formData.end_time) {
+                throw new Error('Čas začátku musí být před časem konce');
+            }
+            if (!formData.capacity || parseInt(formData.capacity) &lt;= 0) {
+                throw new Error('Kapacita musí být kladné číslo');
+            }
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const newTerm = {
+                id: editingTerm?.id || Date.now().toString(),
+                ...formData,
+                capacity: parseInt(formData.capacity),
+                registered_count: editingTerm?.registered_count || 0,
+                created_at: editingTerm?.created_at || new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+
+            if (editingTerm) {
+                setExamTerms(prev => prev.map(t => t.id === editingTerm.id ? newTerm : t));
+                setSuccess('Termín byl úspěšně upraven');
+            } else {
+                setExamTerms(prev => [...prev, newTerm]);
+                setSuccess('Termín byl úspěšně přidán');
+            }
+
+            handleCloseModal();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (termId) => {
+        if (!window.confirm('Opravdu chcete smazat tento termín?')) {
+            return;
+        }
+
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 500));
+            setExamTerms(prev => prev.filter(t => t.id !== termId));
+            setSuccess('Termín byl úspěšně smazán');
+        } catch (err) {
+            setError('Chyba při mazání termínu');
+        }
+    };
+
+    const getExamTypeLabel = (type) => {
+        const types = {
+            written: 'Písemná',
+            oral: 'Ústní',
+            practical: 'Praktická',
+            combined: 'Kombinovaná'
+        };
+        return types[type] || type;
+    };
+
+    const getExamTypeBadge = (type) => {
+        const variants = {
+            written: 'primary',
+            oral: 'success',
+            practical: 'warning',
+            combined: 'info'
+        };
+        return variants[type] || 'secondary';
+    };
+
+    const getCapacityBadge = (term) => {
+        const percentage = (term.registered_count / term.capacity) * 100;
+        if (percentage >= 90) return 'danger';
+        if (percentage >= 70) return 'warning';
+        return 'success';
+    };
+
+    const formatDateTime = (date, time) => {
+        const dateObj = new Date(`${date}T${time}`);
+        return dateObj.toLocaleString('cs-CZ', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const sortedTerms = [...examTerms].sort((a, b) => {
+        const dateA = new Date(`${a.exam_date}T${a.start_time}`);
+        const dateB = new Date(`${b.exam_date}T${b.start_time}`);
+        return dateA - dateB;
+    });
+
+    return (
+        &lt;Container>
+            &lt;Row className="mb-4">
+                &lt;Col>
+                    &lt;h3>
+                        &lt;CalendarEvent className="me-2" />
+                        Správa termínů zkoušek - {program?.name}
+                    &lt;/h3>
+                    &lt;p className="text-muted">
+                        Plánování a správa termínů přijímacích zkoušek
+                    &lt;/p>
+                &lt;/Col>
+                &lt;Col xs="auto">
+                    &lt;div className="d-flex gap-2">
+                        &lt;Button 
+                            variant={viewMode === 'list' ? 'primary' : 'outline-primary'}
+                            onClick={() => setViewMode('list')}
+                        >
+                            Seznam
+                        &lt;/Button>
+                        &lt;Button 
+                            variant={viewMode === 'calendar' ? 'primary' : 'outline-primary'}
+                            onClick={() => setViewMode('calendar')}
+                        >
+                            Kalendář
+                        &lt;/Button>
+                        &lt;Button variant="success" onClick={() => handleShowModal()}>
+                            &lt;PlusCircle className="me-2" />
+                            Přidat termín
+                        &lt;/Button>
+                    &lt;/div>
+                &lt;/Col>
+            &lt;/Row>
+
+            {success &amp;&amp; (
+                &lt;Alert variant="success" dismissible onClose={() => setSuccess('')}>
+                    {success}
+                &lt;/Alert>
+            )}
+
+            {error &amp;&amp; (
+                &lt;Alert variant="danger" dismissible onClose={() => setError(null)}>
+                    {error}
+                &lt;/Alert>
+            )}
+
+            {examTerms.length === 0 ? (
+                &lt;Card>
+                    &lt;Card.Body className="text-center py-5">
+                        &lt;CalendarEvent size={48} className="text-muted mb-3" />
+                        &lt;h5 className="text-muted">Žádné termíny&lt;/h5>
+                        &lt;p className="text-muted">Pro tento program nebyly nastaveny žádné termíny zkoušek.&lt;/p>
+                        &lt;Button variant="success" onClick={() => handleShowModal()}>
+                            &lt;PlusCircle className="me-2" />
+                            Přidat první termín
+                        &lt;/Button>
+                    &lt;/Card.Body>
+                &lt;/Card>
+            ) : viewMode === 'list' ? (
+                &lt;Card>
+                    &lt;Card.Header>
+                        &lt;h5 className="mb-0">Přehled termínů&lt;/h5>
+                    &lt;/Card.Header>
+                    &lt;Card.Body className="p-0">
+                        &lt;Table responsive hover className="mb-0">
+                            &lt;thead className="table-light">
+                                &lt;tr>
+                                    &lt;th>Název&lt;/th>
+                                    &lt;th>Datum a čas&lt;/th>
+                                    &lt;th>Typ&lt;/th>
+                                    &lt;th>Místo&lt;/th>
+                                    &lt;th>Kapacita&lt;/th>
+                                    &lt;th>Stav&lt;/th>
+                                    &lt;th>Akce&lt;/th>
+                                &lt;/tr>
+                            &lt;/thead>
+                            &lt;tbody>
+                                {sortedTerms.map((term) => (
+                                    &lt;tr key={term.id}>
+                                        &lt;td>
+                                            &lt;strong>{term.name}&lt;/strong>
+                                            {term.description &amp;&amp; (
+                                                &lt;div className="text-muted small">
+                                                    {term.description}
+                                                &lt;/div>
+                                            )}
+                                        &lt;/td>
+                                        &lt;td>
+                                            &lt;CalendarEvent className="me-1" />
+                                            {formatDateTime(term.exam_date, term.start_time)}
+                                            &lt;div className="text-muted small">
+                                                &lt;Clock className="me-1" />
+                                                {term.start_time} - {term.end_time}
+                                            &lt;/div>
+                                        &lt;/td>
+                                        &lt;td>
+                                            &lt;Badge bg={getExamTypeBadge(term.exam_type)}>
+                                                {getExamTypeLabel(term.exam_type)}
+                                            &lt;/Badge>
+                                        &lt;/td>
+                                        &lt;td>
+                                            &lt;GeoAlt className="me-1" />
+                                            {term.location}
+                                        &lt;/td>
+                                        &lt;td>
+                                            &lt;Badge bg={getCapacityBadge(term)}>
+                                                &lt;People className="me-1" />
+                                                {term.registered_count}/{term.capacity}
+                                            &lt;/Badge>
+                                            &lt;div className="progress mt-1" style={{ height: '4px' }}>
+                                                &lt;div 
+                                                    className={`progress-bar bg-${getCapacityBadge(term)}`}
+                                                    style={{ width: `${(term.registered_count / term.capacity) * 100}%` }}
+                                                >&lt;/div>
+                                            &lt;/div>
+                                        &lt;/td>
+                                        &lt;td>
+                                            {term.is_active ? (
+                                                &lt;Badge bg="success">Aktivní&lt;/Badge>
+                                            ) : (
+                                                &lt;Badge bg="secondary">Neaktivní&lt;/Badge>
+                                            )}
+                                        &lt;/td>
+                                        &lt;td>
+                                            &lt;div className="d-flex gap-1">
+                                                &lt;Button 
+                                                    variant="outline-primary" 
+                                                    size="sm"
+                                                    onClick={() => handleShowModal(term)}
+                                                >
+                                                    &lt;PencilSquare size={14} />
+                                                &lt;/Button>
+                                                &lt;Button 
+                                                    variant="outline-danger" 
+                                                    size="sm"
+                                                    onClick={() => handleDelete(term.id)}
+                                                >
+                                                    &lt;Trash size={14} />
+                                                &lt;/Button>
+                                            &lt;/div>
+                                        &lt;/td>
+                                    &lt;/tr>
+                                ))}
+                            &lt;/tbody>
+                        &lt;/Table>
+                    &lt;/Card.Body>
+                &lt;/Card>
+            ) : (
+                &lt;Row>
+                    {sortedTerms.map((term) => (
+                        &lt;Col key={term.id} md={6} lg={4} className="mb-3">
+                            &lt;Card className="h-100">
+                                &lt;Card.Header className="d-flex justify-content-between align-items-center">
+                                    &lt;Badge bg={getExamTypeBadge(term.exam_type)}>
+                                        {getExamTypeLabel(term.exam_type)}
+                                    &lt;/Badge>
+                                    {term.is_active ? (
+                                        &lt;Badge bg="success">Aktivní&lt;/Badge>
+                                    ) : (
+                                        &lt;Badge bg="secondary">Neaktivní&lt;/Badge>
+                                    )}
+                                &lt;/Card.Header>
+                                &lt;Card.Body>
+                                    &lt;h6 className="card-title">{term.name}&lt;/h6>
+                                    &lt;p className="card-text text-muted small">
+                                        {term.description}
+                                    &lt;/p>
+                                    &lt;div className="mb-2">
+                                        &lt;CalendarEvent size={14} className="me-1" />
+                                        &lt;strong>Datum:&lt;/strong> {new Date(term.exam_date).toLocaleDateString('cs-CZ')}
+                                    &lt;/div>
+                                    &lt;div className="mb-2">
+                                        &lt;Clock size={14} className="me-1" />
+                                        &lt;strong>Čas:&lt;/strong> {term.start_time} - {term.end_time}
+                                    &lt;/div>
+                                    &lt;div className="mb-2">
+                                        &lt;GeoAlt size={14} className="me-1" />
+                                        &lt;strong>Místo:&lt;/strong> {term.location}
+                                    &lt;/div>
+                                    &lt;div className="mb-3">
+                                        &lt;People size={14} className="me-1" />
+                                        &lt;strong>Kapacita:&lt;/strong> 
+                                        &lt;Badge bg={getCapacityBadge(term)} className="ms-2">
+                                            {term.registered_count}/{term.capacity}
+                                        &lt;/Badge>
+                                        &lt;div className="progress mt-2" style={{ height: '6px' }}>
+                                            &lt;div 
+                                                className={`progress-bar bg-${getCapacityBadge(term)}`}
+                                                style={{ width: `${(term.registered_count / term.capacity) * 100}%` }}
+                                            >&lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/Card.Body>
+                                &lt;Card.Footer className="d-flex justify-content-end">
+                                    &lt;Button 
+                                        variant="outline-primary" 
+                                        size="sm" 
+                                        className="me-2"
+                                        onClick={() => handleShowModal(term)}
+                                    >
+                                        &lt;PencilSquare size={14} />
+                                    &lt;/Button>
+                                    &lt;Button 
+                                        variant="outline-danger" 
+                                        size="sm"
+                                        onClick={() => handleDelete(term.id)}
+                                    >
+                                        &lt;Trash size={14} />
+                                    &lt;/Button>
+                                &lt;/Card.Footer>
+                            &lt;/Card>
+                        &lt;/Col>
+                    ))}
+                &lt;/Row>
+            )}
+
+            {/* Add/Edit Modal */}
+            &lt;Modal show={showModal} onHide={handleCloseModal} size="lg">
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>
+                        {editingTerm ? 'Upravit termín' : 'Přidat termín'}
+                    &lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Form onSubmit={handleSubmit}>
+                    &lt;Modal.Body>
+                        {error &amp;&amp; (
+                            &lt;Alert variant="danger">
+                                {error}
+                            &lt;/Alert>
+                        )}
+                        
+                        &lt;Row>
+                            &lt;Col md={8}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Název termínu *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Např. Písemná zkouška - 1. termín"
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                            &lt;Col md={4}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Typ zkoušky&lt;/Form.Label>
+                                    &lt;Form.Select
+                                        name="exam_type"
+                                        value={formData.exam_type}
+                                        onChange={handleInputChange}
+                                    >
+                                        &lt;option value="written">Písemná&lt;/option>
+                                        &lt;option value="oral">Ústní&lt;/option>
+                                        &lt;option value="practical">Praktická&lt;/option>
+                                        &lt;option value="combined">Kombinovaná&lt;/option>
+                                    &lt;/Form.Select>
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                        &lt;/Row>
+
+                        &lt;Row>
+                            &lt;Col md={4}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Datum zkoušky *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="date"
+                                        name="exam_date"
+                                        value={formData.exam_date}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                            &lt;Col md={4}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Čas začátku *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="time"
+                                        name="start_time"
+                                        value={formData.start_time}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                            &lt;Col md={4}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Čas konce *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="time"
+                                        name="end_time"
+                                        value={formData.end_time}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                        &lt;/Row>
+
+                        &lt;Row>
+                            &lt;Col md={8}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Místo konání *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="text"
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Např. Učebna A101"
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                            &lt;Col md={4}>
+                                &lt;Form.Group className="mb-3">
+                                    &lt;Form.Label>Kapacita *&lt;/Form.Label>
+                                    &lt;Form.Control
+                                        type="number"
+                                        name="capacity"
+                                        value={formData.capacity}
+                                        onChange={handleInputChange}
+                                        required
+                                        min="1"
+                                        placeholder="30"
+                                    />
+                                &lt;/Form.Group>
+                            &lt;/Col>
+                        &lt;/Row>
+
+                        &lt;Form.Group className="mb-3">
+                            &lt;Form.Label>Popis&lt;/Form.Label>
+                            &lt;Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                placeholder="Detailní popis termínu a požadavků"
+                            />
+                        &lt;/Form.Group>
+
+                        &lt;Form.Group className="mb-3">
+                            &lt;Form.Check
+                                type="checkbox"
+                                name="is_active"
+                                checked={formData.is_active}
+                                onChange={handleInputChange}
+                                label="Aktivní termín"
+                            />
+                        &lt;/Form.Group>
+                    &lt;/Modal.Body>
+                    &lt;Modal.Footer>
+                        &lt;Button variant="secondary" onClick={handleCloseModal}>
+                            Zrušit
+                        &lt;/Button>
+                        &lt;Button variant="primary" type="submit" disabled={loading}>
+                            {loading ? (
+                                &lt;>
+                                    &lt;span className="spinner-border spinner-border-sm me-2" />
+                                    Ukládám...
+                                &lt;/>
+                            ) : (
+                                editingTerm ? 'Uložit změny' : 'Přidat termín'
+                            )}
+                        &lt;/Button>
+                    &lt;/Modal.Footer>
+                &lt;/Form>
+            &lt;/Modal>
+        &lt;/Container>
+    );
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdmissionButton">AdmissionButton</a></li><li><a href="global.html#AdmissionCardCapsule">AdmissionCardCapsule</a></li><li><a href="global.html#AdmissionChildren">AdmissionChildren</a></li><li><a href="global.html#AdmissionLargeCard">AdmissionLargeCard</a></li><li><a href="global.html#AdmissionLink">AdmissionLink</a></li><li><a href="global.html#AdmissionMediumCard">AdmissionMediumCard</a></li><li><a href="global.html#AdmissionMediumContent">AdmissionMediumContent</a></li><li><a href="global.html#AdmissionMediumEditableContent">AdmissionMediumEditableContent</a></li><li><a href="global.html#AdmissionPage">AdmissionPage</a></li><li><a href="global.html#AdmissionPageContent">AdmissionPageContent</a></li><li><a href="global.html#AdmissionPageContentLazy">AdmissionPageContentLazy</a></li><li><a href="global.html#AdmissionPageNavbar">AdmissionPageNavbar</a></li><li><a href="global.html#AdmissionReadAsyncAction">AdmissionReadAsyncAction</a></li><li><a href="global.html#AdmissionReadOnlyRouterSegment">AdmissionReadOnlyRouterSegment</a></li><li><a href="global.html#AdmissionRouterSegment">AdmissionRouterSegment</a></li><li><a href="global.html#AdmissionScalarAttribute">AdmissionScalarAttribute</a></li><li><a href="global.html#AdmissionVectorsAttribute">AdmissionVectorsAttribute</a></li><li><a href="global.html#ProgramAdmissionApplicationsList">ProgramAdmissionApplicationsList</a></li><li><a href="global.html#ProgramAdmissionCreateCard">ProgramAdmissionCreateCard</a></li><li><a href="global.html#ProgramAdmissionDashboard">ProgramAdmissionDashboard</a></li><li><a href="global.html#ProgramButton">ProgramButton</a></li><li><a href="global.html#ProgramCardCapsule">ProgramCardCapsule</a></li><li><a href="global.html#ProgramChildren">ProgramChildren</a></li><li><a href="global.html#ProgramExamConditionsManager">ProgramExamConditionsManager</a></li><li><a href="global.html#ProgramExamScheduleManager">ProgramExamScheduleManager</a></li><li><a href="global.html#ProgramInfoCard">ProgramInfoCard</a></li><li><a href="global.html#ProgramLargeCard">ProgramLargeCard</a></li><li><a href="global.html#ProgramLink">ProgramLink</a></li><li><a href="global.html#ProgramListPage">ProgramListPage</a></li><li><a href="global.html#ProgramListPageContent">ProgramListPageContent</a></li><li><a href="global.html#ProgramListPageContentLazy">ProgramListPageContentLazy</a></li><li><a href="global.html#ProgramMediumCard">ProgramMediumCard</a></li><li><a href="global.html#ProgramMediumContent">ProgramMediumContent</a></li><li><a href="global.html#ProgramMediumEditableContent">ProgramMediumEditableContent</a></li><li><a href="global.html#ProgramPage">ProgramPage</a></li><li><a href="global.html#ProgramPageContent">ProgramPageContent</a></li><li><a href="global.html#ProgramPageContentLazy">ProgramPageContentLazy</a></li><li><a href="global.html#ProgramPageNavbar">ProgramPageNavbar</a></li><li><a href="global.html#ProgramReadAsyncAction">ProgramReadAsyncAction</a></li><li><a href="global.html#ProgramReadOnlyRouterSegment">ProgramReadOnlyRouterSegment</a></li><li><a href="global.html#ProgramRouterSegment">ProgramRouterSegment</a></li><li><a href="global.html#ProgramScalarAttribute">ProgramScalarAttribute</a></li><li><a href="global.html#ProgramSubjectsAttribute">ProgramSubjectsAttribute</a></li><li><a href="global.html#ProgramVectorsAttribute">ProgramVectorsAttribute</a></li><li><a href="global.html#StudentButton">StudentButton</a></li><li><a href="global.html#StudentCardCapsule">StudentCardCapsule</a></li><li><a href="global.html#StudentChildren">StudentChildren</a></li><li><a href="global.html#StudentLargeCard">StudentLargeCard</a></li><li><a href="global.html#StudentLink">StudentLink</a></li><li><a href="global.html#StudentListLazy">StudentListLazy</a></li><li><a href="global.html#StudentMediumCard">StudentMediumCard</a></li><li><a href="global.html#StudentMediumContent">StudentMediumContent</a></li><li><a href="global.html#StudentMediumEditableContent">StudentMediumEditableContent</a></li><li><a href="global.html#StudentPage">StudentPage</a></li><li><a href="global.html#StudentPageContent">StudentPageContent</a></li><li><a href="global.html#StudentPageContentLazy">StudentPageContentLazy</a></li><li><a href="global.html#StudentPageNavbar">StudentPageNavbar</a></li><li><a href="global.html#StudentReadAsyncAction">StudentReadAsyncAction</a></li><li><a href="global.html#StudentRouterSegment">StudentRouterSegment</a></li><li><a href="global.html#StudentScalarAttribute">StudentScalarAttribute</a></li><li><a href="global.html#StudentVectorsAttribute">StudentVectorsAttribute</a></li><li><a href="global.html#SubjectButton">SubjectButton</a></li><li><a href="global.html#SubjectCardCapsule">SubjectCardCapsule</a></li><li><a href="global.html#SubjectChildren">SubjectChildren</a></li><li><a href="global.html#SubjectLargeCard">SubjectLargeCard</a></li><li><a href="global.html#SubjectLink">SubjectLink</a></li><li><a href="global.html#SubjectMediumCard">SubjectMediumCard</a></li><li><a href="global.html#SubjectMediumContent">SubjectMediumContent</a></li><li><a href="global.html#SubjectMediumEditableContent">SubjectMediumEditableContent</a></li><li><a href="global.html#SubjectPage">SubjectPage</a></li><li><a href="global.html#SubjectPageContent">SubjectPageContent</a></li><li><a href="global.html#SubjectPageContentLazy">SubjectPageContentLazy</a></li><li><a href="global.html#SubjectPageNavbar">SubjectPageNavbar</a></li><li><a href="global.html#SubjectProgramAttribute">SubjectProgramAttribute</a></li><li><a href="global.html#SubjectReadAsyncAction">SubjectReadAsyncAction</a></li><li><a href="global.html#SubjectRouterSegment">SubjectRouterSegment</a></li><li><a href="global.html#SubjectScalarAttribute">SubjectScalarAttribute</a></li><li><a href="global.html#SubjectVectorsAttribute">SubjectVectorsAttribute</a></li><li><a href="global.html#TitleNavButton">TitleNavButton</a></li><li><a href="global.html#UserButton">UserButton</a></li><li><a href="global.html#UserCardCapsule">UserCardCapsule</a></li><li><a href="global.html#UserChildren">UserChildren</a></li><li><a href="global.html#UserLargeCard">UserLargeCard</a></li><li><a href="global.html#UserLink">UserLink</a></li><li><a href="global.html#UserMediumCard">UserMediumCard</a></li><li><a href="global.html#UserMediumContent">UserMediumContent</a></li><li><a href="global.html#UserMediumEditableContent">UserMediumEditableContent</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPageContent">UserPageContent</a></li><li><a href="global.html#UserPageContentLazy">UserPageContentLazy</a></li><li><a href="global.html#UserPageNavbar">UserPageNavbar</a></li><li><a href="global.html#UserProgramsAttribute">UserProgramsAttribute</a></li><li><a href="global.html#UserReadAsyncAction">UserReadAsyncAction</a></li><li><a href="global.html#UserRouterSegment">UserRouterSegment</a></li><li><a href="global.html#UserScalarAttribute">UserScalarAttribute</a></li><li><a href="global.html#UserVectorsAttribute">UserVectorsAttribute</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jul 23 2025 22:18:29 GMT+0200 (středoevropský letní čas)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

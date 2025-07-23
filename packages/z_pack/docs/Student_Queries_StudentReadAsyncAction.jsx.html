@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Student/Queries/StudentReadAsyncAction.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Student/Queries/StudentReadAsyncAction.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { createAsyncGraphQLAction, createQueryStrLazy } from "@hrbolek/uoisfrontend-gql-shared";
+import { StudentLargeFragment } from "./StudentFragments";
+
+const StudentReadQuery = createQueryStrLazy(
+`
+query StudentReadQuery($id: UUID!) {
+  result: studentById(id: $id) {
+    ...StudentLarge
+  }
+}
+`, 
+    StudentLargeFragment)
+
+    /**
+ * An async action for executing a GraphQL query to read student entities.
+ *
+ * This action is created using `createAsyncGraphQLAction` with a predefined `StudentQueryRead` query.
+ * It can be dispatched with query variables to fetch data related to student entities from the GraphQL API.
+ *
+ * @constant
+ * @type {Function}
+ *
+ * @param {Object} query_variables - The variables for the GraphQL query.
+ * @param {string|number} query_variables.id - The unique identifier for the student entity to fetch.
+ *
+ * @returns {Function} A dispatchable async action that performs the GraphQL query, applies middleware, and dispatches the result.
+ *
+ * @throws {Error} If `query_variables` is not a valid JSON object.
+ *
+ * @example
+ * // Example usage:
+ * const queryVariables = { id: "12345" };
+ *
+ * dispatch(StudentReadAsyncAction(queryVariables))
+ *   .then((result) => {
+ *     console.log("Fetched data:", result);
+ *   })
+ *   .catch((error) => {
+ *     console.error("Error fetching data:", error);
+ *   });
+ */
+export const StudentReadAsyncAction = createAsyncGraphQLAction(StudentReadQuery)</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdmissionButton">AdmissionButton</a></li><li><a href="global.html#AdmissionCardCapsule">AdmissionCardCapsule</a></li><li><a href="global.html#AdmissionChildren">AdmissionChildren</a></li><li><a href="global.html#AdmissionLargeCard">AdmissionLargeCard</a></li><li><a href="global.html#AdmissionLink">AdmissionLink</a></li><li><a href="global.html#AdmissionMediumCard">AdmissionMediumCard</a></li><li><a href="global.html#AdmissionMediumContent">AdmissionMediumContent</a></li><li><a href="global.html#AdmissionMediumEditableContent">AdmissionMediumEditableContent</a></li><li><a href="global.html#AdmissionPage">AdmissionPage</a></li><li><a href="global.html#AdmissionPageContent">AdmissionPageContent</a></li><li><a href="global.html#AdmissionPageContentLazy">AdmissionPageContentLazy</a></li><li><a href="global.html#AdmissionPageNavbar">AdmissionPageNavbar</a></li><li><a href="global.html#AdmissionReadAsyncAction">AdmissionReadAsyncAction</a></li><li><a href="global.html#AdmissionReadOnlyRouterSegment">AdmissionReadOnlyRouterSegment</a></li><li><a href="global.html#AdmissionRouterSegment">AdmissionRouterSegment</a></li><li><a href="global.html#AdmissionScalarAttribute">AdmissionScalarAttribute</a></li><li><a href="global.html#AdmissionVectorsAttribute">AdmissionVectorsAttribute</a></li><li><a href="global.html#ProgramAdmissionApplicationsList">ProgramAdmissionApplicationsList</a></li><li><a href="global.html#ProgramAdmissionCreateCard">ProgramAdmissionCreateCard</a></li><li><a href="global.html#ProgramAdmissionDashboard">ProgramAdmissionDashboard</a></li><li><a href="global.html#ProgramButton">ProgramButton</a></li><li><a href="global.html#ProgramCardCapsule">ProgramCardCapsule</a></li><li><a href="global.html#ProgramChildren">ProgramChildren</a></li><li><a href="global.html#ProgramExamConditionsManager">ProgramExamConditionsManager</a></li><li><a href="global.html#ProgramExamScheduleManager">ProgramExamScheduleManager</a></li><li><a href="global.html#ProgramInfoCard">ProgramInfoCard</a></li><li><a href="global.html#ProgramLargeCard">ProgramLargeCard</a></li><li><a href="global.html#ProgramLink">ProgramLink</a></li><li><a href="global.html#ProgramListPage">ProgramListPage</a></li><li><a href="global.html#ProgramListPageContent">ProgramListPageContent</a></li><li><a href="global.html#ProgramListPageContentLazy">ProgramListPageContentLazy</a></li><li><a href="global.html#ProgramMediumCard">ProgramMediumCard</a></li><li><a href="global.html#ProgramMediumContent">ProgramMediumContent</a></li><li><a href="global.html#ProgramMediumEditableContent">ProgramMediumEditableContent</a></li><li><a href="global.html#ProgramPage">ProgramPage</a></li><li><a href="global.html#ProgramPageContent">ProgramPageContent</a></li><li><a href="global.html#ProgramPageContentLazy">ProgramPageContentLazy</a></li><li><a href="global.html#ProgramPageNavbar">ProgramPageNavbar</a></li><li><a href="global.html#ProgramReadAsyncAction">ProgramReadAsyncAction</a></li><li><a href="global.html#ProgramReadOnlyRouterSegment">ProgramReadOnlyRouterSegment</a></li><li><a href="global.html#ProgramRouterSegment">ProgramRouterSegment</a></li><li><a href="global.html#ProgramScalarAttribute">ProgramScalarAttribute</a></li><li><a href="global.html#ProgramSubjectsAttribute">ProgramSubjectsAttribute</a></li><li><a href="global.html#ProgramVectorsAttribute">ProgramVectorsAttribute</a></li><li><a href="global.html#StudentButton">StudentButton</a></li><li><a href="global.html#StudentCardCapsule">StudentCardCapsule</a></li><li><a href="global.html#StudentChildren">StudentChildren</a></li><li><a href="global.html#StudentLargeCard">StudentLargeCard</a></li><li><a href="global.html#StudentLink">StudentLink</a></li><li><a href="global.html#StudentListLazy">StudentListLazy</a></li><li><a href="global.html#StudentMediumCard">StudentMediumCard</a></li><li><a href="global.html#StudentMediumContent">StudentMediumContent</a></li><li><a href="global.html#StudentMediumEditableContent">StudentMediumEditableContent</a></li><li><a href="global.html#StudentPage">StudentPage</a></li><li><a href="global.html#StudentPageContent">StudentPageContent</a></li><li><a href="global.html#StudentPageContentLazy">StudentPageContentLazy</a></li><li><a href="global.html#StudentPageNavbar">StudentPageNavbar</a></li><li><a href="global.html#StudentReadAsyncAction">StudentReadAsyncAction</a></li><li><a href="global.html#StudentRouterSegment">StudentRouterSegment</a></li><li><a href="global.html#StudentScalarAttribute">StudentScalarAttribute</a></li><li><a href="global.html#StudentVectorsAttribute">StudentVectorsAttribute</a></li><li><a href="global.html#SubjectButton">SubjectButton</a></li><li><a href="global.html#SubjectCardCapsule">SubjectCardCapsule</a></li><li><a href="global.html#SubjectChildren">SubjectChildren</a></li><li><a href="global.html#SubjectLargeCard">SubjectLargeCard</a></li><li><a href="global.html#SubjectLink">SubjectLink</a></li><li><a href="global.html#SubjectMediumCard">SubjectMediumCard</a></li><li><a href="global.html#SubjectMediumContent">SubjectMediumContent</a></li><li><a href="global.html#SubjectMediumEditableContent">SubjectMediumEditableContent</a></li><li><a href="global.html#SubjectPage">SubjectPage</a></li><li><a href="global.html#SubjectPageContent">SubjectPageContent</a></li><li><a href="global.html#SubjectPageContentLazy">SubjectPageContentLazy</a></li><li><a href="global.html#SubjectPageNavbar">SubjectPageNavbar</a></li><li><a href="global.html#SubjectProgramAttribute">SubjectProgramAttribute</a></li><li><a href="global.html#SubjectReadAsyncAction">SubjectReadAsyncAction</a></li><li><a href="global.html#SubjectRouterSegment">SubjectRouterSegment</a></li><li><a href="global.html#SubjectScalarAttribute">SubjectScalarAttribute</a></li><li><a href="global.html#SubjectVectorsAttribute">SubjectVectorsAttribute</a></li><li><a href="global.html#TitleNavButton">TitleNavButton</a></li><li><a href="global.html#UserButton">UserButton</a></li><li><a href="global.html#UserCardCapsule">UserCardCapsule</a></li><li><a href="global.html#UserChildren">UserChildren</a></li><li><a href="global.html#UserLargeCard">UserLargeCard</a></li><li><a href="global.html#UserLink">UserLink</a></li><li><a href="global.html#UserMediumCard">UserMediumCard</a></li><li><a href="global.html#UserMediumContent">UserMediumContent</a></li><li><a href="global.html#UserMediumEditableContent">UserMediumEditableContent</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPageContent">UserPageContent</a></li><li><a href="global.html#UserPageContentLazy">UserPageContentLazy</a></li><li><a href="global.html#UserPageNavbar">UserPageNavbar</a></li><li><a href="global.html#UserProgramsAttribute">UserProgramsAttribute</a></li><li><a href="global.html#UserReadAsyncAction">UserReadAsyncAction</a></li><li><a href="global.html#UserRouterSegment">UserRouterSegment</a></li><li><a href="global.html#UserScalarAttribute">UserScalarAttribute</a></li><li><a href="global.html#UserVectorsAttribute">UserVectorsAttribute</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jul 23 2025 22:18:29 GMT+0200 (středoevropský letní čas)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

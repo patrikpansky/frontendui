@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: User/Pages/UserPage.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: User/Pages/UserPage.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react"
+import { useParams } from "react-router"
+
+import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
+import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
+import { UserLargeCard } from "../Components"
+import { UserReadAsyncAction } from "../Queries"
+import { UserPageNavbar } from "./UserPageNavbar"
+import { DisplayPrograms } from "../../Program/Components/DisplayPrograms"
+import { ProgramReadPageAsyncAction } from "../../Program"
+/**
+ * A page content component for displaying detailed information about an user entity.
+ *
+ * This component utilizes `UserLargeCard` to create a structured layout and displays 
+ * the serialized representation of the `user` object within the card's content.
+ *
+ * @component
+ * @param {Object} props - The properties for the UserPageContent component.
+ * @param {Object} props.user - The object representing the user entity.
+ * @param {string|number} props.user.id - The unique identifier for the user entity.
+ * @param {string} props.user.name - The name or label of the user entity.
+ *
+ * @returns {JSX.Element} A JSX element rendering the page content for an user entity.
+ *
+ * @example
+ * // Example usage:
+ * const userEntity = { id: 123, name: "Sample Entity" };
+ * 
+ * &lt;UserPageContent user={userEntity} />
+ */
+
+
+
+const UserPageContent = ({user}) => {
+    return (&lt;>
+        &lt;UserPageNavbar user={user} />
+        &lt;UserLargeCard user={user}>
+            &lt;DisplayPrograms/>
+        &lt;/UserLargeCard>
+    &lt;/>)
+}
+
+/**
+ * A lazy-loading component for displaying content of an user entity.
+ *
+ * This component is created using `createLazyComponent` and wraps `UserPageContent` to provide
+ * automatic data fetching for the `user` entity. It uses the `UserReadAsyncAction` to fetch
+ * the entity data and dynamically injects it into the wrapped component as the `user` prop.
+ *
+ * @constant
+ * @type {React.Component}
+ *
+ * @param {Object} props - The props for the lazy-loading component.
+ * @param {string|number} props.user - The identifier of the user entity to fetch and display.
+ *
+ * @returns {JSX.Element} A component that fetches the `user` entity data and displays it
+ * using `UserPageContent`, or shows loading and error states as appropriate.
+ *
+ * @example
+ * // Example usage:
+ * const userId = "12345";
+ *
+ * &lt;UserPageContentLazy user={userId} />
+ */
+const UserPageContentLazy = ({user}) => {
+    const { error, loading, entity, fetch } = useAsyncAction(UserReadAsyncAction, user)
+    const [delayer] = useState(() => CreateDelayer())
+
+    const handleChange = async(e) => {
+        // console.log("GroupCategoryPageContentLazy.handleChange.e", e)
+        const data = e.target.value
+        const serverResponse = await delayer(() => fetch(data))
+        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+    }
+    const handleBlur = async(e) => {
+        // console.log("GroupCategoryPageContentLazy.handleBlur.e", e)
+        const data = e.target.value
+        const serverResponse = await delayer(() => fetch(data))
+        // console.log("GroupCategoryPageContentLazy.serverResponse", serverResponse)
+    }
+    return (&lt;>
+        {loading &amp;&amp; &lt;LoadingSpinner />}
+        {error &amp;&amp; &lt;ErrorHandler errors={error} />}
+        {entity &amp;&amp; &lt;UserPageContent user={entity}  onChange={handleChange} onBlur={handleBlur} />}
+    &lt;/>)
+}
+
+/**
+ * A page component for displaying lazy-loaded content of an user entity.
+ *
+ * This component extracts the `id` parameter from the route using `useParams`,
+ * constructs an `user` object, and passes it to the `UserPageContentLazy` component.
+ * The `UserPageContentLazy` component handles the lazy-loading and rendering of the entity's content.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered page component displaying the lazy-loaded content for the user entity.
+ *
+ * @example
+ * // Example route setup:
+ * &lt;Route path="/user/:id" element={&lt;UserPage />} />
+ *
+ * // Navigating to "/user/12345" will render the page for the user entity with ID 12345.
+ */
+export const UserPage = () => {
+    const {id} = useParams()
+    const user = {id}
+    return &lt;UserPageContentLazy user={user} />
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdmissionButton">AdmissionButton</a></li><li><a href="global.html#AdmissionCardCapsule">AdmissionCardCapsule</a></li><li><a href="global.html#AdmissionChildren">AdmissionChildren</a></li><li><a href="global.html#AdmissionLargeCard">AdmissionLargeCard</a></li><li><a href="global.html#AdmissionLink">AdmissionLink</a></li><li><a href="global.html#AdmissionMediumCard">AdmissionMediumCard</a></li><li><a href="global.html#AdmissionMediumContent">AdmissionMediumContent</a></li><li><a href="global.html#AdmissionMediumEditableContent">AdmissionMediumEditableContent</a></li><li><a href="global.html#AdmissionPage">AdmissionPage</a></li><li><a href="global.html#AdmissionPageContent">AdmissionPageContent</a></li><li><a href="global.html#AdmissionPageContentLazy">AdmissionPageContentLazy</a></li><li><a href="global.html#AdmissionPageNavbar">AdmissionPageNavbar</a></li><li><a href="global.html#AdmissionReadAsyncAction">AdmissionReadAsyncAction</a></li><li><a href="global.html#AdmissionReadOnlyRouterSegment">AdmissionReadOnlyRouterSegment</a></li><li><a href="global.html#AdmissionRouterSegment">AdmissionRouterSegment</a></li><li><a href="global.html#AdmissionScalarAttribute">AdmissionScalarAttribute</a></li><li><a href="global.html#AdmissionVectorsAttribute">AdmissionVectorsAttribute</a></li><li><a href="global.html#ProgramAdmissionApplicationsList">ProgramAdmissionApplicationsList</a></li><li><a href="global.html#ProgramAdmissionCreateCard">ProgramAdmissionCreateCard</a></li><li><a href="global.html#ProgramAdmissionDashboard">ProgramAdmissionDashboard</a></li><li><a href="global.html#ProgramButton">ProgramButton</a></li><li><a href="global.html#ProgramCardCapsule">ProgramCardCapsule</a></li><li><a href="global.html#ProgramChildren">ProgramChildren</a></li><li><a href="global.html#ProgramExamConditionsManager">ProgramExamConditionsManager</a></li><li><a href="global.html#ProgramExamScheduleManager">ProgramExamScheduleManager</a></li><li><a href="global.html#ProgramInfoCard">ProgramInfoCard</a></li><li><a href="global.html#ProgramLargeCard">ProgramLargeCard</a></li><li><a href="global.html#ProgramLink">ProgramLink</a></li><li><a href="global.html#ProgramListPage">ProgramListPage</a></li><li><a href="global.html#ProgramListPageContent">ProgramListPageContent</a></li><li><a href="global.html#ProgramListPageContentLazy">ProgramListPageContentLazy</a></li><li><a href="global.html#ProgramMediumCard">ProgramMediumCard</a></li><li><a href="global.html#ProgramMediumContent">ProgramMediumContent</a></li><li><a href="global.html#ProgramMediumEditableContent">ProgramMediumEditableContent</a></li><li><a href="global.html#ProgramPage">ProgramPage</a></li><li><a href="global.html#ProgramPageContent">ProgramPageContent</a></li><li><a href="global.html#ProgramPageContentLazy">ProgramPageContentLazy</a></li><li><a href="global.html#ProgramPageNavbar">ProgramPageNavbar</a></li><li><a href="global.html#ProgramReadAsyncAction">ProgramReadAsyncAction</a></li><li><a href="global.html#ProgramReadOnlyRouterSegment">ProgramReadOnlyRouterSegment</a></li><li><a href="global.html#ProgramRouterSegment">ProgramRouterSegment</a></li><li><a href="global.html#ProgramScalarAttribute">ProgramScalarAttribute</a></li><li><a href="global.html#ProgramSubjectsAttribute">ProgramSubjectsAttribute</a></li><li><a href="global.html#ProgramVectorsAttribute">ProgramVectorsAttribute</a></li><li><a href="global.html#StudentButton">StudentButton</a></li><li><a href="global.html#StudentCardCapsule">StudentCardCapsule</a></li><li><a href="global.html#StudentChildren">StudentChildren</a></li><li><a href="global.html#StudentLargeCard">StudentLargeCard</a></li><li><a href="global.html#StudentLink">StudentLink</a></li><li><a href="global.html#StudentListLazy">StudentListLazy</a></li><li><a href="global.html#StudentMediumCard">StudentMediumCard</a></li><li><a href="global.html#StudentMediumContent">StudentMediumContent</a></li><li><a href="global.html#StudentMediumEditableContent">StudentMediumEditableContent</a></li><li><a href="global.html#StudentPage">StudentPage</a></li><li><a href="global.html#StudentPageContent">StudentPageContent</a></li><li><a href="global.html#StudentPageContentLazy">StudentPageContentLazy</a></li><li><a href="global.html#StudentPageNavbar">StudentPageNavbar</a></li><li><a href="global.html#StudentReadAsyncAction">StudentReadAsyncAction</a></li><li><a href="global.html#StudentRouterSegment">StudentRouterSegment</a></li><li><a href="global.html#StudentScalarAttribute">StudentScalarAttribute</a></li><li><a href="global.html#StudentVectorsAttribute">StudentVectorsAttribute</a></li><li><a href="global.html#SubjectButton">SubjectButton</a></li><li><a href="global.html#SubjectCardCapsule">SubjectCardCapsule</a></li><li><a href="global.html#SubjectChildren">SubjectChildren</a></li><li><a href="global.html#SubjectLargeCard">SubjectLargeCard</a></li><li><a href="global.html#SubjectLink">SubjectLink</a></li><li><a href="global.html#SubjectMediumCard">SubjectMediumCard</a></li><li><a href="global.html#SubjectMediumContent">SubjectMediumContent</a></li><li><a href="global.html#SubjectMediumEditableContent">SubjectMediumEditableContent</a></li><li><a href="global.html#SubjectPage">SubjectPage</a></li><li><a href="global.html#SubjectPageContent">SubjectPageContent</a></li><li><a href="global.html#SubjectPageContentLazy">SubjectPageContentLazy</a></li><li><a href="global.html#SubjectPageNavbar">SubjectPageNavbar</a></li><li><a href="global.html#SubjectProgramAttribute">SubjectProgramAttribute</a></li><li><a href="global.html#SubjectReadAsyncAction">SubjectReadAsyncAction</a></li><li><a href="global.html#SubjectRouterSegment">SubjectRouterSegment</a></li><li><a href="global.html#SubjectScalarAttribute">SubjectScalarAttribute</a></li><li><a href="global.html#SubjectVectorsAttribute">SubjectVectorsAttribute</a></li><li><a href="global.html#TitleNavButton">TitleNavButton</a></li><li><a href="global.html#UserButton">UserButton</a></li><li><a href="global.html#UserCardCapsule">UserCardCapsule</a></li><li><a href="global.html#UserChildren">UserChildren</a></li><li><a href="global.html#UserLargeCard">UserLargeCard</a></li><li><a href="global.html#UserLink">UserLink</a></li><li><a href="global.html#UserMediumCard">UserMediumCard</a></li><li><a href="global.html#UserMediumContent">UserMediumContent</a></li><li><a href="global.html#UserMediumEditableContent">UserMediumEditableContent</a></li><li><a href="global.html#UserPage">UserPage</a></li><li><a href="global.html#UserPageContent">UserPageContent</a></li><li><a href="global.html#UserPageContentLazy">UserPageContentLazy</a></li><li><a href="global.html#UserPageNavbar">UserPageNavbar</a></li><li><a href="global.html#UserProgramsAttribute">UserProgramsAttribute</a></li><li><a href="global.html#UserReadAsyncAction">UserReadAsyncAction</a></li><li><a href="global.html#UserRouterSegment">UserRouterSegment</a></li><li><a href="global.html#UserScalarAttribute">UserScalarAttribute</a></li><li><a href="global.html#UserVectorsAttribute">UserVectorsAttribute</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jul 23 2025 22:18:29 GMT+0200 (středoevropský letní čas)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
