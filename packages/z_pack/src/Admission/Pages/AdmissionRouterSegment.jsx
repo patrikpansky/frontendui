@@ -1,4 +1,4 @@
-import { AdmissionURI } from "../Components/AdmissionLink"
+import { AdmissionURI, AdmissionReadOnlyURI } from "../Components/AdmissionLink"
 import { AdmissionPage } from "./AdmissionPage"
 
 /**
@@ -15,5 +15,17 @@ import { AdmissionPage } from "./AdmissionPage"
  */
 export const AdmissionRouterSegment = {
     path: `/${AdmissionURI}:id`,
+    element: <AdmissionPage />,
+}
+
+/**
+ * A router segment definition for the Admission page in readonly mode.
+ *
+ * @constant {Object} AdmissionReadOnlyRouterSegment
+ * @property {string} path - The URL path pattern for the readonly route, e.g., "/admission/admission/readonly/:id".
+ * @property {JSX.Element} element - The React element (component) to render, in this case, <AdmissionPage />.
+ */
+export const AdmissionReadOnlyRouterSegment = {
+    path: `/${AdmissionReadOnlyURI}:id`,
     element: <AdmissionPage />,
 }

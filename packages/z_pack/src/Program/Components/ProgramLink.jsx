@@ -1,6 +1,7 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
 export const ProgramURI = '/program/program/editable/';
+export const ProgramReadOnlyURI = '/program/program/readonly/';
 
 /**
  * A React component that renders a `ProxyLink` to program's page.

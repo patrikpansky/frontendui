@@ -1,4 +1,4 @@
-import { ProgramURI } from "../Components/ProgramLink"
+import { ProgramURI, ProgramReadOnlyURI } from "../Components/ProgramLink"
 import { ProgramPage } from "./ProgramPage"
 
 /**
@@ -15,5 +15,17 @@ import { ProgramPage } from "./ProgramPage"
  */
 export const ProgramRouterSegment = {
     path: `/${ProgramURI}:id`,
+    element: <ProgramPage />,
+}
+
+/**
+ * A router segment definition for the Program page in readonly mode.
+ *
+ * @constant {Object} ProgramReadOnlyRouterSegment
+ * @property {string} path - The URL path pattern for the readonly route, e.g., "/program/program/readonly/:id".
+ * @property {JSX.Element} element - The React element (component) to render, in this case, <ProgramPage />.
+ */
+export const ProgramReadOnlyRouterSegment = {
+    path: `/${ProgramReadOnlyURI}:id`,
     element: <ProgramPage />,
 }

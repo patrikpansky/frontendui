@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Context for managing read-only state across the application
@@ -13,7 +14,14 @@ const ReadOnlyContext = createContext();
  * @returns {JSX.Element} ReadOnlyProvider component
  */
 export const ReadOnlyProvider = ({ children }) => {
+    const location = useLocation();
     const [isReadOnly, setIsReadOnly] = useState(false);
+
+    // Automatically set read-only mode based on URL
+    useEffect(() => {
+        const isReadOnlyMode = location.pathname.includes('/readonly/');
+        setIsReadOnly(isReadOnlyMode);
+    }, [location.pathname]);
 
     const toggleReadOnly = () => {
         setIsReadOnly(!isReadOnly);

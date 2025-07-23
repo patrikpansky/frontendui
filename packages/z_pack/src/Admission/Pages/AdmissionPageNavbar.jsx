@@ -1,5 +1,5 @@
 import Nav from 'react-bootstrap/Nav'
-import { ProxyLink, MyNavbar, useHash, ReadOnlyToggle } from '@hrbolek/uoisfrontend-shared';
+import { ProxyLink, MyNavbar, useHash, ReadOnlyNavigation } from '@hrbolek/uoisfrontend-shared';
 
 import { AdmissionURI } from '../Components'
 /**
@@ -90,7 +90,7 @@ export const AdmissionPageNavbar = ({ admission, onSearchChange }) => {
                 </Nav.Item>
             ))}
             <Nav.Item className="ms-auto">
-                <ReadOnlyToggle />
+                <ReadOnlyNavigation />
             </Nav.Item>
       </MyNavbar>
       </div>

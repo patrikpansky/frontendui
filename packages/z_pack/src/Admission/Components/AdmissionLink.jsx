@@ -1,6 +1,7 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
 export const AdmissionURI = `/admission/admission/editable/`;
+export const AdmissionReadOnlyURI = `/admission/admission/readonly/`;
 
 /**
  * A React component that renders a `ProxyLink` to an "admission" entity's editable page.

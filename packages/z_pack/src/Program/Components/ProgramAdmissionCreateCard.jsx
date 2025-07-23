@@ -26,7 +26,7 @@ export const ProgramAdmissionCreateCard = ({program, onDone, children, readOnly}
     }
     
     return (
-        <ProgramCardCapsule title="Vytvoření řízení">
+        <ProgramCardCapsule title="Vytvoření nového řízení">
             <div style={{ padding: '1rem 0' }}>
                 <AdmissionInsert 
                     program={program} 
