@@ -1,4 +1,4 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
+import { Input, useReadOnly } from "@hrbolek/uoisfrontend-shared"
 
 /**
  * A component that displays medium-level content for an program entity.
@@ -23,11 +23,32 @@ import { Input } from "@hrbolek/uoisfrontend-shared"
  *   <p>Additional information about the entity.</p>
  * </ProgramMediumContent>
  */
-export const ProgramMediumEditableContent = ({program, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
+export const ProgramMediumEditableContent = ({program, onChange=(e)=>null, onBlur=(e)=>null, children, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     return (
         <>           
-            <Input id={"name"} label={"Název"} className="form-control" defaultValue={program?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"name_en"} label={"Anglický název"} className="form-control" defaultValue={program?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
+            <Input 
+                id={"name"} 
+                label={"Název"} 
+                className="form-control" 
+                defaultValue={program?.name|| "Název"} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"name_en"} 
+                label={"Anglický název"} 
+                className="form-control" 
+                defaultValue={program?.name_en|| "Anglický název"} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
             {children}
         </>
     )

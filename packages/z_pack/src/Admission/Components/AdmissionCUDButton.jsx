@@ -1,4 +1,4 @@
-import { ButtonWithDialog, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared";
+import { ButtonWithDialog, ErrorHandler, LoadingSpinner, useReadOnly } from "@hrbolek/uoisfrontend-shared";
 
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 import { AdmissionDeleteAsyncAction, AdmissionInsertAsyncAction, AdmissionUpdateAsyncAction } from "../Queries";
@@ -67,19 +67,27 @@ import { AdmissionMediumEditableContent } from "./AdmissionMediumEditableContent
  *
  * @returns {JSX.Element} The dynamically selected button component for the specified operation.
  */
-export const AdmissionButton = ({ operation, children, admission, onDone = () => {}, ...props }) => {
+export const AdmissionButton = ({ operation, children, admission, onDone = () => {}, readOnly, ...props }) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
+    // Don't render CUD buttons in read-only mode
+    if (effectiveReadOnly && (operation === 'C' || operation === 'U' || operation === 'D')) {
+        return null;
+    }
+    
     const operationConfig = {
         C: {
             asyncAction: AdmissionInsertAsyncAction,
             dialogTitle: "Vložit novou admission",
             loadingMsg: "Vkládám novou admission",
-            renderContent: () => <AdmissionMediumEditableContent admission={admission} />,
+            renderContent: () => <AdmissionMediumEditableContent admission={admission} readOnly={effectiveReadOnly} />,
         },
         U: {
             asyncAction: AdmissionUpdateAsyncAction,
             dialogTitle: "Upravit řízení",
             loadingMsg: "Ukládám admission",
-            renderContent: () => <AdmissionMediumEditableContent admission={admission} />,
+            renderContent: () => <AdmissionMediumEditableContent admission={admission} readOnly={effectiveReadOnly} />,
         },
         D: {
             asyncAction: AdmissionDeleteAsyncAction,

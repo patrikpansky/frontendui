@@ -1,5 +1,6 @@
 import { ProgramCardCapsule } from "./ProgramCardCapsule"
 import { AdmissionInsert } from "../../Admission"
+import { useReadOnly } from "@hrbolek/uoisfrontend-shared"
 
 /**
  * A specialized card component for creating new admissions for a program.
@@ -16,13 +17,21 @@ import { AdmissionInsert } from "../../Admission"
  *
  * @returns {JSX.Element} A JSX element for creating new admissions.
  */
-export const ProgramAdmissionCreateCard = ({program, onDone, children}) => {
+export const ProgramAdmissionCreateCard = ({program, onDone, children, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
+    if (effectiveReadOnly) {
+        return null; // Don't render create card in read-only mode
+    }
+    
     return (
         <ProgramCardCapsule title="Vytvoření řízení">
             <div style={{ padding: '1rem 0' }}>
                 <AdmissionInsert 
                     program={program} 
                     onDone={onDone}
+                    readOnly={effectiveReadOnly}
                 />
                 {children}
             </div>

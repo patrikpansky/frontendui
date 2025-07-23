@@ -1,5 +1,5 @@
 import Row from "react-bootstrap/Row"
-import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
+import { LeftColumn, MiddleColumn, useReadOnly } from "@hrbolek/uoisfrontend-shared"
 import { AdmissionCardCapsule } from "./AdmissionCardCapsule"
 import { AdmissionMediumCard } from "./AdmissionMediumCard"
 
@@ -31,12 +31,15 @@ import { AdmissionMediumCard } from "./AdmissionMediumCard"
  *   <p>Additional content for the middle column.</p>
  * </AdmissionLargeCard>
  */
-export const AdmissionLargeCard = ({admission, children, onEditDone}) => {
+export const AdmissionLargeCard = ({admission, children, onEditDone, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     return (
         <AdmissionCardCapsule admission={admission} >
             <Row>
                 <LeftColumn>
-                    <AdmissionMediumCard admission={admission} onEditDone={onEditDone}/>
+                    <AdmissionMediumCard admission={admission} onEditDone={onEditDone} readOnly={effectiveReadOnly}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}

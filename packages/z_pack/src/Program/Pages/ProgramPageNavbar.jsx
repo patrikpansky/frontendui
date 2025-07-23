@@ -1,5 +1,5 @@
 import Nav from 'react-bootstrap/Nav'
-import { ProxyLink, MyNavbar, useHash } from '@hrbolek/uoisfrontend-shared';
+import { ProxyLink, MyNavbar, useHash, ReadOnlyToggle } from '@hrbolek/uoisfrontend-shared';
 
 import { ProgramURI } from '../Components'
 /**
@@ -89,6 +89,9 @@ export const ProgramPageNavbar = ({ program, onSearchChange }) => {
                     />
                 </Nav.Item>
             ))}
+            <Nav.Item className="ms-auto">
+                <ReadOnlyToggle />
+            </Nav.Item>
       </MyNavbar>
       </div>
     );

@@ -4,7 +4,7 @@ import ListGroup from "react-bootstrap/ListGroup"
 import { ProgramCardCapsule } from "./ProgramCardCapsule"
 import { ProgramInfoCard } from "./ProgramInfoCard"
 import { ProgramAdmissionCreateCard } from "./ProgramAdmissionCreateCard"
-import { LeftColumn, MiddleColumn } from "@hrbolek/uoisfrontend-shared"
+import { LeftColumn, MiddleColumn, useReadOnly } from "@hrbolek/uoisfrontend-shared"
 import { Link } from "react-router-dom" // přidáno pro odkaz
 import { AdmissionDelete } from "../../Admission"
 
@@ -12,10 +12,14 @@ import { AdmissionDelete } from "../../Admission"
  * A large card component for displaying detailed content and layout for program entities.
  */
 export const ProgramLargeCard = ({program, admissions: admissionsProp, children, onBlur, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     // LOGY pro debug
     console.log("ProgramLargeCard: program", program);
     console.log("ProgramLargeCard: program.admissions", program.admissions);
     console.log("ProgramLargeCard: admissionsProp", admissionsProp);
+    console.log("ProgramLargeCard: isReadOnly", isReadOnly, "effectiveReadOnly", effectiveReadOnly);
 
     // Používáme prop admissions pokud je zadán, jinak fallback na program.admissions
     const admissions = Array.isArray(admissionsProp) ? admissionsProp : (Array.isArray(program.admissions) ? program.admissions : []);
@@ -24,10 +28,12 @@ export const ProgramLargeCard = ({program, admissions: admissionsProp, children,
         <ProgramCardCapsule program={program}>
             <Row>
                 <LeftColumn>
-                    <ProgramInfoCard program={program} admissions={admissions}/>
-                    <div className="mt-4">
-                        <ProgramAdmissionCreateCard program={program} onDone={() => onBlur({target: { value: program.id}})}/>
-                    </div>
+                    <ProgramInfoCard program={program} admissions={admissions} readOnly={effectiveReadOnly}/>
+                    {!effectiveReadOnly && (
+                        <div className="mt-4">
+                            <ProgramAdmissionCreateCard program={program} onDone={() => onBlur({target: { value: program.id}})} readOnly={effectiveReadOnly}/>
+                        </div>
+                    )}
                 </LeftColumn>
                 <MiddleColumn>
                     <Card className="mt-4">
@@ -49,10 +55,13 @@ export const ProgramLargeCard = ({program, admissions: admissionsProp, children,
                                                         {admission.name ?? "Přijímací řízení"}
                                                     </Link>
                                                 </div>
-                                                <AdmissionDelete
-                                                    admission={admission}
-                                                    onDeleted={() => onBlur?.({target: { value: program.id }})}
-                                                />
+                                                {!effectiveReadOnly && (
+                                                    <AdmissionDelete
+                                                        admission={admission}
+                                                        onDeleted={() => onBlur?.({target: { value: program.id }})}
+                                                        readOnly={effectiveReadOnly}
+                                                    />
+                                                )}
                                             </div>
                                         </ListGroup.Item>
                                     ))}

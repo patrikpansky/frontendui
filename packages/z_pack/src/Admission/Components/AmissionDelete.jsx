@@ -1,4 +1,5 @@
 import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
+import { useReadOnly } from "@hrbolek/uoisfrontend-shared";
 
 
 const AdmissionDeleteAsyncAction = createAsyncGraphQLAction(`mutation MyMutation($id: UUID!, $lastchange: DateTime!) {
@@ -17,7 +18,10 @@ const AdmissionDeleteAsyncAction = createAsyncGraphQLAction(`mutation MyMutation
 }`)
 
 
-export const AdmissionDelete = ({admission, onDeleted}) => {
+export const AdmissionDelete = ({admission, onDeleted, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     const {fetch: deleteAdmission, loading, error } = useAsyncAction(
         AdmissionDeleteAsyncAction,
         {}, 
@@ -38,6 +42,10 @@ export const AdmissionDelete = ({admission, onDeleted}) => {
                 alert("Mazání selhalo: " + (err?.message || ""));
             });
     };
+
+    if (effectiveReadOnly) {
+        return null; // Don't render delete button in read-only mode
+    }
 
     return (
         <div className="mb-2">

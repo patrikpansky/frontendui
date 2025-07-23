@@ -1,6 +1,6 @@
 import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
 import {useState, useRef} from "react";
-import { CreateDelayer } from "@hrbolek/uoisfrontend-shared";
+import { CreateDelayer, useReadOnly } from "@hrbolek/uoisfrontend-shared";
 
 const AdmissionCreateAsyncAction = createAsyncGraphQLAction(`mutation MyMutation($programId: UUID!, $name: String!, $id: UUID) {
   admissionInsert(admission: {programId: $programId, name: $name, id : $id}) {
@@ -9,7 +9,10 @@ const AdmissionCreateAsyncAction = createAsyncGraphQLAction(`mutation MyMutation
 }`)
 
 
-export const AdmissionInsert = ({program, onDone = () => {}}) => {
+export const AdmissionInsert = ({program, onDone = () => {}, readOnly}) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     const {loading, error, fetch: fetchInsert} = useAsyncAction(
         AdmissionCreateAsyncAction,
         {},
@@ -36,6 +39,10 @@ export const AdmissionInsert = ({program, onDone = () => {}}) => {
                 console.log("Chyba při vytváření lekce", err);
             });
     };
+
+    if (effectiveReadOnly) {
+        return null; // Don't render create form in read-only mode
+    }
 
     return (
         <div className="mb-2">

@@ -1,4 +1,4 @@
-import { Input } from "@hrbolek/uoisfrontend-shared"
+import { Input, useReadOnly } from "@hrbolek/uoisfrontend-shared"
 
 /**
  * A component that displays medium-level content for an admission entity.
@@ -23,16 +23,82 @@ import { Input } from "@hrbolek/uoisfrontend-shared"
  *   <p>Additional information about the entity.</p>
  * </AdmissionMediumContent>
  */
-export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => null, onBlur = (e) => null, children }) => {
+export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => null, onBlur = (e) => null, children, readOnly }) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
     return (
         <>
-            <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name || "Název"} onChange={onChange} onBlur={onBlur} />
-            <Input id={"studentEntryDate"} label={"Datum vstupu studenta"} className="form-control" defaultValue={new Date(admission?.studentEntryDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
-            <Input id={"examStartDate"} label={"Zacatek prezkouseni"} className="form-control" defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
-            <Input id={"examLastDate"} label={"Konec prezkouseni"} className="form-control" defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
-            <Input id={"paymentDate"} label={"Datum platby"} className="form-control" defaultValue={new Date(admission?.paymentDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
-            <Input id={"requestConditionExtendDate"} label={"Datum žádosti o prodloužení podmínek"} className="form-control" defaultValue={new Date(admission?.requestConditionExtendDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
-            <Input id={"requestExtraConditionsDate"} label={"Datum žádosti o dodatečné podmínky"} className="form-control" defaultValue={new Date(admission?.requestExtraConditionsDate).toLocaleDateString() || new Date().toLocaleDateString()} onChange={onChange} onBlur={onBlur} />
+            <Input 
+                id={"name"} 
+                label={"Název"} 
+                className="form-control" 
+                defaultValue={admission?.name || "Název"} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"studentEntryDate"} 
+                label={"Datum vstupu studenta"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.studentEntryDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"examStartDate"} 
+                label={"Zacatek prezkouseni"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"examLastDate"} 
+                label={"Konec prezkouseni"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"paymentDate"} 
+                label={"Datum platby"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.paymentDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"requestConditionExtendDate"} 
+                label={"Datum žádosti o prodloužení podmínek"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.requestConditionExtendDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
+            <Input 
+                id={"requestExtraConditionsDate"} 
+                label={"Datum žádosti o dodatečné podmínky"} 
+                className="form-control" 
+                defaultValue={new Date(admission?.requestExtraConditionsDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                onChange={effectiveReadOnly ? undefined : onChange} 
+                onBlur={effectiveReadOnly ? undefined : onBlur}
+                disabled={effectiveReadOnly}
+                readOnly={effectiveReadOnly}
+            />
 
             {children}
         </>

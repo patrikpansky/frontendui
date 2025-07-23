@@ -1,4 +1,4 @@
-import { ButtonWithDialog, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared";
+import { ButtonWithDialog, ErrorHandler, LoadingSpinner, useReadOnly } from "@hrbolek/uoisfrontend-shared";
 // import { InsertProgramButton } from "./CUDButtons/InsertProgramButton";
 // import { UpdateProgramButton } from "./CUDButtons/UpdateProgramButton";
 // import { DeleteProgramButton } from "./CUDButtons/DeleteProgramButton";
@@ -67,19 +67,27 @@ import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
  *
  * @returns {JSX.Element} The dynamically selected button component for the specified operation.
  */
-export const ProgramButton = ({ operation, children, program, onDone = () => {}, ...props }) => {
+export const ProgramButton = ({ operation, children, program, onDone = () => {}, readOnly, ...props }) => {
+    const { isReadOnly } = useReadOnly();
+    const effectiveReadOnly = readOnly || isReadOnly;
+    
+    // Don't render CUD buttons in read-only mode
+    if (effectiveReadOnly && (operation === 'C' || operation === 'U' || operation === 'D')) {
+        return null;
+    }
+    
     const operationConfig = {
         C: {
             asyncAction: ProgramInsertAsyncAction,
             dialogTitle: "Vložit novou program",
             loadingMsg: "Vkládám novou program",
-            renderContent: () => <ProgramMediumEditableContent program={program} />,
+            renderContent: () => <ProgramMediumEditableContent program={program} readOnly={effectiveReadOnly} />,
         },
         U: {
             asyncAction: ProgramUpdateAsyncAction,
             dialogTitle: "Upravit program",
             loadingMsg: "Ukládám program",
-            renderContent: () => <ProgramMediumEditableContent program={program} />,
+            renderContent: () => <ProgramMediumEditableContent program={program} readOnly={effectiveReadOnly} />,
         },
         D: {
             asyncAction: ProgramDeleteAsyncAction,
