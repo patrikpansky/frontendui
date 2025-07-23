@@ -14,12 +14,6 @@ import { AdmissionDelete } from "../../Admission"
 export const ProgramLargeCard = ({program, admissions: admissionsProp, children, onBlur, readOnly}) => {
     const { isReadOnly } = useReadOnly();
     const effectiveReadOnly = readOnly || isReadOnly;
-    
-    // LOGY pro debug
-    console.log("ProgramLargeCard: program", program);
-    console.log("ProgramLargeCard: program.admissions", program.admissions);
-    console.log("ProgramLargeCard: admissionsProp", admissionsProp);
-    console.log("ProgramLargeCard: isReadOnly", isReadOnly, "effectiveReadOnly", effectiveReadOnly);
 
     // Používáme prop admissions pokud je zadán, jinak fallback na program.admissions
     const admissions = Array.isArray(admissionsProp) ? admissionsProp : (Array.isArray(program.admissions) ? program.admissions : []);

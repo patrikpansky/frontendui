@@ -62,7 +62,7 @@ const ProgramPageContent = ({program, admissions, onChange, onBlur}) => {
  */
 const ProgramPageContentLazy = ({program}) => {
     const { error, loading, entity, fetch } = useAsyncAction(ProgramReadAsyncAction, program)
-    const { error: admissionsError, loading: admissionsLoading, dispatchResult: admissionsDispatchResult, fetch: fetchAdmissions } = useAsyncAction(AdmissionReadPageAsyncAction, {})
+    const { error: admissionsError, loading: admissionsLoading, dispatchResult: admissionsDispatchResult, fetch: fetchAdmissions } = useAsyncAction(AdmissionReadPageAsyncAction, {limit: 1000})
     const [delayer] = useState(() => CreateDelayer())
 
     const handleChange = async(e) => {
@@ -73,17 +73,16 @@ const ProgramPageContentLazy = ({program}) => {
         const data = e.target.value
         // Refreshneme oboje - program i admissions
         const serverResponse = await delayer(() => fetch(data))
-        fetchAdmissions({}) // Refreshneme také admissions
+        // Refresh admissions s timestamp pro vynutí refetch
+        fetchAdmissions({ timestamp: Date.now() })
     }
 
 
-    // vyfiltrujeme admissions, které mají programId shodný s id programu.
-    // AdmissionInputFilter nefunguje
 
     return (<>
         {loading || admissionsLoading && <LoadingSpinner />}
         {error || admissionsError && <ErrorHandler errors={error || admissionsError} />}
-        {(entity && admissionsDispatchResult) && <ProgramPageContent program={entity} admissions={admissionsDispatchResult.data?.result.filter(admission => admission.programId === program.id)} onChange={handleChange} onBlur={handleBlur} />}
+        {(entity && admissionsDispatchResult) && <ProgramPageContent program={entity} admissions={admissionsDispatchResult.data?.result?.filter(admission => admission.programId === program.id) || []} onChange={handleChange} onBlur={handleBlur} />}
     </>)
 }
 

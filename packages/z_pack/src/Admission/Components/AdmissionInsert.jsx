@@ -1,6 +1,6 @@
 import { createAsyncGraphQLAction, useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared";
-import {useState, useRef} from "react";
-import { CreateDelayer, useReadOnly } from "@hrbolek/uoisfrontend-shared";
+import {useState} from "react";
+import { useReadOnly } from "@hrbolek/uoisfrontend-shared";
 
 const AdmissionCreateAsyncAction = createAsyncGraphQLAction(`mutation MyMutation($programId: UUID!, $name: String!, $id: UUID) {
   admissionInsert(admission: {programId: $programId, name: $name, id : $id}) {
@@ -16,11 +16,9 @@ export const AdmissionInsert = ({program, onDone = () => {}, readOnly}) => {
     const {loading, error, fetch: fetchInsert} = useAsyncAction(
         AdmissionCreateAsyncAction,
         {},
-        {deffered: true}
-
+        {deferred: true}
     );
     const [name, setName] = useState("");
-    const [delayer] = useState(() => CreateDelayer(1000));
 
     const onCreate = () => {
         const insertParams = {
@@ -31,12 +29,11 @@ export const AdmissionInsert = ({program, onDone = () => {}, readOnly}) => {
 
         fetchInsert(insertParams)
             .then((json) => {
-                console.log("Admise vytvořena:", json);
                 setName("");
                 onDone();
             })
             .catch((err) => {
-                console.log("Chyba při vytváření lekce", err);
+                console.error("Chyba při vytváření admission:", err);
             });
     };
 
@@ -57,10 +54,10 @@ export const AdmissionInsert = ({program, onDone = () => {}, readOnly}) => {
       <button
         className="btn btn-primary"
         onClick={onCreate}
-        disabled={ !name.trim()}
+        disabled={loading || !name.trim()}
         type="button"
       >
-        Vytvořit přijímací řízení
+        {loading ? "Vytváří se..." : "Vytvořit přijímací řízení"}
       </button>
 
       
