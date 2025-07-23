@@ -25,9 +25,8 @@ export const AdmissionMediumContent = ({admission, children}) => {
     const labels = {
         id: "ID přijímacího řízení",
         name: "Název",
-        paymentInfoId: "ID platby",
         programId: "ID programu",
-        studentEntryDate: "Datum možnosti přihlášení",
+        studentEntryDate: "Den zapsání studenta",
         examStartDate: "První zkouška",
         examLastDate: "Poslední zkouška",
         paymentDate: "Datum do kdy lze zaplatit poplatek",
@@ -43,7 +42,7 @@ export const AdmissionMediumContent = ({admission, children}) => {
     const examFields = ["examStartDate", "examLastDate", "studentEntryDate"];
     
     // Platby a žádosti
-    const paymentFields = ["paymentInfoId", "paymentDate", "requestConditionExtendDate", "requestExtraConditionsDate"];
+    const paymentFields = ["paymentDate", "requestConditionExtendDate", "requestExtraConditionsDate"];
     
     // Systémová pole
     const systemFields = ["id", "lastchange"];
@@ -74,15 +73,7 @@ export const AdmissionMediumContent = ({admission, children}) => {
                                 </td>
                                 <td style={{ border: '1px solid #ccc', padding: '4px 8px' }}>
                                     {typeof admission[key] === 'string' && admission[key].match(/^\d{4}-\d{2}-\d{2}T/)
-                                        ? (key === 'paymentDate' || key === 'requestConditionExtendDate' || key === 'requestExtraConditionsDate')
-                                            ? new Date(admission[key]).toLocaleDateString('cs-CZ')
-                                            : new Date(admission[key]).toLocaleString('cs-CZ', { 
-                                                year: 'numeric', 
-                                                month: 'numeric', 
-                                                day: 'numeric', 
-                                                hour: '2-digit', 
-                                                minute: '2-digit' 
-                                              })
+                                        ? new Date(admission[key]).toLocaleDateString('cs-CZ')
                                         : admission[key]?.toString()}
                                 </td>
                             </tr>

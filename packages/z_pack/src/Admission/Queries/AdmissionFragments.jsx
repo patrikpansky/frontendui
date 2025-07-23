@@ -17,7 +17,6 @@ export const AdmissionMediumFragment = createQueryStrLazy(
 fragment AdmissionMedium on AdmissionGQLModel {
   examLastDate
   examStartDate
-  paymentInfoId
   programId
   studentEntryDate
   paymentDate

@@ -47,7 +47,7 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
             <Input 
                 type="date"
                 id={"studentEntryDate"} 
-                label={"Datum vstupu studenta"} 
+                label={"Den zapsání studenta"} 
                 className="form-control" 
                 defaultValue={admission?.studentEntryDate?.slice(0, 10) || getDefaultDate(2025, 8, 1)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 

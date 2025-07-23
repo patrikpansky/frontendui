@@ -27,7 +27,6 @@ fragment ProgramLarge on ProgramGQLModel {
   __typename
   id
   name
-  paymentInfoId
   programId
   studentEntryDate
   examStartDate
