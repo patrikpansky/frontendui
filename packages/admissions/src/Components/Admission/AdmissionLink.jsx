@@ -21,5 +21,5 @@ import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
  * <AdmissionLink admission={admissionEntity} />
  */
 export const AdmissionLink = ({admission}) => {
-    return <ProxyLink to={'/admission/admission/view/' + admission.id}>{admission.name}</ProxyLink>
+    return <ProxyLink to={'/admission/admission/editable/' + admission.id}>{admission.name}</ProxyLink>
 }

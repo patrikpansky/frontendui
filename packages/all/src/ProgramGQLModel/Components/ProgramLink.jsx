@@ -22,11 +22,11 @@ export const ProgramURI = `${URIRoot}/program/view/`;
  * const programEntity = { id: 123, name: "Example Program Entity" };
  * 
  * <ProgramLink program={programEntity} />
- * // Renders: <ProxyLink to="/program/program/view/123">Example Program Entity</ProxyLink>
+ * // Renders: <ProxyLink to="/program/program/editable/123">Example Program Entity</ProxyLink>
  *
  * @remarks
  * - This component utilizes `ProxyLink` to ensure consistent link behavior, including parameter preservation and conditional reloads.
- * - The URL format `/program/program/view/:id` must be supported by the application routing.
+ * - The URL format `/program/program/editable/:id` must be supported by the application routing.
  *
  * @see ProxyLink - The base component used for rendering the link.
  */

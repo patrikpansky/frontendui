@@ -22,11 +22,11 @@ export const AdmissionURI = `${URIRoot}/admission/view/`;
  * const admissionEntity = { id: 123, name: "Example Admission Entity" };
  * 
  * <AdmissionLink admission={admissionEntity} />
- * // Renders: <ProxyLink to="/admission/admission/view/123">Example Admission Entity</ProxyLink>
+ * // Renders: <ProxyLink to="/admission/admission/editable/123">Example Admission Entity</ProxyLink>
  *
  * @remarks
  * - This component utilizes `ProxyLink` to ensure consistent link behavior, including parameter preservation and conditional reloads.
- * - The URL format `/admission/admission/view/:id` must be supported by the application routing.
+ * - The URL format `/admission/admission/editable/:id` must be supported by the application routing.
  *
  * @see ProxyLink - The base component used for rendering the link.
  */

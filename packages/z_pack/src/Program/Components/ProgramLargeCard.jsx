@@ -42,7 +42,7 @@ export const ProgramLargeCard = ({program, admissions: admissionsProp, children,
                                             <div className="d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <Link
-                                                        to={`/admission/admission/view/${admission.id}`}
+                                                        to={`/admission/admission/editable/${admission.id}`}
                                                         data-discover="true"
                                                         style={{ fontWeight: "bold", textDecoration: "none" }}
                                                     >

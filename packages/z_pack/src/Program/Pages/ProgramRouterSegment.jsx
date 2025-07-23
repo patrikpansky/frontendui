@@ -10,7 +10,7 @@ import { ProgramPage } from "./ProgramPage"
  * component to render when the route matches.
  *
  * @constant {Object} ProgramRouterSegment
- * @property {string} path - The URL path pattern for the route, e.g., "/program/program/view/:id".
+ * @property {string} path - The URL path pattern for the route, e.g., "/program/program/editable/:id".
  * @property {JSX.Element} element - The React element (component) to render, in this case, <ProgramPage />.
  */
 export const ProgramRouterSegment = {

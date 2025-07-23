@@ -8,7 +8,7 @@ import { AdmissionPage, ExamPage, StudentPage } from "@hrbolek/uoisfrontend-admi
 
 export const Routes = [
     {
-        path: '/admission/admission/view/:id',
+        path: '/admission/admission/editable/:id',
         element: <AdmissionPage />
     },
     {

@@ -18,7 +18,7 @@ export const Routes = [
         element: <UserPage/>
     },
     {
-        path: "/admissionlistview/programs/view",
+        path: "/admissionlistview/programs/editable",
         element: <ProgramListPage/>
     },
     ProgramRouterSegment,

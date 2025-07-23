@@ -1,9 +1,9 @@
 import { ProxyLink } from "@hrbolek/uoisfrontend-shared"
 
-export const AdmissionURI = `/admission/admission/view/`;
+export const AdmissionURI = `/admission/admission/editable/`;
 
 /**
- * A React component that renders a `ProxyLink` to an "admission" entity's view page.
+ * A React component that renders a `ProxyLink` to an "admission" entity's editable page.
  *
  * The target URL is dynamically constructed using the `admission` object's `id`, and the link displays
  * the `admission` object's `name` as its clickable content.
@@ -14,18 +14,18 @@ export const AdmissionURI = `/admission/admission/view/`;
  * @param {string|number} props.admission.id - The unique identifier for the "admission" entity. Used to construct the target URL.
  * @param {string} props.admission.name - The display name for the "admission" entity. Used as the link text.
  *
- * @returns {JSX.Element} A `ProxyLink` component linking to the specified "admission" entity's view page.
+ * @returns {JSX.Element} A `ProxyLink` component linking to the specified "admission" entity's editable page.
  *
  * @example
  * // Example usage with a sample admission entity:
  * const admissionEntity = { id: 123, name: "Example Admission Entity" };
  * 
  * <AdmissionLink admission={admissionEntity} />
- * // Renders: <ProxyLink to="/admission/admission/view/123">Example Admission Entity</ProxyLink>
+ * // Renders: <ProxyLink to="/admission/admission/editable/123">Example Admission Entity</ProxyLink>
  *
  * @remarks
  * - This component utilizes `ProxyLink` to ensure consistent link behavior, including parameter preservation and conditional reloads.
- * - The URL format `/admission/admission/view/:id` must be supported by the application routing.
+ * - The URL format `/admission/admission/editable/:id` must be supported by the application routing.
  *
  * @see ProxyLink - The base component used for rendering the link.
  */
