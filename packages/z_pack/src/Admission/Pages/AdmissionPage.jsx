@@ -3,7 +3,7 @@ import { useParams } from "react-router"
 
 import { CreateDelayer, ErrorHandler, LoadingSpinner } from "@hrbolek/uoisfrontend-shared"
 import { useAsyncAction } from "@hrbolek/uoisfrontend-gql-shared"
-import { AdmissionButton, AdmissionLargeCard } from "../Components"
+import { AdmissionLargeCard } from "../Components"
 import { AdmissionReadAsyncAction } from "../Queries"
 import { AdmissionPageNavbar } from "./AdmissionPageNavbar"
 import { StudentReadPageAsyncAction } from "../../Student/Queries"
@@ -32,11 +32,10 @@ const AdmissionPageContent = ({ admission, children, onChange, onBlur }) => {
     return (
         <>
             <AdmissionPageNavbar admission={admission} />
-            <AdmissionLargeCard admission={admission}>
-                <AdmissionButton className = "btn btn-outline-success" operation="U" admission={admission} onDone={(admission) => console.log("AdmissionPageContent.onDone", admission)}>
-                    Upravit
-                </AdmissionButton>
-
+            <AdmissionLargeCard 
+                admission={admission} 
+                onEditDone={(admission) => console.log("AdmissionPageContent.onEditDone", admission)}
+            >
                 {children}
             </AdmissionLargeCard>
         </>

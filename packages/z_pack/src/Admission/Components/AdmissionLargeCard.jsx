@@ -15,6 +15,7 @@ import { AdmissionMediumCard } from "./AdmissionMediumCard"
  * @param {Object} props.admission - The object representing the admission entity.
  * @param {string|number} props.admission.id - The unique identifier for the admission entity.
  * @param {string} props.admission.name - The name or label of the admission entity.
+ * @param {Function} [props.onEditDone] - Callback function called when edit operation is completed.
  * @param {React.ReactNode} [props.children=null] - Additional content to render in the middle column.
  *
  * @returns {JSX.Element} A JSX element combining a large card layout with dynamic content.
@@ -23,16 +24,19 @@ import { AdmissionMediumCard } from "./AdmissionMediumCard"
  * // Example usage:
  * const admissionEntity = { id: 123, name: "Sample Entity" };
  * 
- * <AdmissionLargeCard admission={admissionEntity}>
+ * <AdmissionLargeCard 
+ *   admission={admissionEntity}
+ *   onEditDone={(admission) => console.log("Edit completed", admission)}
+ * >
  *   <p>Additional content for the middle column.</p>
  * </AdmissionLargeCard>
  */
-export const AdmissionLargeCard = ({admission, children}) => {
+export const AdmissionLargeCard = ({admission, children, onEditDone}) => {
     return (
         <AdmissionCardCapsule admission={admission} >
             <Row>
                 <LeftColumn>
-                    <AdmissionMediumCard admission={admission}/>
+                    <AdmissionMediumCard admission={admission} onEditDone={onEditDone}/>
                 </LeftColumn>
                 <MiddleColumn>
                     {children}
