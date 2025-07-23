@@ -148,16 +148,26 @@ export const AdmissionButton = ({ operation, children, admission, onDone = () =>
     </>);
 };
 
-function transformCzechDateToISO(czechDate) {
-  // 1. Split the Czech date string
-  // The regex /\s*\.\s*/ handles a dot possibly surrounded by spaces.
-  const parts = czechDate.split(/\s*\.\s*/);
+function transformCzechDateToISO(dateString) {
+  // Handle null, undefined, or empty string
+  if (!dateString || typeof dateString !== 'string') {
+    return null;
+  }
+
+  // Check if it's already in ISO format (YYYY-MM-DD)
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (isoDateRegex.test(dateString)) {
+    return dateString; // Already in ISO format
+  }
+
+  // Handle Czech date format (DD. MM. YYYY)
+  const parts = dateString.split(/\s*\.\s*/);
   if (parts.length !== 3) {
-    throw new Error("Invalid Czech date format. Expected DD. MM. YYYY");
+    throw new Error("Invalid date format. Expected DD. MM. YYYY or YYYY-MM-DD");
   }
 
   const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10); // JavaScript months are 0-indexed (0-11)
+  const month = parseInt(parts[1], 10);
   const year = parseInt(parts[2], 10);
 
   if (isNaN(day) || isNaN(month) || isNaN(year)) {

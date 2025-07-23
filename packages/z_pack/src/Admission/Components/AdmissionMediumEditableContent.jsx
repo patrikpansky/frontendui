@@ -1,5 +1,10 @@
 import { Input, useReadOnly } from "@hrbolek/uoisfrontend-shared"
 
+// Utility function to get default date for 2025 with proper month handling (months are 0-indexed)
+const getDefaultDate = (year = 2025, month = 0, day = 1) => {
+    return new Date(year, month, day).toISOString().slice(0, 10);
+};
+
 /**
  * A component that displays medium-level content for an admission entity.
  *
@@ -40,60 +45,66 @@ export const AdmissionMediumEditableContent = ({ admission, onChange = (e) => nu
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"studentEntryDate"} 
                 label={"Datum vstupu studenta"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.studentEntryDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.studentEntryDate?.slice(0, 10) || getDefaultDate(2025, 8, 1)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"examStartDate"} 
                 label={"První zkouška"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.examStartDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.examStartDate?.slice(0, 10) || getDefaultDate(2025, 5, 1)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"examLastDate"} 
                 label={"Poslední zkouška"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.examLastDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.examLastDate?.slice(0, 10) || getDefaultDate(2025, 6, 31)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"paymentDate"} 
                 label={"Datum do kdy lze provést platbu"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.paymentDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.paymentDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"requestConditionExtendDate"} 
                 label={"Datum do kdy lze podat žádost o prodloužení podmínek"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.requestConditionExtendDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.requestConditionExtendDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}
                 readOnly={effectiveReadOnly}
             />
             <Input 
+                type="date"
                 id={"requestExtraConditionsDate"} 
                 label={"Datum do kdy lze podat žádost o dodatečné podmínky"} 
                 className="form-control" 
-                defaultValue={new Date(admission?.requestExtraConditionsDate).toLocaleDateString() || new Date().toLocaleDateString()} 
+                defaultValue={admission?.requestExtraConditionsDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} 
                 onChange={effectiveReadOnly ? undefined : onChange} 
                 onBlur={effectiveReadOnly ? undefined : onBlur}
                 disabled={effectiveReadOnly}

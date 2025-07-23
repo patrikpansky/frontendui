@@ -3,6 +3,11 @@ import { PaymentInfoReadPageAsyncAction } from "../../PaymentInfoGQLModel"
 import { ProgramReadPageAsyncAction } from "../../ProgramGQLModel"
 import { StateReadPageAsyncAction } from "../../StateGQLModel"
 
+// Utility function to get default date for 2025 with proper month handling (months are 0-indexed)
+const getDefaultDate = (year = 2025, month = 0, day = 1) => {
+    return new Date(year, month, day).toISOString().slice(0, 10);
+};
+
 /**
  * A component that displays medium-level content for an admission entity.
  *
@@ -29,30 +34,30 @@ import { StateReadPageAsyncAction } from "../../StateGQLModel"
 export const AdmissionMediumEditableContent = ({admission, onChange=(e)=>null, onBlur=(e)=>null, children}) => {
     return (
         <>           
-            <Select id={"stateId"} label={"Stav"} className="form-control" defaultValue={admission?.programId} onChange={onChange} onBlur={onBlur}>
+            <Select id={"stateId"} label={"Stav"} className="form-control" defaultValue={admission?.stateId} onChange={onChange} onBlur={onBlur}>
                 <Options asyncAction={StateReadPageAsyncAction} params = {{limit: 100}} />
             </Select>
             <Select id={"programId"} label={"Program"} className="form-control" defaultValue={admission?.programId} onChange={onChange} onBlur={onBlur}>
                 <Options asyncAction={ProgramReadPageAsyncAction} params = {{limit: 100}} />
             </Select>
-            <Select id={"paymentInfoId"} label={"Platby"} className="form-control" defaultValue={admission?.programId} onChange={onChange} onBlur={onBlur}>
+            <Select id={"paymentInfoId"} label={"Platby"} className="form-control" defaultValue={admission?.paymentInfoId} onChange={onChange} onBlur={onBlur}>
                 <Options asyncAction={PaymentInfoReadPageAsyncAction} params = {{limit: 100}} />
             </Select>
             <Input id={"name"} label={"Název"} className="form-control" defaultValue={admission?.name|| "Název"} onChange={onChange} onBlur={onBlur} />
             <Input id={"nameEn"} label={"Anglický název"} className="form-control" defaultValue={admission?.name_en|| "Anglický název"} onChange={onChange} onBlur={onBlur} />
 
-            <Input type="date" id={"applicationStartDate"} label={"Datum otevření"} className="form-control" defaultValue={admission?.applicationStartDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"applicationLastDate"} label={"Datum ukončení podávání přihlášek"} className="form-control" defaultValue={admission?.applicationLastDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"endDate"} label={"Konec přijímacího řízení"} className="form-control" defaultValue={admission?.endDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"conditionDate"} label={"Datum splnění podmínek"} className="form-control" defaultValue={admission?.conditionDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"paymentDate"} label={"Datum platby"} className="form-control" defaultValue={admission?.paymentDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"conditionExtendedDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.conditionExtendedDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"requestConditionExtendDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestConditionExtendDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"requestExtraConditionsDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestExtraConditionsDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"requestExtraDateDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestExtraDateDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"examStartDate"} label={"Počátek zkoušek"} className="form-control" defaultValue={admission?.examStartDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"examLastDate"} label={"Konec zkoušek"} className="form-control" defaultValue={admission?.examLastDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
-            <Input type="date" id={"studentEntryDate"} label={"Datum zápisu"} className="form-control" defaultValue={admission?.studentEntryDate?.slice(0, 10)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"applicationStartDate"} label={"Datum otevření"} className="form-control" defaultValue={admission?.applicationStartDate?.slice(0, 10) || getDefaultDate(2025, 0, 1)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"applicationLastDate"} label={"Datum ukončení podávání přihlášek"} className="form-control" defaultValue={admission?.applicationLastDate?.slice(0, 10) || getDefaultDate(2025, 3, 30)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"endDate"} label={"Konec přijímacího řízení"} className="form-control" defaultValue={admission?.endDate?.slice(0, 10) || getDefaultDate(2025, 8, 30)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"conditionDate"} label={"Datum splnění podmínek"} className="form-control" defaultValue={admission?.conditionDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"paymentDate"} label={"Datum platby"} className="form-control" defaultValue={admission?.paymentDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"conditionExtendedDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.conditionExtendedDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"requestConditionExtendDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestConditionExtendDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"requestExtraConditionsDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestExtraConditionsDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"requestExtraDateDate"} label={"Do kdy lze požádat"} className="form-control" defaultValue={admission?.requestExtraDateDate?.slice(0, 10) || getDefaultDate(2025, 7, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"examStartDate"} label={"Počátek zkoušek"} className="form-control" defaultValue={admission?.examStartDate?.slice(0, 10) || getDefaultDate(2025, 5, 1)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"examLastDate"} label={"Konec zkoušek"} className="form-control" defaultValue={admission?.examLastDate?.slice(0, 10) || getDefaultDate(2025, 6, 31)} onChange={onChange} onBlur={onBlur} />
+            <Input type="date" id={"studentEntryDate"} label={"Datum zápisu"} className="form-control" defaultValue={admission?.studentEntryDate?.slice(0, 10) || getDefaultDate(2025, 8, 1)} onChange={onChange} onBlur={onBlur} />
 
             {children}
         </>
